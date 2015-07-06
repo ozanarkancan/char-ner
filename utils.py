@@ -61,10 +61,13 @@ def extend_sent(sent):
         wiseq.append(wi)
         wi+=1
         if tp == 'U':
-            tseq.append('b-'+ttype)
-            for c in w[1:-1]:
-                tseq.append('i-'+ttype)
-            tseq.append('l-'+ttype)
+            if len(w) > 1:
+                tseq.append('b-'+ttype)
+                for c in w[1:-1]:
+                    tseq.append('i-'+ttype)
+                tseq.append('l-'+ttype)
+            else:
+                tseq.append('u-'+ttype)
             tseq.append('o') # for space
         elif tp == 'B':
             tseq.append('b-'+ttype)
