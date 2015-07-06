@@ -33,10 +33,13 @@ class RNNModel:
         self.ldnn = LDNN()
         self.ldnn.add_input_layer(u,
             dropout_rate=drates[0])
+
+        numout = n_out if "feedback" in acts[0] else None
+
         self.ldnn.add_layer(n_in, hiddens[0],
             dropout_rate=drates[1],
             activation=acts[0],
-            bias=biases[0])
+            bias=bool(biases[0]), n_out=numout)
         
         for i in xrange(len(hiddens) - 1):
             self.ldnn.add_layer(hiddens[i], hiddens[i + 1], dropout_rate=drates[i+2],
