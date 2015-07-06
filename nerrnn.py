@@ -11,10 +11,16 @@ import numpy as np, h5py
 import argparse
 
 class RNNModel:
-    def __init__(self, configuration):
+    def __init__(self, configuration, X, Y):
         self.configuration = configuration
         u = T.matrix(dtype=theano.config.floatX)
         y = T.ivector()
+        s_index = T.lscalar()
+        e_index = T.lscalar()
+
+        shared_x = theano.shared(np.asarray(X, dtype=theano.config.floatX), borrow=True)
+        shared_y = T.cast(theano.shared(np.asarray(Y, dtype=theano.config.floatX), borrow=True), 'int32')
+        
         n_in = self.configuration["n_in"]
         n_out = self.configuration["n_out"]
         hiddens = self.configuration["hidden"]
@@ -56,51 +62,50 @@ class RNNModel:
         else:#sgd
             updates = sgd(params, gparams, lr)
 
-        self.train_model = theano.function(inputs=[u, y],
+        self.train_model = theano.function(inputs=[s_index, e_index],
             outputs=[cost, self.ldnn.output_layer.d_error(y)],
             updates=updates,
-            allow_input_downcast=True)
+            allow_input_downcast=True,
+            givens={
+                u: shared_x[s_index:e_index, :],
+                y: shared_y[s_index:e_index]
+            }
+        )
 
         self.predict_model = theano.function(inputs=[u, y],
             outputs=[self.ldnn.output_layer.error(y)],
             allow_input_downcast=True)
 
-    def train(self, trainX, trainY, devX, devY):
+    def train(self, trainIndx, devX, devY, devIndx):
         print "...training the model"
-        self.sizef = lambda X: np.sum(map(lambda a: len(a), X))
-        trainSize = self.sizef(trainY)
-        devSize = self.sizef(devY)
+        
+        train_size = trainIndx[-1][1]
 
         for i in xrange(1, self.configuration["epoch"] + 1):
             losses = []
             errors = []
             start = time.time()
             
-            for j in xrange(len(trainY)):
-                loss, err = self.train_model(np.asarray(trainX[j]), trainY[j])
-                curr = float(len(trainY[j]))
-                ratio = curr / trainSize
+            for s, e in trainIndx:
+                loss, err = self.train_model(s, e)
+                curr = e - s
+                ratio = float(curr) / train_size
                 losses.append(loss * ratio)
                 errors.append(err * ratio)
-            
-            devErr = []
-            for j in xrange(len(devY)):
-                err = self.predict_model(devX[j], devY[j])
-                curr = float(len(devY[j]))
-                ratio = curr / devSize
-                devErr.append(err[0] * ratio)
  
+            devErr = self.test(devX, devY, devIndx)
+
             end = time.time()
             print "Epoch: %i Loss: %.6f Error: %.6f Dev Err: %.6f Time: %.6f seconds" % (i, np.sum(losses), np.sum(errors), np.sum(devErr), end - start)
             sys.stdout.flush()
     
-    def test(self, testX, testY):
-        testSize = self.sizef(testX)
+    def test(self, testX, testY, testIndx):
+        test_size = testIndx[-1][1]
         testErr = []
-        for i in xrange(len(testY)):
-                err = self.predict_model(testX[i], testY[i])
-                curr = float(len(testY[i]))
-                ratio = curr / testSize
+        for s, e in testIndx:
+                err = self.predict_model(testX[s:e, :], testY[s:e])
+                curr = e - s
+                ratio = float(curr) / test_size
                 testErr.append(err[0] * ratio)
         return np.sum(testErr)
         
