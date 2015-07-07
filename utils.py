@@ -47,6 +47,43 @@ def dset2mat(sents, dvec, le):
     return XL, yL
     pass
 
+def extend_sent2(sent):
+    cseq, tseq, wiseq = [], [], []
+    wi = 0
+    for w, t in zip(sent['ws'], sent['ts']):
+        if t == 'O': tp, ttype = 'O', 'O'
+        else: tp, ttype = t.split('-')
+        if ttype == 'ORG': ttype = 'G' + ttype
+        ttype = ttype[0].lower()
+
+        cseq.extend([c for c in w+' '])
+        wiseq.extend([wi for c in w])
+        wiseq.append(wi)
+        wi+=1
+        if tp == 'U':
+            for c in w:
+                tseq.append(ttype)
+            tseq.append(ttype+'-l')
+        elif tp == 'B':
+            for c in w:
+                tseq.append(ttype)
+            tseq.append(ttype)
+        elif tp == 'L':
+            for c in w:
+                tseq.append(ttype)
+            tseq.append(ttype+'-l')
+        elif tp == 'I':
+            for c in w:
+                tseq.append(ttype)
+            tseq.append(ttype)
+        else: # O
+            for c in w:
+                tseq.append(ttype)
+            tseq.append(ttype+'-l')
+    sent['cseq'] = cseq
+    sent['tseq'] = tseq
+    sent['wiseq'] = wiseq
+
 def extend_sent(sent):
     cseq, tseq, wiseq = [], [], []
     wi = 0
@@ -99,7 +136,7 @@ def get_sent_indx(dset):
         start += len(sent['cseq'])
     return indexes
 
-if __name__ == '__main__':
+def main():
     trn, dev, tst = get_sents()
     trn = random.sample(trn,1000)
     dev = random.sample(trn,100)
@@ -138,3 +175,11 @@ if __name__ == '__main__':
     tstIndx = get_sent_indx(tst)
 
     print len(trnIndx), len(devIndx)
+
+if __name__ == '__main__':
+    trn, dev, tst = get_sents()
+    sent = random.choice(trn)
+    extend_sent2(sent)
+    print '\t'.join(sent['ts'])
+    print '\t'.join(sent['cseq'])
+    print '\t'.join(sent['tseq'])
