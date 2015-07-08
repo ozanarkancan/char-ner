@@ -111,7 +111,7 @@ class RNNModel:
                 self.last_predictions.append(preds)
                 curr = e - s
                 ratio = float(curr) / test_size
-                testErr.append(err[0] * ratio)
+                testErr.append(err * ratio)
         return np.sum(testErr)
         
 def get_arg_parser():
