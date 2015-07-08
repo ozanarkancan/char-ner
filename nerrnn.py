@@ -76,7 +76,7 @@ class RNNModel:
         )
 
         self.predict_model = theano.function(inputs=[u, y],
-            outputs=[self.ldnn.output_layer.error(y)],
+            outputs=[self.ldnn.output_layer.error(y), self.ldnn.output_layer.y_pred],
             allow_input_downcast=True)
 
     def train(self, trainIndx, devX, devY, devIndx):
@@ -105,8 +105,10 @@ class RNNModel:
     def test(self, testX, testY, testIndx):
         test_size = testIndx[-1][1]
         testErr = []
+        self.last_predictions = []
         for s, e in testIndx:
-                err = self.predict_model(testX[s:e, :], testY[s:e])
+                err, preds = self.predict_model(testX[s:e, :], testY[s:e])
+                self.last_predictions.append(preds)
                 curr = e - s
                 ratio = float(curr) / test_size
                 testErr.append(err[0] * ratio)
