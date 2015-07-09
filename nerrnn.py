@@ -18,8 +18,8 @@ class RNNModel:
         s_index = T.lscalar()
         e_index = T.lscalar()
 
-        shared_x = theano.shared(np.asarray(X, dtype=theano.config.floatX), borrow=True)
-        shared_y = T.cast(theano.shared(np.asarray(Y, dtype=theano.config.floatX), borrow=True), 'int32')
+        self.shared_x = theano.shared(np.asarray(X, dtype=theano.config.floatX), borrow=True)
+        self.shared_y = T.cast(theano.shared(np.asarray(Y, dtype=theano.config.floatX), borrow=True), 'int32')
         
         n_in = self.configuration["n_in"]
         n_out = self.configuration["n_out"]
@@ -70,14 +70,18 @@ class RNNModel:
             updates=updates,
             allow_input_downcast=True,
             givens={
-                u: shared_x[s_index:e_index, :],
-                y: shared_y[s_index:e_index]
+                u: self.shared_x[s_index:e_index, :],
+                y: self.shared_y[s_index:e_index]
             }
         )
 
-        self.predict_model = theano.function(inputs=[u, y],
+        self.predict_model = theano.function([s_index, e_index],
             outputs=[self.ldnn.output_layer.error(y), self.ldnn.output_layer.y_pred],
-            allow_input_downcast=True)
+            allow_input_downcast=True,
+            givens={
+                u: self.shared_x[s_index:e_index, :],
+                y: self.shared_y[s_index:e_index]
+            })
 
     def train(self, trainIndx, devX, devY, devIndx):
         print "...training the model"
@@ -95,24 +99,33 @@ class RNNModel:
                 ratio = float(curr) / train_size
                 losses.append(loss * ratio)
                 errors.append(err * ratio)
- 
-            devErr = self.test(devX, devY, devIndx)
-
+            
             end = time.time()
-            print "Epoch: %i Loss: %.6f Error: %.6f Dev Err: %.6f Time: %.6f seconds" % (i, np.sum(losses), np.sum(errors), np.sum(devErr), end - start)
+            trn_time = end - start
+
+            print "Epoch: %i Loss: %.6f Error: %.6f Time: %.6f seconds" % (i, np.sum(losses), np.sum(errors), trn_time)
+            sys.stdout.flush()
+
+            devErr, dev_time = self.test(devX, devY, devIndx)
+            print "Dev Err: %.6f Time: %.6f seconds" % (np.sum(devErr), dev_time)
             sys.stdout.flush()
     
     def test(self, testX, testY, testIndx):
+        #self.shared_x = theano.shared(np.asarray(testX, dtype=theano.config.floatX), borrow=True)
+        #self.shared_y = T.cast(theano.shared(np.asarray(testY, dtype=theano.config.floatX), borrow=True), 'int32')
+
         test_size = testIndx[-1][1]
         testErr = []
         self.last_predictions = []
+        start = time.time()
         for s, e in testIndx:
-                err, preds = self.predict_model(testX[s:e, :], testY[s:e])
+                err, preds = self.predict_model(s, e)
                 self.last_predictions.append(preds)
                 curr = e - s
                 ratio = float(curr) / test_size
                 testErr.append(err * ratio)
-        return np.sum(testErr)
+        end = time.time()
+        return np.sum(testErr), end - start
         
 def get_arg_parser():
     parser = argparse.ArgumentParser(prog="nerrnn")
