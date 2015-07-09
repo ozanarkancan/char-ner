@@ -75,6 +75,6 @@ if __name__ == '__main__':
     
     rnn = RNNModel(args, Xtrn, ytrn)
     rnn.train(trnIndx, Xdev, ydev, devIndx)
-    tstErr = rnn.test(Xtst, ytst, tstIndx)
+    tstErr, tstTime = rnn.test(Xtst, ytst, tstIndx)
 
-    print "Test Err: %.6f" % tstErr
+    print "Test Err: %.6f Time: %.6f" % (tstErr, tstTime)
