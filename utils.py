@@ -3,6 +3,8 @@ from itertools import *
 import random, numpy as np
 from sklearn.feature_extraction import DictVectorizer
 from sklearn.preprocessing import LabelEncoder
+import argparse
+from nerrnn import RNNModel
 
 def read_sents(file):
     a,b,c,d = [],[],[],[]
@@ -57,8 +59,7 @@ def extend_sent2(sent):
         ttype = ttype[0].lower()
 
         cseq.extend([c for c in w+' '])
-        wiseq.extend([wi for c in w])
-        wiseq.append(wi)
+        wiseq.extend([wi for c in w+' '])
         wi+=1
         if tp == 'U':
             for c in w:
@@ -143,7 +144,7 @@ def main():
 
     for d in (trn,dev,tst):
         for sent in d:
-            extend_sent(sent)
+            extend_sent2(sent)
 
     dvec = DictVectorizer(dtype=np.float32, sparse=False)
     lblenc = LabelEncoder()
@@ -180,6 +181,5 @@ if __name__ == '__main__':
     trn, dev, tst = get_sents()
     sent = random.choice(trn)
     extend_sent2(sent)
-    print '\t'.join(sent['ts'])
-    print '\t'.join(sent['cseq'])
-    print '\t'.join(sent['tseq'])
+    print ' '.join(sent['cseq'])
+    print ' '.join(sent['tseq'])
