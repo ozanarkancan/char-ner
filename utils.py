@@ -3,8 +3,6 @@ from itertools import *
 import random, numpy as np
 from sklearn.feature_extraction import DictVectorizer
 from sklearn.preprocessing import LabelEncoder
-import argparse
-from nerrnn import RNNModel
 
 def read_sents(file):
     a,b,c,d = [],[],[],[]
@@ -86,17 +84,18 @@ def extend_sent2(sent):
     sent['wiseq'] = wiseq
 
 def extend_sent(sent):
-    cseq, tseq, wiseq = [], [], []
-    wi = 0
+    cseq, tseq, wiseq, ciseq = [], [], [], []
+    wi, ci = 0, 0
     for w, t in zip(sent['ws'], sent['ts']):
         if t == 'O': tp, ttype = 'O', 'O'
         else: tp, ttype = t.split('-')
-        ttype = ttype[0]
+        # ttype = ttype[0]
 
         cseq.extend([c for c in w])
         wiseq.extend([wi for c in w])
         cseq.append(' ') # for space
-        wiseq.append(wi)
+        wiseq.append(-1) # for space
+        # wiseq.append(wi) # for space
         wi+=1
         if tp == 'U':
             if len(w) > 1:
@@ -127,7 +126,7 @@ def extend_sent(sent):
             tseq.append('o') # for space
     sent['cseq'] = cseq[:-1]
     sent['tseq'] = tseq[:-1]
-    sent['wiseq'] = wiseq
+    sent['wiseq'] = wiseq[:-1]
 
 def get_sent_indx(dset):
     start = 0
@@ -177,9 +176,36 @@ def main():
 
     print len(trnIndx), len(devIndx)
 
+def tseq2ts(sent):
+    cindx = [[t[1] for t in g] for k,g in groupby(izip(sent['wiseq'],count(0)),lambda x:x[0]) if k!=-1]
+    assert len(sent['ws']) == len(cindx)
+    tcseq = [[sent['tpredseq'][i] for i in ind] for ind in cindx]
+    ts = []
+    for tseq in tcseq:
+        ttype = tseq[0].split('-')[1] if '-' in tseq[0] else 'O'  # different decision can be used
+        if tseq[0].startswith('b') and tseq[-1].startswith('i'):
+            ts.append('B-'+ttype)
+        elif tseq[0].startswith('i') and tseq[-1].startswith('i'):
+            ts.append('I-'+ttype)
+        elif tseq[0].startswith('i') and tseq[-1].startswith('l'):
+            ts.append('L-'+ttype)
+        elif tseq[0].startswith('b') and tseq[-1].startswith('l') or tseq[0].startswith('u'):
+            ts.append('U-'+ttype)
+        elif len(tseq)==1 and tseq[0].startswith('l'):
+            ts.append('L-'+ttype)
+        elif len(tseq)==1 and tseq[0].startswith('b'):
+            ts.append('B-'+ttype)
+        else:
+            ts.append('O')
+    return ts
+
 if __name__ == '__main__':
     trn, dev, tst = get_sents()
     sent = random.choice(trn)
-    extend_sent2(sent)
-    print ' '.join(sent['cseq'])
-    print ' '.join(sent['tseq'])
+    extend_sent(sent)
+    print '\t'.join(sent['cseq'])
+    print '\t'.join(sent['tseq'])
+    print '\t'.join(map(str,sent['wiseq']))
+    print map(len,[sent['cseq'], sent['tseq'], sent['wiseq']])
+    print tseq2ts(sent)
+    print sent['ts']
