@@ -1,9 +1,12 @@
 import copy
 from itertools import *
 import random, numpy as np
-from utils import *
+from utils import get_sents, get_cfeatures, get_sent_indx
+from sklearn.feature_extraction import DictVectorizer
+from sklearn.preprocessing import LabelEncoder
 import argparse
 from nerrnn import RNNModel
+from featchar import w2seq, seq2w
 
 def get_arg_parser():
     parser = argparse.ArgumentParser(prog="nerrnn")
@@ -33,12 +36,12 @@ if __name__ == '__main__':
 
     for d in (trn,dev,tst):
         for sent in d:
-            extend_sent(sent)
+            w2seq(sent)
 
     dvec = DictVectorizer(dtype=np.float32, sparse=False)
     lblenc = LabelEncoder()
     dvec.fit(get_cfeatures(wi, ci, sent)  for sent in trn for c,wi,ci in zip(sent['cseq'],sent['wiseq'],count(0)))
-    lblenc.fit([t for sent in trn for t in sent['tseq']])
+    lblenc.fit([t for sent in trn for t in sent['tseqg']])
     print dvec.get_feature_names()
     print lblenc.classes_
 
@@ -54,9 +57,9 @@ if __name__ == '__main__':
 
     print Xtrn.shape, Xdev.shape
 
-    ytrn = lblenc.transform([t for sent in trn for t in sent['tseq']])
-    ydev = lblenc.transform([t for sent in dev for t in sent['tseq']])
-    ytst = lblenc.transform([t for sent in tst for t in sent['tseq']])
+    ytrn = lblenc.transform([t for sent in trn for t in sent['tseqg']])
+    ydev = lblenc.transform([t for sent in dev for t in sent['tseqg']])
+    ytst = lblenc.transform([t for sent in tst for t in sent['tseqg']])
 
     print ytrn.shape, ydev.shape
 
@@ -79,8 +82,9 @@ if __name__ == '__main__':
         rnn.train(trnIndx, Xdev, ydev, devIndx)
         errl = []
         for sent, ipred in zip(dev, rnn.last_predictions):
-            sent['tpredseq'] = lblenc.inverse_transform(ipred)
-            errl.extend([a!=b for a,b in zip(sent['ts'],tseq2ts(sent))])
+            sent['tseqp'] = lblenc.inverse_transform(ipred)
+            seq2w(sent)
+            errl.extend([a!=b for a,b in zip(sent['tsg'],sent['tsp'])])
         print 'word tag err:', np.mean(errl)
 
     tstErr = rnn.test(Xtst, ytst, tstIndx)
