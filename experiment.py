@@ -27,12 +27,10 @@ def get_arg_parser():
 
 if __name__ == '__main__':
     trn, dev, tst = get_sents()
-    trn = random.sample(trn,100)
-    dev = random.sample(dev,100)
 
     for d in (trn,dev,tst):
         for sent in d:
-            extend_sent2(sent)
+            extend_sent(sent)
 
     dvec = DictVectorizer(dtype=np.float32, sparse=False)
     lblenc = LabelEncoder()

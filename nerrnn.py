@@ -75,6 +75,11 @@ class RNNModel:
             }
         )
 
+        self.predict_model = theano.function([u, y],
+            outputs=[self.ldnn.output_layer.error(y), self.ldnn.output_layer.y_pred],
+            allow_input_downcast=True)
+
+        """
         self.predict_model = theano.function([s_index, e_index],
             outputs=[self.ldnn.output_layer.error(y), self.ldnn.output_layer.y_pred],
             allow_input_downcast=True,
@@ -82,13 +87,16 @@ class RNNModel:
                 u: self.shared_x[s_index:e_index, :],
                 y: self.shared_y[s_index:e_index]
             })
+        """
 
-    def train(self, trainIndx, devX, devY, devIndx):
+    def train(self, trnX, trnY, trainIndx, devX, devY, devIndx):
         print "...training the model"
         
         train_size = trainIndx[-1][1]
 
         for i in xrange(1, self.configuration["epoch"] + 1):
+            # self.shared_x = theano.shared(np.asarray(trnX, dtype=theano.config.floatX), borrow=True)
+            # self.shared_y = T.cast(theano.shared(np.asarray(trnY, dtype=theano.config.floatX), borrow=True), 'int32')
             losses = []
             errors = []
             start = time.time()
@@ -111,15 +119,12 @@ class RNNModel:
             sys.stdout.flush()
     
     def test(self, testX, testY, testIndx):
-        #self.shared_x = theano.shared(np.asarray(testX, dtype=theano.config.floatX), borrow=True)
-        #self.shared_y = T.cast(theano.shared(np.asarray(testY, dtype=theano.config.floatX), borrow=True), 'int32')
-
         test_size = testIndx[-1][1]
         testErr = []
         self.last_predictions = []
         start = time.time()
         for s, e in testIndx:
-                err, preds = self.predict_model(s, e)
+                err, preds = self.predict_model(testX[s:e,:], testY[s:e])
                 self.last_predictions.append(preds)
                 curr = e - s
                 ratio = float(curr) / test_size

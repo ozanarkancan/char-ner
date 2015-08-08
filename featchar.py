@@ -3,44 +3,139 @@ import random
 from itertools import *
 from future_builtins import map, filter, zip
 from collections import Counter
+from sklearn.feature_extraction import DictVectorizer
+from sklearn.preprocessing import LabelEncoder
+import numpy as np
 
 
-def w2seq(sent,src='tsg',dst='tseqg'):
-    tseq, wiseq = [], []
-    assert len(sent[src]) > 0
-    for w, t, wi in zip(sent['ws'],sent[src],count(0)):
+def get_tseq1(sent):
+    tseq = []
+    for w, t in zip(sent['ws'],sent['ts']):
         tp, sep, ttype = (t, '', '') if t == 'O' else (t.split('-')[0], '-', t.split('-')[1])
         tseq.extend([''.join([tp.lower(),sep,ttype]) for c in w])
-        wiseq.extend([wi for c in w])
 
         # handle space
         if tp == 'B' or tp == 'I':
             tseq.append('i-'+ttype)
         else: # U, L, O
             tseq.append('o')
+    return tseq[:-1]
+
+def get_tseq2(sent):
+    tseq = []
+    for w, t in zip(sent['ws'], sent['ts']):
+        tp, sep, ttype = (t, '', '') if t == 'O' else (t.split('-')[0], '-', t.split('-')[1])
+        if tp == 'U':
+            if len(w) > 1:
+                tseq.append('b-'+ttype)
+                for c in w[1:-1]:
+                    tseq.append('i-'+ttype)
+                tseq.append('l-'+ttype)
+            else:
+                tseq.append('u-'+ttype)
+        elif tp == 'B':
+            tseq.append('b-'+ttype)
+            for c in w[1:]:
+                tseq.append('i-'+ttype)
+        elif tp == 'L':
+            for c in w[:-1]:
+                tseq.append('i-'+ttype)
+            tseq.append('l-'+ttype)
+        else: # I O
+            for c in w:
+                tseq.append(tp.lower()+sep+ttype)
+
+        # handle space
+        if tp == 'B' or tp == 'I':
+            tseq.append('i-'+ttype)
+        else: # U, L, O
+            tseq.append('o')
+    return tseq[:-1]
+
+def get_tseqgrp(wiseq, tseq):
+    tgroup = [[e[0] for e in g] for k, g in groupby(enumerate(wiseq),lambda x: x[1] !=-1) if k]
+    tseqgrp = [[tseq[ti] for ti in ts] for ts in tgroup]
+    return tseqgrp
+
+def get_ts1(tseqgrp):
+    return [Counter(tseq).most_common(1)[0][0].upper() for tseq in tseqgrp]
+
+def get_ts2(tseqgrp):
+    ts = []
+    for tseq in tseqgrp:
+        if tseq[0].startswith('b-') and tseq[-1].startswith('i-'): # B
+            ts.append(tseq[0].upper())
+        elif tseq[0].startswith('i-') and tseq[-1].startswith('i-'): # I
+            ts.append(tseq[0].upper())
+        elif tseq[0].startswith('i-') and tseq[-1].startswith('l-'): # L
+            ts.append(tseq[-1].upper())
+        elif tseq[0].startswith('b-') and tseq[-1].startswith('l-'): # U
+            tp, ttype = tseq[0].split('-')
+            ts.append('U-'+ttype)
+        elif tseq[0].startswith('u-'): # U
+            ts.append(tseq[0].upper())
+        else: # 
+            ts.append(Counter(tseq).most_common(1)[0][0].upper())
+    return ts
+
+def get_cseq(sent):
+    return [c for c in ' '.join(sent['ws'])]
+
+def get_wiseq(sent):
+    wiseq = []
+    for wi,w in enumerate(sent['ws']):
+        wiseq.extend([wi for c in w])
         wiseq.append(-1)
+    return wiseq[:-1]
 
-    # discard last elements
-    sent['cseq'] = [c for w in sent['ws'] for c in w+' '][:-1]
-    sent[dst] = tseq[:-1]
-    sent['wiseq'] = wiseq[:-1]
+def get_cfeatures(ci, sent, tseq_pred=None):
+    d = {}
+    d['c'] = sent['cseq'][ci]
 
-def seq2w(sent, src='tseqp', dst='tsp'):
-    assert len(sent[src]) > 0
-    tgroup = [[e[0] for e in g] for k, g in groupby(enumerate(sent['wiseq']),lambda x: x[1] !=-1) if k]
-    tseqgrp = [[sent[src][ti] for ti in ts] for ts in tgroup]
-    sent[dst] = [Counter(tseq).most_common(1)[0][0].upper() for tseq in tseqgrp]
+    # previous tag
+    if ci == 0:
+        d['sent_start'] = 1
+    else: # ci > 0:
+        if not tseq_pred is None:
+            d['t'] = tseq_pred[ci-1]
+        else:
+            d['t'] = sent['tseq'][ci-1]
+
+    # wstart
+    if ci==0: d['wstart'] = 1
+    if ci>0:
+        d['wstart'] = sent['wiseq'][ci-1] == -1
+
+    # wend
+    if ci==(len(sent['cseq'])-1): d['wend'] = 1
+    if ci<(len(sent['cseq'])-1):
+        d['wend'] = sent['wiseq'][ci+1] == -1
+
+    if sent['wiseq'][ci] == -1: d['isspace'] = 1
+    return d
+
 
 if __name__ == '__main__':
     trn, dev, tst = get_sents()
-    sent = random.choice(trn)
-    print ' '.join(sent['ws']), ' '.join(sent['ts'])
+    for d in (trn,dev,tst):
+        for sent in d:
+            sent.update({
+                'cseq': get_cseq(sent), 
+                'wiseq': get_wiseq(sent), 
+                'tseq': get_tseq2(sent)})
+    dvec = DictVectorizer(dtype=np.float32, sparse=False)
+    dvec.fit(get_cfeatures(ci, sent)  for sent in trn for ci,c in enumerate(sent['cseq']))
 
-    w2seq(sent)
-    for c, ct in zip(sent['cseq'], sent['tseqg']):
-        print c, ct
+    lblenc = LabelEncoder()
+    lblenc.fit([t for sent in trn for t in sent['tseq']])
 
-    seq2w(sent,src='tseqg',dst='tsp')
-    print ' '.join(sent['tsg'])
-    print ' '.join(sent['tsp'])
-    # print [[e for e in v] for k,v in groupby(sent['ts'], lambda x: x=='O')]
+    sent = random.choice(dev)
+    print sent['ws']
+    print sent['ts']
+    print sent['cseq']
+    print sent['wiseq']
+    print sent['tseq']
+
+    tseq_pred = ['b-per','b-per']
+    print dvec.transform(get_cfeatures(2,sent,tseq_pred))
+

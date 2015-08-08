@@ -1,12 +1,13 @@
 import copy
 from itertools import *
 import random, numpy as np
-from utils import get_sents, get_cfeatures, get_sent_indx
+from utils import get_sents, get_sent_indx
 from sklearn.feature_extraction import DictVectorizer
 from sklearn.preprocessing import LabelEncoder
+from sklearn.metrics import confusion_matrix, classification_report
 import argparse
 from nerrnn import RNNModel
-from featchar import w2seq, seq2w
+from featchar import *
 
 def get_arg_parser():
     parser = argparse.ArgumentParser(prog="nerrnn")
@@ -23,43 +24,59 @@ def get_arg_parser():
     parser.add_argument("--opt", default="rmsprop", help="optimization method: sgd, rmsprop, adagrad, adam")
     parser.add_argument("--epoch", default=50, type=int, help="number of epochs")
     parser.add_argument("--fepoch", default=50, type=int, help="number of epochs")
+    parser.add_argument("--sample", default=False, action='store_true', help="sample 100 from trn, 10 from dev")
     parser.add_argument("--lr", default=0.005, type=float, help="learning rate")
     parser.add_argument("--norm", default=5, type=float, help="Threshold for clipping norm of gradient")
     parser.add_argument("--truncate", default=-1, type=int, help="backward step size")
     
     return parser
 
+def print_conmat(y_true, y_pred, lblenc):
+    print '\t'.join(['bos'] + list(lblenc.classes_))
+    conmat = confusion_matrix(y_true,y_pred, labels=lblenc.transform(lblenc.classes_))
+    for r,clss in zip(conmat,lblenc.classes_):
+        print '\t'.join([clss] + list(map(str,r)))
+
 if __name__ == '__main__':
     trn, dev, tst = get_sents()
-    # trn = random.sample(trn,100)
-    # dev = random.sample(trn,10)
+    parser = get_arg_parser()
+    args = vars(parser.parse_args())
+    print args
+
+    if args['sample']:
+        # trn = random.sample(trn,100)
+        dev = random.sample(dev,2)
+        tst = random.sample(tst,2)
 
     for d in (trn,dev,tst):
         for sent in d:
-            w2seq(sent)
+            sent.update({
+                'cseq': get_cseq(sent), 
+                'wiseq': get_wiseq(sent), 
+                'tseq': get_tseq1(sent)})
 
     dvec = DictVectorizer(dtype=np.float32, sparse=False)
     lblenc = LabelEncoder()
-    dvec.fit(get_cfeatures(wi, ci, sent)  for sent in trn for c,wi,ci in zip(sent['cseq'],sent['wiseq'],count(0)))
-    lblenc.fit([t for sent in trn for t in sent['tseqg']])
+    dvec.fit(get_cfeatures(ci, sent)  for sent in trn for ci,c in enumerate(sent['cseq']))
+    lblenc.fit([t for sent in trn for t in sent['tseq']])
     print dvec.get_feature_names()
     print lblenc.classes_
 
     nf = len(dvec.get_feature_names())
     nc = len(lblenc.classes_)
-    print '# of sents: ', map(len, (trn,dev,tst))
+    print '# of sents: ', list(map(len, (trn,dev,tst)))
     print '# of feats: ', nf 
     print '# of lbls: ', nc
 
-    Xtrn = dvec.transform(get_cfeatures(wi, ci, sent)  for sent in trn for c,wi,ci in zip(sent['cseq'],sent['wiseq'],count(0)))
-    Xdev = dvec.transform(get_cfeatures(wi, ci, sent)  for sent in dev for c,wi,ci in zip(sent['cseq'],sent['wiseq'],count(0)))
-    Xtst = dvec.transform(get_cfeatures(wi, ci, sent)  for sent in tst for c,wi,ci in zip(sent['cseq'],sent['wiseq'],count(0)))
+    Xtrn = dvec.transform(get_cfeatures(ci, sent)  for sent in trn for ci,c in enumerate(sent['cseq']))
+    Xdev = dvec.transform(get_cfeatures(ci, sent)  for sent in dev for ci,c in enumerate(sent['cseq']))
+    Xtst = dvec.transform(get_cfeatures(ci, sent)  for sent in tst for ci,c in enumerate(sent['cseq']))
 
     print Xtrn.shape, Xdev.shape
 
-    ytrn = lblenc.transform([t for sent in trn for t in sent['tseqg']])
-    ydev = lblenc.transform([t for sent in dev for t in sent['tseqg']])
-    ytst = lblenc.transform([t for sent in tst for t in sent['tseqg']])
+    ytrn = lblenc.transform([t for sent in trn for t in sent['tseq']])
+    ydev = lblenc.transform([t for sent in dev for t in sent['tseq']])
+    ytst = lblenc.transform([t for sent in tst for t in sent['tseq']])
 
     print ytrn.shape, ydev.shape
 
@@ -69,23 +86,51 @@ if __name__ == '__main__':
     
     print len(trnIndx), len(devIndx)
     
-    parser = get_arg_parser()
-    args = vars(parser.parse_args())
   
     args["n_in"] = Xtrn.shape[1]
     args["n_out"] = len(np.unique(ytrn))
     
-    print args
+    ts_encoder = LabelEncoder()
+    ts_encoder.fit([t for sent in trn for t in sent['ts']])
     
+    from biloueval import bilouEval2
     rnn = RNNModel(args, Xtrn, ytrn)
     for e in xrange(args['fepoch']):
-        rnn.train(trnIndx, Xdev, ydev, devIndx)
-        errl = []
-        for sent, ipred in zip(dev, rnn.last_predictions):
-            sent['tseqp'] = lblenc.inverse_transform(ipred)
-            seq2w(sent)
-            errl.extend([a!=b for a,b in zip(sent['tsg'],sent['tsp'])])
-        print 'word tag err:', np.mean(errl)
+        rnn.train(Xtrn, ytrn, trnIndx, Xdev, ydev, devIndx)
+        y_true, y_pred = ydev, list(chain.from_iterable(rnn.last_predictions))
+        print_conmat(y_true, y_pred, lblenc)
 
-    tstErr = rnn.test(Xtst, ytst, tstIndx)
+        lts = [sent['ts'] for sent in dev]
+        lts_pred = []
+        for sent, ipred in zip(dev, rnn.last_predictions):
+            tseq_pred = lblenc.inverse_transform(ipred)
+            tseqgrp_pred = get_tseqgrp(sent['wiseq'],tseq_pred)
+            ts_pred = get_ts1(tseqgrp_pred)
+            lts_pred.append(ts_pred)
+
+        y_true = ts_encoder.transform([t for ts in lts for t in ts])
+        y_pred = ts_encoder.transform([t for ts in lts_pred for t in ts])
+        print_conmat(y_true, y_pred, ts_encoder)
+
+        print 'f1: ', bilouEval2(lts, lts_pred)
+        # sent_indx = random.sample(range(len(dev)), 10)
+        """
+        sent_indx = range(len(dev))
+        for i in sent_indx:
+            sent = dev[i]
+            tseq_pred = lblenc.inverse_transform(rnn.last_predictions[i])
+            tseqgrp_true = get_tseqgrp(sent['wiseq'],sent['tseq'])
+            tseqgrp_pred = get_tseqgrp(sent['wiseq'],tseq_pred)
+            for w, tseq_true, tseq_pred in zip(sent['ws'], tseqgrp_true, tseqgrp_pred):
+                print '\t'.join([w, ' '.join(tseq_true), ' '.join(tseq_pred)])
+            print 
+        """
+    for sent in dev:
+        Xdev = dvec.transform(get_cfeatures(ci, sent)  for sent in dev for ci,c in enumerate(sent['cseq']))
+        sent['tseq_pred'] = []
+        for ci,c in enumerate(sent['cseq']):
+            xchar = get_cfeatures(ci,sent,tseq_pred)
+            ychar = clf.get(xsent)
+        
+    tstErr, tmp = rnn.test(Xtst, ytst, tstIndx)
     print "Test Err: %.6f" % tstErr
