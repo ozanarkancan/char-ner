@@ -9,6 +9,7 @@ import numpy as np
 
 
 def get_tseq1(sent):
+    """ majority """
     tseq = []
     for w, t in zip(sent['ws'],sent['ts']):
         tp, sep, ttype = (t, '', '') if t == 'O' else (t.split('-')[0], '-', t.split('-')[1])
@@ -88,7 +89,58 @@ def get_wiseq(sent):
         wiseq.append(-1)
     return wiseq[:-1]
 
-def get_cfeatures(ci, sent, tseq_pred=None):
+def get_cfeatures_basic_seg_cap(ci, sent, tseq_pred=None):
+    d = {}
+    d['c'] = sent['cseq'][ci]
+
+    # wstart
+    if ci==0: d['wstart'] = 1
+    if ci>0:
+        d['wstart'] = sent['wiseq'][ci-1] == -1
+
+
+    # wend
+    if ci==(len(sent['cseq'])-1): d['wend'] = 1
+    if ci<(len(sent['cseq'])-1):
+        d['wend'] = sent['wiseq'][ci+1] == -1
+
+    if sent['wiseq'][ci] == -1: d['isspace'] = 1
+
+    # capitilization
+    d['is_capital'] = sent['cseq'][ci].isupper()
+
+    return d
+
+def get_cfeatures_basic_seg(ci, sent, tseq_pred=None):
+    d = {}
+    d['c'] = sent['cseq'][ci]
+
+    # wstart
+    if ci==0: d['wstart'] = 1
+    if ci>0:
+        d['wstart'] = sent['wiseq'][ci-1] == -1
+
+    # wend
+    if ci==(len(sent['cseq'])-1): d['wend'] = 1
+    if ci<(len(sent['cseq'])-1):
+        d['wend'] = sent['wiseq'][ci+1] == -1
+
+    if sent['wiseq'][ci] == -1: d['isspace'] = 1
+    return d
+
+def get_cfeatures_basic(ci, sent, tseq_pred=None):
+    return {'c': sent['cseq'][ci]}
+
+def get_cfeatures_just_tags(ci, sent, tseq_pred=None):
+    d = {}
+    # previous tag
+    if ci == 0:
+        d['sent_start'] = 1
+    else: # ci > 0:
+        d['t'] = sent['tseq'][ci-1]
+    return d
+
+def get_cfeatures_prev(ci, sent, tseq_pred=None):
     d = {}
     d['c'] = sent['cseq'][ci]
 
