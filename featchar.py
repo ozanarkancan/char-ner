@@ -194,6 +194,10 @@ def get_cfeatures_prev(ci, sent, tseq_pred=None):
     if sent['wiseq'][ci] == -1: d['isspace'] = 1
     return d
 
+def sent_word_indx(sent):
+    space_indx = [a for a,b in enumerate(sent['wiseq']) if b==-1]
+    indx = [0] + space_indx + [len(sent['wiseq'])]
+    return np.array([[a,b] for a,b in zip(indx,indx[1:])])
 
 if __name__ == '__main__':
     trn, dev, tst = get_sents()
@@ -203,19 +207,7 @@ if __name__ == '__main__':
                 'cseq': get_cseq(sent), 
                 'wiseq': get_wiseq(sent), 
                 'tseq': get_tseq2(sent)})
-    dvec = DictVectorizer(dtype=np.float32, sparse=False)
-    dvec.fit(get_cfeatures(ci, sent)  for sent in trn for ci,c in enumerate(sent['cseq']))
-
-    lblenc = LabelEncoder()
-    lblenc.fit([t for sent in trn for t in sent['tseq']])
 
     sent = random.choice(dev)
-    print sent['ws']
-    print sent['ts']
-    print sent['cseq']
     print sent['wiseq']
-    print sent['tseq']
-
-    tseq_pred = ['b-per','b-per']
-    print dvec.transform(get_cfeatures(2,sent,tseq_pred))
-
+    print sent_word_indx(sent)
