@@ -197,7 +197,9 @@ def get_cfeatures_prev(ci, sent, tseq_pred=None):
 def sent_word_indx(sent):
     space_indx = [a for a,b in enumerate(sent['wiseq']) if b==-1]
     indx = [0] + space_indx + [len(sent['wiseq'])]
-    return np.array([[a,b] for a,b in zip(indx,indx[1:])])
+    arr = np.array([[a,b] for a,b in zip(indx,indx[1:])])
+    arr[1:,0] += 1
+    return arr
 
 if __name__ == '__main__':
     trn, dev, tst = get_sents()
@@ -209,5 +211,5 @@ if __name__ == '__main__':
                 'tseq': get_tseq2(sent)})
 
     sent = random.choice(dev)
-    print sent['wiseq']
+    print [(a,b) for a,b in enumerate(sent['wiseq'])]
     print sent_word_indx(sent)
