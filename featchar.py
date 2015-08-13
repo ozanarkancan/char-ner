@@ -6,6 +6,7 @@ from collections import Counter
 from sklearn.feature_extraction import DictVectorizer
 from sklearn.preprocessing import LabelEncoder
 import numpy as np
+import string
 
 
 def get_tseq1(sent):
@@ -89,6 +90,9 @@ def get_wiseq(sent):
         wiseq.append(-1)
     return wiseq[:-1]
 
+def get_wfeatures(wi, sent):
+    return {'w':sent['ws'][wi]}
+
 def get_cfeatures_basic_seg_cap(ci, sent, tseq_pred=None):
     d = {}
     d['c'] = sent['cseq'][ci]
@@ -130,6 +134,30 @@ def get_cfeatures_basic_seg(ci, sent, tseq_pred=None):
 
 def get_cfeatures_basic(ci, sent, tseq_pred=None):
     return {'c': sent['cseq'][ci]}
+
+def get_cfeatures_simple_seg(ci, sent, tseq_pred=None):
+    d = {}
+    c = sent['cseq'][ci]
+    if c in 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ':
+        d['c'] = c.lower()
+    else:
+        d['c'] = 'not_letter'
+    d['isupper'] = c.isupper()
+    d['isdigit'] = c.isdigit()
+    d['ispunc'] = c in string.punctuation
+
+    # wstart
+    if ci==0: d['wstart'] = 1
+    if ci>0:
+        d['wstart'] = sent['wiseq'][ci-1] == -1
+
+    # wend
+    if ci==(len(sent['cseq'])-1): d['wend'] = 1
+    if ci<(len(sent['cseq'])-1):
+        d['wend'] = sent['wiseq'][ci+1] == -1
+
+    if sent['wiseq'][ci] == -1: d['isspace'] = 1
+    return d
 
 def get_cfeatures_just_tags(ci, sent, tseq_pred=None):
     d = {}

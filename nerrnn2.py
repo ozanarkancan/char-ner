@@ -12,16 +12,10 @@ import argparse
 from theano import sparse as sp
 
 class RNNModel:
-    def __init__(self, configuration, X, Y):
+    def __init__(self, configuration):
         self.configuration = configuration
         u = T.matrix(dtype=theano.config.floatX)
         y = T.ivector()
-        s_index = T.lscalar()
-        e_index = T.lscalar()
-
-        self.shared_x = theano.shared(np.asarray(X, dtype=theano.config.floatX), borrow=True)
-        # self.shared_x = X
-        self.shared_y = T.cast(theano.shared(np.asarray(Y, dtype=theano.config.floatX), borrow=True), 'int32')
         
         n_in = self.configuration["n_in"]
         n_out = self.configuration["n_out"]
@@ -35,17 +29,11 @@ class RNNModel:
         self.ldnn = LDNN()
 
         if acts[0].startswith("bi"):
-            print 'DRATES!!!!!!!!!!!!!!!!!!!!!',drates
             self.ldnn.add_bidirectional_input_layer(u,
                     dropout_rate=drates[0])
         else:
-            print 'ELSE!!!!!!!!!!!!!!!!!!!!!',drates
             self.ldnn.add_input_layer(u,
                     dropout_rate=drates[0])
-        """
-        self.ldnn.add_input_layer(u,
-            dropout_rate=drates[0])
-        """
 
         numout = n_out if "feedback" in acts[0] else None
 
@@ -78,14 +66,10 @@ class RNNModel:
         else:#sgd
             updates = sgd(params, gparams, lr)
 
-        self.train_model = theano.function(inputs=[s_index, e_index],
+        self.train_model = theano.function(inputs=[u, y],
             outputs=[cost, self.ldnn.output_layer.d_error(y)],
             updates=updates,
             allow_input_downcast=True,
-            givens={
-                u: self.shared_x[s_index:e_index, :],
-                y: self.shared_y[s_index:e_index]
-            }
         )
 
         self.predict_model = theano.function([u, y],
@@ -115,7 +99,7 @@ class RNNModel:
             start = time.time()
             
             for s, e in trainIndx:
-                loss, err = self.train_model(s, e)
+                loss, err = self.train_model(trnX[s:e,:].todense(), trnY[s:e])
                 curr = e - s
                 ratio = float(curr) / train_size
                 losses.append(loss * ratio)
@@ -137,7 +121,7 @@ class RNNModel:
         self.last_predictions = []
         start = time.time()
         for s, e in testIndx:
-                err, preds = self.predict_model(testX[s:e,:], testY[s:e])
+                err, preds = self.predict_model(testX[s:e,:].todense(), testY[s:e])
                 self.last_predictions.append(preds)
                 curr = e - s
                 ratio = float(curr) / test_size

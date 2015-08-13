@@ -136,6 +136,14 @@ def get_sent_indx(dset):
         start += len(sent['cseq'])
     return indexes
 
+def get_sent_indx_word(dset):
+    start = 0
+    indexes = []
+    for sent in dset:
+        indexes.append((start,start+len(sent['ws'])))
+        start += len(sent['ws'])
+    return indexes
+
 def main():
     trn, dev, tst = get_sents()
     trn = random.sample(trn,1000)
