@@ -144,8 +144,9 @@ def main(num_epochs=NUM_EPOCHS):
     network_output = lasagne.layers.get_output(l_out)
     # The value we care about is the final value produced for each sequence
     predicted_values = network_output[:, -1]
+    cost = lasagne.objectives.categorical_crossentropy(predicted_values, target_values)
     # Our cost will be mean-squared error
-    cost = T.mean((predicted_values - target_values)**2)
+    #cost = T.mean((predicted_values - target_values)**2)
     # Retrieve all parameters from the network
     all_params = lasagne.layers.get_all_params(l_out)
     # Compute SGD updates for training
@@ -166,6 +167,7 @@ def main(num_epochs=NUM_EPOCHS):
         for epoch in range(num_epochs):
             for _ in range(EPOCH_SIZE):
                 X, y, m = gen_data()
+                print(X.shape, y.shape, m.shape)
                 train(X, y, m)
             cost_val = compute_cost(X_val, y_val, mask_val)
             print("Epoch {} validation cost = {}".format(epoch, cost_val))

@@ -1,7 +1,7 @@
 from utils import get_sents
 import numpy as np
 from collections import Counter
-from featchar import get_tseq2
+from featchar import get_tseq2, get_cseq
 import random
 from itertools import product
 from collections import Counter
@@ -60,6 +60,7 @@ if __name__ == '__main__':
     trn,dev,tst = get_sents()
     for sent in trn:
         sent['tseq'] = get_tseq2(sent)
+        sent['cseq'] = get_cseq(sent)
 
     print num_of_phrases([sent for sent in trn if not contains_consecutive_same_type(sent)]) / float(num_of_phrases(trn))
     print num_of_phrases([sent for sent in dev if not contains_consecutive_same_type(sent)]) / float(num_of_phrases(dev))
@@ -72,3 +73,7 @@ if __name__ == '__main__':
 
     print '-->', unk_perc(trn,dev)
     print '-->', unk_perc(trn,tst)
+
+    print 'cseq len counts:'
+    for k,v in sorted(Counter(len(sent['cseq']) for sent in trn).iteritems()):
+        print '{}\t{}'.format(k,v)
