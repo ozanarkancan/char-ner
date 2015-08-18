@@ -61,6 +61,8 @@ if __name__ == '__main__':
     for sent in trn:
         sent['tseq'] = get_tseq2(sent)
         sent['cseq'] = get_cseq(sent)
+        if len(sent['cseq']) == 512:
+            print ' '.join(sent['ws'])
 
     print num_of_phrases([sent for sent in trn if not contains_consecutive_same_type(sent)]) / float(num_of_phrases(trn))
     print num_of_phrases([sent for sent in dev if not contains_consecutive_same_type(sent)]) / float(num_of_phrases(dev))
