@@ -30,7 +30,8 @@ def get_arg_parser():
     parser.add_argument("--lr", default=0.005, type=float, help="learning rate")
     parser.add_argument("--norm", default=5, type=float, help="Threshold for clipping norm of gradient")
     parser.add_argument("--truncate", default=-1, type=int, help="backward step size")
-    
+    parser.add_argument("--recout", default=False, type=bool,
+        help="Recurrent Output Layer")
     return parser
 
 def print_conmat(y_true, y_pred, lblenc):
