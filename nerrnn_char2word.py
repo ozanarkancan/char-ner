@@ -16,7 +16,10 @@ class RNNModel:
         self.configuration = configuration
         u = T.matrix(dtype=theano.config.floatX)
         y = T.ivector()
-	I = T.imatrix('I')
+        if self.configuration["mean"]:
+            I = T.imatrix('I')
+        else:
+            I = T.ivector('I')
         
         n_in = self.configuration["n_in"]
         n_out = self.configuration["n_out"]
@@ -48,7 +51,7 @@ class RNNModel:
             self.ldnn.add_layer(hiddens[i], hiddens[i + 1], dropout_rate=drates[i+2],
                 activation = acts[i+1], bias=bool(biases[0]), indices=indices)
         
-        self.ldnn.connect_output(n_out, compile_predict=False)
+        self.ldnn.connect_output(n_out, compile_predict=False, recurrent=self.configuration["recout"])
         cost = self.ldnn.get_cost(y)
         params = self.ldnn.get_params()
         gparams = T.grad(cost, params)
@@ -114,15 +117,23 @@ class RNNModel:
         testErr = []
         self.last_predictions = []
         start = time.time()
-	s_y = 0
-	for ix in xrange(len(testIndx)):
-		s, e = testIndx[ix]
-                err, preds = self.predict_model(testX[s:e,:], testY[s_y:(s_y+testI[ix].shape[0])], testI[ix])
-		s_y += testI[ix].shape[0]
-                self.last_predictions.append(preds)
-                curr = e - s
-                ratio = float(curr) / test_size
-                testErr.append(err * ratio)
+        s_y = 0
+
+        meanpool = self.configuration["mean"]
+        
+        for ix in xrange(len(testIndx)):
+            s, e = testIndx[ix]
+            if meanpool:
+                err, preds = self.predict_model(testX[s:e,:],
+                    testY[s_y:(s_y+testI[ix].shape[0])], testI[ix])
+            else:
+                err, preds = self.predict_model(testX[s:e, :],
+                    testY[s_y:(s_y+testI[ix].shape[0])], test[ix])
+            s_y += testI[ix].shape[0]
+            self.last_predictions.append(preds)
+            curr = e - s
+            ratio = float(curr) / test_size
+            testErr.append(err * ratio)
         end = time.time()
         return np.sum(testErr), end - start
         

@@ -58,7 +58,7 @@ class RNNModel:
             self.ldnn.add_layer(hiddens[i], hiddens[i + 1], dropout_rate=drates[i+2],
                 activation = acts[i+1], bias=bool(biases[0]))
         
-        self.ldnn.connect_output(n_out)
+        self.ldnn.connect_output(n_out, recurrent=self.configuration["recout"])
         cost = self.ldnn.get_cost(y)
         params = self.ldnn.get_params()
         gparams = T.grad(cost, params)
