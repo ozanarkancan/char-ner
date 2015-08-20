@@ -31,7 +31,7 @@ def get_arg_parser():
     parser.add_argument("--norm", default=5, type=float, help="Threshold for clipping norm of gradient")
     parser.add_argument("--truncate", default=-1, type=int, help="backward step size")
     parser.add_argument("--recout", default=0, type=int, help="Recurrent Output Layer")
-    parser.add_argument("--mean", default=True, type=bool,
+    parser.add_argument("--mean", default=False, type=bool,
         help="pool or mean pool")
     
     return parser
