@@ -1,7 +1,7 @@
 from utils import get_sents
 import random
 from itertools import *
-from future_builtins import map, filter, zip
+# from future_builtins import map, filter, zip
 from collections import Counter
 from sklearn.feature_extraction import DictVectorizer
 from sklearn.preprocessing import LabelEncoder
