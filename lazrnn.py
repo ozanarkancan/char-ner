@@ -17,20 +17,27 @@ class RDNN:
         n_hidden = kwargs['n_hidden']
         grad_clip = kwargs['grad_clip']
         lr = kwargs['lr']
+        ldepth = kwargs['deep']
 
         # network
         l_in = lasagne.layers.InputLayer(shape=(kwargs['n_batch'], max_seq_length, nf))
+        print 'l_in:', lasagne.layers.get_output_shape(l_in)
         N_BATCH_VAR, _, _ = l_in.input_var.shape # symbolic ref to input_var shape
         l_mask = lasagne.layers.InputLayer(shape=(N_BATCH_VAR, max_seq_length))
-        l_forward = LayerType(l_in, n_hidden, mask_input=l_mask, grad_clipping=grad_clip, nonlinearity=nonlin)
-        print 'l_forward:', lasagne.layers.get_output_shape(l_forward)
-        l_backward = LayerType(l_in, n_hidden, mask_input=l_mask, grad_clipping=grad_clip, nonlinearity=nonlin, backwards=True)
-        print 'l_backward:', lasagne.layers.get_output_shape(l_backward)
-        # l_sum = lasagne.layers.ConcatLayer([l_forward, l_backward])
-        l_sum = lasagne.layers.ElemwiseSumLayer([l_forward, l_backward])
-        print 'l_sum:', lasagne.layers.get_output_shape(l_sum)
-        # Our output layer is a simple dense connection, with 1 output unit
-        l_reshape = lasagne.layers.ReshapeLayer(l_sum, (-1, n_hidden))
+        print 'l_mask:', lasagne.layers.get_output_shape(l_mask)
+
+        layers = [l_in]
+        for level in range(1,ldepth+1):
+            prev_layer = layers[level-1]
+            l_forward = LayerType(prev_layer, n_hidden[level-1], mask_input=l_mask, grad_clipping=grad_clip, nonlinearity=nonlin)
+            print 'l_forward:', lasagne.layers.get_output_shape(l_forward)
+            l_backward = LayerType(prev_layer, n_hidden[level-1], mask_input=l_mask, grad_clipping=grad_clip, nonlinearity=nonlin, backwards=True)
+            print 'l_backward:', lasagne.layers.get_output_shape(l_backward)
+            l_sum = lasagne.layers.ElemwiseSumLayer([l_forward, l_backward])
+            print 'l_sum:', lasagne.layers.get_output_shape(l_sum)
+            layers.append(l_sum)
+
+        l_reshape = lasagne.layers.ReshapeLayer(layers[-1], (-1, n_hidden[-1]))
         print 'l_reshape:', lasagne.layers.get_output_shape(l_reshape)
         l_rec_out = lasagne.layers.DenseLayer(l_reshape, num_units=nc, nonlinearity=lasagne.nonlinearities.softmax)
         print 'l_rec_out:', lasagne.layers.get_output_shape(l_rec_out)
