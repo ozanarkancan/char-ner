@@ -20,7 +20,6 @@ class RNNModel:
             I = T.imatrix('I')
         else:
             I = T.ivector('I')
-        
         n_in = self.configuration["n_in"]
         n_out = self.configuration["n_out"]
         hiddens = self.configuration["hidden"]
@@ -29,15 +28,15 @@ class RNNModel:
         biases = self.configuration["bias"]
 
         print "...building the model"
-        
-        self.ldnn = LDNN()
 
+        self.ldnn = LDNN()
+        
         if acts[0].startswith("bi"):
             self.ldnn.add_bidirectional_input_layer(u,
-                    dropout_rate=drates[0])
+                dropout_rate=drates[0])
         else:
             self.ldnn.add_input_layer(u,
-                    dropout_rate=drates[0])
+                dropout_rate=drates[0])
 
         numout = n_out if "feedback" in acts[0] else None
 
@@ -45,12 +44,12 @@ class RNNModel:
             dropout_rate=drates[1],
             activation=acts[0],
             bias=bool(biases[0]), n_out=numout)
-
         for i in xrange(len(hiddens) - 1):
-	    indices = I if "meanpool" in acts[i+1] else None
+            indices = I if "pool" in acts[i+1] else None
+            sys.stdout.flush()
             self.ldnn.add_layer(hiddens[i], hiddens[i + 1], dropout_rate=drates[i+2],
                 activation = acts[i+1], bias=bool(biases[0]), indices=indices)
-        
+
         self.ldnn.connect_output(n_out, compile_predict=False, recurrent=self.configuration["recout"])
         cost = self.ldnn.get_cost(y)
         params = self.ldnn.get_params()
@@ -70,7 +69,7 @@ class RNNModel:
             updates = adam(params, gparams)
         else:#sgd
             updates = sgd(params, gparams, lr)
-	
+
         self.train_model = theano.function(inputs=[u, y, I],
             outputs=[cost, self.ldnn.output_layer.d_error(y)],
             updates=updates,
@@ -83,7 +82,7 @@ class RNNModel:
 
     def train(self, trnX, trnY, trnI, trnIndx, devX, devY, devI, devIndx):
         print "...training the model"
-        
+
         train_size = trnIndx[-1][1]
 
         for i in xrange(1, self.configuration["epoch"] + 1):
@@ -91,17 +90,22 @@ class RNNModel:
             errors = []
             start = time.time()
 
-	    s_y = 0
-	    for ix in xrange(len(trnIndx)):
-		s, e = trnIndx[ix]
+            meanpool = self.configuration["mean"]
+            s_y = 0
+            for ix in xrange(len(trnIndx)):
+                s, e = trnIndx[ix]
 
-                loss, err = self.train_model(trnX[s:e, :], trnY[s_y:(s_y+trnI[ix].shape[0])], trnI[ix])
-		s_y += trnI[ix].shape[0]
+                if meanpool:
+                    loss, err = self.train_model(trnX[s:e, :], trnY[s_y:(s_y+trnI[ix].shape[0])], trnI[ix])
+                else:
+                    loss, err = self.train_model(trnX[s:e, :],
+                        trnY[s_y:(s_y+trnI[ix].shape[0])], trnI[ix][:, 1] - 1)
+                s_y += trnI[ix].shape[0]
                 curr = e - s
                 ratio = float(curr) / train_size
                 losses.append(loss * ratio)
                 errors.append(err * ratio)
-            
+
             end = time.time()
             trn_time = end - start
 
@@ -111,7 +115,7 @@ class RNNModel:
             devErr, dev_time = self.test(devX, devY, devI, devIndx)
             print "Dev Err: %.6f Time: %.6f seconds" % (np.sum(devErr), dev_time)
             sys.stdout.flush()
-    
+
     def test(self, testX, testY, testI, testIndx):
         test_size = testIndx[-1][1]
         testErr = []
@@ -120,7 +124,7 @@ class RNNModel:
         s_y = 0
 
         meanpool = self.configuration["mean"]
-        
+
         for ix in xrange(len(testIndx)):
             s, e = testIndx[ix]
             if meanpool:
@@ -128,46 +132,11 @@ class RNNModel:
                     testY[s_y:(s_y+testI[ix].shape[0])], testI[ix])
             else:
                 err, preds = self.predict_model(testX[s:e, :],
-                    testY[s_y:(s_y+testI[ix].shape[0])], test[ix])
+                        testY[s_y:(s_y+testI[ix].shape[0])], testI[ix][:, 1] - 1)
             s_y += testI[ix].shape[0]
             self.last_predictions.append(preds)
             curr = e - s
             ratio = float(curr) / test_size
             testErr.append(err * ratio)
-        end = time.time()
+            end = time.time()
         return np.sum(testErr), end - start
-        
-def get_arg_parser():
-    parser = argparse.ArgumentParser(prog="nerrnn")
-    parser.add_argument("--data", default="", help="data path")
-    parser.add_argument("--hidden", default=[100], type=int, nargs='+', help="number of neurons in each hidden layer")
-    parser.add_argument("--activation", default=["tanh"], nargs='+', help="activation function for hidden layer : sigmoid, tanh, relu, lstm, gru")
-    parser.add_argument("--drates", default=[0, 0], nargs='+', type=float, help="dropout rates")
-    parser.add_argument("--bias", default=[0], nargs='+', type=int, help="bias on/off for layer")
-    parser.add_argument("--opt", default="rmsprop", help="optimization method: sgd, rmsprop, adagrad, adam")
-    parser.add_argument("--epoch", default=50, type=int, help="number of epochs")
-    parser.add_argument("--lr", default=0.005, type=float, help="learning rate")
-    parser.add_argument("--norm", default=5, type=float, help="Threshold for clipping norm of gradient")
-    parser.add_argument("--truncate", default=-1, type=int, help="backward step size")
-
-    return parser
-
-def get_ner_data(filename):
-    data = np.load(filename)
-    return data["trn"][0], data["trn"][1], data["dev"][0], data["dev"][1], data["tst"][0], data["tst"][1]
-
-def nerexp(args):
-    trainX, trainY, devX, devY, tstX, tstY = get_ner_data(args["data"])
-    args["n_in"] = trainX[0].shape[1]
-    args["n_out"] = 17
-    rnn = RNNModel(args)
-    rnn.train(trainX, trainY, devX, devY)
-    tstErr = rnn.test(tstX, tstY)
-    print "Test Err: %.6f" % tstErr
-
-if __name__ == "__main__":
-    parser = get_arg_parser()
-    args = vars(parser.parse_args())
-    print args
-        
-    nerexp(args)
