@@ -12,26 +12,25 @@ import lasagne
 from biloueval import bilouEval2
 import theano.tensor as T
 import theano
+from lazrnn import RDNN
 
 def get_arg_parser():
-    parser = argparse.ArgumentParser(prog="nerrnn")
+    parser = argparse.ArgumentParser(prog="lazrnn")
     
-    parser.add_argument("--data", default="", help="data path")
-    parser.add_argument("--hidden", default=[100], type=int, nargs='+',
-        help="number of neurons in each hidden layer")
-    parser.add_argument("--activation", default=["tanh"], nargs='+',
-        help="activation function for hidden layer : sigmoid, tanh, relu, lstm, gru")
-    parser.add_argument("--drates", default=[0, 0], nargs='+', type=float,
-        help="dropout rates")
-    parser.add_argument("--bias", default=[0], nargs='+', type=int,
-        help="bias on/off for layer")
-    parser.add_argument("--opt", default="rmsprop", help="optimization method: sgd, rmsprop, adagrad, adam")
-    parser.add_argument("--epoch", default=50, type=int, help="number of epochs")
+    # parser.add_argument("--data", default="", help="data path")
+    parser.add_argument("--n_hidden", default=100, type=int, help="number of neurons in each hidden layer")
+    parser.add_argument("--activation", default='rectify', help="activation function for hidden layer : sigmoid, tanh, rectify")
+    # parser.add_argument("--drates", default=[0, 0], nargs='+', type=float, help="dropout rates")
+    # parser.add_argument("--bias", default=[0], nargs='+', type=int, help="bias on/off for layer")
+    parser.add_argument("--opt", default="adam", help="optimization method: sgd, rmsprop, adagrad, adam")
+    parser.add_argument("--ltype", default="recurrent", help="layer type: recurrent lstm")
+    parser.add_argument("--n_batch", default=50, type=int, help="batch size")
+    # parser.add_argument("--epoch", default=50, type=int, help="number of epochs")
     parser.add_argument("--fepoch", default=50, type=int, help="number of epochs")
     parser.add_argument("--sample", default=False, action='store_true', help="sample 100 from trn, 10 from dev")
     parser.add_argument("--feat", default='basic_seg', help="feat func to use")
-    parser.add_argument("--lr", default=0.005, type=float, help="learning rate")
-    parser.add_argument("--norm", default=5, type=float, help="Threshold for clipping norm of gradient")
+    parser.add_argument("--lr", default=0.001, type=float, help="learning rate")
+    parser.add_argument("--grad_clip", default=7, type=float, help="Threshold for clipping norm of gradient")
     parser.add_argument("--truncate", default=-1, type=int, help="backward step size")
     
     return parser
@@ -42,10 +41,30 @@ def print_conmat(y_true, y_pred, tseqenc):
     for r,clss in zip(conmat,tseqenc.classes_):
         print '\t'.join([clss] + list(map(str,r)))
 
-def print_pred_info(dset, int_predL, charenc, wordenc, tfunc):
+def pred_info(dset, int_predL, charenc, wordenc, tfunc):
+    y_true = charenc.transform([t for sent in dset for t in sent['tseq']])
+    y_pred = list(chain.from_iterable(int_predL))
+    cerr = np.sum(y_true!=y_pred)/float(len(y_true))
+
+    lts = [sent['ts'] for sent in dset]
+    lts_pred = []
+    for sent, ipred in zip(dset, int_predL):
+        tseq_pred = charenc.inverse_transform(ipred)
+        tseqgrp_pred = get_tseqgrp(sent['wiseq'],tseq_pred)
+        ts_pred = tfunc(tseqgrp_pred)
+        lts_pred.append(ts_pred)
+
+    y_true = wordenc.transform([t for ts in lts for t in ts])
+    y_pred = wordenc.transform([t for ts in lts_pred for t in ts])
+    werr = np.sum(y_true!=y_pred)/float(len(y_true))
+    wacc, pre, recall, f1 = bilouEval2(lts, lts_pred)
+    return cerr, werr, wacc, pre, recall, f1
+
+def print_pred_info(dset, int_predL, charenc, wordenc, tfunc, epoch, dset_name):
     y_true = charenc.transform([t for sent in dset for t in sent['tseq']])
     y_pred = list(chain.from_iterable(int_predL))
     print_conmat(y_true, y_pred, charenc)
+    err = np.sum(y_true!=y_pred)/len(y_true)
 
     lts = [sent['ts'] for sent in dset]
     lts_pred = []
@@ -59,7 +78,8 @@ def print_pred_info(dset, int_predL, charenc, wordenc, tfunc):
     y_pred = wordenc.transform([t for ts in lts_pred for t in ts])
     print_conmat(y_true, y_pred, wordenc)
 
-    print 'f1: {:3.4f} {:3.4f} {:3.4f} {:3.4f}'.format(*bilouEval2(lts, lts_pred))
+    print 'f1\t{}\t{}\t{:3.4f}\t{:3.4f}\t{:3.4f}\t{:3.4f}'.format(dset_name, epoch, *bilouEval2(lts, lts_pred))
+    print 
 
 def one_hot(labels, n_classes):
     '''
@@ -107,7 +127,29 @@ def make_batches(X, length, batch_size=50):
             X_mask[b, n, :X_m.shape[0]] = 1
     return X_batch, X_mask
 
-def batch_dset(dset, dvec, tseqenc, mlen, bsize):
+def batch_dset(dset, dvec, tseqenc, mlen, bsize, nf):
+    sent_batches = [dset[i:i+bsize] for i in range(0, len(dset), bsize)]
+    X_batches, Xmsk_batches, y_batches, ymsk_batches = [], [], [], []
+    for batch in sent_batches:
+        X_batch = np.zeros((len(batch), mlen, nf),dtype=theano.config.floatX)
+        Xmsk_batch = np.zeros((len(batch), mlen),dtype=np.bool)
+        y_batch = np.zeros((len(batch), mlen, nc),dtype=theano.config.floatX)
+        ymsk_batch = np.zeros((len(batch), mlen, nc),dtype=np.bool)
+        for si, sent in enumerate(batch):
+            Xsent = dvec.transform([featfunc(ci, sent) for ci,c in enumerate(sent['cseq'])]) # nchar x nf
+            ysent = one_hot(tseqenc.transform([t for t in sent['tseq']]), nc) # nchar x nc
+            nchar = Xsent.shape[0]
+            X_batch[si,:nchar,:] = Xsent
+            Xmsk_batch[si,:nchar] = True
+            y_batch[si,:nchar,:] = ysent
+            ymsk_batch[si,:nchar,:] = True
+        X_batches.append(X_batch)
+        Xmsk_batches.append(Xmsk_batch)
+        y_batches.append(y_batch)
+        ymsk_batches.append(ymsk_batch)
+    return X_batches, Xmsk_batches, y_batches, ymsk_batches
+
+def batch_dset_eski(dset, dvec, tseqenc, mlen, bsize):
     XL, yL = [], []
     for i, sent in enumerate(dset):
         Xsent = dvec.transform([featfunc(ci, sent) for ci,c in enumerate(sent['cseq'])])
@@ -126,8 +168,8 @@ if __name__ == '__main__':
     print args
 
     if args['sample']:
-        trn = random.sample(trn,100)
-        dev = random.sample(dev,2)
+        # trn = random.sample(trn,100)
+        dev = random.sample(dev,5)
         tst = random.sample(tst,2)
 
     featfunc = getattr(featchar,'get_cfeatures_'+args['feat'])
@@ -162,120 +204,39 @@ if __name__ == '__main__':
     MAX_LENGTH = max(len(sent['cseq']) for sent in trn)
     MIN_LENGTH = min(len(sent['cseq']) for sent in trn)
     print 'maxlen:', MAX_LENGTH, 'minlen:', MIN_LENGTH
-    N_BATCH = 50
-    N_HIDDEN = 500
-    GRAD_CLIP = 7
-    LEARNING_RATE = .001
     # end NETWORK params
 
-    Xtrn, Xtrnmsk, ytrn, ytrnmsk = batch_dset(trn, dvec, tseqenc, MAX_LENGTH, N_BATCH)
-    Xdev, Xdevmsk, ydev, ydevmsk = batch_dset(dev, dvec, tseqenc, MAX_LENGTH, N_BATCH)
-    print 'Xtrn, Xtrnmsk, ytrn, ytrnmsk', Xtrn.shape, Xtrnmsk.shape, ytrn.shape, ytrnmsk.shape
-    print 'Xdev, Xdevmsk, ydev, ydevmsk', Xdev.shape, Xdevmsk.shape, ydev.shape, ydevmsk.shape
+    trndat = batch_dset(trn, dvec, tseqenc, MAX_LENGTH, args['n_batch'], nf)
+    devdat = batch_dset(dev, dvec, tseqenc, MAX_LENGTH, args['n_batch'], nf)
+    tstdat = batch_dset(tst, dvec, tseqenc, MAX_LENGTH, args['n_batch'], nf)
 
-    """
-    XtrnL, ytrnL = [], []
-    for i, sent in enumerate(trn[:100]):
-        Xsent = dvec.transform([featfunc(ci, sent) for ci,c in enumerate(sent['cseq'])])
-        XtrnL.append(Xsent)
-        ytrnL.append(one_hot(tseqenc.transform([t for t in sent['tseq']]), nc))
-    Xtrn, Xmsk = make_batches(XtrnL, MAX_LENGTH, batch_size=N_BATCH)
-    Xmsk = Xmsk[:,:,:,0]
-    ytrn, ytrnmsk = make_batches(ytrnL, MAX_LENGTH, batch_size=N_BATCH)
-    """
-
-    # NETWORK
-    l_in = lasagne.layers.InputLayer(shape=(N_BATCH, MAX_LENGTH, nf))
-    #  batchsize, seqlen, _ = l_inp.input_var.shape # symbolic ref to input_var shape
-    l_mask = lasagne.layers.InputLayer(shape=(N_BATCH, MAX_LENGTH))
-    l_forward = lasagne.layers.RecurrentLayer(
-        l_in, N_HIDDEN, mask_input=l_mask, grad_clipping=GRAD_CLIP,
-        # W_in_to_hid=lasagne.init.HeUniform(gain='relu'),
-        # W_hid_to_hid=lasagne.init.HeUniform(gain='relu'),
-        nonlinearity=lasagne.nonlinearities.rectify)
-    print 'l_forward:', lasagne.layers.get_output_shape(l_forward)
-    l_backward = lasagne.layers.RecurrentLayer(
-        l_in, N_HIDDEN, mask_input=l_mask, grad_clipping=GRAD_CLIP,
-        # W_in_to_hid=lasagne.init.HeUniform(gain='relu'),
-        # W_hid_to_hid=lasagne.init.HeUniform(gain='relu'),
-        nonlinearity=lasagne.nonlinearities.rectify, backwards=True)
-    print 'l_backward:', lasagne.layers.get_output_shape(l_backward)
-    # l_sum = lasagne.layers.ConcatLayer([l_forward, l_backward])
-    l_sum = lasagne.layers.ElemwiseSumLayer([l_forward, l_backward])
-    print 'l_sum:', lasagne.layers.get_output_shape(l_sum)
-    # Our output layer is a simple dense connection, with 1 output unit
-    l_reshape = lasagne.layers.ReshapeLayer(l_sum, (-1, N_HIDDEN))
-    print 'l_reshape:', lasagne.layers.get_output_shape(l_reshape)
-    l_rec_out = lasagne.layers.DenseLayer(
-        l_reshape, num_units=nc, nonlinearity=lasagne.nonlinearities.softmax)
-    print 'l_rec_out:', lasagne.layers.get_output_shape(l_rec_out)
-    l_out = lasagne.layers.ReshapeLayer(l_rec_out, (N_BATCH, MAX_LENGTH, nc))
-    print 'l_out:', lasagne.layers.get_output_shape(l_out)
-    # l_out = lasagne.layers.ReshapeLayer(l_soft_out, (N_BATCH, MAX_LENGTH))
-    print lasagne.layers.get_output_shape(l_out)
-
-
-    input = T.tensor3('input')
-    target_output = T.tensor3('target_output')
-    out_mask = T.tensor3('mask')
-
-    def cost(output):
-         return -T.sum(out_mask*target_output*T.log(output))/T.sum(out_mask)
-
-    cost_train = cost(lasagne.layers.get_output(l_out, deterministic=False))
-    cost_eval = cost(lasagne.layers.get_output(l_out, deterministic=True))
-
-    all_params = lasagne.layers.get_all_params(l_out, trainable=True)
-    # Compute SGD updates for training
-    print("Computing updates ...")
-    # updates = lasagne.updates.adagrad(cost_train, all_params, LEARNING_RATE)
-    updates = lasagne.updates.adam(cost_train, all_params, LEARNING_RATE)
-    # Theano functions for training and computing cost
-    print("Compiling functions ...")
-    train = theano.function([l_in.input_var, target_output, l_mask.input_var, out_mask],
-                            cost_train, updates=updates)
-    compute_cost = theano.function(
-        [l_in.input_var, target_output, l_mask.input_var, out_mask], cost_eval)
-    predict = theano.function([l_in.input_var, l_mask.input_var], lasagne.layers.get_output(l_out, deterministic=True))
-    # end NETWORK
-    for e in range(50):
+    rdnn = RDNN(nc, nf, MAX_LENGTH, **args)
+    for e in range(1,args['fepoch']+1):
+        # trn
         start_time = time.time()
-        for b in range(Xtrn.shape[0]):
-            train(Xtrn[b], ytrn[b], Xtrnmsk[b], ytrnmsk[b])
+        mcost, pred = rdnn.sing(trndat, 'train')
         end_time = time.time()
-        print 'training seconds:', end_time - start_time
+        mtime = end_time - start_time
+        cerr, werr, wacc, pre, recall, f1 = pred_info(trn, pred, tseqenc, tsenc, get_ts2)
+        print ('{:<5} {:<5} ' + ('{:>10} '*8)).format('dset','epoch','mcost', 'mtime', 'cerr', 'werr', 'wacc', 'pre', 'recall', 'f1')
+        print ('{:<5} {:<5d} ' + ('{:>10.4f} '*8)).format('trn',e,mcost, mtime, cerr, werr, wacc, pre, recall, f1)
+        # end trn
         
+        # dev
         start_time = time.time()
-        rnn_last_predictions = []
-        for b in range(Xdev.shape[0]):
-            pred = predict(Xdev[b], Xdevmsk[b])
-            predictions = np.argmax(pred*ydevmsk[b], axis=-1).flatten()
-            sentLens = Xdevmsk[b].sum(axis=-1)
-            for i, slen in enumerate(sentLens):
-                rnn_last_predictions.append(predictions[i*MAX_LENGTH:i*MAX_LENGTH+slen])
+        mcost, pred = rdnn.sing(devdat, 'predict')
         end_time = time.time()
-        print 'predicting seconds:', end_time - start_time
+        mtime = end_time - start_time
+        cerr, werr, wacc, pre, recall, f1 = pred_info(dev, pred, tseqenc, tsenc, get_ts2)
+        print ('{:<5} {:<5d} ' + ('{:>10.4f} '*8)).format('dev',e,mcost, mtime, cerr, werr, wacc, pre, recall, f1)
+        # end dev
 
-        print_pred_info(dev, rnn_last_predictions, tseqenc, tsenc, get_ts2)
-    """
-    truth = np.argmax(ytrn*ytrnmsk[0], axis=-1).flatten()
-    n_time_steps = np.sum(ytrnmsk)/ytrnmsk.shape[-1]
-    error = np.sum(predictions != truth)/float(n_time_steps)
-    print error
-    """
-    """
-    sentLens = Xtrnmsk[0].sum(axis=-1)
-    for i, slen in enumerate(sentLens):
-        print predictions[i*MAX_LENGTH:i*MAX_LENGTH+slen]
-    """
-    """
-    
-    for e in xrange(args['fepoch']):
-        rnn.train(Xtrn, ytrn, trnIndx, Xdev, ydev, devIndx)
-        print_pred_info(dev, rnn.last_predictions, tseqenc, tsenc, get_ts2)
-
-    tstErr, tmp = rnn.test(Xtst, ytst, tstIndx)
-    print "Test Err: %.6f" % tstErr
-    print_pred_info(tst, rnn.last_predictions, tseqenc, tsenc, get_ts2)
-    """
-
+        # tst
+        start_time = time.time()
+        mcost, pred = rdnn.sing(tstdat, 'predict')
+        end_time = time.time()
+        mtime = end_time - start_time
+        cerr, werr, wacc, pre, recall, f1 = pred_info(tst, pred, tseqenc, tsenc, get_ts2)
+        print ('{:<5} {:<5d} ' + ('{:>10.4f} '*8)).format('tst',e,mcost, mtime, cerr, werr, wacc, pre, recall, f1)
+        # end tst
+        print
