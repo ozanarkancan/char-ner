@@ -9,6 +9,7 @@ import argparse
 from nerrnn_char2word import RNNModel
 from featchar import *
 import featchar
+import sys
 
 def get_arg_parser():
     parser = argparse.ArgumentParser(prog="nerrnn")
@@ -117,6 +118,7 @@ if __name__ == '__main__':
             lts_pred.append(ts_pred)
 
         print 'f1: ', bilouEval2(lts, lts_pred)
+        sys.stdout.flush()
         # sent_indx = random.sample(range(len(dev)), 10)
     tstErr, tmp = rnn.test(Xtst, ytst, tstI, tstIndx)
     lts = [sent['ts'] for sent in tst]
