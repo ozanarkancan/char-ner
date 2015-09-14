@@ -4,6 +4,8 @@ import random, numpy as np
 from sklearn.feature_extraction import DictVectorizer
 from sklearn.preprocessing import LabelEncoder
 
+__author__ = 'Onur Kuru'
+
 def read_sents(file):
     a,b,c,d = [],[],[],[]
     sentences = []
@@ -20,32 +22,38 @@ def read_sents(file):
                 a,b,c,d = [],[],[],[]
     return sentences
 
-def get_sents():
-    return read_sents('data/train.bilou'), read_sents('data/testa.bilou'), read_sents('data/testb.bilou')
+def read_sents_spa(file):
+    a,b,c,d = [],[],[],[]
+    sentences = []
+    with open(file) as src:
+        for l in src:
+            if len(l.strip()):
+                w, pt, t = l.strip().split('\t')
+                a.append(w);b.append(pt);d.append(t);
+            else: # emtpy line
+                if len(a):
+                    sentences.append({'ws':a,'ts':d,'tsg':copy.deepcopy(d),\
+                            'pts':b})
+                a,b,c,d = [],[],[],[]
+    return sentences
+
+def get_sents(lang='eng', enc='bilou'):
+    if lang=='eng':
+        return read_sents('data/%s/train.%s'%(lang,enc)), read_sents('data/%s/testa.%s'%(lang,enc)), read_sents('data/%s/testb.%s'%(lang,enc))
+    elif lang=='spa':
+        return read_sents_spa('data/%s/train.%s'%(lang,enc)), read_sents_spa('data/%s/testa.%s'%(lang,enc)), read_sents_spa('data/%s/testb.%s'%(lang,enc))
+    else:
+        raise Exception
+
+def sample_sents(sents, n, min_ws_len=None, max_ws_len=None):
+    pp = sents
+    if min_ws_len: pp = ifilter(lambda x: len(x['ws']) >= min_ws_len, pp)
+    if max_ws_len: pp = ifilter(lambda x: len(x['ws']) <= max_ws_len, pp)
+    return random.sample(list(pp), n)
 
 def get_cfeatures(wi, ci, sent):
     return {'c':sent['cseq'][ci]}
 
-def sent2mat(sents, dvec, le):
-    XL, yL = [],[]
-    for sent in sents:
-        # Xsent = dvec.transform(get_features(i,sent,c) for i in range(len(sent['ws'])))
-        Xsent = dvec.transform(get_features(i, sent, c) for (i,w) in enumerate(sent['ws']) for c in w)
-        ysent = le.transform([sent['ts'][i] for (i,w) in enumerate(sent['ws']) for c in w])
-        XL.append(Xsent)
-        yL.append(ysent)
-    return XL, yL
-
-def dset2mat(sents, dvec, le):
-    XL, yL = [],[]
-    for sent in sents:
-        # Xsent = dvec.transform(get_features(i,sent,c) for i in range(len(sent['ws'])))
-        Xsent = dvec.transform(get_features(i, sent, c) for (i,w) in enumerate(sent['ws']) for c in w)
-        ysent = le.transform([sent['ts'][i] for (i,w) in enumerate(sent['ws']) for c in w])
-        XL.append(Xsent)
-        yL.append(ysent)
-    return XL, yL
-    pass
 
 def extend_sent2(sent):
     cseq, tseq, wiseq = [], [], []
@@ -144,46 +152,6 @@ def get_sent_indx_word(dset):
         start += len(sent['ws'])
     return indexes
 
-def main():
-    trn, dev, tst = get_sents()
-    trn = random.sample(trn,1000)
-    dev = random.sample(trn,100)
-
-    for d in (trn,dev,tst):
-        for sent in d:
-            extend_sent2(sent)
-
-    dvec = DictVectorizer(dtype=np.float32, sparse=False)
-    lblenc = LabelEncoder()
-    dvec.fit(get_cfeatures(wi, ci, sent)  for sent in trn for c,wi,ci in zip(sent['cseq'],sent['wiseq'],count(0)))
-    lblenc.fit([t for sent in trn for t in sent['tseq']])
-    print dvec.get_feature_names()
-    print lblenc.classes_
-
-    nf = len(dvec.get_feature_names())
-    nc = len(lblenc.classes_)
-    print '# of sents: ', map(len, (trn,dev,tst))
-    print '# of feats: ', nf 
-    print '# of lbls: ', nc
-
-    Xtrn = dvec.transform(get_cfeatures(wi, ci, sent)  for sent in trn for c,wi,ci in zip(sent['cseq'],sent['wiseq'],count(0)))
-    Xdev = dvec.transform(get_cfeatures(wi, ci, sent)  for sent in dev for c,wi,ci in zip(sent['cseq'],sent['wiseq'],count(0)))
-    Xtst = dvec.transform(get_cfeatures(wi, ci, sent)  for sent in tst for c,wi,ci in zip(sent['cseq'],sent['wiseq'],count(0)))
-
-    print Xtrn.shape, Xdev.shape
-
-    ytrn = lblenc.transform([t for sent in trn for t in sent['tseq']])
-    ydev = lblenc.transform([t for sent in dev for t in sent['tseq']])
-    ytst = lblenc.transform([t for sent in tst for t in sent['tseq']])
-
-    print ytrn.shape, ydev.shape
-
-    trnIndx = get_sent_indx(trn)
-    devIndx = get_sent_indx(dev)
-    tstIndx = get_sent_indx(tst)
-
-    print len(trnIndx), len(devIndx)
-
 def tseq2ts(sent):
     cindx = [[t[1] for t in g] for k,g in groupby(izip(sent['wiseq'],count(0)),lambda x:x[0]) if k!=-1]
     assert len(sent['ws']) == len(cindx)
@@ -208,12 +176,7 @@ def tseq2ts(sent):
     return ts
 
 if __name__ == '__main__':
-    trn, dev, tst = get_sents()
+    trn, dev, tst = get_sents('spa','bio')
     sent = random.choice(trn)
-    extend_sent(sent)
-    print '\t'.join(sent['cseq'])
-    print '\t'.join(sent['tseq'])
-    print '\t'.join(map(str,sent['wiseq']))
-    print map(len,[sent['cseq'], sent['tseq'], sent['wiseq']])
-    print tseq2ts(sent)
-    print sent['ts']
+    for sent in trn[:5]:
+        print sent

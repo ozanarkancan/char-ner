@@ -1,7 +1,7 @@
-import copy, sys, time
+import copy, sys, time, logging
 from itertools import *
 import random, numpy as np
-from utils import get_sents, get_sent_indx
+from utils import get_sents, get_sent_indx, sample_sents
 from sklearn.feature_extraction import DictVectorizer
 from sklearn.preprocessing import LabelEncoder
 from sklearn.metrics import confusion_matrix, classification_report
@@ -23,16 +23,19 @@ def get_arg_parser():
     # parser.add_argument("--drates", default=[0, 0], nargs='+', type=float, help="dropout rates")
     # parser.add_argument("--bias", default=[0], nargs='+', type=int, help="bias on/off for layer")
     parser.add_argument("--opt", default="adam", help="optimization method: sgd, rmsprop, adagrad, adam")
+    # parser.add_argument("--opt_params", default="adam", help="optimization method: sgd, rmsprop, adagrad, adam")
     parser.add_argument("--ltype", default="recurrent", help="layer type: recurrent lstm")
-    parser.add_argument("--deep", default=1, type=int, help="how many recurrent layers")
-    parser.add_argument("--n_batch", default=50, type=int, help="batch size")
+    parser.add_argument("--n_batch", default=10, type=int, help="batch size")
     # parser.add_argument("--epoch", default=50, type=int, help="number of epochs")
     parser.add_argument("--fepoch", default=50, type=int, help="number of epochs")
-    parser.add_argument("--sample", default=False, action='store_true', help="sample 100 from trn, 10 from dev")
+    # parser.add_argument("--sample", default=False, action='store_true', help="sample 100 from trn, 10 from dev")
+    parser.add_argument("--sample", default=[], nargs='+', type=int, help="num of sents to sample from trn, dev in the order of K")
     parser.add_argument("--feat", default='basic_seg', help="feat func to use")
-    parser.add_argument("--lr", default=0.001, type=float, help="learning rate")
+    parser.add_argument("--lr", default=0.005, type=float, help="learning rate")
     parser.add_argument("--grad_clip", default=7, type=float, help="Threshold for clipping norm of gradient")
     parser.add_argument("--truncate", default=-1, type=int, help="backward step size")
+    parser.add_argument("--log", required=True, help="log file name; will output .info and .debug")
+    parser.add_argument("--log_dir", default='./logs/', help="log dir")
     
     return parser
 
@@ -128,7 +131,8 @@ def make_batches(X, length, batch_size=50):
             X_mask[b, n, :X_m.shape[0]] = 1
     return X_batch, X_mask
 
-def batch_dset(dset, dvec, tseqenc, mlen, bsize, nf):
+def batch_dset(dset, dvec, tseqenc, mlen, bsize):
+    nf = len(dvec.get_feature_names())
     sent_batches = [dset[i:i+bsize] for i in range(0, len(dset), bsize)]
     X_batches, Xmsk_batches, y_batches, ymsk_batches = [], [], [], []
     for batch in sent_batches:
@@ -150,28 +154,34 @@ def batch_dset(dset, dvec, tseqenc, mlen, bsize, nf):
         ymsk_batches.append(ymsk_batch)
     return X_batches, Xmsk_batches, y_batches, ymsk_batches
 
-def batch_dset_eski(dset, dvec, tseqenc, mlen, bsize):
-    XL, yL = [], []
-    for i, sent in enumerate(dset):
-        Xsent = dvec.transform([featfunc(ci, sent) for ci,c in enumerate(sent['cseq'])])
-        XL.append(Xsent)
-        yL.append(one_hot(tseqenc.transform([t for t in sent['tseq']]), nc))
-    X, Xmsk = make_batches(XL, mlen, batch_size=bsize)
-    Xmsk = Xmsk[:,:,:,0]
-    y, ymsk = make_batches(yL, mlen, batch_size=bsize)
-    return X, Xmsk, y, ymsk
-
 
 if __name__ == '__main__':
-    trn, dev, tst = get_sents()
     parser = get_arg_parser()
     args = vars(parser.parse_args())
-    print args
 
-    if args['sample']:
-        # trn = random.sample(trn,100)
-        dev = random.sample(dev,5)
-        tst = random.sample(tst,2)
+    # logger setup
+    logger = logging.getLogger()
+    logger.setLevel(logging.DEBUG)
+    shandler = logging.StreamHandler()
+    shandler.setLevel(logging.INFO)
+    ihandler = logging.FileHandler(args['log_dir']+args['log']+'.info', mode='w')
+    ihandler.setLevel(logging.INFO)
+    dhandler = logging.FileHandler(args['log_dir']+args['log']+'.debug', mode='w')
+    dhandler.setLevel(logging.DEBUG)
+    logger.addHandler(shandler);logger.addHandler(ihandler);logger.addHandler(dhandler);
+    # end logger setup
+
+    # print args
+    for k,v in sorted(args.iteritems()):
+        logger.info('{}:\t{}'.format(k,v))
+
+    trn, dev, tst = get_sents()
+
+    if len(args['sample']):
+        trn_size = args['sample'][0]*1000
+        dev_size = args['sample'][1]*1000
+        trn = sample_sents(trn,trn_size)
+        dev = random.sample(dev,dev_size)
 
     featfunc = getattr(featchar,'get_cfeatures_'+args['feat'])
 
@@ -189,27 +199,28 @@ if __name__ == '__main__':
     tseqenc.fit([t for sent in trn for t in sent['tseq']])
     tsenc = LabelEncoder()
     tsenc.fit([t for sent in trn for t in sent['ts']])
-    print dvec.get_feature_names()
-    print tseqenc.classes_
-    print tsenc.classes_
+    logger.info(dvec.get_feature_names())
+    logger.info(tseqenc.classes_)
+    logger.info(tsenc.classes_)
 
     nf = len(dvec.get_feature_names())
     nc = len(tseqenc.classes_)
     ntrnsent, ndevsent, ntstsent = list(map(len, (trn,dev,tst)))
-    print '# of sents trn, dev, tst: ', ntrnsent, ndevsent, ntstsent
-    print 'NF:', nf, 'NC:', nc
+    logger.info('# of sents trn, dev, tst: {} {} {}'.format(ntrnsent, ndevsent, ntstsent))
+    logger.info('NF: {} NC: {}'.format(nf, nc))
 
 
 
     # NETWORK params
-    MAX_LENGTH = max(len(sent['cseq']) for sent in trn)
-    MIN_LENGTH = min(len(sent['cseq']) for sent in trn)
-    print 'maxlen:', MAX_LENGTH, 'minlen:', MIN_LENGTH
+    MAX_LENGTH = max(len(sent['cseq']) for sent in chain(trn,dev))
+    MIN_LENGTH = min(len(sent['cseq']) for sent in chain(trn,dev))
+    logger.info('maxlen: {} minlen: {}'.format(MAX_LENGTH, MIN_LENGTH))
     # end NETWORK params
 
-    trndat = batch_dset(trn, dvec, tseqenc, MAX_LENGTH, args['n_batch'], nf)
-    devdat = batch_dset(dev, dvec, tseqenc, MAX_LENGTH, args['n_batch'], nf)
-    tstdat = batch_dset(tst, dvec, tseqenc, MAX_LENGTH, args['n_batch'], nf)
+    trndat = batch_dset(trn, dvec, tseqenc, MAX_LENGTH, args['n_batch'])
+    devdat = batch_dset(dev, dvec, tseqenc, MAX_LENGTH, args['n_batch'])
+    # tstdat = batch_dset(tst, dvec, tseqenc, MAX_LENGTH, args['n_batch'])
+
 
     rdnn = RDNN(nc, nf, MAX_LENGTH, **args)
     for e in range(1,args['fepoch']+1):
@@ -219,8 +230,8 @@ if __name__ == '__main__':
         end_time = time.time()
         mtime = end_time - start_time
         cerr, werr, wacc, pre, recall, f1 = pred_info(trn, pred, tseqenc, tsenc, get_ts2)
-        print ('{:<5} {:<5} ' + ('{:>10} '*8)).format('dset','epoch','mcost', 'mtime', 'cerr', 'werr', 'wacc', 'pre', 'recall', 'f1')
-        print ('{:<5} {:<5d} ' + ('{:>10.4f} '*8)).format('trn',e,mcost, mtime, cerr, werr, wacc, pre, recall, f1)
+        logger.info(('{:<5} {:<5} ' + ('{:>10} '*8)).format('dset','epoch','mcost', 'mtime', 'cerr', 'werr', 'wacc', 'pre', 'recall', 'f1'))
+        logger.info(('{:<5} {:<5d} ' + ('{:>10.4f} '*8)).format('trn',e,mcost, mtime, cerr, werr, wacc, pre, recall, f1))
         # end trn
         
         # dev
@@ -229,15 +240,17 @@ if __name__ == '__main__':
         end_time = time.time()
         mtime = end_time - start_time
         cerr, werr, wacc, pre, recall, f1 = pred_info(dev, pred, tseqenc, tsenc, get_ts2)
-        print ('{:<5} {:<5d} ' + ('{:>10.4f} '*8)).format('dev',e,mcost, mtime, cerr, werr, wacc, pre, recall, f1)
+        logger.info(('{:<5} {:<5d} ' + ('{:>10.4f} '*8)).format('dev',e,mcost, mtime, cerr, werr, wacc, pre, recall, f1))
         # end dev
 
+        """
         # tst
         start_time = time.time()
         mcost, pred = rdnn.sing(tstdat, 'predict')
         end_time = time.time()
         mtime = end_time - start_time
         cerr, werr, wacc, pre, recall, f1 = pred_info(tst, pred, tseqenc, tsenc, get_ts2)
-        print ('{:<5} {:<5d} ' + ('{:>10.4f} '*8)).format('tst',e,mcost, mtime, cerr, werr, wacc, pre, recall, f1)
+        logger.info(('{:<5} {:<5d} ' + ('{:>10.4f} '*8)).format('tst',e,mcost, mtime, cerr, werr, wacc, pre, recall, f1))
         # end tst
-        print
+        """
+        logger.info('')

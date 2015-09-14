@@ -118,6 +118,6 @@ def mygen(tags):
             l=[]
 
 if __name__ == '__main__':
-    print c2(['O','O','B-PER','I-PER'])
+    print c4(' '.join(['O','O','I-PER','B-PER']))
     # main()
 

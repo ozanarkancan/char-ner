@@ -1,11 +1,11 @@
-import copy
 from itertools import *
-import random, numpy as np
-from utils import get_sents, get_sent_indx
+import random, copy, argparse, numpy as np
+
 from sklearn.feature_extraction import DictVectorizer
 from sklearn.preprocessing import LabelEncoder
 from sklearn.metrics import confusion_matrix, classification_report
-import argparse
+
+from utils import get_sents, get_sent_indx
 from nerrnn import RNNModel
 from featchar import *
 import featchar
@@ -42,15 +42,15 @@ def print_conmat(y_true, y_pred, lblenc):
         print '\t'.join([clss] + list(map(str,r)))
 
 if __name__ == '__main__':
-    trn, dev, tst = get_sents()
+    trn, dev, tst = get_sents('eng','bio')
     parser = get_arg_parser()
     args = vars(parser.parse_args())
     print args
 
     if args['sample']:
-        trn = random.sample(trn,100)
-        dev = random.sample(dev,2)
-        tst = random.sample(tst,2)
+        trn = random.sample(trn,1000)
+        # dev = random.sample(dev)
+        # tst = random.sample(tst)
 
     featfunc = getattr(featchar,'get_cfeatures_'+args['feat'])
 
@@ -59,8 +59,8 @@ if __name__ == '__main__':
             sent.update({
                 'cseq': get_cseq(sent), 
                 'wiseq': get_wiseq(sent), 
-                'tseq': get_tseq2(sent)})
-                #'tseq': get_tseq1(sent)})
+                'tseq': get_tseq3(sent)})
+                # 'tseq': get_tseq2(sent)})
 
     dvec = DictVectorizer(dtype=np.float32, sparse=False)
     lblenc = LabelEncoder()
@@ -101,9 +101,21 @@ if __name__ == '__main__':
     ts_encoder.fit([t for sent in trn for t in sent['ts']])
     
     from biloueval import bilouEval2
+    from score import conlleval
+    from encoding import uni2bio
     rnn = RNNModel(args, Xtrn, ytrn)
     for e in xrange(args['fepoch']):
         rnn.train(Xtrn, ytrn, trnIndx, Xdev, ydev, devIndx)
+        lts = [sent['ts'] for sent in dev]
+        lts_pred = []
+        for sent, ipred in zip(dev, rnn.last_predictions):
+            tseq_pred = lblenc.inverse_transform(ipred)
+            tseqgrp_pred = get_tseqgrp(sent['wiseq'],tseq_pred)
+            ts_pred = get_ts3(tseqgrp_pred)
+            lts_pred.append(uni2bio(ts_pred))
+        r1,r2 = conlleval(lts, lts_pred)
+        print r2
+        """
         y_true, y_pred = ydev, list(chain.from_iterable(rnn.last_predictions))
         print_conmat(y_true, y_pred, lblenc)
 
@@ -121,19 +133,10 @@ if __name__ == '__main__':
         print_conmat(y_true, y_pred, ts_encoder)
 
         print 'f1: ', bilouEval2(lts, lts_pred)
-        # sent_indx = random.sample(range(len(dev)), 10)
         """
-        sent_indx = range(len(dev))
-        for i in sent_indx:
-            sent = dev[i]
-            tseq_pred = lblenc.inverse_transform(rnn.last_predictions[i])
-            tseqgrp_true = get_tseqgrp(sent['wiseq'],sent['tseq'])
-            tseqgrp_pred = get_tseqgrp(sent['wiseq'],tseq_pred)
-            for w, tseq_true, tseq_pred in zip(sent['ws'], tseqgrp_true, tseqgrp_pred):
-                print '\t'.join([w, ' '.join(tseq_true), ' '.join(tseq_pred)])
-            print 
-        """
+
     tstErr, tmp = rnn.test(Xtst, ytst, tstIndx)
+    """
     lts = [sent['ts'] for sent in tst]
     lts_pred = []
     for sent, ipred in zip(tst, rnn.last_predictions):
@@ -144,3 +147,4 @@ if __name__ == '__main__':
         
     print "Test Err: %.6f" % tstErr
     print 'f1: ', bilouEval2(lts, lts_pred)
+    """

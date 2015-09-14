@@ -1,12 +1,14 @@
-from utils import get_sents
+import string
 import random
+import numpy as np
 from itertools import *
-# from future_builtins import map, filter, zip
-from collections import Counter
+
 from sklearn.feature_extraction import DictVectorizer
 from sklearn.preprocessing import LabelEncoder
-import numpy as np
-import string
+
+from collections import Counter
+from utils import get_sents
+
 
 
 def get_tseq1(sent):
@@ -20,6 +22,20 @@ def get_tseq1(sent):
         if tp == 'B' or tp == 'I':
             tseq.append('i-'+ttype)
         else: # U, L, O
+            tseq.append('o')
+    return tseq[:-1]
+
+def get_tseq3(sent):
+    """ uni """
+    tseq = []
+    for w, t, tnext in zip(sent['ws'],sent['ts'], chain(sent['ts'][1:],[None])):
+        tp, sep, ttype = (t, '', 'O') if t == 'O' else (t.split('-')[0], '-', t.split('-')[1])
+        tseq.extend(ttype.lower() for c in w)
+
+        # handle space
+        if t == tnext:
+            tseq.append(ttype.lower())
+        else:
             tseq.append('o')
     return tseq[:-1]
 
@@ -61,6 +77,9 @@ def get_tseqgrp(wiseq, tseq):
 
 def get_ts1(tseqgrp):
     return [Counter(tseq).most_common(1)[0][0].upper() for tseq in tseqgrp]
+
+def get_ts3(tseqgrp):
+    return get_ts1(tseqgrp)
 
 def get_ts2(tseqgrp):
     ts = []
@@ -201,15 +220,31 @@ def sent_word_indx(sent):
     arr[1:,0] += 1
     return arr
 
+def print_cseq(sent, *args):
+    mlen = max(len(e) for e in chain(*args))
+    wgroup = [[e[0] for e in g] for k, g in groupby(enumerate(sent['wiseq']),lambda x: x[1] !=-1) if k]
+    space_indx = [i for i,wi in enumerate(sent['wiseq']) if wi==-1]
+    for cil, si in izip(wgroup, space_indx):
+        for a in args:
+            print ' '.join(map(('{:^%d}'%mlen).format, [a[ci] for ci in cil] + [a[si]]))
+    for a in args:
+        print ' '.join(map(('{:^%d}'%mlen).format, [a[ci] for ci in cil]))
+
+
 if __name__ == '__main__':
-    trn, dev, tst = get_sents()
-    for d in (trn,dev,tst):
+    from stats import contains_consecutive_same_type
+    from utils import sample_sents
+    from encoding import uni2bio
+    trn, dev, tst = get_sents('bio')
+
+    trn = sample_sents(trn, 10, 5,6)
+    for d in (trn,):
         for sent in d:
             sent.update({
                 'cseq': get_cseq(sent), 
                 'wiseq': get_wiseq(sent), 
-                'tseq': get_tseq2(sent)})
+                'tseq': get_tseq3(sent)})
 
-    sent = random.choice(dev)
-    print [(a,b) for a,b in enumerate(sent['wiseq'])]
-    print sent_word_indx(sent)
+    for sent in trn:
+        print_cseq(sent, sent['cseq'], sent['tseq'])
+        print
