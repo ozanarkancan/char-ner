@@ -1,4 +1,4 @@
-import copy, sys, time, logging
+import copy, sys, time, logging, datetime
 from itertools import *
 import random, numpy as np
 from utils import get_sents, get_sent_indx, sample_sents
@@ -13,6 +13,8 @@ from biloueval import bilouEval2
 import theano.tensor as T
 import theano
 from lazrnn import RDNN
+
+LOG_DIR = 'logs'
 
 def get_arg_parser():
     parser = argparse.ArgumentParser(prog="lazrnn")
@@ -31,11 +33,10 @@ def get_arg_parser():
     parser.add_argument("--feat", default='basic_seg', help="feat func to use")
     parser.add_argument("--lr", default=0.005, type=float, help="learning rate")
     parser.add_argument("--grad_clip", default=-1, type=float, help="clip gradient messages in recurrent layers if they are above this value")
-    parser.add_argument("--norm", default=7, type=float, help="Threshold for clipping norm of gradient")
+    parser.add_argument("--norm", default=2, type=float, help="Threshold for clipping norm of gradient")
     parser.add_argument("--truncate", default=-1, type=int, help="backward step size")
-    parser.add_argument("--log", required=True, help="log file name; will output .info and .debug")
-    parser.add_argument("--log_dir", default='./logs/', help="log dir")
     parser.add_argument("--recout", default=False, action='store_true', help="use recurrent output layer")
+    parser.add_argument("--log", default='das_auto', help="log file name")
     
     return parser
 
@@ -164,9 +165,15 @@ if __name__ == '__main__':
     logger.setLevel(logging.DEBUG)
     shandler = logging.StreamHandler()
     shandler.setLevel(logging.INFO)
-    ihandler = logging.FileHandler(args['log_dir']+args['log']+'.info', mode='w')
+    # 
+    lparams = ['ltype','activation','n_hidden','opt','lr','norm','recout']
+    param_log_name = ','.join(['{}:{}'.format(p,args[p]) for p in lparams])
+    base_log_name = '{:%d-%m-%y+%H:%M:%S}={}'.format(datetime.datetime.now(), param_log_name if args['log'] == 'das_auto' else args['log'])
+    print base_log_name
+    sys.exit(0)
+    ihandler = logging.FileHandler('{}/{}.info'.format(LOG_DIR,base_log_name), mode='w')
     ihandler.setLevel(logging.INFO)
-    dhandler = logging.FileHandler(args['log_dir']+args['log']+'.debug', mode='w')
+    dhandler = logging.FileHandler('{}/{}.debug'.format(LOG_DIR,base_log_name), mode='w')
     dhandler.setLevel(logging.DEBUG)
     logger.addHandler(shandler);logger.addHandler(ihandler);logger.addHandler(dhandler);
     # end logger setup

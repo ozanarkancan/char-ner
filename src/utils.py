@@ -5,7 +5,7 @@ from sklearn.feature_extraction import DictVectorizer
 from sklearn.preprocessing import LabelEncoder
 
 __author__ = 'Onur Kuru'
-DATA_DIR = '../data'
+DATA_DIR = 'data'
 
 def read_sents(file):
     a,b,c,d = [],[],[],[]
