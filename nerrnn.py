@@ -35,17 +35,11 @@ class RNNModel:
         self.ldnn = LDNN()
 
         if acts[0].startswith("bi"):
-            print 'DRATES!!!!!!!!!!!!!!!!!!!!!',drates
             self.ldnn.add_bidirectional_input_layer(u,
                     dropout_rate=drates[0])
         else:
-            print 'ELSE!!!!!!!!!!!!!!!!!!!!!',drates
             self.ldnn.add_input_layer(u,
                     dropout_rate=drates[0])
-        """
-        self.ldnn.add_input_layer(u,
-            dropout_rate=drates[0])
-        """
 
         numout = n_out if "feedback" in acts[0] else None
 
@@ -60,7 +54,6 @@ class RNNModel:
         
         self.ldnn.connect_output(n_out, recurrent=self.configuration["recout"])
         cost = self.ldnn.get_cost(y)
-        cost = T.switch(T.isinf(cost), 1e8, cost)
         params = self.ldnn.get_params()
         gparams = T.grad(cost, params)
 
