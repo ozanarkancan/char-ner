@@ -5,6 +5,7 @@ from sklearn.feature_extraction import DictVectorizer
 from sklearn.preprocessing import LabelEncoder
 
 __author__ = 'Onur Kuru'
+DATA_DIR = '../data'
 
 def read_sents(file):
     a,b,c,d = [],[],[],[]
@@ -39,9 +40,9 @@ def read_sents_spa(file):
 
 def get_sents(lang='eng', enc='bilou'):
     if lang=='eng':
-        return read_sents('data/%s/train.%s'%(lang,enc)), read_sents('data/%s/testa.%s'%(lang,enc)), read_sents('data/%s/testb.%s'%(lang,enc))
+        return read_sents('%s/%s/train.%s'%(DATA_DIR,lang,enc)), read_sents('%s/%s/testa.%s'%(DATA_DIR,lang,enc)), read_sents('%s/%s/testb.%s'%(DATA_DIR,lang,enc))
     elif lang=='spa':
-        return read_sents_spa('data/%s/train.%s'%(lang,enc)), read_sents_spa('data/%s/testa.%s'%(lang,enc)), read_sents_spa('data/%s/testb.%s'%(lang,enc))
+        return read_sents_spa('%s/%s/train.%s'%(DATA_DIR,lang,enc)), read_sents('%s/%s/testa.%s'%(DATA_DIR,lang,enc)), read_sents('%s/%s/testb.%s'%(DATA_DIR,lang,enc))
     else:
         raise Exception
 

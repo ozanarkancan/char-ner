@@ -33,6 +33,7 @@ def uni2bio(ts):
     return phrases
 
 if __name__ == '__main__':
+    """
     trn, dev, tst = get_sents(enc='bio')
     sent = random.choice(trn)
     print ' '.join(sent['ws'])
@@ -40,10 +41,11 @@ if __name__ == '__main__':
     print ' '.join(bio2uni(sent['ts']))
     print ' '.join(bio2bilou(sent['ts']))
 
-    """
     ts_gold = [sent['ts'] for sent in dev]
     ts_pred = [uni2bio(bio2uni(sent['ts'])) for sent in dev]
     r1,r2 = conlleval(ts_gold, ts_pred)
     print r2
     print '\t'.join(map(str,r1))
     """
+    import os
+    print os.path.realpath(__file__)
