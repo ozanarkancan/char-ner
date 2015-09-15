@@ -17,13 +17,11 @@ from lazrnn import RDNN
 def get_arg_parser():
     parser = argparse.ArgumentParser(prog="lazrnn")
     
-    # parser.add_argument("--data", default="", help="data path")
     parser.add_argument("--n_hidden", default=[100], nargs='+', type=int, help="number of neurons in each hidden layer")
     parser.add_argument("--activation", default='rectify', help="activation function for hidden layer : sigmoid, tanh, rectify")
     # parser.add_argument("--drates", default=[0, 0], nargs='+', type=float, help="dropout rates")
     # parser.add_argument("--bias", default=[0], nargs='+', type=int, help="bias on/off for layer")
     parser.add_argument("--opt", default="adam", help="optimization method: sgd, rmsprop, adagrad, adam")
-    # parser.add_argument("--opt_params", default="adam", help="optimization method: sgd, rmsprop, adagrad, adam")
     parser.add_argument("--ltype", default="recurrent", help="layer type: recurrent lstm")
     parser.add_argument("--n_batch", default=10, type=int, help="batch size")
     # parser.add_argument("--epoch", default=50, type=int, help="number of epochs")
@@ -32,10 +30,12 @@ def get_arg_parser():
     parser.add_argument("--sample", default=[], nargs='+', type=int, help="num of sents to sample from trn, dev in the order of K")
     parser.add_argument("--feat", default='basic_seg', help="feat func to use")
     parser.add_argument("--lr", default=0.005, type=float, help="learning rate")
-    parser.add_argument("--grad_clip", default=7, type=float, help="Threshold for clipping norm of gradient")
+    parser.add_argument("--grad_clip", default=-1, type=float, help="clip gradient messages in recurrent layers if they are above this value")
+    parser.add_argument("--norm", default=7, type=float, help="Threshold for clipping norm of gradient")
     parser.add_argument("--truncate", default=-1, type=int, help="backward step size")
     parser.add_argument("--log", required=True, help="log file name; will output .info and .debug")
     parser.add_argument("--log_dir", default='./logs/', help="log dir")
+    parser.add_argument("--recout", default=False, action='store_true', help="use recurrent output layer")
     
     return parser
 
