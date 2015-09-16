@@ -1,0 +1,46 @@
+activation:	rectify
+feat:	basic_seg
+fepoch:	50
+grad_clip:	-1
+log:	das_auto
+lr:	0.005
+ltype:	recurrent
+n_batch:	10
+n_hidden:	[100]
+norm:	2
+opt:	adam
+recout:	False
+sample:	[]
+truncate:	-1
+['c= ', 'c=!', 'c="', 'c=$', 'c=&', "c='", 'c=(', 'c=)', 'c=+', 'c=,', 'c=-', 'c=.', 'c=/', 'c=0', 'c=1', 'c=2', 'c=3', 'c=4', 'c=5', 'c=6', 'c=7', 'c=8', 'c=9', 'c=:', 'c=;', 'c==', 'c=?', 'c=@', 'c=A', 'c=B', 'c=C', 'c=D', 'c=E', 'c=F', 'c=G', 'c=H', 'c=I', 'c=J', 'c=K', 'c=L', 'c=M', 'c=N', 'c=O', 'c=P', 'c=Q', 'c=R', 'c=S', 'c=T', 'c=U', 'c=V', 'c=W', 'c=X', 'c=Y', 'c=Z', 'c=`', 'c=a', 'c=b', 'c=c', 'c=d', 'c=e', 'c=f', 'c=g', 'c=h', 'c=i', 'c=j', 'c=k', 'c=l', 'c=m', 'c=n', 'c=o', 'c=p', 'c=q', 'c=r', 'c=s', 'c=t', 'c=u', 'c=v', 'c=w', 'c=x', 'c=y', 'c=z', 'isspace', 'wend', 'wstart']
+['b-LOC' 'b-MISC' 'b-ORG' 'b-PER' 'i-LOC' 'i-MISC' 'i-ORG' 'i-PER' 'l-LOC'
+ 'l-MISC' 'l-ORG' 'l-PER' 'o']
+['B-LOC' 'B-MISC' 'B-ORG' 'B-PER' 'I-LOC' 'I-MISC' 'I-ORG' 'I-PER' 'L-LOC'
+ 'L-MISC' 'L-ORG' 'L-PER' 'O' 'U-LOC' 'U-MISC' 'U-ORG' 'U-PER']
+# of sents trn, dev, tst: 3250 3250 3453
+NF: 84 NC: 13
+maxlen: 438 minlen: 1
+l_in: (None, 438, 84)
+l_mask: (Subtensor{int64}.0, 438)
+l_forward: (None, 438, 100)
+l_backward: (None, 438, 100)
+l_concat: (None, 438, 200)
+l_reshape: (None, 200)
+l_rec_out: (None, 13)
+l_out: (None, 438, 13)
+[W, b, W, W, b, W, W, b]
+[dot.0, DimShuffle{1}.0, Subtensor{int64}.0, dot.0, DimShuffle{1}.0, Subtensor{int64}.0, dot.0, DimShuffle{1}.0]
+Computing updates ...
+Compiling functions ...
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1 
+trn   1        19.4024    71.0618     0.1628     0.1645    83.5520    21.8274     4.3714     7.2840 
+dev   1        14.7717    23.4257     0.1547     0.1435    85.6528    29.9138    29.3968    29.6531 
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1 
+trn   2        10.3633    71.2190     0.1172     0.1134    88.6550    48.7311    35.4626    41.0513 
+dev   2        10.1466    23.4650     0.1168     0.1070    89.2956    44.7518    41.3927    43.0068 
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1 
+trn   3         9.0996    71.7061     0.1090     0.1061    89.3910    49.9037    39.4951    44.0934 
+dev   3         8.9765    23.2729     0.1040     0.0991    90.0861    50.0855    44.6459    47.2095 
+
