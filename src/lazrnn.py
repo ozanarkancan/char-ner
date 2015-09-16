@@ -7,10 +7,9 @@ class Identity(lasagne.init.Initializer):
         return lasagne.utils.floatX(np.eye(*shape))
 
 class RDNN:
-    def __init__(self, nc, nf, max_seq_length, **kwargs):
-        # batch_size=None, n_hidden=100, grad_clip=7, lr=.001):
-        assert nf; assert max_seq_length
-        LayerType = lasagne.layers.RecurrentLayer
+    def __init__(self, nc, nf, **kwargs):
+        assert nf; assert nc
+        LayerType = lasagne.layers.RecurrentLayer # default layer type
         if kwargs['ltype'] == 'recurrent':
             LayerType = lasagne.layers.RecurrentLayer
         elif kwargs['ltype'] == 'lstm':
@@ -22,16 +21,15 @@ class RDNN:
         n_hidden = kwargs['n_hidden']
         grad_clip =  kwargs['grad_clip'] if kwargs['grad_clip'] > 0 else False
         lr = kwargs['lr']
-        batch_size = kwargs['n_batch'] # TODO: not used
         norm = kwargs['norm']
         ldepth = len(kwargs['n_hidden'])
         recout = kwargs['recout']
 
         # network
-        l_in = lasagne.layers.InputLayer(shape=(None, max_seq_length, nf))
+        l_in = lasagne.layers.InputLayer(shape=(None, None, nf))
         logging.info('l_in: {}'.format(lasagne.layers.get_output_shape(l_in)))
-        N_BATCH_VAR, _, _ = l_in.input_var.shape # symbolic ref to input_var shape
-        l_mask = lasagne.layers.InputLayer(shape=(N_BATCH_VAR, max_seq_length))
+        N_BATCH_VAR, MAX_SEQ_LEN_VAR, _ = l_in.input_var.shape # symbolic ref to input_var shape
+        l_mask = lasagne.layers.InputLayer(shape=(N_BATCH_VAR, MAX_SEQ_LEN_VAR))
         logging.info('l_mask: {}'.format(lasagne.layers.get_output_shape(l_mask)))
 
         l_forward = LayerType(l_in, n_hidden[0], mask_input=l_mask, grad_clipping=grad_clip, W_hid_to_hid=Identity(),
@@ -45,7 +43,7 @@ class RDNN:
 
         if recout:
             logging.info('using recout.')
-            l_out = LayerType(l_concat, num_units=nc, mask_input=l_mask, W_hid_to_hid=Identity(),
+            l_out = lasagne.layers.RecurrentLayer(l_concat, num_units=nc, mask_input=l_mask, W_hid_to_hid=Identity(),
                     W_in_to_hid=lasagne.init.GlorotUniform(), nonlinearity=lasagne.nonlinearities.softmax)
             logging.info('l_out: {}'.format(lasagne.layers.get_output_shape(l_out)))
         else:
@@ -54,7 +52,7 @@ class RDNN:
             l_rec_out = lasagne.layers.DenseLayer(l_reshape, num_units=nc, nonlinearity=lasagne.nonlinearities.softmax)
 
             logging.info('l_rec_out: {}'.format(lasagne.layers.get_output_shape(l_rec_out)))
-            l_out = lasagne.layers.ReshapeLayer(l_rec_out, (N_BATCH_VAR, max_seq_length, nc))
+            l_out = lasagne.layers.ReshapeLayer(l_rec_out, (N_BATCH_VAR, MAX_SEQ_LEN_VAR, nc))
             logging.info('l_out: {}'.format(lasagne.layers.get_output_shape(l_out)))
 
         self.output_layer = l_out

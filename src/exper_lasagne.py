@@ -1,20 +1,27 @@
-import copy, sys, time, logging, datetime
+import logging
+import argparse
+import sys, time, datetime
 from itertools import *
 import random, numpy as np
-from utils import get_sents, get_sent_indx, sample_sents
+
 from sklearn.feature_extraction import DictVectorizer
 from sklearn.preprocessing import LabelEncoder
 from sklearn.metrics import confusion_matrix, classification_report
-import argparse
+
+import theano
+import lasagne
+import theano.tensor as T
+
 from featchar import *
 import featchar
-import lasagne
+from utils import get_sents, get_sent_indx, sample_sents
 from biloueval import bilouEval2
-import theano.tensor as T
-import theano
 from lazrnn import RDNN
 
 LOG_DIR = 'logs'
+random.seed(0)
+rng = np.random.RandomState(1234567)
+lasagne.random.set_rng(rng)
 
 def get_arg_parser():
     parser = argparse.ArgumentParser(prog="lazrnn")
@@ -133,11 +140,12 @@ def make_batches(X, length, batch_size=50):
             X_mask[b, n, :X_m.shape[0]] = 1
     return X_batch, X_mask
 
-def batch_dset(dset, dvec, tseqenc, mlen, bsize):
+def batch_dset(dset, dvec, tseqenc, bsize):
     nf = len(dvec.get_feature_names())
     sent_batches = [dset[i:i+bsize] for i in range(0, len(dset), bsize)]
     X_batches, Xmsk_batches, y_batches, ymsk_batches = [], [], [], []
     for batch in sent_batches:
+        mlen = max(len(sent['cseq']) for sent in batch)
         X_batch = np.zeros((len(batch), mlen, nf),dtype=theano.config.floatX)
         Xmsk_batch = np.zeros((len(batch), mlen),dtype=np.bool)
         y_batch = np.zeros((len(batch), mlen, nc),dtype=theano.config.floatX)
@@ -221,18 +229,15 @@ if __name__ == '__main__':
 
 
 
-    # NETWORK params
     MAX_LENGTH = max(len(sent['cseq']) for sent in chain(trn,dev))
     MIN_LENGTH = min(len(sent['cseq']) for sent in chain(trn,dev))
     logger.info('maxlen: {} minlen: {}'.format(MAX_LENGTH, MIN_LENGTH))
-    # end NETWORK params
 
-    trndat = batch_dset(trn, dvec, tseqenc, MAX_LENGTH, args['n_batch'])
-    devdat = batch_dset(dev, dvec, tseqenc, MAX_LENGTH, args['n_batch'])
-    # tstdat = batch_dset(tst, dvec, tseqenc, MAX_LENGTH, args['n_batch'])
+    trndat = batch_dset(trn, dvec, tseqenc, args['n_batch'])
+    devdat = batch_dset(dev, dvec, tseqenc, args['n_batch'])
 
 
-    rdnn = RDNN(nc, nf, MAX_LENGTH, **args)
+    rdnn = RDNN(nc, nf, **args)
     for e in range(1,args['fepoch']+1):
         # trn
         start_time = time.time()
