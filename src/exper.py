@@ -42,7 +42,7 @@ def print_conmat(y_true, y_pred, lblenc):
         print '\t'.join([clss] + list(map(str,r)))
 
 if __name__ == '__main__':
-    trn, dev, tst = get_sents('eng','bio')
+    trn, dev, tst = get_sents('eng','bilou')
     parser = get_arg_parser()
     args = vars(parser.parse_args())
     print args
@@ -59,8 +59,8 @@ if __name__ == '__main__':
             sent.update({
                 'cseq': get_cseq(sent), 
                 'wiseq': get_wiseq(sent), 
-                'tseq': get_tseq3(sent)})
-                # 'tseq': get_tseq2(sent)})
+                # 'tseq': get_tseq3(sent)})
+                'tseq': get_tseq2(sent)})
 
     dvec = DictVectorizer(dtype=np.float32, sparse=False)
     lblenc = LabelEncoder()
@@ -111,10 +111,12 @@ if __name__ == '__main__':
         for sent, ipred in zip(dev, rnn.last_predictions):
             tseq_pred = lblenc.inverse_transform(ipred)
             tseqgrp_pred = get_tseqgrp(sent['wiseq'],tseq_pred)
-            ts_pred = get_ts3(tseqgrp_pred)
-            lts_pred.append(uni2bio(ts_pred))
-        r1,r2 = conlleval(lts, lts_pred)
-        print r2
+            ts_pred = get_ts2(tseqgrp_pred)
+            lts_pred.append(ts_pred)
+            #lts_pred.append(uni2bio(ts_pred))
+        print "f1: ", bilouEval2(lts, lts_pred)
+        #r1,r2 = conlleval(lts, lts_pred)
+        #print r2
         """
         y_true, y_pred = ydev, list(chain.from_iterable(rnn.last_predictions))
         print_conmat(y_true, y_pred, lblenc)
