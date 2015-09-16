@@ -77,28 +77,46 @@ class RDNN:
         f_hid2hid = l_forward.get_params()[-1]
         b_hid2hid = l_backward.get_params()[-1]
 
-        all_grads = T.grad(cost_train, all_params) # lasagne.updates.get_or_compute_grads # TODO
-        logging.info(lasagne.updates.get_or_compute_grads(all_grads, all_params))
+        all_grads = T.grad(cost_train, all_params)
+        # logging.info(lasagne.updates.get_or_compute_grads(all_grads, all_params))
 
         all_grads, total_norm = lasagne.updates.total_norm_constraint(all_grads, norm, return_norm=True)
         all_grads = [T.switch(T.or_(T.isnan(total_norm), T.isinf(total_norm)), p*0.1 , g) for g,p in zip(all_grads, all_params)]
 
-        # Compute SGD updates for training
         logging.info("Computing updates ...")
         updates = optim(all_grads, all_params, lr)
 
-        # Theano functions for training and computing cost
         logging.info("Compiling functions ...")
-        self.train_model = theano.function(
+        self.train_model = theano.function(inputs=[l_in.input_var, target_output, l_mask.input_var, out_mask], outputs=cost_train, updates=updates)
+        self.predict_model = theano.function(
+                inputs=[l_in.input_var, target_output, l_mask.input_var, out_mask],
+                outputs=[cost_eval, lasagne.layers.get_output(l_out, deterministic=True)])
+
+        # aux
+        self.train_model_debug = theano.function(
                 inputs=[l_in.input_var, target_output, l_mask.input_var, out_mask],
                 outputs=[cost_train]+lasagne.layers.get_output([l_out, l_concat], deterministic=True)+[f_hid2hid, b_hid2hid, total_norm],
                 updates=updates)
         self.compute_cost = theano.function([l_in.input_var, target_output, l_mask.input_var, out_mask], cost_eval)
         self.compute_cost_train = theano.function([l_in.input_var, target_output, l_mask.input_var, out_mask], cost_train)
-        self.predict_model = theano.function(
-                # inputs=[l_in.input_var, l_mask.input_var],
-                inputs=[l_in.input_var, target_output, l_mask.input_var, out_mask],
-                outputs=[cost_eval, lasagne.layers.get_output(l_out, deterministic=True)])
+
+    def train(self, dsetdat):
+        ecost = 0
+        for Xdset, Xdsetmsk, ydset, ydsetmsk in zip(*dsetdat):
+            bcost = self.train_model(Xdset, ydset, Xdsetmsk, ydsetmsk)
+            ecost += bcost
+        return ecost
+
+    def predict(self, dsetdat):
+        ecost, rnn_last_predictions = 0, []
+        for Xdset, Xdsetmsk, ydset, ydsetmsk in zip(*dsetdat):
+            bcost, pred = self.predict_model(Xdset, ydset, Xdsetmsk, ydsetmsk)
+            ecost += bcost
+            predictions = np.argmax(pred*ydsetmsk, axis=-1).flatten()
+            sentLens, mlen = Xdsetmsk.sum(axis=-1), Xdset.shape[1]
+            for i, slen in enumerate(sentLens):
+                rnn_last_predictions.append(predictions[i*mlen:i*mlen+slen])
+        return ecost, rnn_last_predictions
 
     def sing(self, dsetdat, mode):
         ecost, rnn_last_predictions = 0, []

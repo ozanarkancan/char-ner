@@ -37,6 +37,7 @@ def get_arg_parser():
     parser.add_argument("--truncate", default=-1, type=int, help="backward step size")
     parser.add_argument("--recout", default=False, action='store_true', help="use recurrent output layer")
     parser.add_argument("--log", default='das_auto', help="log file name")
+    parser.add_argument("--sorted", default=True, action='store_true', help="sort datasets before training and prediction")
     
     return parser
 
@@ -198,8 +199,9 @@ if __name__ == '__main__':
                 'tseq': get_tseq2(sent)})
                 #'tseq': get_tseq1(sent)})
 
-    trn = sorted(trn, key=lambda sent: len(sent['cseq']))
-    dev = sorted(dev, key=lambda sent: len(sent['cseq']))
+    if args['sorted']:
+        trn = sorted(trn, key=lambda sent: len(sent['cseq']))
+        dev = sorted(dev, key=lambda sent: len(sent['cseq']))
 
     dvec = DictVectorizer(dtype=np.float32, sparse=False)
     dvec.fit(featfunc(ci, sent)  for sent in trn for ci,c in enumerate(sent['cseq']))
@@ -234,7 +236,9 @@ if __name__ == '__main__':
     for e in range(1,args['fepoch']+1):
         # trn
         start_time = time.time()
-        mcost, pred = rdnn.sing(trndat, 'train')
+        # mcost, pred = rdnn.sing(trndat, 'train')
+        m1cost = rdnn.train(trndat)
+        mcost, pred = rdnn.predict(trndat)
         end_time = time.time()
         mtime = end_time - start_time
         cerr, werr, wacc, pre, recall, f1 = pred_info(trn, pred, tseqenc, tsenc, get_ts2)
@@ -244,21 +248,11 @@ if __name__ == '__main__':
         
         # dev
         start_time = time.time()
-        mcost, pred = rdnn.sing(devdat, 'predict')
+        # mcost, pred = rdnn.sing(devdat, 'predict')
+        mcost, pred = rdnn.predict(devdat)
         end_time = time.time()
         mtime = end_time - start_time
         cerr, werr, wacc, pre, recall, f1 = pred_info(dev, pred, tseqenc, tsenc, get_ts2)
         logger.info(('{:<5} {:<5d} ' + ('{:>10.4f} '*8)).format('dev',e,mcost, mtime, cerr, werr, wacc, pre, recall, f1))
         # end dev
-
-        """
-        # tst
-        start_time = time.time()
-        mcost, pred = rdnn.sing(tstdat, 'predict')
-        end_time = time.time()
-        mtime = end_time - start_time
-        cerr, werr, wacc, pre, recall, f1 = pred_info(tst, pred, tseqenc, tsenc, get_ts2)
-        logger.info(('{:<5} {:<5d} ' + ('{:>10.4f} '*8)).format('tst',e,mcost, mtime, cerr, werr, wacc, pre, recall, f1))
-        # end tst
-        """
         logger.info('')

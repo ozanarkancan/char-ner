@@ -1,0 +1,41 @@
+activation:	rectify
+feat:	basic_seg
+fepoch:	50
+grad_clip:	-1
+log:	das_auto
+lr:	0.005
+ltype:	recurrent
+n_batch:	50
+n_hidden:	[100]
+norm:	2
+opt:	adam
+recout:	False
+sample:	[3, 1]
+truncate:	-1
+['c= ', 'c="', 'c=$', 'c=%', 'c=&', "c='", 'c=(', 'c=)', 'c=*', 'c=+', 'c=,', 'c=-', 'c=.', 'c=/', 'c=0', 'c=1', 'c=2', 'c=3', 'c=4', 'c=5', 'c=6', 'c=7', 'c=8', 'c=9', 'c=:', 'c=;', 'c==', 'c=?', 'c=A', 'c=B', 'c=C', 'c=D', 'c=E', 'c=F', 'c=G', 'c=H', 'c=I', 'c=J', 'c=K', 'c=L', 'c=M', 'c=N', 'c=O', 'c=P', 'c=Q', 'c=R', 'c=S', 'c=T', 'c=U', 'c=V', 'c=W', 'c=X', 'c=Y', 'c=Z', 'c=[', 'c=]', 'c=`', 'c=a', 'c=b', 'c=c', 'c=d', 'c=e', 'c=f', 'c=g', 'c=h', 'c=i', 'c=j', 'c=k', 'c=l', 'c=m', 'c=n', 'c=o', 'c=p', 'c=q', 'c=r', 'c=s', 'c=t', 'c=u', 'c=v', 'c=w', 'c=x', 'c=y', 'c=z', 'isspace', 'wend', 'wstart']
+['b-LOC' 'b-MISC' 'b-ORG' 'b-PER' 'i-LOC' 'i-MISC' 'i-ORG' 'i-PER' 'l-LOC'
+ 'l-MISC' 'l-ORG' 'l-PER' 'o' 'u-MISC']
+['B-LOC' 'B-MISC' 'B-ORG' 'B-PER' 'I-LOC' 'I-MISC' 'I-ORG' 'I-PER' 'L-LOC'
+ 'L-MISC' 'L-ORG' 'L-PER' 'O' 'U-LOC' 'U-MISC' 'U-ORG' 'U-PER']
+# of sents trn, dev, tst: 3000 1000 3453
+NF: 86 NC: 14
+maxlen: 388 minlen: 1
+l_in: (None, 388, 86)
+l_mask: (Subtensor{int64}.0, 388)
+l_forward: (None, 388, 100)
+l_backward: (None, 388, 100)
+l_concat: (None, 388, 200)
+l_reshape: (None, 200)
+l_rec_out: (None, 14)
+l_out: (None, 388, 14)
+[W, b, W, W, b, W, W, b]
+Computing updates ...
+Compiling functions ...
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1 
+trn   1         4.6446    60.7134     0.2138     0.1735    82.6511     0.0000     0.0000     0.0000 
+dev   1         1.5148     5.3172     0.2061     0.1694    83.0574     0.0000     0.0000     0.0000 
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1 
+trn   2         3.7878    60.9550     0.2105     0.1755    82.4477     0.0000     0.0000     0.0000 
+dev   2         1.2394     5.2984     0.2023     0.1710    82.9046     0.0000     0.0000     0.0000 
+
