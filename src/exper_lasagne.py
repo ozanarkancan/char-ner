@@ -25,7 +25,7 @@ def get_arg_parser():
     # parser.add_argument("--bias", default=[0], nargs='+', type=int, help="bias on/off for layer")
     parser.add_argument("--opt", default="adam", help="optimization method: sgd, rmsprop, adagrad, adam")
     parser.add_argument("--ltype", default="recurrent", help="layer type: recurrent lstm")
-    parser.add_argument("--n_batch", default=10, type=int, help="batch size")
+    parser.add_argument("--n_batch", default=50, type=int, help="batch size")
     # parser.add_argument("--epoch", default=50, type=int, help="number of epochs")
     parser.add_argument("--fepoch", default=50, type=int, help="number of epochs")
     # parser.add_argument("--sample", default=False, action='store_true', help="sample 100 from trn, 10 from dev")
@@ -186,7 +186,7 @@ if __name__ == '__main__':
         trn_size = args['sample'][0]*1000
         dev_size = args['sample'][1]*1000
         trn = sample_sents(trn,trn_size)
-        dev = random.sample(dev,dev_size)
+        dev = sample_sents(dev,dev_size)
 
     featfunc = getattr(featchar,'get_cfeatures_'+args['feat'])
 
@@ -197,8 +197,9 @@ if __name__ == '__main__':
                 'wiseq': get_wiseq(sent), 
                 'tseq': get_tseq2(sent)})
                 #'tseq': get_tseq1(sent)})
+
     trn = sorted(trn, key=lambda sent: len(sent['cseq']))
-    trn = sorted(dev, key=lambda sent: len(sent['cseq']))
+    dev = sorted(dev, key=lambda sent: len(sent['cseq']))
 
     dvec = DictVectorizer(dtype=np.float32, sparse=False)
     dvec.fit(featfunc(ci, sent)  for sent in trn for ci,c in enumerate(sent['cseq']))
