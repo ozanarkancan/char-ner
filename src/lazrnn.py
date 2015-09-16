@@ -6,6 +6,22 @@ class Identity(lasagne.init.Initializer):
     def sample(self, shape):
         return lasagne.utils.floatX(np.eye(*shape))
 
+class RDNN_Dummy:
+    def __init__(self, nc, nf, **kwargs):
+        self.nc = nc
+
+    def train(self, dsetdat):
+        return self.predict(dsetdat)
+
+    def predict(self, dsetdat):
+        ecost, rnn_last_predictions = 0, []
+        for Xdset, Xdsetmsk, ydset, ydsetmsk in zip(*dsetdat):
+            ecost += 0
+            sentLens = Xdsetmsk.sum(axis=-1)
+            for i, slen in enumerate(sentLens):
+                rnn_last_predictions.append(np.random.random_integers(0,self.nc-1,slen))
+        return ecost, rnn_last_predictions
+
 class RDNN:
     def __init__(self, nc, nf, **kwargs):
         assert nf; assert nc
@@ -101,7 +117,7 @@ class RDNN:
         for Xdset, Xdsetmsk, ydset, ydsetmsk in zip(*dsetdat):
             bcost = self.train_model(Xdset, ydset, Xdsetmsk, ydsetmsk)
             ecost += bcost
-        return ecost
+        return self.predict(dsetdat)
 
     def predict(self, dsetdat):
         ecost, rnn_last_predictions = 0, []
