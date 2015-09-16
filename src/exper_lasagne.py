@@ -37,7 +37,7 @@ def get_arg_parser():
     parser.add_argument("--truncate", default=-1, type=int, help="backward step size")
     parser.add_argument("--recout", default=False, action='store_true', help="use recurrent output layer")
     parser.add_argument("--log", default='das_auto', help="log file name")
-    parser.add_argument("--sorted", default=True, action='store_true', help="sort datasets before training and prediction")
+    parser.add_argument("--sorted", default=1, type=int, help="sort datasets before training and prediction")
     
     return parser
 
