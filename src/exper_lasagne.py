@@ -197,6 +197,8 @@ if __name__ == '__main__':
                 'wiseq': get_wiseq(sent), 
                 'tseq': get_tseq2(sent)})
                 #'tseq': get_tseq1(sent)})
+    trn = sorted(trn, key=lambda sent: len(sent['cseq']))
+    trn = sorted(dev, key=lambda sent: len(sent['cseq']))
 
     dvec = DictVectorizer(dtype=np.float32, sparse=False)
     dvec.fit(featfunc(ci, sent)  for sent in trn for ci,c in enumerate(sent['cseq']))

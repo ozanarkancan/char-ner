@@ -1,6 +1,6 @@
 import random
 from itertools import *
-from utils import get_sents
+from utils import get_sents, sample_sents
 from score import conlleval
 
 def bio2bilou(ts):
@@ -33,6 +33,12 @@ def uni2bio(ts):
     return phrases
 
 if __name__ == '__main__':
+    trn, dev, tst = get_sents(enc='bio')
+    sents = sample_sents(trn, 10, 8, 10)
+
+    for sent in sents:
+        print ' '.join(sent['ts'])
+        pass
     """
     trn, dev, tst = get_sents(enc='bio')
     sent = random.choice(trn)
