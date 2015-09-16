@@ -177,7 +177,7 @@ if __name__ == '__main__':
     # 
     lparams = ['ltype','activation','n_hidden','opt','lr','norm','recout']
     param_log_name = ','.join(['{}:{}'.format(p,args[p]) for p in lparams])
-    base_log_name = '{:%d-%m-%y+%H:%M:%S}={}'.format(datetime.datetime.now(), param_log_name if args['log'] == 'das_auto' else args['log'])
+    base_log_name = '{:%d-%m-%y+%H:%M:%S}:{}={}'.format(datetime.datetime.now(), theano.config.device, param_log_name if args['log'] == 'das_auto' else args['log'])
     ihandler = logging.FileHandler('{}/{}.info'.format(LOG_DIR,base_log_name), mode='w')
     ihandler.setLevel(logging.INFO)
     dhandler = logging.FileHandler('{}/{}.debug'.format(LOG_DIR,base_log_name), mode='w')
