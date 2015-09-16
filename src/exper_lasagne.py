@@ -48,10 +48,10 @@ def get_arg_parser():
     
     return parser
 
-def print_conmat(y_true, y_pred, tseqenc):
-    print '\t'.join(['bos'] + list(tseqenc.classes_))
-    conmat = confusion_matrix(y_true,y_pred, labels=tseqenc.transform(tseqenc.classes_))
-    for r,clss in zip(conmat,tseqenc.classes_):
+def log_conmat(y_true, y_pred, lblenc):
+    print '\t'.join(['bos'] + list(lblenc.classes_))
+    conmat = confusion_matrix(y_true,y_pred, labels=lblenc.transform(lblenc.classes_))
+    for r,clss in zip(conmat,lblenc.classes_):
         print '\t'.join([clss] + list(map(str,r)))
 
 def pred_info(dset, int_predL, charenc, wordenc, tfunc):
@@ -109,36 +109,6 @@ def one_hot(labels, n_classes):
     one_hot = np.zeros((labels.shape[0], n_classes)).astype(bool)
     one_hot[range(labels.shape[0]), labels] = True
     return one_hot
-
-def make_batches(X, length, batch_size=50):
-    '''
-    Convert a list of matrices into batches of uniform length
-    :parameters:
-        - X : list of np.ndarray
-            List of matrices
-        - length : int
-            Desired sequence length.  Smaller sequences will be padded with 0s,
-            longer will be truncated.
-        - batch_size : int
-            Mini-batch size
-    :returns:
-        - X_batch : np.ndarray
-            Tensor of time series matrix batches,
-            shape=(n_batches, batch_size, length, n_features)
-        - X_mask : np.ndarray
-            Mask denoting whether to include each time step of each time series
-            matrix
-    '''
-    n_batches = len(X)//batch_size
-    X_batch = np.zeros((n_batches, batch_size, length, X[0].shape[1]),
-                       dtype=theano.config.floatX)
-    X_mask = np.zeros(X_batch.shape, dtype=np.bool)
-    for b in range(n_batches):
-        for n in range(batch_size):
-            X_m = X[b*batch_size + n]
-            X_batch[b, n, :X_m.shape[0]] = X_m[:length]
-            X_mask[b, n, :X_m.shape[0]] = 1
-    return X_batch, X_mask
 
 def batch_dset(dset, dvec, tseqenc, bsize):
     nf = len(dvec.get_feature_names())
@@ -238,10 +208,10 @@ if __name__ == '__main__':
 
 
     rdnn = RDNN(nc, nf, **args)
+    logger.info('training the model...')
     for e in range(1,args['fepoch']+1):
         # trn
         start_time = time.time()
-        # mcost, pred = rdnn.sing(trndat, 'train')
         m1cost = rdnn.train(trndat)
         mcost, pred = rdnn.predict(trndat)
         end_time = time.time()
@@ -253,7 +223,6 @@ if __name__ == '__main__':
         
         # dev
         start_time = time.time()
-        # mcost, pred = rdnn.sing(devdat, 'predict')
         mcost, pred = rdnn.predict(devdat)
         end_time = time.time()
         mtime = end_time - start_time

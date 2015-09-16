@@ -8,12 +8,12 @@ def conlleval(ts_gold, ts_pred):
         text += '\n'
 
     proc = subprocess.Popen(
-        './conlleval',stdout=subprocess.PIPE,
+        './src/conlleval',stdout=subprocess.PIPE,
         stdin=subprocess.PIPE)
     proc.stdin.write(text)
     proc.stdin.close()
     result = proc.stdout.read()
     res = re.findall('\d+.\d+', result.splitlines()[1])
     proc.wait()
-    return map(float,res),result
+    return map(float,res), result
 
