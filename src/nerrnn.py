@@ -63,7 +63,7 @@ class RNNModel:
             updates = sgd(params, gparams, lr)
 
         self.train_model = theano.function(inputs=[u, y],
-            outputs=[cost],
+            outputs=cost,
             updates=updates,
             allow_input_downcast=True,
         )
