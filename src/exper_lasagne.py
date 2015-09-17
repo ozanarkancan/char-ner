@@ -45,6 +45,7 @@ def get_arg_parser():
     parser.add_argument("--recout", default=0, type=int, help="use recurrent output layer")
     parser.add_argument("--log", default='das_auto', help="log file name")
     parser.add_argument("--sorted", default=1, type=int, help="sort datasets before training and prediction")
+    parser.add_argument("--rnn", default='lazrnn', choices=['dummy','lazrnn','nerrnn'], help="which rnn to use")
     
     return parser
 
@@ -235,9 +236,19 @@ def main():
     reporter = Reporter(feat, ctag2wtag_func)
 
     validator = Validator(trn, dev, batcher, reporter)
-    # rdnn = RDNN_Dummy(feat.NC, feat.NF, args)
-    # rdnn = RDNN(feat.NC, feat.NF, args)
-    rdnn = RNNModel(feat.NC, feat.NF, args)
+
+    # select rnn
+    if args['rnn'] == 'dummy':
+        RNN = RDNN_Dummy
+    elif args['rnn'] == 'lazrnn':
+        RNN = RDNN
+    elif args['rnn'] == 'nerrnn':
+        RNN = RNNModel
+    else:
+        raise Exception
+    # end select rnn
+
+    rdnn = RNN(feat.NC, feat.NF, args)
     validator.validate(rdnn, args['fepoch'], args['patience'])
     # lr: scipy.stats.expon.rvs(loc=0.0001,scale=0.1,size=100)
     # norm: scipy.stats.expon.rvs(loc=0, scale=5,size=10)
