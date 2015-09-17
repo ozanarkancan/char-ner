@@ -28,6 +28,6 @@ if __name__ == '__main__':
     job_text = STR.format(args.biyofiz, args.exper_args)
     file_name_param = valid_file_name(args.exper_args.replace(' ','.')) if args.exper_args else 'defaults'
     job_file_name = 'biyofiz{}.'.format(args.biyofiz)+file_name_param+'.job'
-    with open(job_file_name,'w') as out:
+    with open('./jobs/'+job_file_name,'w') as out:
         out.write(job_text)
     print job_file_name
