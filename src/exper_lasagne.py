@@ -17,6 +17,7 @@ import featchar
 from utils import get_sents, get_sent_indx, sample_sents
 from biloueval import bilouEval2
 from lazrnn import RDNN, RDNN_Dummy
+from nerrnn import RNNModel
 
 LOG_DIR = 'logs'
 random.seed(0)
@@ -27,23 +28,21 @@ def get_arg_parser():
     parser = argparse.ArgumentParser(prog="lazrnn")
     
     parser.add_argument("--n_hidden", default=[100], nargs='+', type=int, help="number of neurons in each hidden layer")
-    parser.add_argument("--activation", default='rectify', help="activation function for hidden layer : sigmoid, tanh, rectify")
-    # parser.add_argument("--drates", default=[0, 0], nargs='+', type=float, help="dropout rates")
+    parser.add_argument("--activation", default=['rectify'], nargs='+', help="activation function for hidden layer : sigmoid, tanh, rectify")
+    parser.add_argument("--drates", default=[0, 0], nargs='+', type=float, help="dropout rates")
     # parser.add_argument("--bias", default=[0], nargs='+', type=int, help="bias on/off for layer")
     parser.add_argument("--opt", default="adam", help="optimization method: sgd, rmsprop, adagrad, adam")
     parser.add_argument("--ltype", default="recurrent", help="layer type: recurrent lstm")
     parser.add_argument("--n_batch", default=50, type=int, help="batch size")
-    # parser.add_argument("--epoch", default=50, type=int, help="number of epochs")
-    parser.add_argument("--fepoch", default=50, type=int, help="number of epochs")
+    parser.add_argument("--fepoch", default=100, type=int, help="number of epochs")
     parser.add_argument("--patience", default=-1, type=int, help="how patient the validator is")
-    # parser.add_argument("--sample", default=False, action='store_true', help="sample 100 from trn, 10 from dev")
     parser.add_argument("--sample", default=[], nargs='+', type=int, help="num of sents to sample from trn, dev in the order of K")
     parser.add_argument("--feat", default='basic_seg', help="feat func to use")
-    parser.add_argument("--lr", default=0.005, type=float, help="learning rate")
+    parser.add_argument("--lr", default=0.001, type=float, help="learning rate")
     parser.add_argument("--grad_clip", default=-1, type=float, help="clip gradient messages in recurrent layers if they are above this value")
     parser.add_argument("--norm", default=2, type=float, help="Threshold for clipping norm of gradient")
     parser.add_argument("--truncate", default=-1, type=int, help="backward step size")
-    parser.add_argument("--recout", default=False, action='store_true', help="use recurrent output layer")
+    parser.add_argument("--recout", default=0, type=int, help="use recurrent output layer")
     parser.add_argument("--log", default='das_auto', help="log file name")
     parser.add_argument("--sorted", default=1, type=int, help="sort datasets before training and prediction")
     
@@ -170,6 +169,9 @@ class Validator(object):
                         .format(datname,e,mcost, mtime, cerr, werr, wacc, pre, recall, f1, dbests[datname][1],dbests[datname][0]))
             logging.info('')
             
+def valid_file_name(s):
+    return "".join(i for i in s if i not in "\"\/ &*?<>|[]()'")
+
 def main():
     parser = get_arg_parser()
     args = vars(parser.parse_args())
@@ -182,7 +184,8 @@ def main():
     # 
     lparams = ['ltype','activation','n_hidden','opt','lr','norm','recout']
     param_log_name = ','.join(['{}:{}'.format(p,args[p]) for p in lparams])
-    base_log_name = '{:%d-%m-%y+%H:%M:%S}:{}={}'.format(datetime.datetime.now(), theano.config.device, param_log_name if args['log'] == 'das_auto' else args['log'])
+    param_log_name = valid_file_name(param_log_name)
+    base_log_name = '{:%d-%m-%y+%H:%M:%S}:{},{}'.format(datetime.datetime.now(), theano.config.device, param_log_name if args['log'] == 'das_auto' else args['log'])
     ihandler = logging.FileHandler('{}/{}.info'.format(LOG_DIR,base_log_name), mode='w')
     ihandler.setLevel(logging.INFO)
     dhandler = logging.FileHandler('{}/{}.debug'.format(LOG_DIR,base_log_name), mode='w')
@@ -228,15 +231,13 @@ def main():
     feat = Feat(featfunc)
     feat.fit(trn)
 
-    for sent in trn:
-        Xsent, ysent = feat.transform(sent)
-
     batcher = Batcher(args['n_batch'], feat)
     reporter = Reporter(feat, ctag2wtag_func)
 
     validator = Validator(trn, dev, batcher, reporter)
-    rdnn = RDNN(feat.NC, feat.NF, **args)
-    # rdnn = RDNN_Dummy(feat.NC, feat.NF, **args)
+    # rdnn = RDNN_Dummy(feat.NC, feat.NF, args)
+    rdnn = RDNN(feat.NC, feat.NF, args)
+    # rdnn = RNNModel(feat.NC, feat.NF, args)
     validator.validate(rdnn, args['fepoch'], args['patience'])
     # lr: scipy.stats.expon.rvs(loc=0.0001,scale=0.1,size=100)
     # norm: scipy.stats.expon.rvs(loc=0, scale=5,size=10)

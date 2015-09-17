@@ -16,7 +16,7 @@ class RNNModel:
         u = T.matrix(dtype=theano.config.floatX)
         y = T.matrix(dtype=theano.config.floatX)
 
-        hiddens = self.configuration["hidden"]
+        hiddens = self.configuration["n_hidden"]
         acts = self.configuration["activation"]
         drates = self.configuration["drates"]
 

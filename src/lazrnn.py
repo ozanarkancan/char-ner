@@ -7,7 +7,7 @@ class Identity(lasagne.init.Initializer):
         return lasagne.utils.floatX(np.eye(*shape))
 
 class RDNN_Dummy:
-    def __init__(self, nc, nf, **kwargs):
+    def __init__(self, nc, nf, kwargs):
         self.nc = nc
 
     def train(self, dsetdat):
@@ -23,7 +23,7 @@ class RDNN_Dummy:
         return ecost, rnn_last_predictions
 
 class RDNN:
-    def __init__(self, nc, nf, **kwargs):
+    def __init__(self, nc, nf, kwargs):
         assert nf; assert nc
         LayerType = lasagne.layers.RecurrentLayer # default layer type
         if kwargs['ltype'] == 'recurrent':
@@ -32,7 +32,7 @@ class RDNN:
             LayerType = lasagne.layers.LSTMLayer
         else:
             raise Exception()
-        nonlin = getattr(lasagne.nonlinearities, kwargs['activation'])
+        nonlin = getattr(lasagne.nonlinearities, kwargs['activation'][0]) # change when deep
         optim = getattr(lasagne.updates, kwargs['opt'])
         n_hidden = kwargs['n_hidden']
         grad_clip =  kwargs['grad_clip'] if kwargs['grad_clip'] > 0 else False
