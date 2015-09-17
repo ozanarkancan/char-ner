@@ -6,56 +6,70 @@ class Identity(lasagne.init.Initializer):
     def sample(self, shape):
         return lasagne.utils.floatX(np.eye(*shape))
 
+class RDNN_Dummy:
+    def __init__(self, nc, nf, kwargs):
+        self.nc = nc
+
+    def train(self, dsetdat):
+        return self.predict(dsetdat)
+
+    def predict(self, dsetdat):
+        ecost, rnn_last_predictions = 0, []
+        for Xdset, Xdsetmsk, ydset, ydsetmsk in zip(*dsetdat):
+            ecost += 0
+            sentLens = Xdsetmsk.sum(axis=-1)
+            for i, slen in enumerate(sentLens):
+                rnn_last_predictions.append(np.random.random_integers(0,self.nc-1,slen))
+        return ecost, rnn_last_predictions
+
 class RDNN:
-    def __init__(self, nc, nf, max_seq_length, **kwargs):
-        # batch_size=None, n_hidden=100, grad_clip=7, lr=.001):
-        assert nf; assert max_seq_length
-        LayerType = lasagne.layers.RecurrentLayer
+    def __init__(self, nc, nf, kwargs):
+        assert nf; assert nc
+        LayerType = lasagne.layers.RecurrentLayer # default layer type
         if kwargs['ltype'] == 'recurrent':
             LayerType = lasagne.layers.RecurrentLayer
         elif kwargs['ltype'] == 'lstm':
             LayerType = lasagne.layers.LSTMLayer
         else:
             raise Exception()
-        nonlin = getattr(lasagne.nonlinearities, kwargs['activation'])
+        nonlin = getattr(lasagne.nonlinearities, kwargs['activation'][0]) # change when deep
         optim = getattr(lasagne.updates, kwargs['opt'])
         n_hidden = kwargs['n_hidden']
         grad_clip =  kwargs['grad_clip'] if kwargs['grad_clip'] > 0 else False
         lr = kwargs['lr']
-        batch_size = kwargs['n_batch'] # TODO: not used
         norm = kwargs['norm']
         ldepth = len(kwargs['n_hidden'])
         recout = kwargs['recout']
 
         # network
-        l_in = lasagne.layers.InputLayer(shape=(None, max_seq_length, nf))
-        logging.info('l_in: {}'.format(lasagne.layers.get_output_shape(l_in)))
-        N_BATCH_VAR, _, _ = l_in.input_var.shape # symbolic ref to input_var shape
-        l_mask = lasagne.layers.InputLayer(shape=(N_BATCH_VAR, max_seq_length))
-        logging.info('l_mask: {}'.format(lasagne.layers.get_output_shape(l_mask)))
+        l_in = lasagne.layers.InputLayer(shape=(None, None, nf))
+        logging.debug('l_in: {}'.format(lasagne.layers.get_output_shape(l_in)))
+        N_BATCH_VAR, MAX_SEQ_LEN_VAR, _ = l_in.input_var.shape # symbolic ref to input_var shape
+        l_mask = lasagne.layers.InputLayer(shape=(N_BATCH_VAR, MAX_SEQ_LEN_VAR))
+        logging.debug('l_mask: {}'.format(lasagne.layers.get_output_shape(l_mask)))
 
         l_forward = LayerType(l_in, n_hidden[0], mask_input=l_mask, grad_clipping=grad_clip, W_hid_to_hid=Identity(),
                 W_in_to_hid=lasagne.init.GlorotUniform(gain='relu'), nonlinearity=nonlin)
-        logging.info('l_forward: {}'.format(lasagne.layers.get_output_shape(l_forward)))
+        logging.debug('l_forward: {}'.format(lasagne.layers.get_output_shape(l_forward)))
         l_backward = LayerType(l_in, n_hidden[0], mask_input=l_mask, grad_clipping=grad_clip, W_hid_to_hid=Identity(),
                 W_in_to_hid=lasagne.init.GlorotUniform(gain='relu'), nonlinearity=nonlin, backwards=True)
-        logging.info('l_backward: {}'.format(lasagne.layers.get_output_shape(l_backward)))
+        logging.debug('l_backward: {}'.format(lasagne.layers.get_output_shape(l_backward)))
         l_concat = lasagne.layers.ConcatLayer([l_forward, l_backward], axis=2)
-        logging.info('l_concat: {}'.format(lasagne.layers.get_output_shape(l_concat)))
+        logging.debug('l_concat: {}'.format(lasagne.layers.get_output_shape(l_concat)))
 
         if recout:
             logging.info('using recout.')
-            l_out = LayerType(l_concat, num_units=nc, mask_input=l_mask, W_hid_to_hid=Identity(),
+            l_out = lasagne.layers.RecurrentLayer(l_concat, num_units=nc, mask_input=l_mask, W_hid_to_hid=Identity(),
                     W_in_to_hid=lasagne.init.GlorotUniform(), nonlinearity=lasagne.nonlinearities.softmax)
-            logging.info('l_out: {}'.format(lasagne.layers.get_output_shape(l_out)))
+            logging.debug('l_out: {}'.format(lasagne.layers.get_output_shape(l_out)))
         else:
             l_reshape = lasagne.layers.ReshapeLayer(l_concat, (-1, n_hidden[-1]*2))
-            logging.info('l_reshape: {}'.format(lasagne.layers.get_output_shape(l_reshape)))
+            logging.debug('l_reshape: {}'.format(lasagne.layers.get_output_shape(l_reshape)))
             l_rec_out = lasagne.layers.DenseLayer(l_reshape, num_units=nc, nonlinearity=lasagne.nonlinearities.softmax)
 
-            logging.info('l_rec_out: {}'.format(lasagne.layers.get_output_shape(l_rec_out)))
-            l_out = lasagne.layers.ReshapeLayer(l_rec_out, (N_BATCH_VAR, max_seq_length, nc))
-            logging.info('l_out: {}'.format(lasagne.layers.get_output_shape(l_out)))
+            logging.debug('l_rec_out: {}'.format(lasagne.layers.get_output_shape(l_rec_out)))
+            l_out = lasagne.layers.ReshapeLayer(l_rec_out, (N_BATCH_VAR, MAX_SEQ_LEN_VAR, nc))
+            logging.debug('l_out: {}'.format(lasagne.layers.get_output_shape(l_out)))
 
         self.output_layer = l_out
 
@@ -70,23 +84,20 @@ class RDNN:
 
         # cost_train = T.switch(T.or_(T.isnan(cost_train), T.isinf(cost_train)), 1000, cost_train)
 
-
         all_params = lasagne.layers.get_all_params(l_out, trainable=True)
-        logging.info(all_params)
+        logging.debug(all_params)
 
         f_hid2hid = l_forward.get_params()[-1]
         b_hid2hid = l_backward.get_params()[-1]
 
         all_grads = T.grad(cost_train, all_params)
-        # logging.info(lasagne.updates.get_or_compute_grads(all_grads, all_params))
 
         all_grads, total_norm = lasagne.updates.total_norm_constraint(all_grads, norm, return_norm=True)
         all_grads = [T.switch(T.or_(T.isnan(total_norm), T.isinf(total_norm)), p*0.1 , g) for g,p in zip(all_grads, all_params)]
 
-        logging.info("Computing updates ...")
         updates = optim(all_grads, all_params, lr)
 
-        logging.info("Compiling functions ...")
+        logging.info("Compiling functions...")
         self.train_model = theano.function(inputs=[l_in.input_var, target_output, l_mask.input_var, out_mask], outputs=cost_train, updates=updates)
         self.predict_model = theano.function(
                 inputs=[l_in.input_var, target_output, l_mask.input_var, out_mask],
@@ -99,13 +110,12 @@ class RDNN:
                 updates=updates)
         self.compute_cost = theano.function([l_in.input_var, target_output, l_mask.input_var, out_mask], cost_eval)
         self.compute_cost_train = theano.function([l_in.input_var, target_output, l_mask.input_var, out_mask], cost_train)
+        logging.info("Compiling done.")
 
     def train(self, dsetdat):
-        ecost = 0
-        for Xdset, Xdsetmsk, ydset, ydsetmsk in zip(*dsetdat):
-            bcost = self.train_model(Xdset, ydset, Xdsetmsk, ydsetmsk)
-            ecost += bcost
-        return ecost
+        tcost = sum(self.train_model(Xdset, ydset, Xdsetmsk, ydsetmsk) for Xdset, Xdsetmsk, ydset, ydsetmsk in zip(*dsetdat))
+        pcost, pred = self.predict(dsetdat)
+        return tcost, pred
 
     def predict(self, dsetdat):
         ecost, rnn_last_predictions = 0, []
