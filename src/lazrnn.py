@@ -113,11 +113,9 @@ class RDNN:
         logging.info("Compiling done.")
 
     def train(self, dsetdat):
-        ecost = 0
-        for Xdset, Xdsetmsk, ydset, ydsetmsk in zip(*dsetdat):
-            bcost = self.train_model(Xdset, ydset, Xdsetmsk, ydsetmsk)
-            ecost += bcost
-        return self.predict(dsetdat)
+        tcost = sum(self.train_model(Xdset, ydset, Xdsetmsk, ydsetmsk) for Xdset, Xdsetmsk, ydset, ydsetmsk in zip(*dsetdat))
+        pcost, pred = self.predict(dsetdat)
+        return tcost, pred
 
     def predict(self, dsetdat):
         ecost, rnn_last_predictions = 0, []

@@ -228,12 +228,15 @@ def main():
     feat = Feat(featfunc)
     feat.fit(trn)
 
+    for sent in trn:
+        Xsent, ysent = feat.transform(sent)
+
     batcher = Batcher(args['n_batch'], feat)
     reporter = Reporter(feat, ctag2wtag_func)
 
     validator = Validator(trn, dev, batcher, reporter)
-    # rdnn = RDNN(feat.NC, feat.NF, **args)
-    rdnn = RDNN_Dummy(feat.NC, feat.NF, **args)
+    rdnn = RDNN(feat.NC, feat.NF, **args)
+    # rdnn = RDNN_Dummy(feat.NC, feat.NF, **args)
     validator.validate(rdnn, args['fepoch'], args['patience'])
     # lr: scipy.stats.expon.rvs(loc=0.0001,scale=0.1,size=100)
     # norm: scipy.stats.expon.rvs(loc=0, scale=5,size=10)
