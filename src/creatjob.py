@@ -1,4 +1,5 @@
 import argparse
+from utils import ROOT_DIR
 
 STR = """#!/bin/bash
 #$ -N gpu
@@ -14,7 +15,7 @@ STR = """#!/bin/bash
  
 source ~/setenv.sh
 cd /mnt/kufs/scratch/okuru13/char-ner
-python src/exper_lasagne.py {}
+python src/exper.py {}
 """
 
 def valid_file_name(s):
@@ -28,6 +29,7 @@ if __name__ == '__main__':
     job_text = STR.format(args.biyofiz, args.exper_args)
     file_name_param = valid_file_name(args.exper_args.replace(' ','.')) if args.exper_args else 'defaults'
     job_file_name = 'biyofiz{}.'.format(args.biyofiz)+file_name_param+'.job'
-    with open('./jobs/'+job_file_name,'w') as out:
+    job_file_path = '{}/jobs/{}'.format(ROOT_DIR,job_file_name)
+    with open(job_file_path,'w') as out:
         out.write(job_text)
-    print job_file_name
+    print job_file_path
