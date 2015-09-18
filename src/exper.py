@@ -178,12 +178,14 @@ def main():
     parser = get_arg_parser()
     args = vars(parser.parse_args())
 
+    if args['rnn'] == 'nerrnn':
+        args['n_batch'] = 1
+
     # logger setup
     logger = logging.getLogger()
     logger.setLevel(logging.DEBUG)
     shandler = logging.StreamHandler()
     shandler.setLevel(logging.INFO)
-    # 
     lparams = ['n_batch','ltype','activation','n_hidden','opt','lr','norm','recout']
     param_log_name = ','.join(['{}:{}'.format(p,args[p]) for p in lparams])
     param_log_name = valid_file_name(param_log_name)
