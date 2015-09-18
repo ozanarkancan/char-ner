@@ -1,4 +1,7 @@
 import re, subprocess
+from utils import ROOT_DIR
+
+SRC_DIR = '{}/src'.format(ROOT_DIR)
 
 def conlleval(ts_gold, ts_pred):
     text = ''
@@ -8,7 +11,7 @@ def conlleval(ts_gold, ts_pred):
         text += '\n'
 
     proc = subprocess.Popen(
-        './src/conlleval',stdout=subprocess.PIPE,
+        '%s/conlleval'%SRC_DIR,stdout=subprocess.PIPE,
         stdin=subprocess.PIPE)
     proc.stdin.write(text)
     proc.stdin.close()

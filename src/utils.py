@@ -5,7 +5,10 @@ from sklearn.feature_extraction import DictVectorizer
 from sklearn.preprocessing import LabelEncoder
 
 __author__ = 'Onur Kuru'
-DATA_DIR = 'data'
+import os
+file_abspath = os.path.abspath(__file__)
+ROOT_DIR = os.path.abspath(os.path.join(file_abspath, os.pardir, os.pardir))
+DATA_DIR = '{}/data'.format(ROOT_DIR)
 
 def read_sents(file):
     a,b,c,d = [],[],[],[]
@@ -40,7 +43,9 @@ def read_sents_spa(file):
 
 def get_sents(lang='eng', enc='bilou'):
     if lang=='eng':
-        return read_sents('%s/%s/train.%s'%(DATA_DIR,lang,enc)), read_sents('%s/%s/testa.%s'%(DATA_DIR,lang,enc)), read_sents('%s/%s/testb.%s'%(DATA_DIR,lang,enc))
+        return read_sents('%s/%s/train.%s'%(DATA_DIR,lang,enc)),\
+                read_sents('%s/%s/testa.%s'%(DATA_DIR,lang,enc)),\
+                read_sents('%s/%s/testb.%s'%(DATA_DIR,lang,enc))
     elif lang=='spa':
         return read_sents_spa('%s/%s/train.%s'%(DATA_DIR,lang,enc)), read_sents('%s/%s/testa.%s'%(DATA_DIR,lang,enc)), read_sents('%s/%s/testb.%s'%(DATA_DIR,lang,enc))
     else:
@@ -177,7 +182,6 @@ def tseq2ts(sent):
     return ts
 
 if __name__ == '__main__':
-    trn, dev, tst = get_sents('spa','bio')
-    sent = random.choice(trn)
-    for sent in trn[:5]:
-        print sent
+    print ROOT_DIR
+    pass
+

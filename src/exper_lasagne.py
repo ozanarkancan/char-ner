@@ -15,11 +15,12 @@ import theano.tensor as T
 from featchar import *
 import featchar
 from utils import get_sents, get_sent_indx, sample_sents
+from utils import ROOT_DIR
 from biloueval import bilouEval2
 from lazrnn import RDNN, RDNN_Dummy
 from nerrnn import RNNModel
 
-LOG_DIR = 'logs'
+LOG_DIR = '{}/logs'.format(ROOT_DIR)
 random.seed(0)
 rng = np.random.RandomState(1234567)
 lasagne.random.set_rng(rng)
