@@ -22,18 +22,24 @@ class RDNN_Dummy:
                 rnn_last_predictions.append(np.random.random_integers(0,self.nc-1,slen))
         return ecost, rnn_last_predictions
 
+def extract_rnn_params(kwargs):
+    return dict((pname,kwargs[pname]) for pname in RDNN.param_names)
+
 class RDNN:
+    param_names = ['ltype','activation','n_hidden','opt','grad_clip','lr','norm','recout']
+
+    def set_params(self, kwargs):
+        assert kwargs['ltype'] in ['recurrent', 'lstm', 'gru']
+        for pname in RDNN.param_names:
+            setattr(self, pname, kwargs[pname])
+        self.nonlin = getattr(lasagne.nonlinearities, self.activation[0]) # change when deep
+        self.opt = getattr(lasagne.updates, self.opt)
+        self.grad_clip =  kwargs['grad_clip'] if kwargs['grad_clip'] > 0 else False
+
     def __init__(self, nc, nf, kwargs):
         assert nf; assert nc
-        assert kwargs['ltype'] in ['recurrent', 'lstm', 'gru']
-        nonlin = getattr(lasagne.nonlinearities, kwargs['activation'][0]) # change when deep
-        optim = getattr(lasagne.updates, kwargs['opt'])
-        n_hidden = kwargs['n_hidden']
-        grad_clip =  kwargs['grad_clip'] if kwargs['grad_clip'] > 0 else False
-        lr = kwargs['lr']
-        norm = kwargs['norm']
-        ldepth = len(kwargs['n_hidden'])
-        recout = kwargs['recout']
+        self.set_params(kwargs)
+        ldepth = len(self.n_hidden)
 
         # network
         l_in = lasagne.layers.InputLayer(shape=(None, None, nf))
@@ -42,33 +48,33 @@ class RDNN:
         l_mask = lasagne.layers.InputLayer(shape=(N_BATCH_VAR, MAX_SEQ_LEN_VAR))
         logging.debug('l_mask: {}'.format(lasagne.layers.get_output_shape(l_mask)))
 
-        if kwargs['ltype'] == 'recurrent':
+        if self.ltype == 'recurrent':
             LayerType = lasagne.layers.RecurrentLayer
-            l_forward = LayerType(l_in, n_hidden[0], mask_input=l_mask, grad_clipping=grad_clip, W_hid_to_hid=Identity(),
-                    W_in_to_hid=lasagne.init.GlorotUniform(gain='relu'), nonlinearity=nonlin)
+            l_forward = LayerType(l_in, self.n_hidden[0], mask_input=l_mask, grad_clipping=self.grad_clip, W_hid_to_hid=Identity(),
+                    W_in_to_hid=lasagne.init.GlorotUniform(gain='relu'), nonlinearity=self.nonlin)
             logging.debug('l_forward: {}'.format(lasagne.layers.get_output_shape(l_forward)))
-            l_backward = LayerType(l_in, n_hidden[0], mask_input=l_mask, grad_clipping=grad_clip, W_hid_to_hid=Identity(),
-                    W_in_to_hid=lasagne.init.GlorotUniform(gain='relu'), nonlinearity=nonlin, backwards=True)
-        elif kwargs['ltype'] == 'lstm':
+            l_backward = LayerType(l_in, self.n_hidden[0], mask_input=l_mask, grad_clipping=self.grad_clip, W_hid_to_hid=Identity(),
+                    W_in_to_hid=lasagne.init.GlorotUniform(gain='relu'), nonlinearity=self.nonlin, backwards=True)
+        elif self.ltype == 'lstm':
             LayerType = lasagne.layers.LSTMLayer
-            l_forward = LayerType(l_in, n_hidden[0], mask_input=l_mask, grad_clipping=grad_clip, nonlinearity=nonlin)
-            l_backward = LayerType(l_in, n_hidden[0], mask_input=l_mask, grad_clipping=grad_clip, nonlinearity=nonlin, backwards=True)
-        elif kwargs['ltype'] == 'gru':
+            l_forward = LayerType(l_in, self.n_hidden[0], mask_input=l_mask, grad_clipping=self.grad_clip, nonlinearity=nonlin)
+            l_backward = LayerType(l_in, self.n_hidden[0], mask_input=l_mask, grad_clipping=self.grad_clip, nonlinearity=nonlin, backwards=True)
+        elif self.ltype == 'gru':
             LayerType = lasagne.layers.GRULayer
-            l_forward = LayerType(l_in, n_hidden[0], mask_input=l_mask, grad_clipping=grad_clip)
-            l_backward = LayerType(l_in, n_hidden[0], mask_input=l_mask, grad_clipping=grad_clip, backwards=True)
+            l_forward = LayerType(l_in, self.n_hidden[0], mask_input=l_mask, grad_clipping=self.grad_clip)
+            l_backward = LayerType(l_in, self.n_hidden[0], mask_input=l_mask, grad_clipping=self.grad_clip, backwards=True)
 
         logging.debug('l_backward: {}'.format(lasagne.layers.get_output_shape(l_backward)))
         l_concat = lasagne.layers.ConcatLayer([l_forward, l_backward], axis=2)
         logging.debug('l_concat: {}'.format(lasagne.layers.get_output_shape(l_concat)))
 
-        if recout:
+        if self.recout:
             logging.info('using recout.')
             l_out = lasagne.layers.RecurrentLayer(l_concat, num_units=nc, mask_input=l_mask, W_hid_to_hid=Identity(),
                     W_in_to_hid=lasagne.init.GlorotUniform(), nonlinearity=lasagne.nonlinearities.softmax)
             logging.debug('l_out: {}'.format(lasagne.layers.get_output_shape(l_out)))
         else:
-            l_reshape = lasagne.layers.ReshapeLayer(l_concat, (-1, n_hidden[-1]*2))
+            l_reshape = lasagne.layers.ReshapeLayer(l_concat, (-1, self.n_hidden[-1]*2))
             logging.debug('l_reshape: {}'.format(lasagne.layers.get_output_shape(l_reshape)))
             l_rec_out = lasagne.layers.DenseLayer(l_reshape, num_units=nc, nonlinearity=lasagne.nonlinearities.softmax)
 
@@ -97,10 +103,10 @@ class RDNN:
 
         all_grads = T.grad(cost_train, all_params)
 
-        all_grads, total_norm = lasagne.updates.total_norm_constraint(all_grads, norm, return_norm=True)
+        all_grads, total_norm = lasagne.updates.total_norm_constraint(all_grads, self.norm, return_norm=True)
         all_grads = [T.switch(T.or_(T.isnan(total_norm), T.isinf(total_norm)), p*0.1 , g) for g,p in zip(all_grads, all_params)]
 
-        updates = optim(all_grads, all_params, lr)
+        updates = self.opt(all_grads, all_params, self.lr)
 
         logging.info("Compiling functions...")
         self.train_model = theano.function(inputs=[l_in.input_var, target_output, l_mask.input_var, out_mask], outputs=cost_train, updates=updates)
@@ -167,3 +173,6 @@ for level in range(1,ldepth+1):
 l_reshape = lasagne.layers.ReshapeLayer(self.layers[-1], (-1, n_hidden[-1]*2))
 logging.info('l_reshape: {}'.format(lasagne.layers.get_output_shape(l_reshape)))
 """
+if __name__ == '__main__':
+    print RDNN.params
+    pass

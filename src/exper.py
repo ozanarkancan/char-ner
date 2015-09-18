@@ -17,7 +17,7 @@ import featchar
 from utils import get_sents, get_sent_indx, sample_sents
 from utils import ROOT_DIR
 from biloueval import bilouEval2
-from lazrnn import RDNN, RDNN_Dummy
+from lazrnn import RDNN, RDNN_Dummy, extract_rnn_params
 from nerrnn import RNNModel
 
 LOG_DIR = '{}/logs'.format(ROOT_DIR)
@@ -205,10 +205,12 @@ def main():
     trn, dev, tst = get_sents()
 
     if len(args['sample']):
-        trn_size = args['sample'][0]*1000
-        dev_size = args['sample'][1]*1000
-        trn = sample_sents(trn,trn_size)
-        dev = sample_sents(dev,dev_size)
+        if args['sample'][0] > 0:
+            trn_size = args['sample'][0]*1000
+            trn = sample_sents(trn,trn_size)
+        if args['sample'][1] > 0:
+            dev_size = args['sample'][1]*1000
+            dev = sample_sents(dev,dev_size)
 
     ctag2wtag_func = get_ts2 
     wtag2ctag_func = get_tseq2
@@ -219,7 +221,6 @@ def main():
                 'cseq': get_cseq(sent), 
                 'wiseq': get_wiseq(sent), 
                 'tseq': wtag2ctag_func(sent)})
-                #'tseq': get_tseq1(sent)})
 
     if args['sorted']:
         trn = sorted(trn, key=lambda sent: len(sent['cseq']))
@@ -252,6 +253,8 @@ def main():
         raise Exception
     # end select rnn
 
+    rnn_params = extract_rnn_params(args)
+    print rnn_params
     rdnn = RNN(feat.NC, feat.NF, args)
     validator.validate(rdnn, args['fepoch'], args['patience'])
     # lr: scipy.stats.expon.rvs(loc=0.0001,scale=0.1,size=100)
