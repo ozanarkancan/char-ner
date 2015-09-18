@@ -14,7 +14,7 @@ class RNNModel:
     def __init__(self, n_out, n_in, configuration):
         self.configuration = configuration
         u = T.matrix(dtype=theano.config.floatX)
-        y = T.matrix(dtype=theano.config.floatX)
+        y = T.ivector()
 
         hiddens = self.configuration["n_hidden"]
         acts = self.configuration["activation"]
@@ -63,7 +63,7 @@ class RNNModel:
             updates = sgd(params, gparams, lr)
 
         self.train_model = theano.function(inputs=[u, y],
-            outputs=[cost],
+            outputs=cost,
             updates=updates,
             allow_input_downcast=True,
         )
@@ -75,7 +75,8 @@ class RNNModel:
     def train(self, dsetdat):
         tcost = 0
         for Xdset, Xdsetmsk, ydset, ydsetmsk in zip(*dsetdat):
-            cost = self.train_model(Xdset, ydset)
+            x,y = Xdset[0], np.nonzero(ydset[0])[1]
+            cost = self.train_model(x,y)
             tcost += cost
         _, preds = self.predict(dsetdat)
 
@@ -84,7 +85,8 @@ class RNNModel:
     def predict(self, dsetdat):
         ecost, rnn_last_predictions = 0, []
         for Xdset, Xdsetmsk, ydset, ydsetmsk in zip(*dsetdat):
-            cost, preds = self.predict_model(testX[s:e,:], testY[s:e])
+            x,y = Xdset[0], np.nonzero(ydset[0])[1]
+            cost, preds = self.predict_model(x,y)
             ecost += cost
             rnn_last_predictions.append(preds)
         return ecost, rnn_last_predictions
