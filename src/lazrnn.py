@@ -25,13 +25,7 @@ class RDNN_Dummy:
 class RDNN:
     def __init__(self, nc, nf, kwargs):
         assert nf; assert nc
-        LayerType = lasagne.layers.RecurrentLayer # default layer type
-        if kwargs['ltype'] == 'recurrent':
-            LayerType = lasagne.layers.RecurrentLayer
-        elif kwargs['ltype'] == 'lstm':
-            LayerType = lasagne.layers.LSTMLayer
-        else:
-            raise Exception()
+        assert kwargs['ltype'] in ['recurrent', 'lstm', 'gru']
         nonlin = getattr(lasagne.nonlinearities, kwargs['activation'][0]) # change when deep
         optim = getattr(lasagne.updates, kwargs['opt'])
         n_hidden = kwargs['n_hidden']
@@ -48,11 +42,22 @@ class RDNN:
         l_mask = lasagne.layers.InputLayer(shape=(N_BATCH_VAR, MAX_SEQ_LEN_VAR))
         logging.debug('l_mask: {}'.format(lasagne.layers.get_output_shape(l_mask)))
 
-        l_forward = LayerType(l_in, n_hidden[0], mask_input=l_mask, grad_clipping=grad_clip, W_hid_to_hid=Identity(),
-                W_in_to_hid=lasagne.init.GlorotUniform(gain='relu'), nonlinearity=nonlin)
-        logging.debug('l_forward: {}'.format(lasagne.layers.get_output_shape(l_forward)))
-        l_backward = LayerType(l_in, n_hidden[0], mask_input=l_mask, grad_clipping=grad_clip, W_hid_to_hid=Identity(),
-                W_in_to_hid=lasagne.init.GlorotUniform(gain='relu'), nonlinearity=nonlin, backwards=True)
+        if kwargs['ltype'] == 'recurrent':
+            LayerType = lasagne.layers.RecurrentLayer
+            l_forward = LayerType(l_in, n_hidden[0], mask_input=l_mask, grad_clipping=grad_clip, W_hid_to_hid=Identity(),
+                    W_in_to_hid=lasagne.init.GlorotUniform(gain='relu'), nonlinearity=nonlin)
+            logging.debug('l_forward: {}'.format(lasagne.layers.get_output_shape(l_forward)))
+            l_backward = LayerType(l_in, n_hidden[0], mask_input=l_mask, grad_clipping=grad_clip, W_hid_to_hid=Identity(),
+                    W_in_to_hid=lasagne.init.GlorotUniform(gain='relu'), nonlinearity=nonlin, backwards=True)
+        elif kwargs['ltype'] == 'lstm':
+            LayerType = lasagne.layers.LSTMLayer
+            l_forward = LayerType(l_in, n_hidden[0], mask_input=l_mask, grad_clipping=grad_clip, nonlinearity=nonlin)
+            l_backward = LayerType(l_in, n_hidden[0], mask_input=l_mask, grad_clipping=grad_clip, nonlinearity=nonlin, backwards=True)
+        elif kwargs['ltype'] == 'gru':
+            LayerType = lasagne.layers.GRULayer
+            l_forward = LayerType(l_in, n_hidden[0], mask_input=l_mask, grad_clipping=grad_clip)
+            l_backward = LayerType(l_in, n_hidden[0], mask_input=l_mask, grad_clipping=grad_clip, backwards=True)
+
         logging.debug('l_backward: {}'.format(lasagne.layers.get_output_shape(l_backward)))
         l_concat = lasagne.layers.ConcatLayer([l_forward, l_backward], axis=2)
         logging.debug('l_concat: {}'.format(lasagne.layers.get_output_shape(l_concat)))
