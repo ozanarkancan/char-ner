@@ -28,25 +28,23 @@ lasagne.random.set_rng(rng)
 def get_arg_parser():
     parser = argparse.ArgumentParser(prog="lazrnn")
     
+    parser.add_argument("--rnn", default='lazrnn', choices=['dummy','lazrnn','nerrnn'], help="which rnn to use")
+    parser.add_argument("--activation", default=['bi-relu'], nargs='+', help="activation function for hidden layer : sigmoid, tanh, rectify")
     parser.add_argument("--n_hidden", default=[100], nargs='+', type=int, help="number of neurons in each hidden layer")
-    parser.add_argument("--activation", default=['rectify'], nargs='+', help="activation function for hidden layer : sigmoid, tanh, rectify")
+    parser.add_argument("--recout", default=0, type=int, help="use recurrent output layer")
     parser.add_argument("--drates", default=[0, 0], nargs='+', type=float, help="dropout rates")
-    # parser.add_argument("--bias", default=[0], nargs='+', type=int, help="bias on/off for layer")
     parser.add_argument("--opt", default="adam", help="optimization method: sgd, rmsprop, adagrad, adam")
-    parser.add_argument("--ltype", default="recurrent", help="layer type: recurrent lstm")
+    parser.add_argument("--lr", default=0.001, type=float, help="learning rate")
+    parser.add_argument("--norm", default=2, type=float, help="Threshold for clipping norm of gradient")
     parser.add_argument("--n_batch", default=50, type=int, help="batch size")
     parser.add_argument("--fepoch", default=300, type=int, help="number of epochs")
     parser.add_argument("--patience", default=-1, type=int, help="how patient the validator is")
-    parser.add_argument("--sample", default=[], nargs='+', type=int, help="num of sents to sample from trn, dev in the order of K")
+    parser.add_argument("--sample", default=0, type=int, help="num of sents to sample from trn in the order of K")
     parser.add_argument("--feat", default='basic_seg', help="feat func to use")
-    parser.add_argument("--lr", default=0.001, type=float, help="learning rate")
     parser.add_argument("--grad_clip", default=-1, type=float, help="clip gradient messages in recurrent layers if they are above this value")
-    parser.add_argument("--norm", default=2, type=float, help="Threshold for clipping norm of gradient")
     parser.add_argument("--truncate", default=-1, type=int, help="backward step size")
-    parser.add_argument("--recout", default=0, type=int, help="use recurrent output layer")
     parser.add_argument("--log", default='das_auto', help="log file name")
     parser.add_argument("--sorted", default=1, type=int, help="sort datasets before training and prediction")
-    parser.add_argument("--rnn", default='lazrnn', choices=['dummy','lazrnn','nerrnn'], help="which rnn to use")
     
     return parser
 
@@ -182,14 +180,17 @@ def main():
         args['n_batch'] = 1
 
     # logger setup
+    import socket
+    host = socket.gethostname().split('.')[0]
     logger = logging.getLogger()
     logger.setLevel(logging.DEBUG)
     shandler = logging.StreamHandler()
     shandler.setLevel(logging.INFO)
-    lparams = ['n_batch','ltype','activation','n_hidden','opt','lr','norm','recout']
+    lparams = ['rnn', 'activation', 'n_hidden', 'recout', 'opt','lr','norm','n_batch', 'fepoch','patience','sample']
     param_log_name = ','.join(['{}:{}'.format(p,args[p]) for p in lparams])
     param_log_name = valid_file_name(param_log_name)
-    base_log_name = '{:%d-%m-%y+%H:%M:%S}:{},{}'.format(datetime.datetime.now(), theano.config.device, param_log_name if args['log'] == 'das_auto' else args['log'])
+    base_log_name = '{}:{},{}'.format(host, theano.config.device, param_log_name if args['log'] == 'das_auto' else args['log'])
+    # base_log_name = '{:%d-%m-%y+%H:%M:%S}:{},{}'.format(datetime.datetime.now(), theano.config.device, param_log_name if args['log'] == 'das_auto' else args['log'])
     ihandler = logging.FileHandler('{}/{}.info'.format(LOG_DIR,base_log_name), mode='w')
     ihandler.setLevel(logging.INFO)
     dhandler = logging.FileHandler('{}/{}.debug'.format(LOG_DIR,base_log_name), mode='w')
@@ -204,13 +205,9 @@ def main():
 
     trn, dev, tst = get_sents()
 
-    if len(args['sample']):
-        if args['sample'][0] > 0:
-            trn_size = args['sample'][0]*1000
-            trn = sample_sents(trn,trn_size)
-        if args['sample'][1] > 0:
-            dev_size = args['sample'][1]*1000
-            dev = sample_sents(dev,dev_size)
+    if args['sample']>0:
+        trn_size = args['sample']*1000
+        trn = sample_sents(trn,trn_size)
 
     ctag2wtag_func = get_ts2 
     wtag2ctag_func = get_tseq2
@@ -254,7 +251,6 @@ def main():
     # end select rnn
 
     rnn_params = extract_rnn_params(args)
-    print rnn_params
     rdnn = RNN(feat.NC, feat.NF, args)
     validator.validate(rdnn, args['fepoch'], args['patience'])
     # lr: scipy.stats.expon.rvs(loc=0.0001,scale=0.1,size=100)

@@ -26,19 +26,22 @@ def extract_rnn_params(kwargs):
     return dict((pname,kwargs[pname]) for pname in RDNN.param_names)
 
 class RDNN:
-    param_names = ['ltype','activation','n_hidden','opt','grad_clip','lr','norm','recout']
-
-    def set_params(self, kwargs):
-        assert kwargs['ltype'] in ['recurrent', 'lstm', 'gru']
-        for pname in RDNN.param_names:
-            setattr(self, pname, kwargs[pname])
-        self.nonlin = getattr(lasagne.nonlinearities, self.activation[0]) # change when deep
-        self.opt = getattr(lasagne.updates, self.opt)
-        self.grad_clip =  kwargs['grad_clip'] if kwargs['grad_clip'] > 0 else False
+    param_names = ['activation','n_hidden','opt','grad_clip','lr','norm','recout']
 
     def __init__(self, nc, nf, kwargs):
         assert nf; assert nc
-        self.set_params(kwargs)
+        for pname in RDNN.param_names:
+            setattr(self, pname, kwargs[pname])
+        bi, act = self.activation[0].split('-')
+        if act in ['lstm','gru']:
+            self.nonlin = lasagne.nonlinearities.tanh
+            self.ltype = act
+        else:
+            act = 'rectify' if act == 'relu' else act
+            self.nonlin = getattr(lasagne.nonlinearities, act) # change when deep
+            self.ltype = 'recurrent'
+        self.opt = getattr(lasagne.updates, self.opt)
+        self.grad_clip =  kwargs['grad_clip'] if kwargs['grad_clip'] > 0 else False
         ldepth = len(self.n_hidden)
 
         # network
@@ -57,8 +60,8 @@ class RDNN:
                     W_in_to_hid=lasagne.init.GlorotUniform(gain='relu'), nonlinearity=self.nonlin, backwards=True)
         elif self.ltype == 'lstm':
             LayerType = lasagne.layers.LSTMLayer
-            l_forward = LayerType(l_in, self.n_hidden[0], mask_input=l_mask, grad_clipping=self.grad_clip, nonlinearity=nonlin)
-            l_backward = LayerType(l_in, self.n_hidden[0], mask_input=l_mask, grad_clipping=self.grad_clip, nonlinearity=nonlin, backwards=True)
+            l_forward = LayerType(l_in, self.n_hidden[0], mask_input=l_mask, grad_clipping=self.grad_clip)
+            l_backward = LayerType(l_in, self.n_hidden[0], mask_input=l_mask, grad_clipping=self.grad_clip, backwards=True)
         elif self.ltype == 'gru':
             LayerType = lasagne.layers.GRULayer
             l_forward = LayerType(l_in, self.n_hidden[0], mask_input=l_mask, grad_clipping=self.grad_clip)
