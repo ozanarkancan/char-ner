@@ -183,7 +183,7 @@ def main():
     shandler = logging.StreamHandler()
     shandler.setLevel(logging.INFO)
     # 
-    lparams = ['n_batch','ltype','activation','n_hidden','opt','lr','norm','recout']
+    lparams = ['n_batch','ltype','activation','n_hidden','opt','lr','norm','recout','fepoch']
     param_log_name = ','.join(['{}:{}'.format(p,args[p]) for p in lparams])
     param_log_name = valid_file_name(param_log_name)
     base_log_name = '{:%d-%m-%y+%H:%M:%S}:{},{}'.format(datetime.datetime.now(), theano.config.device, param_log_name if args['log'] == 'das_auto' else args['log'])
@@ -197,6 +197,7 @@ def main():
     # print args
     for k,v in sorted(args.iteritems()):
         logger.info('{}:\t{}'.format(k,v))
+    logger.info('{}:\t{}'.format('base_log_name',base_log_name))
 
     trn, dev, tst = get_sents()
 
