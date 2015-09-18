@@ -1,0 +1,41 @@
+activation:	['bi-relu']
+drates:	[0, 0]
+feat:	basic_seg
+fepoch:	100
+grad_clip:	-1
+log:	tmp
+lr:	0.001
+ltype:	recurrent
+n_batch:	1
+n_hidden:	[100]
+norm:	2
+opt:	adam
+patience:	-1
+recout:	0
+rnn:	dummy
+sample:	[3, 1]
+sorted:	1
+truncate:	-1
+# of sents trn, dev, tst: 3000 1000 3453
+maxlen: 314 minlen: 1
+['c= ', 'c=!', 'c="', 'c=$', 'c=%', 'c=&', "c='", 'c=(', 'c=)', 'c=*', 'c=+', 'c=,', 'c=-', 'c=.', 'c=/', 'c=0', 'c=1', 'c=2', 'c=3', 'c=4', 'c=5', 'c=6', 'c=7', 'c=8', 'c=9', 'c=:', 'c=;', 'c==', 'c=?', 'c=A', 'c=B', 'c=C', 'c=D', 'c=E', 'c=F', 'c=G', 'c=H', 'c=I', 'c=J', 'c=K', 'c=L', 'c=M', 'c=N', 'c=O', 'c=P', 'c=Q', 'c=R', 'c=S', 'c=T', 'c=U', 'c=V', 'c=W', 'c=X', 'c=Y', 'c=Z', 'c=[', 'c=]', 'c=`', 'c=a', 'c=b', 'c=c', 'c=d', 'c=e', 'c=f', 'c=g', 'c=h', 'c=i', 'c=j', 'c=k', 'c=l', 'c=m', 'c=n', 'c=o', 'c=p', 'c=q', 'c=r', 'c=s', 'c=t', 'c=u', 'c=v', 'c=w', 'c=x', 'c=y', 'c=z', 'isspace', 'wend', 'wstart']
+['b-LOC' 'b-MISC' 'b-ORG' 'b-PER' 'i-LOC' 'i-MISC' 'i-ORG' 'i-PER' 'l-LOC'
+ 'l-MISC' 'l-ORG' 'l-PER' 'o']
+['B-LOC' 'B-MISC' 'B-ORG' 'B-PER' 'I-LOC' 'I-MISC' 'I-ORG' 'I-PER' 'L-LOC'
+ 'L-MISC' 'L-ORG' 'L-PER' 'O' 'U-LOC' 'U-MISC' 'U-ORG' 'U-PER']
+NF: 87 NC: 13
+training the model...
+patience not used
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   1         0.0000     0.0521     0.9225     0.9555     4.4514     0.5229     1.5525     0.7823     0.7823          1
+dev   1         0.0000     0.0180     0.9241     0.9542     4.5752     0.4689     1.4525     0.7089     0.7089          1
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   2         0.0000     0.0517     0.9234     0.9564     4.3561     0.5592     1.6720     0.8381     0.8381          2
+dev   2         0.0000     0.0180     0.9238     0.9543     4.5690     0.4500     1.3966     0.6807     0.7089          1
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   3         0.0000     0.0517     0.9231     0.9538     4.6188     0.5474     1.6322     0.8198     0.8381          2
+dev   3         0.0000     0.0180     0.9229     0.9564     4.3568     0.5783     1.7877     0.8740     0.8740          3
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
