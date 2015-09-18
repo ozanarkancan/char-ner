@@ -23,8 +23,8 @@ def valid_file_name(s):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(prog="creatjob")
-    parser.add_argument("--exper_args", default="") 
-    parser.add_argument("--biyofiz", default=0, type=int, choices=range(4)) 
+    parser.add_argument("--exper_args", required=True) 
+    parser.add_argument("--biyofiz", required=True, type=int, choices=range(4)) 
     args = parser.parse_args()
     job_text = STR.format(args.biyofiz, args.exper_args)
     file_name_param = valid_file_name(args.exper_args.replace(' ','.')) if args.exper_args else 'defaults'
