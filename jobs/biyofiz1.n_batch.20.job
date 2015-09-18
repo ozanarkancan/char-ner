@@ -1,6 +1,6 @@
 #!/bin/bash
 #$ -N gpu
-#$ -q biyofiz.q@biyofiz-4-0
+#$ -q biyofiz.q@biyofiz-4-1
 #$ -S /bin/bash
 ##$ -l h_rt=05:00:00 #how many mins run
 #$ -pe smp 1
@@ -12,4 +12,4 @@
  
 source ~/setenv.sh
 cd /mnt/kufs/scratch/okuru13/char-ner
-python src/exper_lasagne.py 
+python src/exper_lasagne.py --n_batch 20
