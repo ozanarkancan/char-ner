@@ -31,6 +31,9 @@ def contains_consecutive_same_type(sent):
                     return True
     return False
 
+def num_of_phrases_sent(sent):
+    return sum(1 if t.startswith('B') or t.startswith('U') else 0 for t in sent['ts'])
+
 def num_of_consecutive_same_type(dset):
     c = 0
     for sent in dset:
@@ -64,6 +67,10 @@ if __name__ == '__main__':
         if len(sent['cseq']) == 512:
             print ' '.join(sent['ws'])
 
+    print 'onemli:', num_of_consecutive_same_type(trn)
+    print 'onemli2:', num_of_consecutive_same_type(dev)
+    print 'onemli3:', num_of_consecutive_same_type(tst)
+
     print num_of_phrases([sent for sent in trn if not contains_consecutive_same_type(sent)]) / float(num_of_phrases(trn))
     print num_of_phrases([sent for sent in dev if not contains_consecutive_same_type(sent)]) / float(num_of_phrases(dev))
     print num_of_phrases([sent for sent in tst if not contains_consecutive_same_type(sent)]) / float(num_of_phrases(tst))
@@ -76,6 +83,8 @@ if __name__ == '__main__':
     print '-->', unk_perc(trn,dev)
     print '-->', unk_perc(trn,tst)
 
+    """
     print 'cseq len counts:'
     for k,v in sorted(Counter(len(sent['cseq']) for sent in trn).iteritems()):
         print '{}\t{}'.format(k,v)
+    """

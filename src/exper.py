@@ -16,7 +16,7 @@ from featchar import *
 import featchar
 from utils import get_sents, get_sent_indx, sample_sents
 from utils import ROOT_DIR
-from biloueval import bilouEval2
+from biloueval import bilouEval2, bilou_post_correct
 from lazrnn import RDNN, RDNN_Dummy, extract_rnn_params
 from nerrnn import RNNModel
 
@@ -36,7 +36,7 @@ def get_arg_parser():
     parser.add_argument("--opt", default="adam", help="optimization method: sgd, rmsprop, adagrad, adam")
     parser.add_argument("--lr", default=0.001, type=float, help="learning rate")
     parser.add_argument("--norm", default=2, type=float, help="Threshold for clipping norm of gradient")
-    parser.add_argument("--n_batch", default=50, type=int, help="batch size")
+    parser.add_argument("--n_batch", default=20, type=int, help="batch size")
     parser.add_argument("--fepoch", default=300, type=int, help="number of epochs")
     parser.add_argument("--patience", default=-1, type=int, help="how patient the validator is")
     parser.add_argument("--sample", default=0, type=int, help="num of sents to sample from trn in the order of K")
@@ -127,6 +127,7 @@ class Reporter(object):
             tseq_pred = self.feat.tseqenc.inverse_transform(ipred)
             tseqgrp_pred = get_tseqgrp(sent['wiseq'],tseq_pred)
             ts_pred = self.tfunc(tseqgrp_pred)
+            # ts_pred = bilou_post_correct(ts_pred) # TODO
             lts_pred.append(ts_pred)
 
         y_true = self.feat.tsenc.transform([t for ts in lts for t in ts])
@@ -167,6 +168,8 @@ class Validator(object):
                 if f1 > dbests[datname][1]: dbests[datname] = (e,f1)
                 logging.info(('{:<5} {:<5d} ' + ('{:>10.4f} '*9)+'{:>10d}')\
                         .format(datname,e,mcost, mtime, cerr, werr, wacc, pre, recall, f1, dbests[datname][1],dbests[datname][0]))
+            if e - dbests['dev'][0] > patience:
+                break
             logging.info('')
             
 def valid_file_name(s):

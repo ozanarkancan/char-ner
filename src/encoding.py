@@ -3,6 +3,7 @@ from itertools import *
 from utils import get_sents, sample_sents
 from score import conlleval
 
+
 def bio2bilou(ts):
     from bio2bilou import c4
     return c4(' '.join(ts))
@@ -32,14 +33,7 @@ def uni2bio(ts):
             # end tn[1:]
     return phrases
 
-if __name__ == '__main__':
-    trn, dev, tst = get_sents(enc='bio')
-    sents = sample_sents(trn, 10, 8, 10)
-
-    for sent in sents:
-        print ' '.join(sent['ts'])
-        pass
-    """
+def test():
     trn, dev, tst = get_sents(enc='bio')
     sent = random.choice(trn)
     print ' '.join(sent['ws'])
@@ -52,6 +46,20 @@ if __name__ == '__main__':
     r1,r2 = conlleval(ts_gold, ts_pred)
     print r2
     print '\t'.join(map(str,r1))
+
+if __name__ == '__main__':
+    from utils import sample_sents
+    from stats import num_of_phrases_sent
+
+    trn, dev, tst = get_sents()
+    sents = sample_sents([sent for sent in trn if num_of_phrases_sent(sent) > 2],10)
+    for sent in sents:
+        print sent['ts']
+        pass
     """
-    import os
-    print os.path.realpath(__file__)
+    ts = ['B-PER','L-PER','O','U-PER']
+    print ts
+    print bilou_post_correct(ts)
+    print sum(1 if t.startswith('B') or t.startswith('U') else 0 for t in ts)
+    """
+
