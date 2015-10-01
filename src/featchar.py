@@ -26,7 +26,7 @@ def get_tseq1(sent):
     return tseq[:-1]
 
 def get_tseq3(sent):
-    """ uni """
+    """ io """
     tseq = []
     for w, t, tnext in zip(sent['ws'],sent['ts'], chain(sent['ts'][1:],[None])):
         tp, sep, ttype = (t, '', 'O') if t == 'O' else (t.split('-')[0], '-', t.split('-')[1])
@@ -234,8 +234,8 @@ def print_cseq(sent, *args):
 if __name__ == '__main__':
     from stats import contains_consecutive_same_type
     from utils import sample_sents
-    from encoding import uni2bio
-    trn, dev, tst = get_sents('bio')
+    from encoding import io2bio
+    trn, dev, tst = get_sents('eng','bio')
 
     trn = sample_sents(trn, 10, 5,6)
     for d in (trn,):
