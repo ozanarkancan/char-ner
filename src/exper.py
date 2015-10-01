@@ -127,7 +127,6 @@ class Reporter(object):
             tseq_pred = self.feat.tseqenc.inverse_transform(ipred)
             tseqgrp_pred = get_tseqgrp(sent['wiseq'],tseq_pred)
             ts_pred = self.tfunc(tseqgrp_pred)
-            # ts_pred = bilou_post_correct(ts_pred) # TODO
             lts_pred.append(ts_pred)
 
         y_true = self.feat.tsenc.transform([t for ts in lts for t in ts])
