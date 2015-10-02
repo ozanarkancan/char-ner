@@ -170,7 +170,7 @@ class Validator(object):
                 logging.info(('{:<5} {:<5d} ' + ('{:>10.4f} '*9)+'{:>10d}')\
                         .format(datname,e,mcost, mtime, cerr, werr, wacc, pre, recall, f1, dbests[datname][1],dbests[datname][0]))
             if patience > 0 and e - dbests['dev'][0] > patience:
-                logging.info('sabir tasdi.')
+                logging.info('sabir tasti.')
                 break
             logging.info('')
             
