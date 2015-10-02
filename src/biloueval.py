@@ -1,3 +1,35 @@
+def bilou_post_correct(ts):
+    ts_corrected = []
+    for t, tnext in zip(ts, ts[1:]+[None]):
+        if t.startswith('B'):
+            pos,type = t.split('-')
+            if tnext == None:
+                ts_corrected.append('O') # B cannot be at the end of sent
+            else:
+                pos_next, type_next =  ('O', '') if tnext == 'O' else tnext.split('-')
+                if pos_next in ('I','L') and type == type_next:
+                    ts_corrected.append(t)
+                else: # invalid tagging
+                    ts_corrected.append('O')
+        elif t.startswith('I'):
+            pos,type = t.split('-')
+            if tnext == None:
+                ts_corrected.append('O') # I cannot be at the end of sent
+            else:
+                pos_next, type_next =  'O', '' if tnext == 'O' else tnext.split('-')
+                if pos_next == 'L' and type == type_next:
+                    ts_corrected.append(t)
+                else: # invalid tagging
+                    ts_corrected.append('O')
+        elif t.startswith('L'): # it can be followed by anything
+            ts_corrected.append(t)
+        elif t.startswith('O'): # it can be followed by anything
+            ts_corrected.append(t)
+        elif t.startswith('U'): # it can be followed by anything
+            ts_corrected.append(t)
+        else:
+            raise Exception()
+    return ts_corrected
 
 def bilouEval2(ytrue, ypred):
     gl, gll = [], []

@@ -3,22 +3,23 @@ from itertools import *
 from utils import get_sents, sample_sents
 from score import conlleval
 
+
 def bio2bilou(ts):
     from bio2bilou import c4
     return c4(' '.join(ts))
 
 
-def bilou2uni(ts):
+def bilou2io(ts):
     return [e.split('-')[1] if len(e.split('-')) == 2 else e for e in ts]
 
-def bio2uni(ts):
-    return bilou2uni(ts)
+def bio2io(ts):
+    return bilou2io(ts)
 
-def uni2bio(ts):
-    uni_phrases = [(key,list(subite)) for key, subite in groupby(ts)]
-    # print 'uni_phrases:', uni_phrases
+def io2bio(ts):
+    io_phrases = [(key,list(subite)) for key, subite in groupby(ts)]
+    # print 'io_phrases:', io_phrases
     phrases = []
-    for (kn,tn), (kpre,tpre) in izip(uni_phrases, [(None,None)]+uni_phrases):
+    for (kn,tn), (kpre,tpre) in izip(io_phrases, [(None,None)]+io_phrases):
         if kn == 'O':
             phrases.extend(tn)
         else:
@@ -32,26 +33,19 @@ def uni2bio(ts):
             # end tn[1:]
     return phrases
 
-if __name__ == '__main__':
-    trn, dev, tst = get_sents(enc='bio')
-    sents = sample_sents(trn, 10, 8, 10)
-
-    for sent in sents:
-        print ' '.join(sent['ts'])
-        pass
-    """
+def test():
     trn, dev, tst = get_sents(enc='bio')
     sent = random.choice(trn)
     print ' '.join(sent['ws'])
     print ' '.join(sent['ts'])
-    print ' '.join(bio2uni(sent['ts']))
+    print ' '.join(bio2io(sent['ts']))
     print ' '.join(bio2bilou(sent['ts']))
 
     ts_gold = [sent['ts'] for sent in dev]
-    ts_pred = [uni2bio(bio2uni(sent['ts'])) for sent in dev]
+    ts_pred = [io2bio(bio2io(sent['ts'])) for sent in dev]
     r1,r2 = conlleval(ts_gold, ts_pred)
     print r2
     print '\t'.join(map(str,r1))
-    """
-    import os
-    print os.path.realpath(__file__)
+
+if __name__ == '__main__':
+    test()

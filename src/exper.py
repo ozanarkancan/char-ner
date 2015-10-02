@@ -16,7 +16,9 @@ from featchar import *
 import featchar
 from utils import get_sents, get_sent_indx, sample_sents
 from utils import ROOT_DIR
-from biloueval import bilouEval2
+from biloueval import bilouEval2, bilou_post_correct
+from score import conlleval
+from encoding import io2bio
 from lazrnn import RDNN, RDNN_Dummy, extract_rnn_params
 from nerrnn import RNNModel
 
@@ -36,7 +38,7 @@ def get_arg_parser():
     parser.add_argument("--opt", default="adam", help="optimization method: sgd, rmsprop, adagrad, adam")
     parser.add_argument("--lr", default=0.001, type=float, help="learning rate")
     parser.add_argument("--norm", default=2, type=float, help="Threshold for clipping norm of gradient")
-    parser.add_argument("--n_batch", default=50, type=int, help="batch size")
+    parser.add_argument("--n_batch", default=20, type=int, help="batch size")
     parser.add_argument("--fepoch", default=300, type=int, help="number of epochs")
     parser.add_argument("--patience", default=-1, type=int, help="how patient the validator is")
     parser.add_argument("--sample", default=0, type=int, help="num of sents to sample from trn in the order of K")
@@ -127,12 +129,13 @@ class Reporter(object):
             tseq_pred = self.feat.tseqenc.inverse_transform(ipred)
             tseqgrp_pred = get_tseqgrp(sent['wiseq'],tseq_pred)
             ts_pred = self.tfunc(tseqgrp_pred)
-            lts_pred.append(ts_pred)
+            lts_pred.append(io2bio(ts_pred)) # changed
 
         y_true = self.feat.tsenc.transform([t for ts in lts for t in ts])
         y_pred = self.feat.tsenc.transform([t for ts in lts_pred for t in ts])
         werr = np.sum(y_true!=y_pred)/float(len(y_true))
-        wacc, pre, recall, f1 = bilouEval2(lts, lts_pred)
+        # wacc, pre, recall, f1 = bilouEval2(lts, lts_pred)
+        (wacc, pre, recall, f1), conll_print = conlleval(lts, lts_pred)
         return cerr, werr, wacc, pre, recall, f1
 
     def log_conmat(self, y_true, y_pred, lblenc): # NOT USED
@@ -152,7 +155,6 @@ class Validator(object):
 
     def validate(self, rdnn, fepoch, patience=-1):
         logging.info('training the model...')
-        logging.warning('patience not used')
         dbests = {'trn':(1,0.), 'dev':(1,0.)}
         for e in range(1,fepoch+1): # foreach epoch
             logging.info(('{:<5} {:<5} ' + ('{:>10} '*10)).format('dset','epoch','mcost', 'mtime', 'cerr', 'werr', 'wacc', 'pre', 'recall', 'f1', 'best', 'best'))
@@ -167,6 +169,9 @@ class Validator(object):
                 if f1 > dbests[datname][1]: dbests[datname] = (e,f1)
                 logging.info(('{:<5} {:<5d} ' + ('{:>10.4f} '*9)+'{:>10d}')\
                         .format(datname,e,mcost, mtime, cerr, werr, wacc, pre, recall, f1, dbests[datname][1],dbests[datname][0]))
+            if patience > 0 and e - dbests['dev'][0] > patience:
+                logging.info('sabir tasdi.')
+                break
             logging.info('')
             
 def valid_file_name(s):
@@ -203,14 +208,15 @@ def main():
         logger.info('{}:\t{}'.format(k,v))
     logger.info('{}:\t{}'.format('base_log_name',base_log_name))
 
-    trn, dev, tst = get_sents()
+    trn, dev, tst = get_sents('eng','bio')
 
     if args['sample']>0:
         trn_size = args['sample']*1000
         trn = sample_sents(trn,trn_size)
 
-    ctag2wtag_func = get_ts2 
-    wtag2ctag_func = get_tseq2
+    # TODO
+    ctag2wtag_func = get_ts3
+    wtag2ctag_func = get_tseq3
 
     for d in (trn,dev,tst):
         for sent in d:
