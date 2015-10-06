@@ -26,7 +26,7 @@ def extract_rnn_params(kwargs):
     return dict((pname,kwargs[pname]) for pname in RDNN.param_names)
 
 class RDNN:
-    param_names = ['activation','n_hidden','opt','grad_clip','lr','norm','recout','batch_norm']
+    param_names = ['activation','n_hidden','opt','grad_clip','lr','norm','recout','batch_norm', 'in2out']
 
     def __init__(self, nc, nf, kwargs):
         assert nf; assert nc
@@ -81,6 +81,8 @@ class RDNN:
                 from batch_norm import BatchNormLayer
                 l_concat = BatchNormLayer(l_concat,axes=(0,1))
             self.layers.append(l_concat)
+         
+        l_concat = lasagne.layers.ConcatLayer([l_concat, l_in], axis=2) if self.in2out else l_concat
 
         if self.recout:
             logging.info('using recout.')
