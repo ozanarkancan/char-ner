@@ -15,7 +15,7 @@ STR = """#!/bin/bash
  
 source ~/setenv.sh
 cd /mnt/kufs/scratch/okuru13/char-ner
-python src/exper.py {}
+python src/{}.py {}
 """
 
 def valid_file_name(s):
@@ -23,11 +23,12 @@ def valid_file_name(s):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(prog="creatjob")
-    parser.add_argument("--exper_args", required=True) 
+    parser.add_argument("--script", required=True) 
+    parser.add_argument("--script_args", required=True) 
     parser.add_argument("--biyofiz", required=True, type=int, choices=range(4)) 
     args = parser.parse_args()
-    job_text = STR.format(args.biyofiz, args.exper_args)
-    file_name_param = valid_file_name(args.exper_args.replace(' ','.')) if args.exper_args else 'defaults'
+    job_text = STR.format(args.biyofiz, args.script, args.script_args)
+    file_name_param = valid_file_name(args.script_args.replace(' ','.')) if args.script_args else 'defaults'
     job_file_name = 'biyofiz{}.'.format(args.biyofiz)+file_name_param+'.job'
     job_file_path = '{}/jobs/{}'.format(ROOT_DIR,job_file_name)
     with open(job_file_path,'w') as out:
