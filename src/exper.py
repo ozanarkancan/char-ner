@@ -123,6 +123,8 @@ class Reporter(object):
         y_pred = list(chain.from_iterable(pred))
         cerr = np.sum(y_true!=y_pred)/float(len(y_true))
 
+        char_conmat_str = self.get_conmat_str(y_true, y_pred, self.feat.tseqenc)
+
         lts = [sent['ts'] for sent in dset]
         lts_pred = []
         for sent, ipred in zip(dset, pred):
@@ -134,15 +136,20 @@ class Reporter(object):
         y_true = self.feat.tsenc.transform([t for ts in lts for t in ts])
         y_pred = self.feat.tsenc.transform([t for ts in lts_pred for t in ts])
         werr = np.sum(y_true!=y_pred)/float(len(y_true))
+
+        word_conmat_str = self.get_conmat_str(y_true, y_pred, self.feat.tsenc)
+
         # wacc, pre, recall, f1 = bilouEval2(lts, lts_pred)
         (wacc, pre, recall, f1), conll_print = conlleval(lts, lts_pred)
-        return cerr, werr, wacc, pre, recall, f1
+        return cerr, werr, wacc, pre, recall, f1, conll_print, char_conmat_str, word_conmat_str
 
-    def log_conmat(self, y_true, y_pred, lblenc): # NOT USED
-        print '\t'.join(['bos'] + list(lblenc.classes_))
+    def get_conmat_str(self, y_true, y_pred, lblenc): # NOT USED
+        str_list = []
+        str_list.append('\t'.join(['bos'] + list(lblenc.classes_)))
         conmat = confusion_matrix(y_true,y_pred, labels=lblenc.transform(lblenc.classes_))
         for r,clss in zip(conmat,lblenc.classes_):
-            print '\t'.join([clss] + list(map(str,r)))
+            str_list.append('\t'.join([clss] + list(map(str,r))))
+        return '\n'.join(str_list) + '\n'
 
 class Validator(object):
 
@@ -165,12 +172,18 @@ class Validator(object):
                 mtime = end_time - start_time
                 
                 # cerr, werr, wacc, pre, recall, f1 = self.reporter.report(getattr(self.trn, pred) # find better solution for getattr
-                cerr, werr, wacc, pre, recall, f1 = self.reporter.report(getattr(self, datname), pred) # find better solution for getattr
+                cerr, werr, wacc, pre, recall, f1, conll_print, char_conmat_str, word_conmat_str =\
+                        self.reporter.report(getattr(self, datname), pred) # find better solution for getattr
                 if f1 > dbests[datname][1]: dbests[datname] = (e,f1)
                 logging.info(('{:<5} {:<5d} ' + ('{:>10.4f} '*9)+'{:>10d}')\
                         .format(datname,e,mcost, mtime, cerr, werr, wacc, pre, recall, f1, dbests[datname][1],dbests[datname][0]))
+                logging.debug('')
+                logging.debug(conll_print)
+                logging.debug(char_conmat_str)
+                logging.debug(word_conmat_str)
+                logging.debug('')
             if patience > 0 and e - dbests['dev'][0] > patience:
-                logging.info('sabir tasdi.')
+                logging.info('sabir tasti.')
                 break
             logging.info('')
             
