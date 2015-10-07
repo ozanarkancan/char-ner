@@ -33,8 +33,7 @@ def get_arg_parser():
     parser.add_argument("--rnn", default='lazrnn', choices=['dummy','lazrnn','nerrnn'], help="which rnn to use")
     parser.add_argument("--activation", default=['bi-relu'], nargs='+', help="activation function for hidden layer : sigmoid, tanh, rectify")
     parser.add_argument("--n_hidden", default=[100], nargs='+', type=int, help="number of neurons in each hidden layer")
-    parser.add_argument("--recout", default=1, type=int, help="use recurrent output layer")
-    parser.add_argument("--batch_norm", default=0, type=int, help="whether to use batch norm between deep layers")
+    parser.add_argument("--recout", default=0, type=int, help="use recurrent output layer")
     parser.add_argument("--drates", default=[0, 0], nargs='+', type=float, help="dropout rates")
     parser.add_argument("--opt", default="adam", help="optimization method: sgd, rmsprop, adagrad, adam")
     parser.add_argument("--lr", default=0.001, type=float, help="learning rate")
@@ -42,14 +41,17 @@ def get_arg_parser():
     parser.add_argument("--n_batch", default=20, type=int, help="batch size")
     parser.add_argument("--fepoch", default=300, type=int, help="number of epochs")
     parser.add_argument("--patience", default=-1, type=int, help="how patient the validator is")
-    parser.add_argument("--sample", default=0, type=int, help="num of sents to sample from trn in the order of K")
     parser.add_argument("--feat", default='basic_seg', help="feat func to use")
     parser.add_argument("--grad_clip", default=-1, type=float, help="clip gradient messages in recurrent layers if they are above this value")
     parser.add_argument("--truncate", default=-1, type=int, help="backward step size")
     parser.add_argument("--log", default='das_auto', help="log file name")
     parser.add_argument("--sorted", default=1, type=int, help="sort datasets before training and prediction")
-    parser.add_argument("--in2out", default=0, type=int, help="connect input & output")
 
+    parser.add_argument("--gbudget", default=10, type=int, help="num of parameter combinations")
+    parser.add_argument("--gfepoch", default=300, type=int, help="number of epochs")
+    parser.add_argument("--gpatience", default=-1, type=int, help="how patient the validator is")
+    parser.add_argument("--gsample", default=0, type=int, help="num of sents to sample from trn in the order of K for grid search")
+    
     return parser
 
 
@@ -155,18 +157,19 @@ class Reporter(object):
 
 class Validator(object):
 
-    def __init__(self, trn, dev, batcher, reporter):
+    def __init__(self, trn, dev, batcher, reporter, log_lvl='info'):
         self.trn = trn
         self.dev = dev
         self.trndat = batcher.get_batches(trn) 
         self.devdat = batcher.get_batches(dev) 
         self.reporter = reporter
+        self.logfunc = getattr(logging,log_lvl)
 
     def validate(self, rdnn, fepoch, patience=-1):
-        logging.info('training the model...')
+        self.logfunc('training the model...')
         dbests = {'trn':(1,0.), 'dev':(1,0.)}
         for e in range(1,fepoch+1): # foreach epoch
-            logging.info(('{:<5} {:<5} ' + ('{:>10} '*10)).format('dset','epoch','mcost', 'mtime', 'cerr', 'werr', 'wacc', 'pre', 'recall', 'f1', 'best', 'best'))
+            self.logfunc(('{:<5} {:<5} ' + ('{:>10} '*10)).format('dset','epoch','mcost', 'mtime', 'cerr', 'werr', 'wacc', 'pre', 'recall', 'f1', 'best', 'best'))
             for funcname, ddat, datname in zip(['train','predict'],[self.trndat,self.devdat],['trn','dev']):
                 start_time = time.time()
                 mcost, pred = getattr(rdnn, funcname)(ddat)
@@ -177,7 +180,7 @@ class Validator(object):
                 cerr, werr, wacc, pre, recall, f1, conll_print, char_conmat_str, word_conmat_str =\
                         self.reporter.report(getattr(self, datname), pred) # find better solution for getattr
                 if f1 > dbests[datname][1]: dbests[datname] = (e,f1)
-                logging.info(('{:<5} {:<5d} ' + ('{:>10.4f} '*9)+'{:>10d}')\
+                self.logfunc(('{:<5} {:<5d} ' + ('{:>10.4f} '*9)+'{:>10d}')\
                         .format(datname,e,mcost, mtime, cerr, werr, wacc, pre, recall, f1, dbests[datname][1],dbests[datname][0]))
                 logging.debug('')
                 logging.debug(conll_print)
@@ -185,9 +188,10 @@ class Validator(object):
                 logging.debug(word_conmat_str)
                 logging.debug('')
             if patience > 0 and e - dbests['dev'][0] > patience:
-                logging.info('sabir tasti.')
+                self.logfunc('sabir tasti.')
                 break
-            logging.info('')
+            self.logfunc('')
+        return dbests['dev'][1]
             
 def valid_file_name(s):
     return "".join(i for i in s if i not in "\"\/ &*?<>|[]()'")
@@ -206,7 +210,7 @@ def main():
     logger.setLevel(logging.DEBUG)
     shandler = logging.StreamHandler()
     shandler.setLevel(logging.INFO)
-    lparams = ['rnn', 'feat', 'activation', 'n_hidden', 'recout', 'opt','lr','norm','n_batch','batch_norm','fepoch','patience','sample', 'in2out']
+    lparams = ['rnn', 'feat', 'activation', 'n_hidden', 'recout', 'opt','n_batch', 'gsample', 'gfepoch','gpatience','gbudget']
     param_log_name = ','.join(['{}:{}'.format(p,args[p]) for p in lparams])
     param_log_name = valid_file_name(param_log_name)
     base_log_name = '{}:{},{}'.format(host, theano.config.device, param_log_name if args['log'] == 'das_auto' else args['log'])
@@ -225,9 +229,6 @@ def main():
 
     trn, dev, tst = get_sents('eng','bio')
 
-    if args['sample']>0:
-        trn_size = args['sample']*1000
-        trn = sample_sents(trn,trn_size)
 
     # TODO
     ctag2wtag_func = get_ts3
@@ -258,7 +259,12 @@ def main():
     batcher = Batcher(args['n_batch'], feat)
     reporter = Reporter(feat, ctag2wtag_func)
 
-    validator = Validator(trn, dev, batcher, reporter)
+    if args['gsample']>0:
+        trn_sample_size = args['gsample']*1000
+        trn_sample = sample_sents(trn,trn_sample_size)
+        gvalidator = Validator(trn_sample, dev, batcher, reporter, log_lvl='debug')
+    else:
+        gvalidator = Validator(trn, dev, batcher, reporter, log_lvl='debug')
 
     # select rnn
     if args['rnn'] == 'dummy':
@@ -271,9 +277,32 @@ def main():
         raise Exception
     # end select rnn
 
+    norm_list = [0.1, 1, 10, 100]
+    lr_list = [1.e-1, 1.e-2, 1.e-3, 1.e-4]
     rnn_params = extract_rnn_params(args)
-    rdnn = RNN(feat.NC, feat.NF, args)
-    validator.validate(rdnn, args['fepoch'], args['patience'])
+
+    optim_params = random.sample(list(product(norm_list,lr_list)),args['gbudget'])
+    res_list = []
+
+    for norm, lr in optim_params:
+        rnn_params['norm'] = norm
+        rnn_params['lr'] = lr
+        rdnn = RNN(feat.NC, feat.NF, rnn_params)
+        start_time = time.time()
+        f1 = gvalidator.validate(rdnn, args['gfepoch'], args['gpatience'])
+        end_time = time.time()
+        mtime = end_time - start_time
+        res_list.append((f1,(norm,lr)))
+        logging.info('f1: {}\tnorm: {}\tlr: {:.2g}\tsecs: {:.2f}'.format(f1,norm,lr,mtime))
+
+    (f1,(norm,lr)) = max(res_list)
+    logging.info('f1: {}\tnorm: {}\tlr: {:.2g} :best'.format(f1,norm,lr))
+    rnn_params['norm'] = norm
+    rnn_params['lr'] = lr
+    validator = Validator(trn, dev, batcher, reporter, log_lvl='info')
+    rdnn = RNN(feat.NC, feat.NF, rnn_params)
+    f1 = validator.validate(rdnn, args['fepoch'], args['patience'])
+
     # lr: scipy.stats.expon.rvs(loc=0.0001,scale=0.1,size=100)
     # norm: scipy.stats.expon.rvs(loc=0, scale=5,size=10)
 

@@ -1,0 +1,154 @@
+activation:	['bi-relu', 'bi-relu']
+batch_norm:	1
+drates:	[0, 0]
+feat:	basic_seg
+fepoch:	300
+grad_clip:	-1
+log:	das_auto
+lr:	0.001
+n_batch:	20
+n_hidden:	[10, 20]
+norm:	2
+opt:	adam
+patience:	-1
+recout:	1
+rnn:	lazrnn
+sample:	0
+sorted:	1
+truncate:	-1
+base_log_name:	altay:cpu,rnn:lazrnn,activation:bi-relu,bi-relu,n_hidden:10,20,recout:1,opt:adam,lr:0.001,norm:2,n_batch:20,fepoch:300,patience:-1,sample:0
+# of sents trn, dev, tst: 14041 3250 3453
+maxlen: 512 minlen: 1
+['c= ', 'c=!', 'c="', 'c=$', 'c=%', 'c=&', "c='", 'c=(', 'c=)', 'c=*', 'c=+', 'c=,', 'c=-', 'c=.', 'c=/', 'c=0', 'c=1', 'c=2', 'c=3', 'c=4', 'c=5', 'c=6', 'c=7', 'c=8', 'c=9', 'c=:', 'c=;', 'c==', 'c=?', 'c=@', 'c=A', 'c=B', 'c=C', 'c=D', 'c=E', 'c=F', 'c=G', 'c=H', 'c=I', 'c=J', 'c=K', 'c=L', 'c=M', 'c=N', 'c=O', 'c=P', 'c=Q', 'c=R', 'c=S', 'c=T', 'c=U', 'c=V', 'c=W', 'c=X', 'c=Y', 'c=Z', 'c=[', 'c=]', 'c=`', 'c=a', 'c=b', 'c=c', 'c=d', 'c=e', 'c=f', 'c=g', 'c=h', 'c=i', 'c=j', 'c=k', 'c=l', 'c=m', 'c=n', 'c=o', 'c=p', 'c=q', 'c=r', 'c=s', 'c=t', 'c=u', 'c=v', 'c=w', 'c=x', 'c=y', 'c=z', 'isspace', 'wend', 'wstart']
+['loc' 'misc' 'o' 'org' 'per']
+['B-LOC' 'B-MISC' 'B-ORG' 'I-LOC' 'I-MISC' 'I-ORG' 'I-PER' 'O']
+NF: 88 NC: 5
+l_in: (None, None, 88)
+l_mask: (Subtensor{int64}.0, Subtensor{int64}.0)
+l_forward: (None, None, 10)
+l_backward: (None, None, 10)
+l_concat: (None, None, 20)
+using batch norm
+l_forward: (None, None, 20)
+l_backward: (None, None, 20)
+l_concat: (None, None, 40)
+using batch norm
+using recout.
+l_out: (None, None, 5)
+[W, b, W, W, b, W, beta, gamma, W, b, W, W, b, W, beta, gamma, W, b, W]
+Compiling functions...
+Compiling done.
+training the model...
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   1       112.1302    26.3901     0.1729     0.1394    86.0600    21.7700    24.2700    22.9500    22.9500          1
+
+processed 203621 tokens with 23499 phrases; found: 26191 phrases; correct: 5703.
+accuracy:  86.06%; precision:  21.77%; recall:  24.27%; FB1:  22.95
+              LOC: precision:  35.22%; recall:  18.10%; FB1:  23.91  3668
+             MISC: precision:  32.00%; recall:  17.98%; FB1:  23.02  1931
+              ORG: precision:  14.50%; recall:  19.85%; FB1:  16.76  8655
+              PER: precision:  21.26%; recall:  38.45%; FB1:  27.38  11937
+
+bos	loc	misc	o	org	per
+loc	9279	4201	8554	11663	19360
+misc	2206	5352	6252	10054	6904
+o	7162	1918	814249	18091	15679
+org	4578	2200	13286	19807	26854
+per	2895	1044	10259	13496	44279
+
+bos	B-LOC	B-MISC	B-ORG	I-LOC	I-MISC	I-ORG	I-PER	O
+B-LOC	0	0	0	1	0	2	2	6
+B-MISC	0	0	0	2	0	17	11	5
+B-ORG	0	0	0	2	0	10	12	0
+I-LOC	0	0	0	1598	562	2130	3005	991
+I-MISC	0	0	0	313	776	1657	1002	810
+I-ORG	0	0	0	676	302	3327	3977	1719
+I-PER	0	0	0	429	151	2245	6966	1337
+O	0	0	0	1042	203	3273	2499	162561
+
+
+dev   1        27.1634     1.6847     0.1666     0.1354    86.4600    23.4300    25.9800    24.6400    24.6400          1
+
+processed 51362 tokens with 5942 phrases; found: 6591 phrases; correct: 1544.
+accuracy:  86.46%; precision:  23.43%; recall:  25.98%; FB1:  24.64
+              LOC: precision:  36.26%; recall:  17.31%; FB1:  23.43  877
+             MISC: precision:  31.08%; recall:  18.44%; FB1:  23.14  547
+              ORG: precision:  13.05%; recall:  20.88%; FB1:  16.06  2146
+              PER: precision:  25.69%; recall:  42.13%; FB1:  31.91  3021
+
+bos	loc	misc	o	org	per
+loc	2248	1188	2350	2987	4747
+misc	531	1325	1762	2778	1847
+o	1731	497	206061	4368	3601
+org	781	505	2963	4465	5200
+per	728	288	2874	3632	12852
+
+bos	B-LOC	B-MISC	B-ORG	I-LOC	I-MISC	I-ORG	I-PER	O
+B-LOC	0	0	0	0	0	0	0	0
+B-MISC	0	0	0	0	0	3	1	0
+B-ORG	0	0	0	0	0	0	0	0
+I-LOC	0	0	0	382	167	542	740	263
+I-MISC	0	0	0	83	208	492	265	216
+I-ORG	0	0	0	112	80	735	758	407
+I-PER	0	0	0	112	46	612	1991	388
+O	0	0	0	263	57	784	561	41094
+
+
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   2        62.5007    26.6962     0.1331     0.1071    89.2900    36.4600    42.3700    39.1900    39.1900          2
+
+processed 203621 tokens with 23499 phrases; found: 27310 phrases; correct: 9957.
+accuracy:  89.29%; precision:  36.46%; recall:  42.37%; FB1:  39.19
+              LOC: precision:  48.51%; recall:  47.94%; FB1:  48.22  7057
+             MISC: precision:  35.57%; recall:  17.74%; FB1:  23.68  1715
+              ORG: precision:  22.27%; recall:  37.10%; FB1:  27.84  10528
+              PER: precision:  44.68%; recall:  54.23%; FB1:  48.99  8010
+
+bos	loc	misc	o	org	per
+loc	23218	2745	3514	17180	6400
+misc	5079	5973	2626	13627	3463
+o	4935	2962	821116	21078	7008
+org	5390	2039	9583	37388	12325
+per	4687	1343	3373	14352	48218
+
+bos	B-LOC	B-MISC	B-ORG	I-LOC	I-MISC	I-ORG	I-PER	O
+B-LOC	0	0	0	0	0	3	0	8
+B-MISC	0	0	0	3	1	27	3	1
+B-ORG	0	0	0	0	0	24	0	0
+I-LOC	0	0	0	3938	343	2713	863	429
+I-MISC	0	0	0	885	806	2014	463	390
+I-ORG	0	0	0	991	259	5570	1753	1428
+I-PER	0	0	0	812	187	2218	7482	429
+O	0	0	0	817	375	3397	966	164023
+
+
+dev   2        17.5456     1.6887     0.1323     0.1070    89.3000    37.0900    43.1700    39.9000    39.9000          2
+
+processed 51362 tokens with 5942 phrases; found: 6916 phrases; correct: 2565.
+accuracy:  89.30%; precision:  37.09%; recall:  43.17%; FB1:  39.90
+              LOC: precision:  46.70%; recall:  45.78%; FB1:  46.23  1801
+             MISC: precision:  37.36%; recall:  18.44%; FB1:  24.69  455
+              ORG: precision:  21.27%; recall:  39.08%; FB1:  27.54  2464
+              PER: precision:  46.90%; recall:  55.92%; FB1:  51.02  2196
+
+bos	loc	misc	o	org	per
+loc	5622	820	879	4283	1916
+misc	1431	1478	702	3530	1102
+o	1508	747	207522	4776	1705
+org	1003	459	1886	7819	2747
+per	1359	346	955	3876	13838
+
+bos	B-LOC	B-MISC	B-ORG	I-LOC	I-MISC	I-ORG	I-PER	O
+B-LOC	0	0	0	0	0	0	0	0
+B-MISC	0	0	0	0	0	3	1	0
+B-ORG	0	0	0	0	0	0	0	0
+I-LOC	0	0	0	945	108	675	267	99
+I-MISC	0	0	0	245	213	555	147	104
+I-ORG	0	0	0	185	59	1157	390	301
+I-PER	0	0	0	235	40	609	2126	139
+O	0	0	0	272	97	743	224	41423
+
+
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
