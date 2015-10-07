@@ -12,13 +12,11 @@ import theano
 import lasagne
 import theano.tensor as T
 
-from featchar import *
 import featchar
-from utils import get_sents, get_sent_indx, sample_sents
+from utils import get_sents, sample_sents
 from utils import ROOT_DIR
-from biloueval import bilouEval2, bilou_post_correct
 from score import conlleval
-from encoding import io2bio
+from encoding import io2iob
 from lazrnn import RDNN, RDNN_Dummy, extract_rnn_params
 from nerrnn import RNNModel
 
@@ -133,7 +131,7 @@ class Reporter(object):
             tseq_pred = self.feat.tseqenc.inverse_transform(ipred)
             tseqgrp_pred = get_tseqgrp(sent['wiseq'],tseq_pred)
             ts_pred = self.tfunc(tseqgrp_pred)
-            lts_pred.append(io2bio(ts_pred)) # changed
+            lts_pred.append(io2iob(ts_pred)) # changed
 
         y_true = self.feat.tsenc.transform([t for ts in lts for t in ts])
         y_pred = self.feat.tsenc.transform([t for ts in lts_pred for t in ts])
@@ -223,7 +221,7 @@ def main():
         logger.info('{}:\t{}'.format(k,v))
     logger.info('{}:\t{}'.format('base_log_name',base_log_name))
 
-    trn, dev, tst = get_sents('eng','bio')
+    trn, dev, tst = get_sents('eng','iob')
 
     if args['sample']>0:
         trn_size = args['sample']*1000

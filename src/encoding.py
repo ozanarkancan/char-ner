@@ -4,7 +4,7 @@ from utils import get_sents, sample_sents
 from score import conlleval
 
 
-def bio2bilou(ts):
+def iob2bilou(ts):
     from bio2bilou import c4
     return c4(' '.join(ts))
 
@@ -12,10 +12,10 @@ def bio2bilou(ts):
 def bilou2io(ts):
     return [e.split('-')[1] if len(e.split('-')) == 2 else e for e in ts]
 
-def bio2io(ts):
+def iob2io(ts):
     return bilou2io(ts)
 
-def io2bio(ts):
+def io2iob(ts):
     io_phrases = [(key,list(subite)) for key, subite in groupby(ts)]
     # print 'io_phrases:', io_phrases
     phrases = []
@@ -34,15 +34,15 @@ def io2bio(ts):
     return phrases
 
 def test():
-    trn, dev, tst = get_sents(enc='bio')
+    trn, dev, tst = get_sents(enc='iob')
     sent = random.choice(trn)
     print ' '.join(sent['ws'])
     print ' '.join(sent['ts'])
-    print ' '.join(bio2io(sent['ts']))
-    print ' '.join(bio2bilou(sent['ts']))
+    print ' '.join(iob2io(sent['ts']))
+    print ' '.join(iob2bilou(sent['ts']))
 
     ts_gold = [sent['ts'] for sent in dev]
-    ts_pred = [io2bio(bio2io(sent['ts'])) for sent in dev]
+    ts_pred = [io2iob(iob2io(sent['ts'])) for sent in dev]
     r1,r2 = conlleval(ts_gold, ts_pred)
     print r2
     print '\t'.join(map(str,r1))
