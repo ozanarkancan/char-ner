@@ -23,7 +23,7 @@ def get_ts2(tseqgrp):
     return ts
 """
 
-class Repr1(object):
+class Repstd(object):
 
     def get_cseq(self, sent):
         return [c for c in ' '.join(sent['ws'])]
@@ -50,7 +50,7 @@ class Repr1(object):
         return tseq[:-1]
 
 
-class Repr2(object):
+class Repnospace(object):
 
     def get_cseq(self, sent):
         return [c for c in ''.join(sent['ws'])]
@@ -63,7 +63,7 @@ class Repr2(object):
         ts = iob2io(sent['ts'])
         return [ts[wi].lower() for wi,w in enumerate(sent['ws']) for c in w]
 
-class Repr3(object):
+class Repspec(object):
 
     def get_cseq(self, sent):
         return [c for w in sent['ws'] for c in ['/w']+list(w)+['w/']]

@@ -13,6 +13,7 @@ import lasagne
 import theano.tensor as T
 
 import featchar
+import rep
 from utils import get_sents, sample_sents
 from utils import ROOT_DIR
 from score import conlleval
@@ -29,6 +30,7 @@ def get_arg_parser():
     parser = argparse.ArgumentParser(prog="lazrnn")
     
     parser.add_argument("--rnn", default='lazrnn', choices=['dummy','lazrnn','nerrnn'], help="which rnn to use")
+    parser.add_argument("--rep", default='std', choices=['std','nospace','spec'], help="which representation to use")
     parser.add_argument("--activation", default=['bi-relu'], nargs='+', help="activation function for hidden layer : sigmoid, tanh, rectify")
     parser.add_argument("--n_hidden", default=[100], nargs='+', type=int, help="number of neurons in each hidden layer")
     parser.add_argument("--recout", default=1, type=int, help="use recurrent output layer")
@@ -129,8 +131,8 @@ class Reporter(object):
         lts_pred = []
         for sent, ipred in zip(dset, pred):
             tseq_pred = self.feat.tseqenc.inverse_transform(ipred)
-            tseqgrp_pred = get_tseqgrp(sent['wiseq'],tseq_pred)
-            ts_pred = self.tfunc(tseqgrp_pred)
+            # tseqgrp_pred = get_tseqgrp(sent['wiseq'],tseq_pred)
+            ts_pred = self.tfunc(sent['wiseq'],tseq_pred)
             lts_pred.append(io2iob(ts_pred)) # changed
 
         y_true = self.feat.tsenc.transform([t for ts in lts for t in ts])
@@ -204,7 +206,7 @@ def main():
     logger.setLevel(logging.DEBUG)
     shandler = logging.StreamHandler()
     shandler.setLevel(logging.INFO)
-    lparams = ['rnn', 'feat', 'activation', 'n_hidden', 'recout', 'opt','lr','norm','n_batch','batch_norm','fepoch','patience','sample', 'in2out']
+    lparams = ['rnn', 'feat', 'rep', 'activation', 'n_hidden', 'recout', 'opt','lr','norm','n_batch','batch_norm','fepoch','patience','sample', 'in2out']
     param_log_name = ','.join(['{}:{}'.format(p,args[p]) for p in lparams])
     param_log_name = valid_file_name(param_log_name)
     base_log_name = '{}:{},{}'.format(host, theano.config.device, param_log_name if args['log'] == 'das_auto' else args['log'])
@@ -227,16 +229,15 @@ def main():
         trn_size = args['sample']*1000
         trn = sample_sents(trn,trn_size)
 
-    # TODO
-    ctag2wtag_func = get_ts3
-    wtag2ctag_func = get_tseq3
+    repclass = getattr(rep, 'Rep'+args['rep'])
+    repobj = repclass()
 
     for d in (trn,dev,tst):
         for sent in d:
             sent.update({
-                'cseq': get_cseq(sent), 
-                'wiseq': get_wiseq(sent), 
-                'tseq': wtag2ctag_func(sent)})
+                'cseq': repobj.get_cseq(sent), 
+                'wiseq': repobj.get_wiseq(sent), 
+                'tseq': repobj.get_tseq(sent)})
 
     if args['sorted']:
         trn = sorted(trn, key=lambda sent: len(sent['cseq']))
@@ -254,7 +255,7 @@ def main():
     feat.fit(trn)
 
     batcher = Batcher(args['n_batch'], feat)
-    reporter = Reporter(feat, ctag2wtag_func)
+    reporter = Reporter(feat, rep.get_ts)
 
     validator = Validator(trn, dev, batcher, reporter)
 
