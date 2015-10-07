@@ -1,0 +1,402 @@
+activation:	['bi-relu', 'bi-relu']
+batch_norm:	1
+drates:	[0, 0]
+feat:	basic_seg
+fepoch:	300
+grad_clip:	-1
+log:	das_auto
+lr:	0.01
+n_batch:	20
+n_hidden:	[200, 200]
+norm:	2
+opt:	adam
+patience:	-1
+recout:	1
+rnn:	lazrnn
+sample:	0
+sorted:	1
+truncate:	-1
+base_log_name:	biyofiz-4-2:gpu0,rnn:lazrnn,feat:basic_seg,activation:bi-relu,bi-relu,n_hidden:200,200,recout:1,opt:adam,lr:0.01,norm:2,n_batch:20,batch_norm:1,fepoch:300,patience:-1,sample:0
+# of sents trn, dev, tst: 14041 3250 3453
+maxlen: 512 minlen: 1
+['c= ', 'c=!', 'c="', 'c=$', 'c=%', 'c=&', "c='", 'c=(', 'c=)', 'c=*', 'c=+', 'c=,', 'c=-', 'c=.', 'c=/', 'c=0', 'c=1', 'c=2', 'c=3', 'c=4', 'c=5', 'c=6', 'c=7', 'c=8', 'c=9', 'c=:', 'c=;', 'c==', 'c=?', 'c=@', 'c=A', 'c=B', 'c=C', 'c=D', 'c=E', 'c=F', 'c=G', 'c=H', 'c=I', 'c=J', 'c=K', 'c=L', 'c=M', 'c=N', 'c=O', 'c=P', 'c=Q', 'c=R', 'c=S', 'c=T', 'c=U', 'c=V', 'c=W', 'c=X', 'c=Y', 'c=Z', 'c=[', 'c=]', 'c=`', 'c=a', 'c=b', 'c=c', 'c=d', 'c=e', 'c=f', 'c=g', 'c=h', 'c=i', 'c=j', 'c=k', 'c=l', 'c=m', 'c=n', 'c=o', 'c=p', 'c=q', 'c=r', 'c=s', 'c=t', 'c=u', 'c=v', 'c=w', 'c=x', 'c=y', 'c=z', 'isspace', 'wend', 'wstart']
+['loc' 'misc' 'o' 'org' 'per']
+['B-LOC' 'B-MISC' 'B-ORG' 'I-LOC' 'I-MISC' 'I-ORG' 'I-PER' 'O']
+NF: 88 NC: 5
+l_in: (None, None, 88)
+l_mask: (Subtensor{int64}.0, Subtensor{int64}.0)
+l_forward: (None, None, 200)
+l_backward: (None, None, 200)
+l_concat: (None, None, 400)
+using batch norm
+l_forward: (None, None, 200)
+l_backward: (None, None, 200)
+l_concat: (None, None, 400)
+using batch norm
+using recout.
+l_out: (None, None, 5)
+[W, b, W, W, b, W, beta, gamma, W, b, W, W, b, W, beta, gamma, W, b, W]
+Compiling functions...
+Waiting for existing lock by process '9112' (I am process '49617')
+To manually release the lock, delete /mnt/kufs/scratch/okuru13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.8-64/lock_dir
+Waiting for existing lock by process '9112' (I am process '49617')
+To manually release the lock, delete /mnt/kufs/scratch/okuru13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.8-64/lock_dir
+Waiting for existing lock by process '9112' (I am process '49617')
+To manually release the lock, delete /mnt/kufs/scratch/okuru13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.8-64/lock_dir
+Waiting for existing lock by process '9112' (I am process '49617')
+To manually release the lock, delete /mnt/kufs/scratch/okuru13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.8-64/lock_dir
+Waiting for existing lock by process '9112' (I am process '49617')
+To manually release the lock, delete /mnt/kufs/scratch/okuru13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.8-64/lock_dir
+Waiting for existing lock by process '9112' (I am process '49617')
+To manually release the lock, delete /mnt/kufs/scratch/okuru13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.8-64/lock_dir
+Waiting for existing lock by process '9112' (I am process '49617')
+To manually release the lock, delete /mnt/kufs/scratch/okuru13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.8-64/lock_dir
+Waiting for existing lock by process '9112' (I am process '49617')
+To manually release the lock, delete /mnt/kufs/scratch/okuru13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.8-64/lock_dir
+Waiting for existing lock by process '9112' (I am process '49617')
+To manually release the lock, delete /mnt/kufs/scratch/okuru13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.8-64/lock_dir
+Waiting for existing lock by process '9112' (I am process '49617')
+To manually release the lock, delete /mnt/kufs/scratch/okuru13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.8-64/lock_dir
+Waiting for existing lock by process '9112' (I am process '49617')
+To manually release the lock, delete /mnt/kufs/scratch/okuru13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.8-64/lock_dir
+Waiting for existing lock by process '9112' (I am process '49617')
+To manually release the lock, delete /mnt/kufs/scratch/okuru13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.8-64/lock_dir
+Compiling done.
+training the model...
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   1       226.4981   148.6330     0.9509     0.9593     4.0700     0.1600     0.0900     0.1200     0.1200          1
+
+processed 203621 tokens with 23499 phrases; found: 14041 phrases; correct: 22.
+accuracy:   4.07%; precision:   0.16%; recall:   0.09%; FB1:   0.12
+              LOC: precision:   0.16%; recall:   0.31%; FB1:   0.21  14041
+             MISC: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+              ORG: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+              PER: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+
+bos	loc	misc	o	org	per
+loc	53057	0	0	0	0
+misc	30768	0	0	0	0
+o	857099	0	0	0	0
+org	66725	0	0	0	0
+per	71973	0	0	0	0
+
+bos	B-LOC	B-MISC	B-ORG	I-LOC	I-MISC	I-ORG	I-PER	O
+B-LOC	0	0	0	11	0	0	0	0
+B-MISC	0	0	0	35	0	0	0	0
+B-ORG	0	0	0	24	0	0	0	0
+I-LOC	0	0	0	8286	0	0	0	0
+I-MISC	0	0	0	4558	0	0	0	0
+I-ORG	0	0	0	10001	0	0	0	0
+I-PER	0	0	0	11128	0	0	0	0
+O	0	0	0	169578	0	0	0	0
+
+
+dev   1        52.4677     8.9627     0.9504     0.9592     4.0800     0.0900     0.0500     0.0700     0.0700          1
+
+processed 51362 tokens with 5942 phrases; found: 3250 phrases; correct: 3.
+accuracy:   4.08%; precision:   0.09%; recall:   0.05%; FB1:   0.07
+              LOC: precision:   0.09%; recall:   0.16%; FB1:   0.12  3250
+             MISC: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+              ORG: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+              PER: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+
+bos	loc	misc	o	org	per
+loc	13520	0	0	0	0
+misc	8243	0	0	0	0
+o	216258	0	0	0	0
+org	13914	0	0	0	0
+per	20374	0	0	0	0
+
+bos	B-LOC	B-MISC	B-ORG	I-LOC	I-MISC	I-ORG	I-PER	O
+B-LOC	0	0	0	0	0	0	0	0
+B-MISC	0	0	0	4	0	0	0	0
+B-ORG	0	0	0	0	0	0	0	0
+I-LOC	0	0	0	2094	0	0	0	0
+I-MISC	0	0	0	1264	0	0	0	0
+I-ORG	0	0	0	2092	0	0	0	0
+I-PER	0	0	0	3149	0	0	0	0
+O	0	0	0	42759	0	0	0	0
+
+
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   2       226.2870   148.7098     0.9509     0.9593     4.0700     0.1600     0.0900     0.1200     0.1200          1
+
+processed 203621 tokens with 23499 phrases; found: 14041 phrases; correct: 22.
+accuracy:   4.07%; precision:   0.16%; recall:   0.09%; FB1:   0.12
+              LOC: precision:   0.16%; recall:   0.31%; FB1:   0.21  14041
+             MISC: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+              ORG: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+              PER: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+
+bos	loc	misc	o	org	per
+loc	53057	0	0	0	0
+misc	30768	0	0	0	0
+o	857099	0	0	0	0
+org	66725	0	0	0	0
+per	71973	0	0	0	0
+
+bos	B-LOC	B-MISC	B-ORG	I-LOC	I-MISC	I-ORG	I-PER	O
+B-LOC	0	0	0	11	0	0	0	0
+B-MISC	0	0	0	35	0	0	0	0
+B-ORG	0	0	0	24	0	0	0	0
+I-LOC	0	0	0	8286	0	0	0	0
+I-MISC	0	0	0	4558	0	0	0	0
+I-ORG	0	0	0	10001	0	0	0	0
+I-PER	0	0	0	11128	0	0	0	0
+O	0	0	0	169578	0	0	0	0
+
+
+dev   2        52.4677     8.7521     0.9504     0.9592     4.0800     0.0900     0.0500     0.0700     0.0700          1
+
+processed 51362 tokens with 5942 phrases; found: 3250 phrases; correct: 3.
+accuracy:   4.08%; precision:   0.09%; recall:   0.05%; FB1:   0.07
+              LOC: precision:   0.09%; recall:   0.16%; FB1:   0.12  3250
+             MISC: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+              ORG: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+              PER: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+
+bos	loc	misc	o	org	per
+loc	13520	0	0	0	0
+misc	8243	0	0	0	0
+o	216258	0	0	0	0
+org	13914	0	0	0	0
+per	20374	0	0	0	0
+
+bos	B-LOC	B-MISC	B-ORG	I-LOC	I-MISC	I-ORG	I-PER	O
+B-LOC	0	0	0	0	0	0	0	0
+B-MISC	0	0	0	4	0	0	0	0
+B-ORG	0	0	0	0	0	0	0	0
+I-LOC	0	0	0	2094	0	0	0	0
+I-MISC	0	0	0	1264	0	0	0	0
+I-ORG	0	0	0	2092	0	0	0	0
+I-PER	0	0	0	3149	0	0	0	0
+O	0	0	0	42759	0	0	0	0
+
+
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   3       226.2870   148.8941     0.9509     0.9593     4.0700     0.1600     0.0900     0.1200     0.1200          1
+
+processed 203621 tokens with 23499 phrases; found: 14041 phrases; correct: 22.
+accuracy:   4.07%; precision:   0.16%; recall:   0.09%; FB1:   0.12
+              LOC: precision:   0.16%; recall:   0.31%; FB1:   0.21  14041
+             MISC: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+              ORG: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+              PER: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+
+bos	loc	misc	o	org	per
+loc	53057	0	0	0	0
+misc	30768	0	0	0	0
+o	857099	0	0	0	0
+org	66725	0	0	0	0
+per	71973	0	0	0	0
+
+bos	B-LOC	B-MISC	B-ORG	I-LOC	I-MISC	I-ORG	I-PER	O
+B-LOC	0	0	0	11	0	0	0	0
+B-MISC	0	0	0	35	0	0	0	0
+B-ORG	0	0	0	24	0	0	0	0
+I-LOC	0	0	0	8286	0	0	0	0
+I-MISC	0	0	0	4558	0	0	0	0
+I-ORG	0	0	0	10001	0	0	0	0
+I-PER	0	0	0	11128	0	0	0	0
+O	0	0	0	169578	0	0	0	0
+
+
+dev   3        52.4677     8.9836     0.9504     0.9592     4.0800     0.0900     0.0500     0.0700     0.0700          1
+
+processed 51362 tokens with 5942 phrases; found: 3250 phrases; correct: 3.
+accuracy:   4.08%; precision:   0.09%; recall:   0.05%; FB1:   0.07
+              LOC: precision:   0.09%; recall:   0.16%; FB1:   0.12  3250
+             MISC: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+              ORG: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+              PER: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+
+bos	loc	misc	o	org	per
+loc	13520	0	0	0	0
+misc	8243	0	0	0	0
+o	216258	0	0	0	0
+org	13914	0	0	0	0
+per	20374	0	0	0	0
+
+bos	B-LOC	B-MISC	B-ORG	I-LOC	I-MISC	I-ORG	I-PER	O
+B-LOC	0	0	0	0	0	0	0	0
+B-MISC	0	0	0	4	0	0	0	0
+B-ORG	0	0	0	0	0	0	0	0
+I-LOC	0	0	0	2094	0	0	0	0
+I-MISC	0	0	0	1264	0	0	0	0
+I-ORG	0	0	0	2092	0	0	0	0
+I-PER	0	0	0	3149	0	0	0	0
+O	0	0	0	42759	0	0	0	0
+
+
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   4       226.2870   147.5412     0.9509     0.9593     4.0700     0.1600     0.0900     0.1200     0.1200          1
+
+processed 203621 tokens with 23499 phrases; found: 14041 phrases; correct: 22.
+accuracy:   4.07%; precision:   0.16%; recall:   0.09%; FB1:   0.12
+              LOC: precision:   0.16%; recall:   0.31%; FB1:   0.21  14041
+             MISC: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+              ORG: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+              PER: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+
+bos	loc	misc	o	org	per
+loc	53057	0	0	0	0
+misc	30768	0	0	0	0
+o	857099	0	0	0	0
+org	66725	0	0	0	0
+per	71973	0	0	0	0
+
+bos	B-LOC	B-MISC	B-ORG	I-LOC	I-MISC	I-ORG	I-PER	O
+B-LOC	0	0	0	11	0	0	0	0
+B-MISC	0	0	0	35	0	0	0	0
+B-ORG	0	0	0	24	0	0	0	0
+I-LOC	0	0	0	8286	0	0	0	0
+I-MISC	0	0	0	4558	0	0	0	0
+I-ORG	0	0	0	10001	0	0	0	0
+I-PER	0	0	0	11128	0	0	0	0
+O	0	0	0	169578	0	0	0	0
+
+
+dev   4        52.4677     8.7268     0.9504     0.9592     4.0800     0.0900     0.0500     0.0700     0.0700          1
+
+processed 51362 tokens with 5942 phrases; found: 3250 phrases; correct: 3.
+accuracy:   4.08%; precision:   0.09%; recall:   0.05%; FB1:   0.07
+              LOC: precision:   0.09%; recall:   0.16%; FB1:   0.12  3250
+             MISC: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+              ORG: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+              PER: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+
+bos	loc	misc	o	org	per
+loc	13520	0	0	0	0
+misc	8243	0	0	0	0
+o	216258	0	0	0	0
+org	13914	0	0	0	0
+per	20374	0	0	0	0
+
+bos	B-LOC	B-MISC	B-ORG	I-LOC	I-MISC	I-ORG	I-PER	O
+B-LOC	0	0	0	0	0	0	0	0
+B-MISC	0	0	0	4	0	0	0	0
+B-ORG	0	0	0	0	0	0	0	0
+I-LOC	0	0	0	2094	0	0	0	0
+I-MISC	0	0	0	1264	0	0	0	0
+I-ORG	0	0	0	2092	0	0	0	0
+I-PER	0	0	0	3149	0	0	0	0
+O	0	0	0	42759	0	0	0	0
+
+
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   5       226.2870   147.0401     0.9509     0.9593     4.0700     0.1600     0.0900     0.1200     0.1200          1
+
+processed 203621 tokens with 23499 phrases; found: 14041 phrases; correct: 22.
+accuracy:   4.07%; precision:   0.16%; recall:   0.09%; FB1:   0.12
+              LOC: precision:   0.16%; recall:   0.31%; FB1:   0.21  14041
+             MISC: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+              ORG: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+              PER: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+
+bos	loc	misc	o	org	per
+loc	53057	0	0	0	0
+misc	30768	0	0	0	0
+o	857099	0	0	0	0
+org	66725	0	0	0	0
+per	71973	0	0	0	0
+
+bos	B-LOC	B-MISC	B-ORG	I-LOC	I-MISC	I-ORG	I-PER	O
+B-LOC	0	0	0	11	0	0	0	0
+B-MISC	0	0	0	35	0	0	0	0
+B-ORG	0	0	0	24	0	0	0	0
+I-LOC	0	0	0	8286	0	0	0	0
+I-MISC	0	0	0	4558	0	0	0	0
+I-ORG	0	0	0	10001	0	0	0	0
+I-PER	0	0	0	11128	0	0	0	0
+O	0	0	0	169578	0	0	0	0
+
+
+dev   5        52.4677     8.9967     0.9504     0.9592     4.0800     0.0900     0.0500     0.0700     0.0700          1
+
+processed 51362 tokens with 5942 phrases; found: 3250 phrases; correct: 3.
+accuracy:   4.08%; precision:   0.09%; recall:   0.05%; FB1:   0.07
+              LOC: precision:   0.09%; recall:   0.16%; FB1:   0.12  3250
+             MISC: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+              ORG: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+              PER: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+
+bos	loc	misc	o	org	per
+loc	13520	0	0	0	0
+misc	8243	0	0	0	0
+o	216258	0	0	0	0
+org	13914	0	0	0	0
+per	20374	0	0	0	0
+
+bos	B-LOC	B-MISC	B-ORG	I-LOC	I-MISC	I-ORG	I-PER	O
+B-LOC	0	0	0	0	0	0	0	0
+B-MISC	0	0	0	4	0	0	0	0
+B-ORG	0	0	0	0	0	0	0	0
+I-LOC	0	0	0	2094	0	0	0	0
+I-MISC	0	0	0	1264	0	0	0	0
+I-ORG	0	0	0	2092	0	0	0	0
+I-PER	0	0	0	3149	0	0	0	0
+O	0	0	0	42759	0	0	0	0
+
+
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   6       226.2870   149.0894     0.9509     0.9593     4.0700     0.1600     0.0900     0.1200     0.1200          1
+
+processed 203621 tokens with 23499 phrases; found: 14041 phrases; correct: 22.
+accuracy:   4.07%; precision:   0.16%; recall:   0.09%; FB1:   0.12
+              LOC: precision:   0.16%; recall:   0.31%; FB1:   0.21  14041
+             MISC: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+              ORG: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+              PER: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+
+bos	loc	misc	o	org	per
+loc	53057	0	0	0	0
+misc	30768	0	0	0	0
+o	857099	0	0	0	0
+org	66725	0	0	0	0
+per	71973	0	0	0	0
+
+bos	B-LOC	B-MISC	B-ORG	I-LOC	I-MISC	I-ORG	I-PER	O
+B-LOC	0	0	0	11	0	0	0	0
+B-MISC	0	0	0	35	0	0	0	0
+B-ORG	0	0	0	24	0	0	0	0
+I-LOC	0	0	0	8286	0	0	0	0
+I-MISC	0	0	0	4558	0	0	0	0
+I-ORG	0	0	0	10001	0	0	0	0
+I-PER	0	0	0	11128	0	0	0	0
+O	0	0	0	169578	0	0	0	0
+
+
+dev   6        52.4677     8.9804     0.9504     0.9592     4.0800     0.0900     0.0500     0.0700     0.0700          1
+
+processed 51362 tokens with 5942 phrases; found: 3250 phrases; correct: 3.
+accuracy:   4.08%; precision:   0.09%; recall:   0.05%; FB1:   0.07
+              LOC: precision:   0.09%; recall:   0.16%; FB1:   0.12  3250
+             MISC: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+              ORG: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+              PER: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+
+bos	loc	misc	o	org	per
+loc	13520	0	0	0	0
+misc	8243	0	0	0	0
+o	216258	0	0	0	0
+org	13914	0	0	0	0
+per	20374	0	0	0	0
+
+bos	B-LOC	B-MISC	B-ORG	I-LOC	I-MISC	I-ORG	I-PER	O
+B-LOC	0	0	0	0	0	0	0	0
+B-MISC	0	0	0	4	0	0	0	0
+B-ORG	0	0	0	0	0	0	0	0
+I-LOC	0	0	0	2094	0	0	0	0
+I-MISC	0	0	0	1264	0	0	0	0
+I-ORG	0	0	0	2092	0	0	0	0
+I-PER	0	0	0	3149	0	0	0	0
+O	0	0	0	42759	0	0	0	0
+
+
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
