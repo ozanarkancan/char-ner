@@ -3,6 +3,8 @@ import copy
 from itertools import *
 import random
 
+import encoding
+
 __author__ = 'Onur Kuru'
 file_abspath = os.path.abspath(__file__)
 ROOT_DIR = os.path.abspath(os.path.join(file_abspath, os.pardir, os.pardir))
@@ -10,7 +12,7 @@ DATA_DIR = '{}/data'.format(ROOT_DIR)
 WSTART = '/w'
 WEND = 'w/'
 
-def read_sents(file):
+def read_sents_eng(file):
     a,b,c,d = [],[],[],[]
     sentences = []
     with open(file) as src:
@@ -25,6 +27,13 @@ def read_sents(file):
                             'pts':b,'cts':c})
                 a,b,c,d = [],[],[],[]
     return sentences
+
+def get_sents(lang='eng'):
+    readfunc = globals()['read_sents_'+lang]
+    if lang == 'spa':
+        return map(readfunc, ['{}/{}/{}.bio'.format(DATA_DIR,lang,dset) for dset in ('train','testa','testb')])
+    else:
+        return map(readfunc, ['{}/{}/{}.iob'.format(DATA_DIR,lang,dset) for dset in ('train','testa','testb')])
 
 def read_sents_deu(file):
     a,b,c,d,e = [],[],[],[], []
@@ -52,20 +61,12 @@ def read_sents_spa(file):
                 a.append(w);b.append(pt);d.append(t);
             else: # emtpy line
                 if len(a):
+                    d = encoding.bio2iob(d)
                     sentences.append({'ws':a,'ts':d,'tsg':copy.deepcopy(d),\
                             'pts':b})
                 a,b,c,d = [],[],[],[]
     return sentences
 
-def get_sents(lang='eng', enc='bilou'):
-    if lang=='eng':
-        return read_sents('%s/%s/train.%s'%(DATA_DIR,lang,enc)),\
-                read_sents('%s/%s/testa.%s'%(DATA_DIR,lang,enc)),\
-                read_sents('%s/%s/testb.%s'%(DATA_DIR,lang,enc))
-    elif lang=='spa':
-        return read_sents_spa('%s/%s/train.%s'%(DATA_DIR,lang,enc)), read_sents('%s/%s/testa.%s'%(DATA_DIR,lang,enc)), read_sents('%s/%s/testb.%s'%(DATA_DIR,lang,enc))
-    else:
-        raise Exception
 
 def sample_sents(sents, n, min_ws_len=None, max_ws_len=None):
     pp = sents
@@ -90,8 +91,9 @@ def get_sent_indx_word(dset):
     return indexes
 
 if __name__ == '__main__':
-    trn = read_sents_deu('data/deu/train.iob')
+    trn,dev,tst = get_sents('spa')
 
-    sent = trn[0]
-    for w in sent['ws']:
-        print [c for c in w]
+    sents = sample_sents(trn,10,5,10)
+    for sent in sents:
+        print sent['ws']
+        print sent['ts']

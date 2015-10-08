@@ -49,6 +49,7 @@ def get_arg_parser():
     parser.add_argument("--log", default='das_auto', help="log file name")
     parser.add_argument("--sorted", default=1, type=int, help="sort datasets before training and prediction")
     parser.add_argument("--in2out", default=0, type=int, help="connect input & output")
+    parser.add_argument("--lang", default='eng', help="ner lang")
 
     return parser
 
@@ -64,7 +65,8 @@ class Feat(object):
     def fit(self, trn):
         self.dvec.fit(self.featfunc(ci, sent)  for sent in trn for ci,c in enumerate(sent['cseq']))
         self.tseqenc.fit([t for sent in trn for t in sent['tseq']])
-        self.tsenc.fit([t for sent in trn for t in sent['ts']])
+        # self.tsenc.fit([t for sent in trn for t in sent['ts']]) TODO
+        self.tsenc.fit(['B-LOC', 'B-MISC', 'B-ORG', 'B-PER', 'I-LOC', 'I-MISC', 'I-ORG', 'I-PER', 'O'])
         self.feature_names = self.dvec.get_feature_names()
         self.ctag_classes = self.tseqenc.classes_
         self.wtag_classes = self.tsenc.classes_
@@ -206,7 +208,7 @@ def main():
     logger.setLevel(logging.DEBUG)
     shandler = logging.StreamHandler()
     shandler.setLevel(logging.INFO)
-    lparams = ['rnn', 'feat', 'rep', 'activation', 'n_hidden', 'recout', 'opt','lr','norm','n_batch','batch_norm','fepoch','patience','sample', 'in2out']
+    lparams = ['rnn', 'feat', 'rep', 'activation', 'n_hidden', 'recout', 'opt','lr','norm','n_batch','batch_norm','fepoch','patience','sample', 'in2out', 'lang']
     param_log_name = ','.join(['{}:{}'.format(p,args[p]) for p in lparams])
     param_log_name = valid_file_name(param_log_name)
     base_log_name = '{}:{},{}'.format(host, theano.config.device, param_log_name if args['log'] == 'das_auto' else args['log'])
@@ -223,7 +225,7 @@ def main():
         logger.info('{}:\t{}'.format(k,v))
     logger.info('{}:\t{}'.format('base_log_name',base_log_name))
 
-    trn, dev, tst = get_sents('eng','iob')
+    trn, dev, tst = get_sents(args['lang'])
 
     if args['sample']>0:
         trn_size = args['sample']*1000
@@ -248,7 +250,9 @@ def main():
 
     MAX_LENGTH = max(len(sent['cseq']) for sent in chain(trn,dev))
     MIN_LENGTH = min(len(sent['cseq']) for sent in chain(trn,dev))
-    logger.info('maxlen: {} minlen: {}'.format(MAX_LENGTH, MIN_LENGTH))
+    AVG_LENGTH = np.mean([len(sent['cseq']) for sent in chain(trn,dev)])
+    STD_LENGTH = np.std([len(sent['cseq']) for sent in chain(trn,dev)])
+    logger.info('maxlen: {} minlen: {} avglen: {:.2f} stdlen: {:.2f}'.format(MAX_LENGTH, MIN_LENGTH, AVG_LENGTH, STD_LENGTH))
 
     featfunc = getattr(featchar,'get_cfeatures_'+args['feat'])
     feat = Feat(featfunc)
