@@ -26,6 +26,22 @@ def read_sents(file):
                 a,b,c,d = [],[],[],[]
     return sentences
 
+def read_sents_deu(file):
+    a,b,c,d,e = [],[],[],[], []
+    sentences = []
+    with open(file) as src:
+        for l in src:
+            if len(l.strip()):
+                w, lem, pt, ct, t = l.strip().split('\t')
+                a.append(w);b.append(pt);
+                c.append(ct);d.append(t);e.append(lem)
+            else: # emtpy line
+                if len(a):
+                    sentences.append({'ws':a,'ts':d,'tsg':copy.deepcopy(d),\
+                            'pts':b,'cts':c,'lems':e})
+                a,b,c,d = [],[],[],[]
+    return sentences
+
 def read_sents_spa(file):
     a,b,c,d = [],[],[],[]
     sentences = []
@@ -74,6 +90,8 @@ def get_sent_indx_word(dset):
     return indexes
 
 if __name__ == '__main__':
-    print ROOT_DIR
-    pass
+    trn = read_sents_deu('data/deu/train.iob')
 
+    sent = trn[0]
+    for w in sent['ws']:
+        print [c for c in w]
