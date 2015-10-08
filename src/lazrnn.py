@@ -74,12 +74,14 @@ class RDNN:
 
             logging.debug('l_forward: {}'.format(lasagne.layers.get_output_shape(l_forward)))
             logging.debug('l_backward: {}'.format(lasagne.layers.get_output_shape(l_backward)))
-            l_concat = lasagne.layers.ConcatLayer([l_forward, l_backward], axis=2)
-            logging.debug('l_concat: {}'.format(lasagne.layers.get_output_shape(l_concat)))
             if self.batch_norm:
                 logging.debug('using batch norm')
-                from batch_norm import BatchNormLayer
-                l_concat = BatchNormLayer(l_concat,axes=(0,1))
+                from batch_norm import BatchNormLayer, batch_norm
+                # l_concat = BatchNormLayer(l_concat, axes=(0,1))
+                l_concat = lasagne.layers.ConcatLayer([BatchNormLayer(l_forward, axes=(0,1)), BatchNormLayer(l_backward,axes=(0,1))], axis=2)
+            else:
+                l_concat = lasagne.layers.ConcatLayer([l_forward, l_backward], axis=2)
+            logging.debug('l_concat: {}'.format(lasagne.layers.get_output_shape(l_concat)))
             self.layers.append(l_concat)
          
         l_concat = lasagne.layers.ConcatLayer([l_concat, l_in], axis=2) if self.in2out else l_concat
