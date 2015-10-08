@@ -12,13 +12,12 @@ import theano
 import lasagne
 import theano.tensor as T
 
-from featchar import *
 import featchar
-from utils import get_sents, get_sent_indx, sample_sents
+import rep
+from utils import get_sents, sample_sents
 from utils import ROOT_DIR
-from biloueval import bilouEval2, bilou_post_correct
 from score import conlleval
-from encoding import io2bio
+from encoding import io2iob
 from lazrnn import RDNN, RDNN_Dummy, extract_rnn_params
 from nerrnn import RNNModel
 
@@ -31,6 +30,7 @@ def get_arg_parser():
     parser = argparse.ArgumentParser(prog="lazrnn")
     
     parser.add_argument("--rnn", default='lazrnn', choices=['dummy','lazrnn','nerrnn'], help="which rnn to use")
+    parser.add_argument("--rep", default='std', choices=['std','nospace','spec'], help="which representation to use")
     parser.add_argument("--activation", default=['bi-relu'], nargs='+', help="activation function for hidden layer : sigmoid, tanh, rectify")
     parser.add_argument("--n_hidden", default=[100], nargs='+', type=int, help="number of neurons in each hidden layer")
     parser.add_argument("--recout", default=1, type=int, help="use recurrent output layer")
@@ -49,6 +49,8 @@ def get_arg_parser():
     parser.add_argument("--log", default='das_auto', help="log file name")
     parser.add_argument("--sorted", default=1, type=int, help="sort datasets before training and prediction")
     parser.add_argument("--in2out", default=0, type=int, help="connect input & output")
+    parser.add_argument("--curriculum", default=1, type=int, help="curriculum learning: number of parts")
+    parser.add_argument("--lang", default='eng', help="ner lang")
 
     return parser
 
@@ -64,7 +66,8 @@ class Feat(object):
     def fit(self, trn):
         self.dvec.fit(self.featfunc(ci, sent)  for sent in trn for ci,c in enumerate(sent['cseq']))
         self.tseqenc.fit([t for sent in trn for t in sent['tseq']])
-        self.tsenc.fit([t for sent in trn for t in sent['ts']])
+        # self.tsenc.fit([t for sent in trn for t in sent['ts']]) TODO
+        self.tsenc.fit(['B-LOC', 'B-MISC', 'B-ORG', 'B-PER', 'I-LOC', 'I-MISC', 'I-ORG', 'I-PER', 'O'])
         self.feature_names = self.dvec.get_feature_names()
         self.ctag_classes = self.tseqenc.classes_
         self.wtag_classes = self.tsenc.classes_
@@ -131,9 +134,9 @@ class Reporter(object):
         lts_pred = []
         for sent, ipred in zip(dset, pred):
             tseq_pred = self.feat.tseqenc.inverse_transform(ipred)
-            tseqgrp_pred = get_tseqgrp(sent['wiseq'],tseq_pred)
-            ts_pred = self.tfunc(tseqgrp_pred)
-            lts_pred.append(io2bio(ts_pred)) # changed
+            # tseqgrp_pred = get_tseqgrp(sent['wiseq'],tseq_pred)
+            ts_pred = self.tfunc(sent['wiseq'],tseq_pred)
+            lts_pred.append(io2iob(ts_pred)) # changed
 
         y_true = self.feat.tsenc.transform([t for ts in lts for t in ts])
         y_pred = self.feat.tsenc.transform([t for ts in lts_pred for t in ts])
@@ -188,6 +191,32 @@ class Validator(object):
                 logging.info('sabir tasti.')
                 break
             logging.info('')
+
+class Curriculum(object):
+    def __init__(self, trn, dev, batcher, reporter, numofparts):
+        self.trn = trn
+        self.dev = dev
+        self.trndat = batcher.get_batches(trn)
+        self.devdat = batcher.get_batches(dev)
+        self.batcher = batcher
+        self.reporter = reporter
+        self.numofparts = numofparts
+        self.trn_parts = []
+        sentineachpart = len(self.trn) / self.numofparts
+        
+        for i in xrange(self.numofparts):
+            l = i * sentineachpart
+            u = (i + 1) * sentineachpart if i != (self.numofparts - 1) else len(self.trn)
+            self.trn_parts.append(self.trn[l:u])
+
+        self.trn_parts.append(self.trn)
+
+    def validate(self, rdnn, fepoch, patience=-1):
+        for i in xrange(self.numofparts + 1):
+            logging.info('Learning part:{}'.format(i + 1))
+            validator = Validator(self.trn_parts[i], self.dev, self.batcher, self.reporter)
+            validator.validate(rdnn, fepoch, patience)
+        
             
 def valid_file_name(s):
     return "".join(i for i in s if i not in "\"\/ &*?<>|[]()'")
@@ -206,7 +235,10 @@ def main():
     logger.setLevel(logging.DEBUG)
     shandler = logging.StreamHandler()
     shandler.setLevel(logging.INFO)
-    lparams = ['rnn', 'feat', 'activation', 'n_hidden', 'recout', 'opt','lr','norm','n_batch','batch_norm','fepoch','patience','sample', 'in2out']
+    lparams = ['rnn', 'feat', 'activation', 'n_hidden', 'recout',
+        'opt','lr','norm','n_batch','batch_norm','fepoch','patience','sample',
+        'in2out', 'curriculum']
+    lparams = ['rnn', 'feat', 'rep', 'activation', 'n_hidden', 'recout', 'opt','lr','norm','n_batch','batch_norm','fepoch','patience','sample', 'in2out', 'lang']
     param_log_name = ','.join(['{}:{}'.format(p,args[p]) for p in lparams])
     param_log_name = valid_file_name(param_log_name)
     base_log_name = '{}:{},{}'.format(host, theano.config.device, param_log_name if args['log'] == 'das_auto' else args['log'])
@@ -223,22 +255,21 @@ def main():
         logger.info('{}:\t{}'.format(k,v))
     logger.info('{}:\t{}'.format('base_log_name',base_log_name))
 
-    trn, dev, tst = get_sents('eng','bio')
+    trn, dev, tst = get_sents(args['lang'])
 
     if args['sample']>0:
         trn_size = args['sample']*1000
         trn = sample_sents(trn,trn_size)
 
-    # TODO
-    ctag2wtag_func = get_ts3
-    wtag2ctag_func = get_tseq3
+    repclass = getattr(rep, 'Rep'+args['rep'])
+    repobj = repclass()
 
     for d in (trn,dev,tst):
         for sent in d:
             sent.update({
-                'cseq': get_cseq(sent), 
-                'wiseq': get_wiseq(sent), 
-                'tseq': wtag2ctag_func(sent)})
+                'cseq': repobj.get_cseq(sent), 
+                'wiseq': repobj.get_wiseq(sent), 
+                'tseq': repobj.get_tseq(sent)})
 
     if args['sorted']:
         trn = sorted(trn, key=lambda sent: len(sent['cseq']))
@@ -249,16 +280,18 @@ def main():
 
     MAX_LENGTH = max(len(sent['cseq']) for sent in chain(trn,dev))
     MIN_LENGTH = min(len(sent['cseq']) for sent in chain(trn,dev))
-    logger.info('maxlen: {} minlen: {}'.format(MAX_LENGTH, MIN_LENGTH))
+    AVG_LENGTH = np.mean([len(sent['cseq']) for sent in chain(trn,dev)])
+    STD_LENGTH = np.std([len(sent['cseq']) for sent in chain(trn,dev)])
+    logger.info('maxlen: {} minlen: {} avglen: {:.2f} stdlen: {:.2f}'.format(MAX_LENGTH, MIN_LENGTH, AVG_LENGTH, STD_LENGTH))
 
     featfunc = getattr(featchar,'get_cfeatures_'+args['feat'])
     feat = Feat(featfunc)
     feat.fit(trn)
 
     batcher = Batcher(args['n_batch'], feat)
-    reporter = Reporter(feat, ctag2wtag_func)
+    reporter = Reporter(feat, rep.get_ts)
 
-    validator = Validator(trn, dev, batcher, reporter)
+    validator = Validator(trn, dev, batcher, reporter) if args['curriculum'] < 2 else Curriculum(trn, dev, batcher, reporter, args['curriculum'])
 
     # select rnn
     if args['rnn'] == 'dummy':

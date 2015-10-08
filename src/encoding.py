@@ -1,21 +1,49 @@
-import random
 from itertools import *
-from utils import get_sents, sample_sents
-from score import conlleval
 
 
-def bio2bilou(ts):
+def iob2bilou(ts):
     from bio2bilou import c4
     return c4(' '.join(ts))
 
 
+def bio2iob(ts):
+    phrases, curphrase = [], []
+    for t in ts:
+        if t.startswith('B'):
+            len(curphrase) and phrases.append(curphrase)
+            curphrase = [t]
+        elif t.startswith('I'):
+            curphrase.append(t)
+        elif t.startswith('O'):
+            len(curphrase) and phrases.append(curphrase)
+            curphrase = [t]
+        else:
+            raise Exception()
+    len(curphrase) and phrases.append(curphrase)
+    ts_iob = []
+    for phrase_prev, phrase_now in zip([None]+phrases, phrases):
+        if phrase_now == ['O']:
+            ts_iob.append('O')
+        else:
+            now_type = phrase_now[0].split('-')[1]
+            if phrase_prev and phrase_prev != ['O']:
+                prev_type = phrase_prev[0].split('-')[1]
+                if prev_type == now_type:
+                    ts_iob.append('B-'+now_type)
+                    ts_iob.extend('I-'+now_type for t in phrase_now[1:])
+                else:
+                    ts_iob.extend('I-'+now_type for t in phrase_now)
+            else:
+                ts_iob.extend('I-'+now_type for t in phrase_now)
+    return ts_iob
+
 def bilou2io(ts):
     return [e.split('-')[1] if len(e.split('-')) == 2 else e for e in ts]
 
-def bio2io(ts):
+def iob2io(ts):
     return bilou2io(ts)
 
-def io2bio(ts):
+def io2iob(ts):
     io_phrases = [(key,list(subite)) for key, subite in groupby(ts)]
     # print 'io_phrases:', io_phrases
     phrases = []
@@ -34,18 +62,20 @@ def io2bio(ts):
     return phrases
 
 def test():
-    trn, dev, tst = get_sents(enc='bio')
+    import random
+    trn, dev, tst = get_sents(enc='iob')
     sent = random.choice(trn)
     print ' '.join(sent['ws'])
     print ' '.join(sent['ts'])
-    print ' '.join(bio2io(sent['ts']))
-    print ' '.join(bio2bilou(sent['ts']))
+    print ' '.join(iob2io(sent['ts']))
+    print ' '.join(iob2bilou(sent['ts']))
 
     ts_gold = [sent['ts'] for sent in dev]
-    ts_pred = [io2bio(bio2io(sent['ts'])) for sent in dev]
+    ts_pred = [io2iob(iob2io(sent['ts'])) for sent in dev]
+    from score import conlleval
     r1,r2 = conlleval(ts_gold, ts_pred)
     print r2
     print '\t'.join(map(str,r1))
 
 if __name__ == '__main__':
-    test()
+    pass
