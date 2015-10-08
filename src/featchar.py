@@ -1,6 +1,8 @@
 import string
 from itertools import *
 
+import utils
+
 
 def get_cfeatures_basic(ci, sent):
     return {'c': sent['cseq'][ci]}
@@ -50,6 +52,8 @@ def get_cfeatures_gen(ci, sent):
     c = sent['cseq'][ci]
     if c in string.ascii_letters:
         return {'c': c}
+    elif c in (utils.WSTART, utils.WEND):
+        return {'c': c}
     elif c == ' ':
         return {'c': 'space'}
     elif c in string.digits:
@@ -63,6 +67,8 @@ def get_cfeatures_gen_seg(ci, sent):
     d = {}
     c = sent['cseq'][ci]
     if c in string.ascii_letters:
+        d['c'] = c
+    elif c in (utils.WSTART, utils.WEND):
         d['c'] = c
     elif c == ' ':
         d['c'] = 'space'

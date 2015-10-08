@@ -2,6 +2,7 @@ from itertools import *
 from collections import Counter
 
 from encoding import iob2io
+import utils
 
 """
 def get_ts2(tseqgrp):
@@ -66,15 +67,15 @@ class Repnospace(object):
 class Repspec(object):
 
     def get_cseq(self, sent):
-        return [c for w in sent['ws'] for c in ['/w']+list(w)+['w/']]
+        return [c for w in sent['ws'] for c in [utils.WSTART]+list(w)+[utils.WEND]]
 
     def get_wiseq(self, sent):
-        return [wi for wi,w in enumerate(sent['ws']) for c in ['/w']+list(w)+['w/']]
+        return [wi for wi,w in enumerate(sent['ws']) for c in [utils.WSTART]+list(w)+[utils.WEND]]
 
     def get_tseq(self, sent):
         """ assumes sent['ts'] is in iob scheme """
         ts = iob2io(sent['ts'])
-        return [ts[wi].lower() for wi,w in enumerate(sent['ws']) for c in ['/w']+list(w)+['w/']]
+        return [ts[wi].lower() for wi,w in enumerate(sent['ws']) for c in [utils.WSTART]+list(w)+[utils.WEND]]
 
 def get_ts(wiseq, tseq):
     tgroup = [[e[0] for e in g] for k, g in groupby(enumerate(wiseq),lambda x: x[1]) if k >= 0]
@@ -90,7 +91,7 @@ def sent_word_indx(sent):
     arr[1:,0] += 1
     return arr
 
-def print_cseq(sent, *args):
+def print_cseq(sent, *args): # TODO needs update according to new representations
     mlen = max(len(e) for e in chain(*args))
     wgroup = [[e[0] for e in g] for k, g in groupby(enumerate(sent['wiseq']),lambda x: x[1] !=-1) if k]
     space_indx = [i for i,wi in enumerate(sent['wiseq']) if wi==-1]
@@ -107,9 +108,9 @@ if __name__ == '__main__':
     trn, dev, tst = get_sents('eng','iob')
 
     trn = sample_sents(trn, 3, 5,6)
-    repr1 = Repr1()
-    repr2 = Repr2()
-    repr3 = Repr3()
+    repr1 = Repstd()
+    repr2 = Repnospace()
+    repr3 = Repspec()
 
     for sent,r in product(trn,[repr1,repr2,repr3]):
         sent.update({
