@@ -1,0 +1,97 @@
+activation:	['bi-gru', 'bi-gru']
+batch_norm:	0
+drates:	[0, 0]
+feat:	basic_seg
+fepoch:	2
+grad_clip:	-1
+in2out:	1
+log:	tmp
+lr:	0.001
+n_batch:	32
+n_hidden:	[100, 100]
+norm:	1.0
+opt:	adam
+patience:	-1
+recout:	1
+rnn:	lazrnn
+sample:	0
+sorted:	1
+truncate:	-1
+base_log_name:	balina:cpu,tmp
+# of sents trn, dev, tst: 14041 3250 3453
+maxlen: 512 minlen: 1
+['c= ', 'c=!', 'c="', 'c=$', 'c=%', 'c=&', "c='", 'c=(', 'c=)', 'c=*', 'c=+', 'c=,', 'c=-', 'c=.', 'c=/', 'c=0', 'c=1', 'c=2', 'c=3', 'c=4', 'c=5', 'c=6', 'c=7', 'c=8', 'c=9', 'c=:', 'c=;', 'c==', 'c=?', 'c=@', 'c=A', 'c=B', 'c=C', 'c=D', 'c=E', 'c=F', 'c=G', 'c=H', 'c=I', 'c=J', 'c=K', 'c=L', 'c=M', 'c=N', 'c=O', 'c=P', 'c=Q', 'c=R', 'c=S', 'c=T', 'c=U', 'c=V', 'c=W', 'c=X', 'c=Y', 'c=Z', 'c=[', 'c=]', 'c=`', 'c=a', 'c=b', 'c=c', 'c=d', 'c=e', 'c=f', 'c=g', 'c=h', 'c=i', 'c=j', 'c=k', 'c=l', 'c=m', 'c=n', 'c=o', 'c=p', 'c=q', 'c=r', 'c=s', 'c=t', 'c=u', 'c=v', 'c=w', 'c=x', 'c=y', 'c=z', 'isspace', 'wend', 'wstart']
+['loc' 'misc' 'o' 'org' 'per']
+['B-LOC' 'B-MISC' 'B-ORG' 'I-LOC' 'I-MISC' 'I-ORG' 'I-PER' 'O']
+NF: 88 NC: 5
+l_in: (None, None, 88)
+l_mask: (Subtensor{int64}.0, Subtensor{int64}.0)
+l_forward: (None, None, 100)
+l_backward: (None, None, 100)
+l_concat: (None, None, 200)
+l_forward: (None, None, 100)
+l_backward: (None, None, 100)
+l_concat: (None, None, 200)
+using recout.
+l_out: (None, None, 5)
+[W_in_to_updategate, W_hid_to_updategate, b_updategate, W_in_to_resetgate, W_hid_to_resetgate, b_resetgate, W_in_to_hidden_update, W_hid_to_hidden_update, b_hidden_update, hid_init, W_in_to_updategate, W_hid_to_updategate, b_updategate, W_in_to_resetgate, W_hid_to_resetgate, b_resetgate, W_in_to_hidden_update, W_hid_to_hidden_update, b_hidden_update, hid_init, W_in_to_updategate, W_hid_to_updategate, b_updategate, W_in_to_resetgate, W_hid_to_resetgate, b_resetgate, W_in_to_hidden_update, W_hid_to_hidden_update, b_hidden_update, hid_init, W_in_to_updategate, W_hid_to_updategate, b_updategate, W_in_to_resetgate, W_hid_to_resetgate, b_resetgate, W_in_to_hidden_update, W_hid_to_hidden_update, b_hidden_update, hid_init, W, b, W]
+Compiling functions...
+Compiling done.
+training the model...
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   1        41.8700   445.1040     0.1065     0.0874    91.2600    50.2600    53.4900    51.8200    51.8200          1
+
+processed 203621 tokens with 23499 phrases; found: 25011 phrases; correct: 12570.
+accuracy:  91.26%; precision:  50.26%; recall:  53.49%; FB1:  51.82
+              LOC: precision:  64.05%; recall:  58.31%; FB1:  61.04  6500
+             MISC: precision:  59.69%; recall:  34.76%; FB1:  43.93  2002
+              ORG: precision:  34.75%; recall:  38.60%; FB1:  36.57  7022
+              PER: precision:  50.30%; recall:  72.30%; FB1:  59.33  9487
+
+bos	loc	misc	o	org	per
+loc	28057	2022	2664	10507	9807
+misc	2777	9669	3530	9246	5546
+o	1716	695	830844	17739	6105
+org	5702	1711	9485	35786	14041
+per	2451	581	4411	4272	60258
+
+bos	B-LOC	B-MISC	B-ORG	I-LOC	I-MISC	I-ORG	I-PER	O
+B-LOC	0	0	0	0	0	1	1	9
+B-MISC	0	0	0	0	5	17	7	6
+B-ORG	0	0	0	0	0	24	0	0
+I-LOC	0	0	0	4585	294	1551	1505	351
+I-MISC	0	0	0	470	1376	1309	841	562
+I-ORG	0	0	0	1042	243	5170	2182	1364
+I-PER	0	0	0	424	80	647	9278	699
+O	0	0	0	311	86	2857	903	165421
+
+
+dev   1         9.1525    30.8316     0.1055     0.0865    91.3500    50.8400    53.0100    51.9000    51.9000          1
+
+processed 51362 tokens with 5942 phrases; found: 6196 phrases; correct: 3150.
+accuracy:  91.35%; precision:  50.84%; recall:  53.01%; FB1:  51.90
+              LOC: precision:  64.96%; recall:  56.51%; FB1:  60.44  1598
+             MISC: precision:  56.52%; recall:  33.84%; FB1:  42.33  552
+              ORG: precision:  29.80%; recall:  33.93%; FB1:  31.73  1527
+              PER: precision:  53.39%; recall:  73.02%; FB1:  61.68  2519
+
+bos	loc	misc	o	org	per
+loc	6902	631	839	2721	2427
+misc	837	2376	926	2306	1798
+o	359	150	210194	4182	1373
+org	1162	417	2087	7157	3091
+per	678	138	1291	1329	16938
+
+bos	B-LOC	B-MISC	B-ORG	I-LOC	I-MISC	I-ORG	I-PER	O
+B-LOC	0	0	0	0	0	0	0	0
+B-MISC	0	0	0	0	1	1	2	0
+B-ORG	0	0	0	0	0	0	0	0
+I-LOC	0	0	0	1134	104	388	357	111
+I-MISC	0	0	0	142	366	340	268	148
+I-ORG	0	0	0	221	66	1005	463	337
+I-PER	0	0	0	110	20	202	2599	218
+O	0	0	0	59	19	664	203	41814
+
+
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
