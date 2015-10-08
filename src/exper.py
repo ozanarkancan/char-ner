@@ -40,7 +40,7 @@ def get_arg_parser():
     parser.add_argument("--lr", default=0.001, type=float, help="learning rate")
     parser.add_argument("--norm", default=2, type=float, help="Threshold for clipping norm of gradient")
     parser.add_argument("--n_batch", default=20, type=int, help="batch size")
-    parser.add_argument("--fepoch", default=300, type=int, help="number of epochs")
+    parser.add_argument("--fepoch", default=500, type=int, help="number of epochs")
     parser.add_argument("--patience", default=-1, type=int, help="how patient the validator is")
     parser.add_argument("--sample", default=0, type=int, help="num of sents to sample from trn in the order of K")
     parser.add_argument("--feat", default='basic_seg', help="feat func to use")
