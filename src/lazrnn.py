@@ -55,8 +55,10 @@ class RDNN:
         logging.debug('l_mask: {}'.format(lasagne.layers.get_output_shape(l_mask)))
 
         if self.drates[0] > 0:
-            l_in = lasagne.layers.DropoutLayer(l_in, p=self.drates[0])
-        self.layers = [l_in]
+            l_in_drop = lasagne.layers.DropoutLayer(l_in, p=self.drates[0])
+            self.layers = [l_in_drop]
+        else:
+            self.layers = [l_in]
         for level, ltype, nonlin, n_hidden in zip(range(1,ldepth+1), self.deep_ltypes, self.deep_nonlins, self.n_hidden):
             prev_layer = self.layers[level-1]
             if ltype == 'recurrent':
@@ -182,20 +184,6 @@ class RDNN:
                 rnn_last_predictions.append(predictions[i*mlen:i*mlen+slen])
         return ecost, rnn_last_predictions
 
-"""
-self.layers = [l_in]
-for level in range(1,ldepth+1):
-    prev_layer = self.layers[level-1]
-    l_forward = LayerType(prev_layer, n_hidden[level-1], mask_input=l_mask, grad_clipping=grad_clip, W_hid_to_hid=Identity(), b=lasagne.init.Constant(0.001),  nonlinearity=nonlin)
-    logging.info('l_forward: {}'.format(lasagne.layers.get_output_shape(l_forward)))
-    l_backward = LayerType(prev_layer, n_hidden[level-1], mask_input=l_mask, grad_clipping=grad_clip, W_hid_to_hid=Identity(), b=lasagne.init.Constant(0.001), nonlinearity=nonlin, backwards=True)
-    logging.info('l_backward: {}'.format(lasagne.layers.get_output_shape(l_backward)))
-    l_concat = lasagne.layers.ConcatLayer([l_forward, l_backward], axis=2)
-    logging.info('l_concat: {}'.format(lasagne.layers.get_output_shape(l_concat)))
-    self.layers.append(l_concat)
-l_reshape = lasagne.layers.ReshapeLayer(self.layers[-1], (-1, n_hidden[-1]*2))
-logging.info('l_reshape: {}'.format(lasagne.layers.get_output_shape(l_reshape)))
-"""
 if __name__ == '__main__':
     print RDNN.params
     pass
