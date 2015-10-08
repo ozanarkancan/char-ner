@@ -49,7 +49,7 @@ def get_arg_parser():
     parser.add_argument("--log", default='das_auto', help="log file name")
     parser.add_argument("--sorted", default=1, type=int, help="sort datasets before training and prediction")
     parser.add_argument("--in2out", default=0, type=int, help="connect input & output")
-
+    parser.add_argument("--curriculum", default=1, type=int, help="curriculum learning: number of parts")
     return parser
 
 
@@ -188,6 +188,32 @@ class Validator(object):
                 logging.info('sabir tasti.')
                 break
             logging.info('')
+
+class Curriculum(object):
+    def __init__(self, trn, dev, batcher, reporter, numofparts):
+        self.trn = trn
+        self.dev = dev
+        self.trndat = batcher.get_batches(trn)
+        self.devdat = batcher.get_batches(dev)
+        self.batcher = batcher
+        self.reporter = reporter
+        self.numofparts = numofparts
+        self.trn_parts = []
+        sentineachpart = len(self.trn) / self.numofparts
+        
+        for i in xrange(self.numofparts):
+            l = i * sentineachpart
+            u = (i + 1) * sentineachpart if i != (self.numofparts - 1) else len(self.trn)
+            self.trn_parts.append(self.trn[l:u])
+
+        self.trn_parts.append(self.trn)
+
+    def validate(self, rdnn, fepoch, patience=-1):
+        for i in xrange(self.numofparts + 1):
+            logging.info('Learning part:{}'.format(i + 1))
+            validator = Validator(self.trn_parts[i], self.dev, self.batcher, self.reporter)
+            validator.validate(rdnn, fepoch, patience)
+        
             
 def valid_file_name(s):
     return "".join(i for i in s if i not in "\"\/ &*?<>|[]()'")
@@ -206,7 +232,9 @@ def main():
     logger.setLevel(logging.DEBUG)
     shandler = logging.StreamHandler()
     shandler.setLevel(logging.INFO)
-    lparams = ['rnn', 'feat', 'activation', 'n_hidden', 'recout', 'opt','lr','norm','n_batch','batch_norm','fepoch','patience','sample', 'in2out']
+    lparams = ['rnn', 'feat', 'activation', 'n_hidden', 'recout',
+        'opt','lr','norm','n_batch','batch_norm','fepoch','patience','sample',
+        'in2out', 'curriculum']
     param_log_name = ','.join(['{}:{}'.format(p,args[p]) for p in lparams])
     param_log_name = valid_file_name(param_log_name)
     base_log_name = '{}:{},{}'.format(host, theano.config.device, param_log_name if args['log'] == 'das_auto' else args['log'])
@@ -258,7 +286,7 @@ def main():
     batcher = Batcher(args['n_batch'], feat)
     reporter = Reporter(feat, ctag2wtag_func)
 
-    validator = Validator(trn, dev, batcher, reporter)
+    validator = Validator(trn, dev, batcher, reporter) if args['curriculum'] < 2 else Curriculum(trn, dev, batcher, reporter, args['curriculum'])
 
     # select rnn
     if args['rnn'] == 'dummy':
