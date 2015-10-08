@@ -224,6 +224,7 @@ def valid_file_name(s):
 def main():
     parser = get_arg_parser()
     args = vars(parser.parse_args())
+    args['drates'] = args['drates'] if any(args['drates']) else [0]*(len(args['n_hidden'])+1)
 
     if args['rnn'] == 'nerrnn':
         args['n_batch'] = 1
@@ -235,10 +236,8 @@ def main():
     logger.setLevel(logging.DEBUG)
     shandler = logging.StreamHandler()
     shandler.setLevel(logging.INFO)
-    lparams = ['rnn', 'feat', 'activation', 'n_hidden', 'recout',
-        'opt','lr','norm','n_batch','batch_norm','fepoch','patience','sample',
-        'in2out', 'curriculum']
-    lparams = ['rnn', 'feat', 'rep', 'activation', 'n_hidden', 'recout', 'opt','lr','norm','n_batch','batch_norm','fepoch','patience','sample', 'in2out', 'lang']
+    lparams = ['rnn', 'feat', 'rep', 'activation', 'n_hidden', 'drates', 'recout', 'opt','lr','norm','n_batch','batch_norm',\
+            'fepoch','patience','sample', 'in2out', 'lang','curriculum']
     param_log_name = ','.join(['{}:{}'.format(p,args[p]) for p in lparams])
     param_log_name = valid_file_name(param_log_name)
     base_log_name = '{}:{},{}'.format(host, theano.config.device, param_log_name if args['log'] == 'das_auto' else args['log'])

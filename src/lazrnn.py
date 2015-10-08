@@ -26,7 +26,7 @@ def extract_rnn_params(kwargs):
     return dict((pname,kwargs[pname]) for pname in RDNN.param_names)
 
 class RDNN:
-    param_names = ['activation','n_hidden','opt','grad_clip','lr','norm','recout','batch_norm', 'in2out']
+    param_names = ['activation','n_hidden','drates','opt','grad_clip','lr','norm','recout','batch_norm', 'in2out']
 
     def __init__(self, nc, nf, kwargs):
         assert nf; assert nc
@@ -54,6 +54,8 @@ class RDNN:
         l_mask = lasagne.layers.InputLayer(shape=(N_BATCH_VAR, MAX_SEQ_LEN_VAR))
         logging.debug('l_mask: {}'.format(lasagne.layers.get_output_shape(l_mask)))
 
+        if self.drates[0] > 0:
+            l_in = lasagne.layers.DropoutLayer(l_in, p=self.drates[0])
         self.layers = [l_in]
         for level, ltype, nonlin, n_hidden in zip(range(1,ldepth+1), self.deep_ltypes, self.deep_nonlins, self.n_hidden):
             prev_layer = self.layers[level-1]
@@ -82,6 +84,9 @@ class RDNN:
             else:
                 l_concat = lasagne.layers.ConcatLayer([l_forward, l_backward], axis=2)
             logging.debug('l_concat: {}'.format(lasagne.layers.get_output_shape(l_concat)))
+
+            if self.drates[level] > 0:
+                l_concat = lasagne.layers.DropoutLayer(l_concat, p=self.drates[level])
             self.layers.append(l_concat)
          
         l_concat = lasagne.layers.ConcatLayer([l_concat, l_in], axis=2) if self.in2out else l_concat
