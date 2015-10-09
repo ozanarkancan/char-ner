@@ -3,14 +3,8 @@ from itertools import *
 
 import utils
 
-
-def get_cfeatures_basic(ci, sent):
-    return {'c': sent['cseq'][ci]}
-
-def get_cfeatures_basic_seg(ci, sent):
+def seg(ci, sent):
     d = {}
-    d['c'] = sent['cseq'][ci]
-
     # wstart
     if ci==0:
         d['wstart'] = 1
@@ -22,27 +16,35 @@ def get_cfeatures_basic_seg(ci, sent):
         d['wend'] = 1
     elif ci<(len(sent['cseq'])-1):
         d['wend'] = sent['wiseq'][ci+1] != sent['wiseq'][ci]
+    return d
 
-    # if sent['wiseq'][ci] == -1: d['isspace'] = 1
+
+def get_cfeatures_basic(ci, sent):
+    return {'c': sent['cseq'][ci]}
+
+def get_cfeatures_basic_seg(ci, sent):
+    d = {}
+    d['c'] = sent['cseq'][ci]
+
+    d.update(seg(ci,sent)) # seg
+    return d
+
+
+def get_cfeatures_basic_seg_pos(ci, sent):
+    d = {}
+    d['c'] = sent['cseq'][ci]
+    wi = sent['wiseq'][ci]
+    d['pt'] = 'space_pt' if d['c'] == ' ' else sent['pts'][wi]
+
+    d.update(seg(ci,sent)) # seg
+
     return d
 
 def get_cfeatures_basic_seg_cap(ci, sent):
     d = {}
     d['c'] = sent['cseq'][ci]
 
-    # wstart
-    if ci==0: d['wstart'] = 1
-    if ci>0:
-        d['wstart'] = sent['wiseq'][ci-1] == -1
-
-
-    # wend
-    if ci==(len(sent['cseq'])-1): d['wend'] = 1
-    if ci<(len(sent['cseq'])-1):
-        d['wend'] = sent['wiseq'][ci+1] == -1
-
-    # if sent['wiseq'][ci] == -1: d['isspace'] = 1
-
+    d.update(seg(ci,sent)) # seg
     # capitilization
     d['is_capital'] = sent['cseq'][ci].isupper()
 
@@ -79,15 +81,7 @@ def get_cfeatures_gen_seg(ci, sent):
     else:
         d['c'] = 'other'
 
-    # wstart
-    if ci==0: d['wstart'] = 1
-    if ci>0:
-        d['wstart'] = sent['wiseq'][ci-1] == -1
-
-    # wend
-    if ci==(len(sent['cseq'])-1): d['wend'] = 1
-    if ci<(len(sent['cseq'])-1):
-        d['wend'] = sent['wiseq'][ci+1] == -1
+    d.update(seg(ci,sent)) # seg
 
     return d
 
@@ -102,16 +96,22 @@ def get_cfeatures_simple_seg(ci, sent):
     d['isdigit'] = c.isdigit()
     d['ispunc'] = c in string.punctuation
 
-    # wstart
-    if ci==0: d['wstart'] = 1
-    if ci>0:
-        d['wstart'] = sent['wiseq'][ci-1] == -1
+    d.update(seg(ci,sent)) # seg
 
-    # wend
-    if ci==(len(sent['cseq'])-1): d['wend'] = 1
-    if ci<(len(sent['cseq'])-1):
-        d['wend'] = sent['wiseq'][ci+1] == -1
-
-    if sent['wiseq'][ci] == -1: d['isspace'] = 1
     return d
+
+if __name__ == '__main__':
+    import rep
+    trn, dev, tst = utils.get_sents('eng')
+    sents = utils.sample_sents(trn, 5, 6, 8)
+
+    repstd = rep.Repstd()
+    for sent in sents:
+        sent['cseq'] = repstd.get_cseq(sent)
+        sent['wiseq'] = repstd.get_wiseq(sent)
+        for ci,c in enumerate(sent['cseq']):
+            featd = get_cfeatures_basic_seg_pos(ci, sent) 
+            print featd['c'], featd['pt']
+        print 
+        
 
