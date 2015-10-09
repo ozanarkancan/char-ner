@@ -30,7 +30,7 @@ def read_sents_eng(file):
 
 def get_sents(lang='eng'):
     readfunc = globals()['read_sents_'+lang]
-    if lang == 'spa':
+    if lang in ('spa','ned'):
         return map(readfunc, ['{}/{}/{}.bio'.format(DATA_DIR,lang,dset) for dset in ('train','testa','testb')])
     else:
         return map(readfunc, ['{}/{}/{}.iob'.format(DATA_DIR,lang,dset) for dset in ('train','testa','testb')])
@@ -48,6 +48,26 @@ def read_sents_deu(file):
                 if len(a):
                     sentences.append({'ws':a,'ts':d,'tsg':copy.deepcopy(d),\
                             'pts':b,'cts':c,'lems':e})
+                a,b,c,d = [],[],[],[]
+    return sentences
+
+def read_sents_ned(file):
+    a,b,c,d = [],[],[],[]
+    sentences = []
+    with open(file) as src:
+        for l in src:
+            if len(l.strip()):
+                try:
+                    w, pt, t = l.strip().split('\t')
+                except:
+                    print l
+                    assert False
+                a.append(w);b.append(pt);d.append(t);
+            else: # emtpy line
+                if len(a):
+                    d = encoding.bio2iob(d)
+                    sentences.append({'ws':a,'ts':d,'tsg':copy.deepcopy(d),\
+                            'pts':b})
                 a,b,c,d = [],[],[],[]
     return sentences
 
@@ -91,9 +111,11 @@ def get_sent_indx_word(dset):
     return indexes
 
 if __name__ == '__main__':
-    trn,dev,tst = get_sents('spa')
+    trn,dev,tst = get_sents('ned')
 
-    sents = sample_sents(trn,10,5,10)
+    print map(len, (trn,dev,tst))
+
+    sents = sample_sents(trn,5,5,10)
     for sent in sents:
         print sent['ws']
         print sent['ts']
