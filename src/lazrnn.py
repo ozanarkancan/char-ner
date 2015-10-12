@@ -89,8 +89,9 @@ class RDNN:
 
             if self.drates[level] > 0:
                 l_concat = lasagne.layers.DropoutLayer(l_concat, p=self.drates[level])
+
             self.layers.append(l_concat)
-         
+        
         l_concat = lasagne.layers.ConcatLayer([l_concat, l_in], axis=2) if self.in2out else l_concat
 
         if self.recout:
