@@ -1,0 +1,2033 @@
+activation:	['bi-lstm', 'bi-lstm']
+batch_norm:	0
+curriculum:	1
+drates:	[0.5, 0.5, 0.5]
+feat:	basic_seg
+fepoch:	500
+grad_clip:	-1
+in2out:	0
+lang:	eng
+log:	das_auto
+lr:	0.001
+n_batch:	20
+n_hidden:	[200, 200]
+norm:	2
+opt:	adam
+patience:	-1
+recout:	1
+rep:	std
+rnn:	lazrnn
+sample:	0
+sorted:	1
+truncate:	-1
+base_log_name:	biyofiz-4-2:gpu0,rnn:lazrnn,feat:basic_seg,rep:std,activation:bi-lstm,bi-lstm,n_hidden:200,200,drates:0.5,0.5,0.5,recout:1,opt:adam,lr:0.001,norm:2,n_batch:20,batch_norm:0,fepoch:500,patience:-1,sample:0,in2out:0,lang:eng,curriculum:1
+# of sents trn, dev, tst: 14041 3250 3453
+maxlen: 512 minlen: 1 avglen: 78.19 stdlen: 65.82
+['c= ', 'c=!', 'c="', 'c=$', 'c=%', 'c=&', "c='", 'c=(', 'c=)', 'c=*', 'c=+', 'c=,', 'c=-', 'c=.', 'c=/', 'c=0', 'c=1', 'c=2', 'c=3', 'c=4', 'c=5', 'c=6', 'c=7', 'c=8', 'c=9', 'c=:', 'c=;', 'c==', 'c=?', 'c=@', 'c=A', 'c=B', 'c=C', 'c=D', 'c=E', 'c=F', 'c=G', 'c=H', 'c=I', 'c=J', 'c=K', 'c=L', 'c=M', 'c=N', 'c=O', 'c=P', 'c=Q', 'c=R', 'c=S', 'c=T', 'c=U', 'c=V', 'c=W', 'c=X', 'c=Y', 'c=Z', 'c=[', 'c=]', 'c=`', 'c=a', 'c=b', 'c=c', 'c=d', 'c=e', 'c=f', 'c=g', 'c=h', 'c=i', 'c=j', 'c=k', 'c=l', 'c=m', 'c=n', 'c=o', 'c=p', 'c=q', 'c=r', 'c=s', 'c=t', 'c=u', 'c=v', 'c=w', 'c=x', 'c=y', 'c=z', 'wend', 'wstart']
+['loc' 'misc' 'o' 'org' 'per']
+['B-LOC' 'B-MISC' 'B-ORG' 'B-PER' 'I-LOC' 'I-MISC' 'I-ORG' 'I-PER' 'O']
+NF: 87 NC: 5
+using recout.
+Compiling functions...
+Compiling done.
+training the model...
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   1        82.3868   424.1612     0.1326     0.1065    89.3500    48.7700    34.1600    40.1800    40.1800          1
+dev   1        14.2869    14.0746     0.1291     0.1040    89.6000    51.9600    34.6000    41.5400    41.5400          1
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   2        65.0154   415.3310     0.1029     0.0845    91.5500    56.8200    48.1500    52.1300    52.1300          2
+dev   2        11.3484    13.8991     0.1017     0.0841    91.5900    58.1900    47.9100    52.5500    52.5500          2
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   3        58.5459   415.9764     0.0907     0.0755    92.4500    62.1600    53.5900    57.5600    57.5600          3
+dev   3         9.5944    14.0436     0.0896     0.0748    92.5200    62.7400    53.1000    57.5200    57.5200          3
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   4        55.8339   415.5965     0.0869     0.0722    92.7800    65.0400    55.4700    59.8800    59.8800          4
+dev   4         9.3930    13.9298     0.0874     0.0730    92.7000    65.8600    54.6400    59.7300    59.7300          4
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   5        51.7508   415.7697     0.0817     0.0677    93.2300    67.6700    58.5900    62.8000    62.8000          5
+dev   5         8.5544    14.0584     0.0831     0.0692    93.0800    67.7600    56.9500    61.8900    61.8900          5
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   6        48.2660   415.7927     0.0680     0.0569    94.3100    69.4100    65.9300    67.6300    67.6300          6
+dev   6         7.4585    13.9493     0.0711     0.0596    94.0400    68.1000    64.1400    66.0600    66.0600          6
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   7        46.4295   416.1155     0.0662     0.0551    94.4900    71.1800    66.8800    68.9600    68.9600          7
+dev   7         7.0324    14.0694     0.0695     0.0582    94.1800    69.9000    65.0500    67.3900    67.3900          7
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   8        43.9740   415.8201     0.0636     0.0531    94.6900    69.8100    69.1200    69.4600    69.4600          8
+dev   8         6.8392    13.0735     0.0663     0.0555    94.4500    68.8400    67.6700    68.2500    68.2500          8
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   9        42.8005   416.5376     0.0641     0.0535    94.6500    73.3800    67.2100    70.1600    70.1600          9
+dev   9         6.7010    14.0853     0.0674     0.0568    94.3200    73.0200    65.7400    69.1900    69.1900          9
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   10       41.2705   415.3475     0.0610     0.0511    94.8900    69.6200    71.2500    70.4200    70.4200         10
+dev   10        6.9202    13.9255     0.0636     0.0537    94.6300    68.7500    69.7600    69.2500    69.2500         10
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   11       40.6865   415.8178     0.0550     0.0460    95.4000    73.9000    73.0100    73.4500    73.4500         11
+dev   11        5.9138    14.0716     0.0593     0.0501    94.9900    72.3200    70.8900    71.6000    71.6000         11
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   12       39.3135   414.9555     0.0544     0.0454    95.4600    74.0800    73.7100    73.8900    73.8900         12
+dev   12        5.9268    13.9388     0.0594     0.0498    95.0200    71.8500    71.4200    71.6300    71.6300         12
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   13       37.9565   416.4948     0.0525     0.0440    95.6000    74.9800    74.2000    74.5900    74.5900         13
+dev   13        5.7169    14.0535     0.0581     0.0489    95.1100    72.9700    71.9100    72.4400    72.4400         13
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   14       36.6875   415.8856     0.0485     0.0404    95.9600    77.6200    75.2900    76.4400    76.4400         14
+dev   14        5.3677    13.9545     0.0545     0.0460    95.4000    75.2500    72.5700    73.8900    73.8900         14
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   15       36.0029   416.4253     0.0496     0.0411    95.8900    77.0000    75.2400    76.1100    76.4400         14
+dev   15        5.5287    14.0638     0.0554     0.0464    95.3600    74.8400    72.5300    73.6700    73.8900         14
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   16       35.8934   416.0535     0.0477     0.0397    96.0300    77.5000    75.8300    76.6600    76.6600         16
+dev   16        5.2066    13.9335     0.0547     0.0464    95.3600    74.8500    72.4300    73.6200    73.8900         14
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   17       34.8275   416.6794     0.0461     0.0386    96.1400    77.0200    77.2500    77.1300    77.1300         17
+dev   17        5.1627    14.0507     0.0532     0.0449    95.5100    74.5600    74.2700    74.4100    74.4100         17
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   18       34.3346   415.9640     0.0450     0.0377    96.2300    77.4000    77.7900    77.5900    77.5900         18
+dev   18        5.2977    14.0076     0.0528     0.0446    95.5400    74.3100    74.4700    74.3900    74.4100         17
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   19       33.5788   416.3065     0.0445     0.0372    96.2800    78.2300    77.7500    77.9900    77.9900         19
+dev   19        5.0759    14.1495     0.0524     0.0440    95.6000    75.2000    74.6500    74.9300    74.9300         19
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   20       32.6050   416.4173     0.0411     0.0345    96.5500    79.2700    79.2800    79.2800    79.2800         20
+dev   20        4.8049    14.0289     0.0485     0.0409    95.9100    75.6700    76.0200    75.8500    75.8500         20
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   21       31.8895   417.4789     0.0418     0.0350    96.5000    78.3400    79.2900    78.8100    79.2800         20
+dev   21        4.9622    14.2191     0.0493     0.0413    95.8700    75.5700    76.5100    76.0300    76.0300         21
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   22       31.3331   417.4573     0.0401     0.0336    96.6400    80.5700    79.3800    79.9700    79.9700         22
+dev   22        4.8322    14.0846     0.0485     0.0405    95.9500    77.0600    75.6500    76.3500    76.3500         22
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   23       31.1782   418.8690     0.0415     0.0347    96.5300    79.2400    79.1100    79.1800    79.9700         22
+dev   23        4.6808    14.2202     0.0481     0.0404    95.9600    75.8800    75.8000    75.8400    76.3500         22
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   24       30.6010   415.5185     0.0392     0.0329    96.7100    79.2800    80.6900    79.9800    79.9800         24
+dev   24        4.5926    14.0490     0.0466     0.0393    96.0700    76.1400    77.3300    76.7300    76.7300         24
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   25       30.4806   414.2233     0.0375     0.0312    96.8800    81.8300    80.9900    81.4000    81.4000         25
+dev   25        4.3913    14.1827     0.0456     0.0381    96.1900    77.9600    77.4300    77.6900    77.6900         25
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   26       29.9226   417.2991     0.0371     0.0311    96.8900    81.0600    81.0900    81.0800    81.4000         25
+dev   26        4.4473    14.1114     0.0459     0.0388    96.1200    76.9000    77.2500    77.0700    77.6900         25
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   27       29.3108   417.8551     0.0366     0.0306    96.9400    82.0900    80.9100    81.5000    81.5000         27
+dev   27        4.3697    14.1653     0.0464     0.0392    96.0800    77.9700    76.8400    77.4000    77.6900         25
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   28       28.7118   415.8633     0.0350     0.0291    97.0900    82.9600    81.6400    82.2900    82.2900         28
+dev   28        4.2359    14.0540     0.0438     0.0367    96.3300    79.0500    77.6000    78.3200    78.3200         28
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   29       28.3765   416.3896     0.0363     0.0301    96.9900    82.1000    81.1700    81.6300    82.2900         28
+dev   29        4.2965    14.1808     0.0444     0.0369    96.3100    79.0200    77.6500    78.3300    78.3300         29
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   30       28.1288   416.6336     0.0354     0.0295    97.0500    82.8000    81.6500    82.2200    82.2900         28
+dev   30        4.3263    14.0362     0.0448     0.0377    96.2300    78.7200    77.4500    78.0800    78.3300         29
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   31       27.4787   417.7997     0.0336     0.0281    97.1900    83.2000    82.4500    82.8300    82.8300         31
+dev   31        4.1939    14.1586     0.0434     0.0367    96.3300    78.5600    77.8700    78.2100    78.3300         29
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   32       26.9874   417.3465     0.0334     0.0281    97.1900    82.2100    82.9700    82.5900    82.8300         31
+dev   32        4.1716    14.0627     0.0428     0.0357    96.4300    78.0200    78.9000    78.4500    78.4500         32
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   33       27.1459   417.1557     0.0320     0.0268    97.3200    83.4700    83.2800    83.3800    83.3800         33
+dev   33        4.0567    14.1407     0.0424     0.0356    96.4400    79.1900    78.8500    79.0200    79.0200         33
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   34       26.8388   415.8238     0.0312     0.0260    97.4000    84.3800    83.4700    83.9300    83.9300         34
+dev   34        3.9706    14.0799     0.0417     0.0349    96.5100    79.4700    78.6900    79.0800    79.0800         34
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   35       25.8615   418.6560     0.0315     0.0264    97.3600    84.1100    83.2900    83.7000    83.9300         34
+dev   35        3.9765    14.1739     0.0407     0.0342    96.5800    79.8600    79.0800    79.4700    79.4700         35
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   36       26.0196   415.8319     0.0304     0.0255    97.4500    84.2000    84.0000    84.1000    84.1000         36
+dev   36        3.8529    14.0725     0.0399     0.0337    96.6300    79.8800    79.6200    79.7500    79.7500         36
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   37       25.8443   416.5037     0.0310     0.0260    97.4000    84.3200    83.6900    84.0100    84.1000         36
+dev   37        3.9556    14.1864     0.0406     0.0339    96.6100    79.9500    79.2500    79.6000    79.7500         36
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   38       25.6793   417.6030     0.0307     0.0258    97.4200    84.2200    83.9800    84.1000    84.1000         36
+dev   38        3.9948    14.0839     0.0413     0.0345    96.5500    79.4400    79.0000    79.2200    79.7500         36
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   39       25.3077   418.0110     0.0296     0.0250    97.5000    84.7400    84.4400    84.5900    84.5900         39
+dev   39        3.9307    14.1942     0.0404     0.0343    96.5700    79.8500    79.3000    79.5700    79.7500         36
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   40       24.8108   415.9836     0.0305     0.0257    97.4300    84.5600    84.2500    84.4000    84.5900         39
+dev   40        3.9092    13.9685     0.0405     0.0344    96.5600    80.2100    79.8700    80.0400    80.0400         40
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   41       24.9995   413.2898     0.0281     0.0236    97.6400    85.6300    85.1000    85.3700    85.3700         41
+dev   41        3.8179    14.1970     0.0395     0.0332    96.6800    80.6700    79.8600    80.2600    80.2600         41
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   42       24.4540   414.1542     0.0279     0.0238    97.6200    84.8300    85.3800    85.1100    85.3700         41
+dev   42        3.8787    14.0973     0.0401     0.0337    96.6300    79.8600    80.1200    79.9900    80.2600         41
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   43       24.8387   417.8330     0.0317     0.0265    97.3500    82.8100    83.6900    83.2500    85.3700         41
+dev   43        4.1091    14.2010     0.0429     0.0357    96.4300    77.9100    78.8800    78.3900    80.2600         41
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   44       24.2844   417.8594     0.0280     0.0237    97.6300    85.9300    84.8600    85.3900    85.3900         44
+dev   44        3.7893    14.0533     0.0399     0.0338    96.6200    81.2300    79.8000    80.5100    80.5100         44
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   45       23.7998   417.6073     0.0273     0.0230    97.7000    85.2500    85.8400    85.5400    85.5400         45
+dev   45        3.7483    14.1697     0.0382     0.0325    96.7500    80.3000    81.1300    80.7100    80.7100         45
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   46       23.8613   409.7670     0.0271     0.0230    97.7000    85.1700    85.7900    85.4800    85.5400         45
+dev   46        3.7013    14.0869     0.0377     0.0324    96.7600    80.3800    81.2700    80.8200    80.8200         46
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   47       23.3183   417.2973     0.0263     0.0222    97.7800    86.3800    85.6900    86.0300    86.0300         47
+dev   47        3.7165    14.2028     0.0380     0.0319    96.8100    81.1900    80.8000    81.0000    81.0000         47
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   48       23.1349   416.0786     0.0251     0.0212    97.8800    86.6900    86.2200    86.4500    86.4500         48
+dev   48        3.6085    14.0939     0.0367     0.0307    96.9300    81.9900    81.4200    81.7000    81.7000         48
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   49       22.8970   417.7775     0.0258     0.0218    97.8200    86.0200    86.3500    86.1900    86.4500         48
+dev   49        3.6125    14.1601     0.0368     0.0311    96.8900    81.1400    81.6100    81.3700    81.7000         48
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   50       22.5281   415.1066     0.0257     0.0215    97.8500    86.8700    86.1900    86.5300    86.5300         50
+dev   50        3.6115    14.0896     0.0377     0.0317    96.8300    82.0800    81.1000    81.5900    81.7000         48
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   51       22.6236   415.1791     0.0243     0.0206    97.9400    86.9000    86.6600    86.7800    86.7800         51
+dev   51        3.5504    14.1554     0.0363     0.0306    96.9400    81.7900    81.7700    81.7800    81.7800         51
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   52       22.3330   417.5164     0.0252     0.0213    97.8700    86.9600    86.4500    86.7000    86.7800         51
+dev   52        3.6325    14.0857     0.0372     0.0313    96.8700    81.7100    81.2500    81.4800    81.7800         51
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   53       22.3209   416.0785     0.0252     0.0213    97.8700    86.9800    86.4000    86.6800    86.7800         51
+dev   53        3.6293    14.1918     0.0379     0.0321    96.7900    81.5700    80.9700    81.2700    81.7800         51
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   54       21.8780   416.9020     0.0235     0.0199    98.0100    87.7100    86.9700    87.3400    87.3400         54
+dev   54        3.5164    14.0940     0.0360     0.0304    96.9600    81.7300    81.3900    81.5600    81.7800         51
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   55       22.1813   408.2147     0.0236     0.0200    98.0000    87.5400    87.1400    87.3400    87.3400         54
+dev   55        3.5599    14.1458     0.0356     0.0299    97.0100    82.5800    82.1900    82.3900    82.3900         55
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   56       21.7317   416.9265     0.0231     0.0195    98.0500    88.4100    87.3200    87.8600    87.8600         56
+dev   56        3.4136    14.0542     0.0353     0.0298    97.0200    82.7300    81.9300    82.3300    82.3900         55
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   57       21.7266   412.3892     0.0233     0.0197    98.0300    88.1400    87.0000    87.5700    87.8600         56
+dev   57        3.4647    14.1768     0.0353     0.0302    96.9800    82.6000    81.7100    82.1500    82.3900         55
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   58       21.3066   413.5286     0.0230     0.0195    98.0500    87.4400    87.5500    87.5000    87.8600         56
+dev   58        3.5812    14.0557     0.0363     0.0307    96.9300    81.6000    81.5600    81.5800    82.3900         55
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   59       21.3614   410.1974     0.0225     0.0191    98.0900    87.6700    87.8400    87.7600    87.8600         56
+dev   59        3.5121    14.1475     0.0357     0.0304    96.9600    81.5000    81.8400    81.6700    82.3900         55
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   60       21.2058   413.1565     0.0219     0.0187    98.1300    88.4700    87.9600    88.2100    88.2100         60
+dev   60        3.5033    14.0870     0.0359     0.0307    96.9300    82.1600    81.4700    81.8200    82.3900         55
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   61       21.2630   417.5875     0.0216     0.0183    98.1700    88.8400    88.0400    88.4400    88.4400         61
+dev   61        3.4781    14.1708     0.0357     0.0300    97.0000    82.6000    81.8700    82.2300    82.3900         55
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   62       20.6713   417.0489     0.0216     0.0185    98.1500    88.3600    88.0900    88.2200    88.4400         61
+dev   62        3.3662    14.0581     0.0347     0.0297    97.0300    81.9500    82.1400    82.0500    82.3900         55
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   63       20.7248   417.3303     0.0220     0.0188    98.1200    88.4200    87.7700    88.1000    88.4400         61
+dev   63        3.4639    14.1592     0.0353     0.0300    97.0000    82.7000    82.1900    82.4400    82.4400         63
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   64       20.6916   415.9311     0.0208     0.0177    98.2300    88.8800    88.3900    88.6300    88.6300         64
+dev   64        3.4295    14.0804     0.0344     0.0291    97.0900    82.4300    82.3300    82.3800    82.4400         63
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   65       20.6395   415.7144     0.0217     0.0184    98.1600    88.7300    88.0500    88.3900    88.6300         64
+dev   65        3.4189    14.1793     0.0345     0.0291    97.0900    82.8500    82.4100    82.6300    82.6300         65
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   66       20.3508   415.9035     0.0212     0.0180    98.2000    88.5700    88.4000    88.4900    88.6300         64
+dev   66        3.4808    14.1000     0.0342     0.0290    97.1000    82.8400    82.7800    82.8100    82.8100         66
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   67       20.1831   411.0806     0.0195     0.0167    98.3300    89.5500    88.9700    89.2600    89.2600         67
+dev   67        3.2611    14.1757     0.0331     0.0282    97.1800    83.2500    82.8000    83.0200    83.0200         67
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   68       19.7678   417.5579     0.0200     0.0171    98.2900    89.3000    88.8700    89.0800    89.2600         67
+dev   68        3.3001    14.0684     0.0333     0.0280    97.2000    83.3800    83.0200    83.2000    83.2000         68
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   69       19.5276   416.1094     0.0206     0.0178    98.2200    89.4100    88.0800    88.7400    89.2600         67
+dev   69        3.3231    14.2008     0.0345     0.0290    97.1000    83.8300    82.1100    82.9600    83.2000         68
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   70       20.1223   410.5348     0.0199     0.0172    98.2800    89.2600    88.5500    88.9000    89.2600         67
+dev   70        3.2906    14.0737     0.0331     0.0280    97.2000    83.5600    82.8800    83.2200    83.2200         70
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   71       19.4519   413.6401     0.0198     0.0171    98.2900    89.6000    88.7200    89.1600    89.2600         67
+dev   71        3.3195    14.1816     0.0332     0.0282    97.1800    83.2200    82.8700    83.0400    83.2200         70
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   72       19.6733   417.0348     0.0195     0.0169    98.3100    89.3900    88.7100    89.0500    89.2600         67
+dev   72        3.2890    14.0702     0.0331     0.0282    97.1800    83.6400    82.9500    83.3000    83.3000         72
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   73       19.3553   415.3231     0.0190     0.0164    98.3600    89.5700    89.0300    89.3000    89.3000         73
+dev   73        3.3077    14.1776     0.0331     0.0281    97.1900    83.2000    82.9000    83.0500    83.3000         72
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   74       19.9608   413.3527     0.0194     0.0167    98.3300    89.8900    88.7800    89.3300    89.3300         74
+dev   74        3.3443    14.0737     0.0341     0.0286    97.1400    83.4400    82.4800    82.9600    83.3000         72
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   75       19.1130   417.1544     0.0192     0.0164    98.3600    89.8500    89.1000    89.4800    89.4800         75
+dev   75        3.3278    14.1701     0.0347     0.0293    97.0700    83.0200    82.4300    82.7200    83.3000         72
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   76       18.8720   416.5746     0.0184     0.0161    98.3900    89.3400    89.4500    89.3900    89.4800         75
+dev   76        3.2789    14.0530     0.0333     0.0283    97.1700    82.7000    83.0200    82.8600    83.3000         72
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   77       18.9016   411.3344     0.0177     0.0152    98.4800    90.4000    89.8400    90.1200    90.1200         77
+dev   77        3.2421    14.1490     0.0332     0.0282    97.1800    82.9700    82.9200    82.9500    83.3000         72
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   78       19.1393   414.9637     0.0184     0.0157    98.4300    90.1000    89.7400    89.9200    90.1200         77
+dev   78        3.3538    14.1199     0.0336     0.0279    97.2100    83.2700    82.9200    83.0900    83.3000         72
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   79       19.0686   416.1111     0.0185     0.0159    98.4100    89.8500    89.5100    89.6800    90.1200         77
+dev   79        3.3257    14.1862     0.0329     0.0281    97.1900    83.1300    82.9400    83.0300    83.3000         72
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   80       18.7889   416.8218     0.0183     0.0158    98.4200    89.6700    89.6800    89.6700    90.1200         77
+dev   80        3.3494    14.0783     0.0333     0.0282    97.1800    82.5900    82.9500    82.7700    83.3000         72
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   81       18.7680   417.3543     0.0178     0.0154    98.4600    90.1500    89.7200    89.9300    90.1200         77
+dev   81        3.3836    14.1989     0.0336     0.0284    97.1600    83.2900    83.2200    83.2600    83.3000         72
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   82       18.4379   416.5525     0.0172     0.0149    98.5100    90.6000    89.9200    90.2600    90.2600         82
+dev   82        3.2428    14.0690     0.0323     0.0276    97.2400    83.5600    83.1400    83.3500    83.3500         82
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   83       18.4536   415.9724     0.0174     0.0151    98.4900    90.3500    89.9200    90.1300    90.2600         82
+dev   83        3.2964    14.1446     0.0330     0.0279    97.2100    83.6400    83.2900    83.4600    83.4600         83
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   84       18.1342   417.0985     0.0171     0.0149    98.5100    90.6300    90.0700    90.3500    90.3500         84
+dev   84        3.2424    14.0362     0.0322     0.0273    97.2700    83.7300    83.5700    83.6500    83.6500         84
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   85       18.2424   417.7161     0.0170     0.0146    98.5400    91.1700    89.9400    90.5500    90.5500         85
+dev   85        3.3449    14.1534     0.0335     0.0284    97.1600    83.5600    82.6300    83.0900    83.6500         84
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   86       18.2098   415.0018     0.0167     0.0146    98.5400    90.6200    90.4000    90.5100    90.5500         85
+dev   86        3.1879    14.0530     0.0316     0.0268    97.3200    83.9200    84.0800    84.0000    84.0000         86
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   87       17.9821   411.8621     0.0158     0.0138    98.6200    91.0500    90.7100    90.8800    90.8800         87
+dev   87        3.0609    14.1755     0.0305     0.0260    97.4000    84.2000    84.2300    84.2200    84.2200         87
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   88       17.4073   417.2077     0.0162     0.0141    98.5900    90.6400    90.6000    90.6200    90.8800         87
+dev   88        3.1870    14.0744     0.0313     0.0263    97.3700    83.9300    84.2600    84.0900    84.2200         87
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   89       17.8795   417.7789     0.0162     0.0141    98.5900    90.6300    90.6500    90.6400    90.8800         87
+dev   89        3.2945    14.1504     0.0325     0.0272    97.2800    83.4500    83.8400    83.6500    84.2200         87
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   90       18.0235   415.0635     0.0159     0.0139    98.6100    91.1900    90.5800    90.8900    90.8900         90
+dev   90        3.1679    14.0496     0.0308     0.0261    97.3900    84.2000    84.1500    84.1800    84.2200         87
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   91       17.9646   417.0855     0.0155     0.0135    98.6500    91.0300    90.8700    90.9500    90.9500         91
+dev   91        3.1522    14.1943     0.0307     0.0257    97.4300    84.7700    84.6500    84.7100    84.7100         91
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   92       17.3274   417.0163     0.0154     0.0136    98.6400    90.9700    90.8400    90.9100    90.9500         91
+dev   92        3.1289    14.0680     0.0307     0.0261    97.3900    84.5800    84.5800    84.5800    84.7100         91
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   93       17.6189   417.2281     0.0155     0.0135    98.6500    91.0600    91.0700    91.0700    91.0700         93
+dev   93        3.0865    14.1671     0.0308     0.0261    97.3900    83.9900    84.6000    84.3000    84.7100         91
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   94       17.3654   412.8838     0.0155     0.0134    98.6600    91.4100    90.8500    91.1300    91.1300         94
+dev   94        3.1424    14.0663     0.0309     0.0261    97.3900    84.6500    84.3300    84.4900    84.7100         91
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   95       17.3365   412.0426     0.0144     0.0127    98.7300    91.4700    91.4900    91.4800    91.4800         95
+dev   95        3.1766    14.1897     0.0304     0.0257    97.4300    84.1500    84.5800    84.3600    84.7100         91
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   96       17.9506   414.3682     0.0158     0.0138    98.6200    91.2100    90.8500    91.0300    91.4800         95
+dev   96        3.2972    14.0918     0.0330     0.0276    97.2400    83.5500    83.4200    83.4900    84.7100         91
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   97       17.2910   417.4478     0.0158     0.0137    98.6300    91.1000    90.8200    90.9600    91.4800         95
+dev   97        3.2864    14.1599     0.0320     0.0267    97.3300    84.2200    83.7800    84.0000    84.7100         91
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   98       17.3382   416.8122     0.0150     0.0132    98.6800    91.3300    91.2300    91.2800    91.4800         95
+dev   98        3.2756    14.0417     0.0330     0.0277    97.2300    83.5000    83.4600    83.4800    84.7100         91
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   99       17.5146   414.4231     0.0145     0.0128    98.7200    91.5600    91.3600    91.4600    91.4800         95
+dev   99        3.0793    14.1512     0.0310     0.0262    97.3800    84.2000    84.1100    84.1600    84.7100         91
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   100      16.9175   416.5910     0.0146     0.0128    98.7200    91.9800    91.2300    91.6000    91.6000        100
+dev   100       3.1725    14.0811     0.0313     0.0265    97.3500    84.1700    83.8300    84.0000    84.7100         91
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   101      16.9827   417.5255     0.0140     0.0123    98.7700    92.0100    91.6200    91.8100    91.8100        101
+dev   101       3.2148    14.1469     0.0316     0.0269    97.3100    83.4500    83.8600    83.6600    84.7100         91
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   102      16.6195   416.6056     0.0143     0.0126    98.7400    91.7200    91.5600    91.6400    91.8100        101
+dev   102       3.1446    14.0242     0.0319     0.0271    97.2900    83.8000    83.9800    83.8900    84.7100         91
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   103      16.8526   417.3773     0.0141     0.0125    98.7500    91.6300    91.5900    91.6100    91.8100        101
+dev   103       3.1990    14.2194     0.0310     0.0266    97.3400    84.0600    84.4000    84.2300    84.7100         91
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   104      16.5289   416.8699     0.0140     0.0124    98.7600    91.8100    91.5700    91.6900    91.8100        101
+dev   104       3.1471    14.0441     0.0305     0.0257    97.4300    84.4100    84.5000    84.4600    84.7100         91
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   105      16.8445   417.4088     0.0139     0.0123    98.7700    91.9600    91.7100    91.8300    91.8300        105
+dev   105       3.1702    14.1787     0.0313     0.0265    97.3500    83.8000    83.9800    83.8900    84.7100         91
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   106      16.6420   417.7100     0.0137     0.0121    98.7900    92.0500    91.6400    91.8500    91.8500        106
+dev   106       3.1482    14.0646     0.0308     0.0260    97.4000    84.5000    84.5000    84.5000    84.7100         91
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   107      16.3644   409.1018     0.0140     0.0123    98.7700    91.9600    91.5900    91.7700    91.8500        106
+dev   107       3.1648    14.1425     0.0304     0.0261    97.3900    84.1200    84.3500    84.2400    84.7100         91
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   108      16.8790   413.6304     0.0141     0.0123    98.7700    92.1600    91.5400    91.8500    91.8500        106
+dev   108       3.1953    14.0588     0.0312     0.0266    97.3400    84.5900    84.3300    84.4600    84.7100         91
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   109      16.2183   413.7823     0.0140     0.0122    98.7800    91.7200    91.7400    91.7300    91.8500        106
+dev   109       3.3157    14.1833     0.0314     0.0267    97.3300    83.8500    84.2100    84.0300    84.7100         91
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   110      16.2862   415.0657     0.0131     0.0116    98.8400    92.3000    92.0900    92.2000    92.2000        110
+dev   110       3.1132    14.0488     0.0294     0.0251    97.4900    84.5700    84.9700    84.7700    84.7700        110
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   111      16.2650   418.4146     0.0141     0.0124    98.7600    91.9700    91.7400    91.8600    92.2000        110
+dev   111       3.2394    14.1825     0.0314     0.0265    97.3500    83.8800    84.1300    84.0000    84.7700        110
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   112      16.0831   413.0182     0.0138     0.0121    98.7900    91.7400    92.0300    91.8900    92.2000        110
+dev   112       3.2384    14.3538     0.0311     0.0262    97.3800    83.7200    84.7500    84.2400    84.7700        110
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   113      16.6466   415.5272     0.0134     0.0119    98.8100    92.1900    92.0600    92.1300    92.2000        110
+dev   113       3.1471    14.2005     0.0302     0.0255    97.4500    84.2300    84.9200    84.5700    84.7700        110
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   114      16.5229   416.7542     0.0133     0.0117    98.8300    92.4000    92.0300    92.2100    92.2100        114
+dev   114       3.1663    14.0724     0.0310     0.0262    97.3800    84.2700    84.2000    84.2300    84.7700        110
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   115      16.1323   417.0696     0.0127     0.0113    98.8700    92.4700    92.3600    92.4100    92.4100        115
+dev   115       3.0740    14.1547     0.0302     0.0256    97.4400    84.0300    84.4500    84.2400    84.7700        110
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   116      15.9666   416.3796     0.0127     0.0113    98.8700    92.3500    92.2300    92.2900    92.4100        115
+dev   116       3.1299    14.0758     0.0303     0.0254    97.4600    84.6700    84.7700    84.7200    84.7700        110
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   117      15.7420   415.0647     0.0131     0.0115    98.8500    92.6600    92.0000    92.3300    92.4100        115
+dev   117       3.1023    14.1821     0.0310     0.0264    97.3600    84.1400    84.1300    84.1400    84.7700        110
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   118      15.9475   416.6796     0.0124     0.0111    98.8900    92.5700    92.3100    92.4400    92.4400        118
+dev   118       3.0599    14.0760     0.0296     0.0248    97.5200    84.6100    84.9400    84.7700    84.7700        110
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   119      15.9169   416.1015     0.0122     0.0108    98.9200    92.9000    92.4700    92.6900    92.6900        119
+dev   119       3.0954    14.2068     0.0298     0.0253    97.4700    84.8700    84.8400    84.8500    84.8500        119
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   120      15.8389   416.6880     0.0121     0.0107    98.9300    93.0900    92.5600    92.8300    92.8300        120
+dev   120       3.0760    14.0855     0.0305     0.0256    97.4400    84.7000    84.6200    84.6600    84.8500        119
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   121      15.4592   416.9612     0.0123     0.0109    98.9100    92.6000    92.6300    92.6200    92.8300        120
+dev   121       3.1309    14.1823     0.0304     0.0256    97.4400    84.3700    85.0600    84.7100    84.8500        119
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   122      15.3505   416.6848     0.0128     0.0113    98.8700    92.7400    92.4200    92.5800    92.8300        120
+dev   122       3.2435    14.0868     0.0319     0.0272    97.2800    84.0500    84.0500    84.0500    84.8500        119
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   123      15.7763   417.3446     0.0121     0.0108    98.9200    92.6600    92.6100    92.6400    92.8300        120
+dev   123       3.1021    13.5667     0.0306     0.0260    97.4000    84.0100    84.6200    84.3100    84.8500        119
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   124      15.6566   413.9080     0.0124     0.0110    98.9000    92.5200    92.4400    92.4800    92.8300        120
+dev   124       3.1099    14.1079     0.0303     0.0255    97.4500    84.5700    85.0600    84.8100    84.8500        119
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   125      15.5287   415.1442     0.0117     0.0106    98.9400    93.1100    92.6200    92.8600    92.8600        125
+dev   125       3.1366    14.1805     0.0297     0.0250    97.5000    85.0000    84.9900    85.0000    85.0000        125
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   126          nan   413.6029     0.0115     0.0103    98.9700    93.0400    92.9900    93.0100    93.0100        126
+dev   126       3.1570    14.0457     0.0299     0.0251    97.4900    84.5200    85.0700    84.7900    85.0000        125
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   127      14.8345   416.2198     0.0108     0.0098    99.0200    93.2800    93.1900    93.2300    93.2300        127
+dev   127       3.0684    13.9106     0.0286     0.0240    97.6000    85.1400    85.4300    85.2800    85.2800        127
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   128      14.5370   394.3579     0.0106     0.0096    99.0400    93.5100    93.2000    93.3500    93.3500        128
+dev   128       3.0341    14.0434     0.0285     0.0239    97.6100    85.1900    85.3600    85.2700    85.2800        127
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   129      14.5256   397.0197     0.0110     0.0099    99.0100    93.4300    93.1200    93.2800    93.3500        128
+dev   129       3.0556    14.1794     0.0286     0.0241    97.5900    85.1300    85.1700    85.1500    85.2800        127
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   130      14.4608   401.0609     0.0107     0.0097    99.0300    93.5400    93.1000    93.3200    93.3500        128
+dev   130       3.0695    14.0848     0.0286     0.0241    97.5900    85.3500    85.3100    85.3300    85.3300        130
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   131      14.2550   396.7362     0.0108     0.0097    99.0300    93.4200    93.0200    93.2200    93.3500        128
+dev   131       3.0727    14.2115     0.0284     0.0240    97.6000    85.3600    85.3800    85.3700    85.3700        131
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   132      14.2506   394.9494     0.0109     0.0098    99.0200    93.3400    93.2800    93.3100    93.3500        128
+dev   132       3.2134    14.0874     0.0298     0.0251    97.4900    84.3400    85.1200    84.7300    85.3700        131
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   133          nan   408.0377     0.0109     0.0098    99.0200    93.3300    93.1900    93.2600    93.3500        128
+dev   133       3.0946    13.4680     0.0284     0.0239    97.6100    85.1600    85.5900    85.3800    85.3800        133
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   134      14.0261   392.9207     0.0107     0.0097    99.0300    93.5300    93.1400    93.3400    93.3500        128
+dev   134       3.0858    14.0275     0.0285     0.0240    97.6000    85.4100    85.3100    85.3600    85.3800        133
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   135          nan   398.5159     0.0110     0.0100    99.0000    93.2800    92.9900    93.1400    93.3500        128
+dev   135       3.0802    14.1597     0.0290     0.0248    97.5200    84.6700    84.8700    84.7700    85.3800        133
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   136      14.7190   396.5682     0.0114     0.0103    98.9700    93.3500    92.6700    93.0100    93.3500        128
+dev   136       3.1067    14.1243     0.0297     0.0253    97.4700    84.9100    84.5800    84.7500    85.3800        133
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   137          nan   402.2809     0.0117     0.0105    98.9500    93.1900    92.6200    92.9000    93.3500        128
+dev   137       3.2006    14.2023     0.0304     0.0261    97.3900    84.5500    84.4500    84.5000    85.3800        133
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   138      15.5318   395.3412     0.0119     0.0108    98.9200    92.7900    92.6000    92.7000    93.3500        128
+dev   138       3.1442    14.0390     0.0303     0.0257    97.4300    84.6500    84.7000    84.6700    85.3800        133
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   139          nan   394.4842     0.0119     0.0107    98.9300    92.7500    92.5700    92.6600    93.3500        128
+dev   139       3.1112    14.1871     0.0295     0.0250    97.5000    84.7800    84.7200    84.7500    85.3800        133
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   140          nan   402.6518     0.0132     0.0118    98.8200    92.0900    91.8000    91.9400    93.3500        128
+dev   140       3.2128    14.0438     0.0312     0.0262    97.3800    84.3000    84.0500    84.1700    85.3800        133
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   141          nan   403.0805     0.0158     0.0140    98.6000    90.5100    90.7200    90.6200    93.3500        128
+dev   141       3.3557    14.1852     0.0338     0.0287    97.1300    82.8400    83.1900    83.0100    85.3800        133
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   142          nan   396.5497     0.0166     0.0146    98.5400    90.4000    89.8500    90.1300    93.3500        128
+dev   142       3.4138    14.0316     0.0339     0.0286    97.1400    83.0400    82.3500    82.6900    85.3800        133
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   143      21.7031   402.3795     0.0180     0.0158    98.4200    88.8800    89.8100    89.3400    93.3500        128
+dev   143       3.3504    14.2001     0.0342     0.0291    97.0900    81.2700    82.8800    82.0700    85.3800        133
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   144      20.2585   393.5188     0.0200     0.0174    98.2600    88.0100    89.5000    88.7500    93.3500        128
+dev   144       3.6767    14.1931     0.0365     0.0308    96.9200    80.5900    82.5000    81.5300    85.3800        133
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   145      20.1851   395.2492     0.0175     0.0154    98.4600    89.4800    89.8800    89.6800    93.3500        128
+dev   145       3.4023    14.1575     0.0338     0.0285    97.1500    82.1700    82.8200    82.4900    85.3800        133
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   146      19.4541   398.5794     0.0168     0.0148    98.5200    90.3700    90.0400    90.2100    93.3500        128
+dev   146       3.3743    13.5780     0.0336     0.0282    97.1800    83.1100    82.5800    82.8500    85.3800        133
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   147      19.1647   397.0374     0.0160     0.0143    98.5700    90.8100    90.3700    90.5900    93.3500        128
+dev   147       3.2959    14.1693     0.0323     0.0276    97.2400    82.7600    82.9000    82.8300    85.3800        133
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   148      19.6705   395.1466     0.0168     0.0146    98.5400    89.9800    90.7300    90.3500    93.3500        128
+dev   148       3.4578    13.1831     0.0336     0.0284    97.1600    82.0000    83.1900    82.5900    85.3800        133
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   149      18.9605   395.1589     0.0165     0.0145    98.5500    90.4200    90.5400    90.4800    93.3500        128
+dev   149       3.3137    14.1597     0.0323     0.0273    97.2700    83.4200    83.8400    83.6300    85.3800        133
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   150      19.0549   404.0956     0.0170     0.0148    98.5200    89.7900    90.4400    90.1100    93.3500        128
+dev   150       3.4738    14.0907     0.0337     0.0286    97.1400    82.3700    83.4100    82.8800    85.3800        133
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   151      18.6993   397.9088     0.0159     0.0141    98.5900    90.6000    90.7900    90.6900    93.3500        128
+dev   151       3.3361    14.1627     0.0325     0.0275    97.2500    83.2300    83.7600    83.4900    85.3800        133
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   152      18.8235   399.8130     0.0165     0.0145    98.5500    89.9500    90.6500    90.2900    93.3500        128
+dev   152       3.4939    14.0812     0.0337     0.0283    97.1700    82.0300    83.2000    82.6100    85.3800        133
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   153      19.1916   397.4720     0.0152     0.0133    98.6700    90.9100    91.2800    91.1000    93.3500        128
+dev   153       3.2814    14.2087     0.0320     0.0269    97.3100    83.5800    84.2600    83.9200    85.3800        133
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   154      18.4976   397.7644     0.0147     0.0129    98.7100    91.6600    91.2400    91.4500    93.3500        128
+dev   154       3.3723    14.0137     0.0325     0.0273    97.2700    83.9500    83.3600    83.6500    85.3800        133
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   155      18.6997   397.5890     0.0148     0.0131    98.6900    91.3700    91.1500    91.2600    93.3500        128
+dev   155       3.2581    14.1925     0.0318     0.0267    97.3300    83.9400    83.6800    83.8100    85.3800        133
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   156      18.4279   400.4583     0.0160     0.0141    98.5900    90.5800    90.9700    90.7700    93.3500        128
+dev   156       3.4029    14.1053     0.0333     0.0279    97.2100    82.7100    83.4100    83.0600    85.3800        133
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   157      17.6958   395.0374     0.0148     0.0131    98.6900    92.0100    90.9700    91.4900    93.3500        128
+dev   157       3.3252    14.1516     0.0327     0.0274    97.2600    84.8700    83.1500    84.0000    85.3800        133
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   158      17.9865   396.7035     0.0149     0.0131    98.6900    91.7500    91.0500    91.4000    93.3500        128
+dev   158       3.4281    14.0332     0.0333     0.0277    97.2300    84.1500    83.1500    83.6500    85.3800        133
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   159      17.5065   404.6767     0.0142     0.0126    98.7400    91.6100    91.4800    91.5400    93.3500        128
+dev   159       3.3238    14.1631     0.0321     0.0271    97.2900    83.6000    83.6300    83.6100    85.3800        133
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   160      17.3323   395.9027     0.0149     0.0132    98.6800    91.4600    91.1000    91.2800    93.3500        128
+dev   160       3.3126    14.0642     0.0328     0.0277    97.2300    83.7400    83.3100    83.5200    85.3800        133
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   161      16.9384   393.6904     0.0141     0.0125    98.7500    91.4800    91.5700    91.5200    93.3500        128
+dev   161       3.2480    13.4856     0.0311     0.0262    97.3800    83.7300    84.3700    84.0500    85.3800        133
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   162      17.6237   394.7772     0.0137     0.0122    98.7800    91.6000    92.0000    91.8000    93.3500        128
+dev   162       3.3616    14.0343     0.0312     0.0261    97.3900    83.7300    84.7700    84.2400    85.3800        133
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   163      17.1786   404.0648     0.0132     0.0118    98.8200    92.3800    91.5900    91.9800    93.3500        128
+dev   163       3.2259    14.1982     0.0313     0.0265    97.3500    84.5800    83.6400    84.1100    85.3800        133
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   164      16.5224   401.4324     0.0137     0.0121    98.7900    91.8900    92.0300    91.9600    93.3500        128
+dev   164       3.3723    14.0292     0.0319     0.0267    97.3300    83.6300    84.3200    83.9700    85.3800        133
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   165      16.6262   395.2471     0.0143     0.0126    98.7400    91.5400    91.5900    91.5700    93.3500        128
+dev   165       3.4826    14.1609     0.0331     0.0278    97.2200    83.4400    83.6100    83.5200    85.3800        133
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   166      16.8316   397.1956     0.0133     0.0118    98.8200    92.2800    91.8000    92.0400    93.3500        128
+dev   166       3.3410    14.0656     0.0320     0.0271    97.2900    83.9500    83.7400    83.8500    85.3800        133
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   167      16.3616   397.0196     0.0130     0.0116    98.8400    92.2800    92.1500    92.2200    93.3500        128
+dev   167       3.4163    14.1464     0.0319     0.0270    97.3000    83.9200    84.1600    84.0400    85.3800        133
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   168      16.3675   393.4654     0.0131     0.0117    98.8300    92.3600    92.1400    92.2500    93.3500        128
+dev   168       3.2373    13.7785     0.0313     0.0265    97.3500    84.0600    84.1600    84.1100    85.3800        133
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   169      16.2466   393.2620     0.0126     0.0112    98.8800    92.4300    92.4600    92.4500    93.3500        128
+dev   169       3.2804    14.1831     0.0314     0.0265    97.3500    83.3400    84.3000    83.8200    85.3800        133
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   170      16.2030   399.3850     0.0125     0.0111    98.8900    92.5500    92.5600    92.5500    93.3500        128
+dev   170       3.2480    13.9856     0.0307     0.0263    97.3700    83.8700    84.6200    84.2400    85.3800        133
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   171      16.5204   399.5788     0.0128     0.0114    98.8600    92.1000    92.4900    92.3000    93.3500        128
+dev   171       3.2685    14.0010     0.0305     0.0260    97.4000    83.6600    85.2200    84.4400    85.3800        133
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   172      16.1949   395.6720     0.0118     0.0106    98.9400    93.1000    92.7300    92.9100    93.3500        128
+dev   172       3.0803    14.0406     0.0293     0.0249    97.5100    84.8100    84.8500    84.8300    85.3800        133
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   173      16.1082   397.9522     0.0124     0.0111    98.8900    92.4600    92.6300    92.5500    93.3500        128
+dev   173       3.2293    13.4300     0.0309     0.0259    97.4100    83.7500    84.6700    84.2100    85.3800        133
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   174      15.7279   393.1567     0.0118     0.0105    98.9500    93.3000    92.7400    93.0200    93.3500        128
+dev   174       3.2279    14.0400     0.0320     0.0272    97.2800    83.9700    83.9300    83.9500    85.3800        133
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   175      15.6732   396.3329     0.0115     0.0103    98.9700    93.0300    92.8900    92.9600    93.3500        128
+dev   175       3.2008    13.2437     0.0304     0.0259    97.4100    84.4500    84.3700    84.4100    85.3800        133
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   176      15.8571   400.2259     0.0118     0.0105    98.9500    93.4200    92.6700    93.0400    93.3500        128
+dev   176       3.2456    13.6293     0.0311     0.0262    97.3800    84.6100    83.9300    84.2700    85.3800        133
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   177      15.4015   393.2581     0.0115     0.0104    98.9600    92.9700    92.8800    92.9300    93.3500        128
+dev   177       3.1141    14.1904     0.0298     0.0253    97.4700    84.6600    84.8200    84.7400    85.3800        133
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   178      15.4851   393.1595     0.0108     0.0097    99.0300    93.4800    93.3600    93.4200    93.4200        178
+dev   178       3.2363    13.4964     0.0301     0.0254    97.4600    84.0200    84.6700    84.3400    85.3800        133
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   179      15.6431   395.2082     0.0110     0.0099    99.0100    93.4200    93.2200    93.3200    93.4200        178
+dev   179       3.1324    14.1666     0.0293     0.0247    97.5300    84.6500    85.0400    84.8500    85.3800        133
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   180      15.4333   394.9814     0.0111     0.0101    98.9900    93.4500    93.0400    93.2400    93.4200        178
+dev   180       3.1930    13.3304     0.0301     0.0254    97.4600    84.7300    85.0100    84.8700    85.3800        133
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   181      15.2916   394.9622     0.0106     0.0096    99.0400    93.5400    93.4700    93.5000    93.5000        181
+dev   181       3.1183    14.2089     0.0293     0.0249    97.5100    84.5200    85.0700    84.7900    85.3800        133
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   182      15.1481   393.3069     0.0105     0.0095    99.0500    93.6900    93.4500    93.5700    93.5700        182
+dev   182       3.2744    14.0553     0.0290     0.0245    97.5500    85.1600    85.5800    85.3700    85.3800        133
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   183      15.1840   399.7254     0.0109     0.0099    99.0100    93.4300    93.3000    93.3600    93.5700        182
+dev   183       3.2337    14.1411     0.0297     0.0250    97.5000    84.9400    85.3100    85.1200    85.3800        133
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   184      15.1197   393.8596     0.0110     0.0098    99.0200    93.3300    93.4000    93.3700    93.5700        182
+dev   184       3.2956    14.0467     0.0303     0.0253    97.4700    84.4900    85.1100    84.8000    85.3800        133
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   185      15.6644   401.8630     0.0116     0.0103    98.9700    92.9400    93.1300    93.0300    93.5700        182
+dev   185       3.3775    14.1765     0.0316     0.0267    97.3300    83.6800    84.5700    84.1200    85.3800        133
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   186      14.7193   393.2298     0.0106     0.0095    99.0500    93.5300    93.6100    93.5700    93.5700        182
+dev   186       3.2256    14.0749     0.0292     0.0247    97.5300    84.7000    85.3600    85.0300    85.3800        133
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   187      15.3136   394.7353     0.0104     0.0094    99.0600    93.8000    93.6400    93.7200    93.7200        187
+dev   187       3.2240    14.1827     0.0294     0.0250    97.5000    84.7000    85.1400    84.9200    85.3800        133
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   188      14.7697   396.9495     0.0103     0.0093    99.0700    93.8100    93.6400    93.7200    93.7200        187
+dev   188       3.2055    13.3701     0.0292     0.0244    97.5600    85.4300    85.4600    85.4500    85.4500        188
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   189      14.6703   393.5494     0.0104     0.0094    99.0600    94.2500    93.1500    93.7000    93.7200        187
+dev   189       3.3486    14.2266     0.0304     0.0260    97.4000    85.6900    84.1500    84.9100    85.4500        188
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   190      14.5926   396.1431     0.0095     0.0085    99.1500    94.3900    94.1100    94.2500    94.2500        190
+dev   190       3.1419    14.0372     0.0287     0.0241    97.5900    85.2300    85.3400    85.2800    85.4500        188
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   191      14.8268   399.2758     0.0109     0.0096    99.0400    93.8300    93.3900    93.6100    94.2500        190
+dev   191       3.3258    13.8551     0.0307     0.0256    97.4400    85.1700    84.6000    84.8900    85.4500        188
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   192      14.6421   394.9693     0.0099     0.0089    99.1100    94.2200    93.7200    93.9700    94.2500        190
+dev   192       3.3216    14.0413     0.0295     0.0249    97.5100    85.4800    84.9400    85.2100    85.4500        188
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   193      14.3894   395.5091     0.0099     0.0088    99.1200    94.6600    93.6300    94.1400    94.2500        190
+dev   193       3.3184    13.2768     0.0302     0.0254    97.4600    85.7800    84.2300    85.0000    85.4500        188
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   194      14.6400   398.5786     0.0105     0.0095    99.0500    93.6500    93.3900    93.5200    94.2500        190
+dev   194       3.3023    13.7841     0.0302     0.0255    97.4500    84.8600    84.6900    84.7700    85.4500        188
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   195      14.5838   395.1725     0.0096     0.0086    99.1400    94.2800    93.9600    94.1200    94.2500        190
+dev   195       3.1808    14.1859     0.0300     0.0253    97.4700    84.6300    84.6200    84.6300    85.4500        188
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   196      14.7890   398.3357     0.0099     0.0091    99.0900    93.8900    93.6700    93.7800    94.2500        190
+dev   196       3.2073    13.3242     0.0293     0.0248    97.5200    85.1200    85.1900    85.1500    85.4500        188
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   197      14.1347   393.8457     0.0095     0.0087    99.1300    93.9800    93.9400    93.9600    94.2500        190
+dev   197       3.1012    14.1769     0.0278     0.0236    97.6400    85.3500    85.6300    85.4900    85.4900        197
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   198      13.8430   394.8131     0.0105     0.0095    99.0500    93.6000    93.6100    93.6100    94.2500        190
+dev   198       3.3257    14.0745     0.0312     0.0265    97.3500    83.8300    84.6000    84.2100    85.4900        197
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   199      14.0633   398.1364     0.0102     0.0091    99.0900    93.9600    93.7800    93.8700    94.2500        190
+dev   199       3.1478    13.7705     0.0289     0.0243    97.5700    85.3700    85.5400    85.4600    85.4900        197
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   200      14.1845   396.6241     0.0094     0.0086    99.1400    94.3500    93.9500    94.1500    94.2500        190
+dev   200       3.2036    14.0727     0.0290     0.0244    97.5600    85.6300    85.1400    85.3800    85.4900        197
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   201      14.0346   398.6756     0.0093     0.0085    99.1500    94.1900    94.1400    94.1600    94.2500        190
+dev   201       3.2251    14.1758     0.0289     0.0243    97.5700    85.1400    85.3400    85.2400    85.4900        197
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   202      14.0829   393.3195     0.0096     0.0088    99.1200    94.1500    93.8800    94.0100    94.2500        190
+dev   202       3.2182    14.0217     0.0296     0.0250    97.5000    84.6900    85.0900    84.8900    85.4900        197
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   203      14.6845   394.6982     0.0088     0.0082    99.1800    94.8600    94.0000    94.4200    94.4200        203
+dev   203       3.2274    14.1700     0.0288     0.0246    97.5400    85.7600    84.7500    85.2500    85.4900        197
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   204      13.5923   393.7292     0.0097     0.0088    99.1200    94.3200    93.9500    94.1300    94.4200        203
+dev   204       3.2397    13.7418     0.0291     0.0246    97.5400    84.9700    85.3200    85.1500    85.4900        197
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   205      13.9619   394.4289     0.0094     0.0086    99.1400    94.1400    94.0300    94.0800    94.4200        203
+dev   205       3.1929    14.1701     0.0289     0.0244    97.5600    84.6700    85.3600    85.0200    85.4900        197
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   206      14.0620   404.8067     0.0089     0.0080    99.2000    94.6200    94.4600    94.5400    94.5400        206
+dev   206       3.2169    14.0230     0.0290     0.0242    97.5800    85.0400    85.2200    85.1300    85.4900        197
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   207      13.5842   395.6835     0.0095     0.0086    99.1400    94.1300    94.0800    94.1100    94.5400        206
+dev   207       3.2382    14.1560     0.0286     0.0241    97.5900    85.1200    85.6100    85.3700    85.4900        197
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   208      14.0537   394.6141     0.0091     0.0084    99.1600    94.3000    94.1400    94.2200    94.5400        206
+dev   208       3.3090    14.0804     0.0295     0.0248    97.5200    84.9100    85.3900    85.1500    85.4900        197
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   209      13.9093   395.5612     0.0093     0.0085    99.1500    94.2700    94.2300    94.2500    94.5400        206
+dev   209       3.2778    13.4335     0.0292     0.0249    97.5100    84.9000    85.4300    85.1600    85.4900        197
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   210      13.4414   393.3178     0.0097     0.0088    99.1200    94.1700    93.9700    94.0700    94.5400        206
+dev   210       3.3960    14.0261     0.0300     0.0253    97.4700    84.8000    85.1400    84.9700    85.4900        197
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   211      14.0864   394.1030     0.0089     0.0081    99.1900    94.6400    94.2200    94.4300    94.5400        206
+dev   211       3.0996    13.4220     0.0279     0.0235    97.6500    86.0100    85.6400    85.8300    85.8300        211
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   212      13.3870   393.9429     0.0089     0.0081    99.1900    94.5500    94.3300    94.4400    94.5400        206
+dev   212       3.3253    14.0589     0.0295     0.0251    97.4900    85.1400    85.2100    85.1700    85.8300        211
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   213      13.4021   400.9173     0.0092     0.0084    99.1600    94.4100    94.2700    94.3400    94.5400        206
+dev   213       3.3042    14.1364     0.0294     0.0248    97.5200    85.0200    85.4600    85.2400    85.8300        211
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   214      13.6227   398.7927     0.0095     0.0084    99.1600    94.1600    94.2000    94.1800    94.5400        206
+dev   214       3.3911    14.0537     0.0298     0.0246    97.5400    84.9300    85.5600    85.2400    85.8300        211
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   215      13.5380   394.5672     0.0088     0.0079    99.2100    94.6400    94.4700    94.5500    94.5500        215
+dev   215       3.2061    14.2098     0.0282     0.0235    97.6500    85.2900    85.7500    85.5200    85.8300        211
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   216      13.7320   396.0195     0.0086     0.0078    99.2200    94.8600    94.5300    94.6900    94.6900        216
+dev   216       3.3311    14.0079     0.0297     0.0250    97.5000    84.8900    85.1900    85.0400    85.8300        211
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   217      13.9156   400.5676     0.0085     0.0078    99.2200    94.6800    94.5400    94.6100    94.6900        216
+dev   217       3.1786    14.1909     0.0289     0.0242    97.5800    85.2400    85.5600    85.4000    85.8300        211
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   218      13.4645   395.1648     0.0089     0.0079    99.2100    94.8300    94.6200    94.7300    94.7300        218
+dev   218       3.3019    14.0862     0.0310     0.0259    97.4100    85.1800    84.9200    85.0500    85.8300        211
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   219      13.5725   399.9527     0.0082     0.0074    99.2600    95.0400    94.7300    94.8800    94.8800        219
+dev   219       3.2263    14.1547     0.0292     0.0245    97.5500    85.1700    85.2400    85.2000    85.8300        211
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   220      13.3049   393.6491     0.0080     0.0073    99.2700    95.3600    94.8100    95.0900    95.0900        220
+dev   220       3.2347    13.8026     0.0294     0.0246    97.5400    85.2900    84.9200    85.1100    85.8300        211
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   221      13.1456   394.3652     0.0082     0.0076    99.2400    94.7600    94.8200    94.7900    95.0900        220
+dev   221       3.1654    14.1866     0.0285     0.0240    97.6000    85.2600    85.6600    85.4600    85.8300        211
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   222      13.3000   393.4287     0.0082     0.0075    99.2500    94.9600    94.7700    94.8600    95.0900        220
+dev   222       3.2643    14.0251     0.0292     0.0245    97.5500    84.9400    85.4300    85.1800    85.8300        211
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   223      12.6411   395.9536     0.0082     0.0075    99.2500    94.9500    94.6700    94.8100    95.0900        220
+dev   223       3.2657    14.1578     0.0289     0.0243    97.5700    85.0200    85.3200    85.1700    85.8300        211
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   224      13.1908   399.3862     0.0081     0.0074    99.2600    95.0500    94.7700    94.9100    95.0900        220
+dev   224       3.2643    14.0479     0.0289     0.0242    97.5800    85.7500    85.4600    85.6000    85.8300        211
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   225      13.0532   396.7096     0.0080     0.0073    99.2700    95.1300    94.7600    94.9500    95.0900        220
+dev   225       3.3863    14.1274     0.0292     0.0245    97.5500    85.3300    84.9700    85.1500    85.8300        211
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   226      12.7698   398.6178     0.0086     0.0077    99.2300    94.8000    94.6100    94.7100    95.0900        220
+dev   226       3.3217    13.7876     0.0293     0.0245    97.5500    85.2200    85.3200    85.2700    85.8300        211
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   227      13.2135   395.4074     0.0084     0.0075    99.2500    95.0300    94.7000    94.8700    95.0900        220
+dev   227       3.3191    14.1981     0.0293     0.0245    97.5500    85.2100    85.1400    85.1800    85.8300        211
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   228      12.8509   397.0411     0.0077     0.0071    99.2900    95.2400    94.9400    95.0900    95.0900        220
+dev   228       3.1500    14.0833     0.0275     0.0230    97.7000    86.3100    85.8300    86.0700    86.0700        228
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   229      12.5448   402.0205     0.0079     0.0071    99.2900    95.2000    94.8600    95.0300    95.0900        220
+dev   229       3.2279    13.8654     0.0276     0.0232    97.6800    86.1700    85.9000    86.0300    86.0700        228
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   230      12.6440   393.7828     0.0079     0.0072    99.2800    95.2600    94.9400    95.1000    95.1000        230
+dev   230       3.1837    14.0753     0.0280     0.0237    97.6300    85.7500    85.5800    85.6600    86.0700        228
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   231      12.9495   404.3383     0.0078     0.0072    99.2800    95.2700    94.8600    95.0600    95.1000        230
+dev   231       3.2982    14.2626     0.0276     0.0236    97.6400    85.6400    85.8100    85.7300    86.0700        228
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   232      13.2351   393.5504     0.0079     0.0073    99.2700    95.3800    94.6800    95.0300    95.1000        230
+dev   232       3.3179    13.7903     0.0280     0.0237    97.6300    86.2900    85.5900    85.9400    86.0700        228
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   233          nan   395.2085     0.0075     0.0070    99.3000    95.5400    95.0200    95.2800    95.2800        233
+dev   233       3.2834    14.2012     0.0279     0.0233    97.6700    86.3100    85.6400    85.9800    86.0700        228
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   234          nan   393.4455     0.0073     0.0068    99.3200    95.4900    95.3300    95.4100    95.4100        234
+dev   234       3.2562    14.0867     0.0280     0.0240    97.6000    85.2900    85.6800    85.4800    86.0700        228
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   235          nan   400.4639     0.0070     0.0065    99.3500    95.8700    95.2300    95.5500    95.5500        235
+dev   235       3.1343    14.2303     0.0272     0.0230    97.7000    86.2700    85.7600    86.0200    86.0700        228
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   236      12.6988   404.4050     0.0076     0.0070    99.3000    95.3200    95.0500    95.1800    95.5500        235
+dev   236       3.2170    14.0759     0.0281     0.0239    97.6100    85.4200    85.6600    85.5400    86.0700        228
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   237      12.3934   394.8045     0.0071     0.0066    99.3400    95.4200    95.4400    95.4300    95.5500        235
+dev   237       3.2149    13.3282     0.0274     0.0231    97.6900    85.4400    86.0500    85.7500    86.0700        228
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   238      12.3241   395.6615     0.0072     0.0067    99.3300    95.4100    95.3600    95.3900    95.5500        235
+dev   238       3.2106    14.0030     0.0277     0.0232    97.6800    85.6900    85.9300    85.8100    86.0700        228
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   239      11.8366   397.9754     0.0071     0.0066    99.3400    95.6000    95.2300    95.4100    95.5500        235
+dev   239       3.2852    14.2296     0.0278     0.0236    97.6400    85.6700    85.3900    85.5300    86.0700        228
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   240      11.9315   396.5521     0.0069     0.0065    99.3500    95.8100    95.3000    95.5500    95.5500        235
+dev   240       3.2525    14.0978     0.0283     0.0242    97.5800    85.8100    85.2700    85.5400    86.0700        228
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   241      12.3673   397.9557     0.0073     0.0067    99.3300    95.6600    95.2000    95.4300    95.5500        235
+dev   241       3.2514    14.2073     0.0280     0.0236    97.6400    85.7800    85.3900    85.5900    86.0700        228
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   242      12.4948   396.1115     0.0076     0.0071    99.2900    95.4700    95.1500    95.3100    95.5500        235
+dev   242       3.2796    14.1428     0.0290     0.0247    97.5300    84.9300    85.2900    85.1100    86.0700        228
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   243      12.5679   393.9581     0.0079     0.0072    99.2800    95.1700    94.9800    95.0800    95.5500        235
+dev   243       3.3662    13.4893     0.0297     0.0252    97.4800    84.5900    85.0700    84.8300    86.0700        228
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   244      12.5562   395.4583     0.0073     0.0069    99.3100    95.4200    95.0800    95.2500    95.5500        235
+dev   244       3.2811    14.0569     0.0283     0.0240    97.6000    85.4500    85.5300    85.4900    86.0700        228
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   245      12.4467   396.1191     0.0077     0.0072    99.2800    94.9800    94.9300    94.9500    95.5500        235
+dev   245       3.3609    14.2084     0.0296     0.0247    97.5300    84.9000    85.3600    85.1300    86.0700        228
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   246      13.1455   396.8660     0.0071     0.0067    99.3300    95.6200    95.1400    95.3800    95.5500        235
+dev   246       3.3104    13.7567     0.0286     0.0241    97.5900    85.6600    85.3200    85.4900    86.0700        228
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   247      13.3464   396.0054     0.0076     0.0071    99.2900    95.3300    94.8800    95.1000    95.5500        235
+dev   247       3.2900    14.1555     0.0294     0.0248    97.5200    85.0000    85.0600    85.0300    86.0700        228
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   248      13.1510   405.5885     0.0080     0.0074    99.2600    94.9600    94.8700    94.9100    95.5500        235
+dev   248       3.3925    14.0430     0.0294     0.0249    97.5100    84.7600    85.1100    84.9300    86.0700        228
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   249      13.0116   396.0454     0.0071     0.0066    99.3400    95.4500    95.2600    95.3500    95.5500        235
+dev   249       3.2893    14.1688     0.0282     0.0239    97.6100    85.0800    85.9600    85.5200    86.0700        228
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   250      13.1878   398.7328     0.0077     0.0071    99.2900    95.0300    95.1700    95.1000    95.5500        235
+dev   250       3.3332    14.0725     0.0287     0.0244    97.5600    84.9200    86.0800    85.5000    86.0700        228
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   251      13.2545   393.5308     0.0075     0.0071    99.2900    95.3100    95.0300    95.1700    95.5500        235
+dev   251       3.3341    14.1778     0.0292     0.0247    97.5300    84.8300    85.1100    84.9700    86.0700        228
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   252      13.0633   397.3782     0.0070     0.0065    99.3500    95.8500    95.2500    95.5500    95.5500        235
+dev   252       3.2252    14.0693     0.0275     0.0231    97.6900    85.9600    85.7300    85.8400    86.0700        228
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   253      12.9367   401.8160     0.0073     0.0068    99.3200    95.6400    95.0700    95.3600    95.5500        235
+dev   253       3.2746    14.2464     0.0288     0.0242    97.5800    85.6500    85.0100    85.3300    86.0700        228
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   254      13.4454   398.1588     0.0075     0.0070    99.3000    95.1000    95.2200    95.1600    95.5500        235
+dev   254       3.3302    14.0538     0.0285     0.0240    97.6000    85.0100    85.7000    85.3500    86.0700        228
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   255      12.6988   395.9320     0.0073     0.0068    99.3200    95.5500    95.1400    95.3400    95.5500        235
+dev   255       3.3297    13.5585     0.0292     0.0244    97.5600    85.4800    85.3900    85.4400    86.0700        228
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   256      12.7690   393.2757     0.0076     0.0071    99.2900    95.2600    94.8900    95.0700    95.5500        235
+dev   256       3.4470    14.0926     0.0294     0.0245    97.5500    85.8500    85.4800    85.6600    86.0700        228
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   257      13.1907   393.7751     0.0074     0.0069    99.3100    95.2500    95.0400    95.1400    95.5500        235
+dev   257       3.2883    13.5172     0.0287     0.0241    97.5900    85.6700    85.9000    85.7800    86.0700        228
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   258      12.6876   392.9996     0.0073     0.0068    99.3200    95.4600    95.2500    95.3500    95.5500        235
+dev   258       3.2612    14.0775     0.0278     0.0237    97.6300    85.5800    85.8800    85.7300    86.0700        228
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   259      12.9931   401.3900     0.0074     0.0068    99.3200    95.4000    95.0900    95.2500    95.5500        235
+dev   259       3.3281    14.1756     0.0292     0.0244    97.5600    85.4600    85.2900    85.3800    86.0700        228
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   260          nan   397.4473     0.0069     0.0065    99.3500    95.7700    95.3800    95.5700    95.5700        260
+dev   260       3.1429    14.1374     0.0285     0.0236    97.6400    86.1000    85.7100    85.9100    86.0700        228
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   261      11.7213   399.6725     0.0068     0.0065    99.3500    95.6200    95.5100    95.5600    95.5700        260
+dev   261       3.2358    14.1852     0.0284     0.0240    97.6000    85.1600    85.7600    85.4600    86.0700        228
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   262      11.4578   397.0334     0.0068     0.0064    99.3600    95.7600    95.4300    95.6000    95.6000        262
+dev   262       3.2369    14.0637     0.0285     0.0240    97.6000    85.1900    85.4800    85.3300    86.0700        228
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   263      11.7085   394.5610     0.0069     0.0066    99.3400    95.4000    95.4000    95.4000    95.6000        262
+dev   263       3.2929    14.1658     0.0285     0.0240    97.6000    85.3100    85.9100    85.6100    86.0700        228
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   264      11.9052   417.5674     0.0068     0.0064    99.3600    95.7100    95.4500    95.5800    95.6000        262
+dev   264       3.3415    14.0774     0.0286     0.0243    97.5700    85.6200    85.5900    85.6100    86.0700        228
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   265      11.8030   411.9957     0.0065     0.0062    99.3800    95.8700    95.5300    95.7000    95.7000        265
+dev   265       3.2643    14.1990     0.0275     0.0233    97.6700    85.9400    85.8000    85.8700    86.0700        228
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   266      11.9155   408.7726     0.0067     0.0062    99.3800    95.8400    95.6000    95.7200    95.7200        266
+dev   266       3.3215    14.0629     0.0286     0.0242    97.5800    85.5800    85.4800    85.5300    86.0700        228
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   267      11.6269   417.2351     0.0065     0.0061    99.3900    95.9900    95.5400    95.7700    95.7700        267
+dev   267       3.2666    14.2212     0.0281     0.0237    97.6300    85.7800    85.8100    85.8000    86.0700        228
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   268      12.0455   417.6522     0.0071     0.0066    99.3400    95.5200    95.3500    95.4300    95.7700        267
+dev   268       3.4457    14.1232     0.0298     0.0250    97.5000    85.4800    85.3900    85.4400    86.0700        228
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   269      12.7349   417.1353     0.0068     0.0064    99.3600    95.7700    95.4000    95.5900    95.7700        267
+dev   269       3.2210    14.1631     0.0279     0.0238    97.6200    85.7600    85.6800    85.7200    86.0700        228
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   270      12.4941   416.4226     0.0069     0.0065    99.3500    95.6800    95.4200    95.5500    95.7700        267
+dev   270       3.2616    14.0844     0.0284     0.0239    97.6100    85.3100    85.8000    85.5500    86.0700        228
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   271      12.1140   416.3647     0.0065     0.0062    99.3800    95.7500    95.6600    95.7100    95.7700        267
+dev   271       3.3550    14.1981     0.0285     0.0242    97.5800    85.2600    85.8800    85.5700    86.0700        228
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   272      12.2553   416.8400     0.0063     0.0060    99.4000    95.7400    95.7100    95.7200    95.7700        267
+dev   272       3.2038    14.0759     0.0277     0.0236    97.6400    85.2400    85.9300    85.5800    86.0700        228
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   273      12.5298   417.1307     0.0063     0.0061    99.3900    95.8500    95.5500    95.7000    95.7700        267
+dev   273       3.2041    14.2225     0.0284     0.0239    97.6100    85.2900    85.5900    85.4400    86.0700        228
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   274      12.2362   416.9245     0.0065     0.0061    99.3900    95.8700    95.7900    95.8300    95.8300        274
+dev   274       3.2091    14.1161     0.0284     0.0240    97.6000    85.1400    85.8000    85.4700    86.0700        228
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   275      12.4706   417.0638     0.0064     0.0061    99.3900    96.1600    95.6200    95.8900    95.8900        275
+dev   275       3.2745    13.4943     0.0284     0.0241    97.5900    85.5100    84.8900    85.2000    86.0700        228
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   276      12.5658   416.6619     0.0063     0.0059    99.4100    95.9600    95.8400    95.9000    95.9000        276
+dev   276       3.2703    14.1166     0.0278     0.0237    97.6300    85.3000    85.5300    85.4100    86.0700        228
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   277      12.9160   417.5540     0.0065     0.0061    99.3900    95.8700    95.6100    95.7400    95.9000        276
+dev   277       3.1122    14.1771     0.0275     0.0233    97.6700    85.7500    85.8000    85.7700    86.0700        228
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   278      12.4969   416.3892     0.0066     0.0063    99.3700    95.9200    95.4000    95.6600    95.9000        276
+dev   278       3.2598    14.0624     0.0285     0.0244    97.5600    85.7800    85.1900    85.4900    86.0700        228
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   279      12.5492   416.6191     0.0066     0.0061    99.3900    96.0400    95.4600    95.7500    95.9000        276
+dev   279       3.2473    14.1480     0.0292     0.0241    97.5900    86.0800    85.3600    85.7200    86.0700        228
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   280      12.5615   416.4790     0.0064     0.0060    99.4000    96.0200    95.7100    95.8700    95.9000        276
+dev   280       3.2570    14.0123     0.0281     0.0235    97.6500    86.0900    85.8500    85.9700    86.0700        228
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   281      12.8929   415.1588     0.0064     0.0060    99.4000    95.9200    95.6600    95.7900    95.9000        276
+dev   281       3.2165    14.1952     0.0276     0.0231    97.6900    85.8500    86.0800    85.9700    86.0700        228
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   282      12.9177   416.8483     0.0065     0.0061    99.3900    95.9400    95.6300    95.7800    95.9000        276
+dev   282       3.2518    14.1208     0.0276     0.0233    97.6700    86.0100    86.2000    86.1100    86.1100        282
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   283      12.4313   417.1813     0.0067     0.0063    99.3700    95.8400    95.5500    95.6900    95.9000        276
+dev   283       3.2393    14.2223     0.0284     0.0240    97.6000    85.6100    85.9000    85.7500    86.1100        282
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   284      12.6079   416.5641     0.0065     0.0062    99.3800    95.8900    95.3700    95.6300    95.9000        276
+dev   284       3.1550    14.0389     0.0275     0.0234    97.6600    86.1800    85.8800    86.0300    86.1100        282
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   285      12.6022   417.0750     0.0064     0.0061    99.3900    95.9000    95.7200    95.8100    95.9000        276
+dev   285       3.2355    14.1567     0.0275     0.0236    97.6400    85.7700    86.0100    85.8900    86.1100        282
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   286      12.6136   412.4638     0.0068     0.0062    99.3800    95.8100    95.5900    95.7000    95.9000        276
+dev   286       3.3313    14.1003     0.0286     0.0240    97.6000    85.4400    85.4400    85.4400    86.1100        282
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   287      12.1875   417.4322     0.0063     0.0059    99.4100    96.2400    95.6300    95.9300    95.9300        287
+dev   287       3.3457    14.2358     0.0285     0.0242    97.5800    86.0800    85.2100    85.6400    86.1100        282
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   288      11.9857   409.1377     0.0065     0.0061    99.3900    96.3100    95.4300    95.8700    95.9300        287
+dev   288       3.1977    14.0684     0.0285     0.0238    97.6200    86.3600    85.3400    85.8500    86.1100        282
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   289      12.5827   410.9353     0.0063     0.0060    99.4000    96.0100    95.6900    95.8500    95.9300        287
+dev   289       3.2582    14.1818     0.0276     0.0233    97.6700    86.0900    85.7100    85.9000    86.1100        282
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   290      12.3563   417.4781     0.0065     0.0061    99.3900    95.7900    95.7200    95.7500    95.9300        287
+dev   290       3.1893    14.0393     0.0272     0.0225    97.7500    86.1400    86.4700    86.3000    86.3000        290
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   291      12.0208   417.7739     0.0064     0.0060    99.4000    96.0200    95.7100    95.8600    95.9300        287
+dev   291       3.2469    14.1663     0.0281     0.0236    97.6400    86.0900    86.0700    86.0800    86.3000        290
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   292      11.9267   409.8092     0.0061     0.0057    99.4300    96.1900    95.8900    96.0400    96.0400        292
+dev   292       3.2325    14.0859     0.0275     0.0230    97.7000    85.8400    85.9300    85.8900    86.3000        290
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   293      12.2979   417.7559     0.0063     0.0059    99.4100    96.0700    95.6200    95.8400    96.0400        292
+dev   293       3.2599    14.1721     0.0280     0.0234    97.6600    86.3000    85.7600    86.0300    86.3000        290
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   294      12.2168   410.2673     0.0063     0.0059    99.4100    96.0900    95.5500    95.8200    96.0400        292
+dev   294       3.3052    14.0866     0.0280     0.0235    97.6500    86.0300    85.6800    85.8500    86.3000        290
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   295      12.0356   415.7329     0.0063     0.0059    99.4100    95.9700    95.8800    95.9300    96.0400        292
+dev   295       3.3636    14.2363     0.0283     0.0238    97.6200    85.3600    85.8500    85.6000    86.3000        290
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   296      12.2752   417.2646     0.0064     0.0061    99.3900    96.0200    95.5800    95.8000    96.0400        292
+dev   296       3.3230    14.0845     0.0281     0.0239    97.6100    85.9800    85.6400    85.8100    86.3000        290
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   297      11.9077   412.3139     0.0061     0.0057    99.4300    96.1900    95.8400    96.0200    96.0400        292
+dev   297       3.3545    14.2247     0.0281     0.0240    97.6000    85.6600    85.5800    85.6200    86.3000        290
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   298      12.0246   417.2915     0.0056     0.0053    99.4700    96.4900    95.9900    96.2400    96.2400        298
+dev   298       3.2001    14.0780     0.0274     0.0236    97.6400    86.1200    85.7000    85.9000    86.3000        290
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   299      12.3008   418.2505     0.0060     0.0056    99.4400    96.2400    95.8300    96.0300    96.2400        298
+dev   299       3.2403    14.2412     0.0283     0.0240    97.6000    85.5800    85.6800    85.6300    86.3000        290
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   300      11.7284   417.2375     0.0062     0.0059    99.4100    95.8200    95.9200    95.8700    96.2400        298
+dev   300       3.2809    14.0980     0.0270     0.0230    97.7000    85.3800    86.3200    85.8500    86.3000        290
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   301      12.0309   413.8264     0.0062     0.0058    99.4200    96.1100    95.7400    95.9300    96.2400        298
+dev   301       3.3245    14.2043     0.0270     0.0230    97.7000    85.9500    85.9500    85.9500    86.3000        290
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   302      11.7116   417.0258     0.0056     0.0055    99.4500    96.3700    95.8500    96.1100    96.2400        298
+dev   302       3.2757    14.0846     0.0274     0.0234    97.6600    85.8300    85.7100    85.7700    86.3000        290
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   303      12.2059   417.8914     0.0057     0.0055    99.4500    96.2800    96.0400    96.1600    96.2400        298
+dev   303       3.2919    14.2291     0.0272     0.0231    97.6900    85.7800    86.1700    85.9700    86.3000        290
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   304      12.0371   417.1226     0.0059     0.0056    99.4400    96.4300    95.8900    96.1600    96.2400        298
+dev   304       3.2964    14.0990     0.0279     0.0236    97.6400    85.9600    85.7600    85.8600    86.3000        290
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   305      11.4267   417.6612     0.0059     0.0056    99.4400    96.0600    96.0800    96.0700    96.2400        298
+dev   305       3.3947    14.1727     0.0280     0.0236    97.6400    84.8500    86.0700    85.4500    86.3000        290
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   306      12.0277   417.0326     0.0056     0.0053    99.4700    96.4700    96.1100    96.2900    96.2900        306
+dev   306       3.2363    14.0817     0.0266     0.0221    97.7900    86.3600    86.2000    86.2800    86.3000        290
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   307      11.8466   417.6100     0.0054     0.0052    99.4800    96.5000    96.1300    96.3100    96.3100        307
+dev   307       3.4109    14.1915     0.0278     0.0233    97.6700    86.1600    85.7800    85.9700    86.3000        290
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   308      11.3433   415.3255     0.0053     0.0051    99.4900    96.5200    96.2000    96.3600    96.3600        308
+dev   308       3.3159    14.0639     0.0271     0.0229    97.7100    85.5700    85.9300    85.7500    86.3000        290
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   309      11.5251   417.5047     0.0055     0.0053    99.4700    96.2800    96.0800    96.1800    96.3600        308
+dev   309       3.3373    14.1677     0.0267     0.0224    97.7600    86.3100    86.5700    86.4400    86.4400        309
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   310      11.5059   416.9276     0.0058     0.0055    99.4500    96.2700    96.0000    96.1400    96.3600        308
+dev   310       3.4170    14.1111     0.0282     0.0236    97.6400    85.8000    85.8500    85.8200    86.4400        309
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   311      12.2269   417.2603     0.0057     0.0055    99.4500    96.2600    96.0600    96.1600    96.3600        308
+dev   311       3.2476    14.1997     0.0269     0.0226    97.7400    86.2300    86.5000    86.3600    86.4400        309
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   312      11.4606   416.3112     0.0052     0.0051    99.4900    96.5900    96.2200    96.4000    96.4000        312
+dev   312       3.3462    14.0408     0.0270     0.0228    97.7200    86.2100    86.2800    86.2500    86.4400        309
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   313      11.5614   417.3642     0.0056     0.0054    99.4600    96.3400    96.0500    96.1900    96.4000        312
+dev   313       3.3314    14.1670     0.0278     0.0233    97.6700    85.6900    85.9300    85.8100    86.4400        309
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   314      11.2372   414.2119     0.0056     0.0053    99.4700    96.4100    96.1700    96.2900    96.4000        312
+dev   314       3.2777    14.0647     0.0275     0.0234    97.6600    85.8300    85.9500    85.8900    86.4400        309
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   315      11.3964   417.8779     0.0054     0.0051    99.4900    96.4400    96.3400    96.3900    96.4000        312
+dev   315       3.2206    14.2132     0.0279     0.0234    97.6600    85.3000    85.9600    85.6300    86.4400        309
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   316      11.3903   416.9558     0.0054     0.0052    99.4800    96.6800    96.1700    96.4200    96.4200        316
+dev   316       3.2560    14.1076     0.0275     0.0234    97.6600    86.1000    85.7100    85.9100    86.4400        309
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   317      11.7225   417.4886     0.0052     0.0050    99.5000    96.7300    96.1700    96.4500    96.4500        317
+dev   317       3.2649    14.1893     0.0275     0.0233    97.6700    86.5800    85.9000    86.2400    86.4400        309
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   318      11.6028   414.0171     0.0052     0.0050    99.5000    96.7600    96.2600    96.5100    96.5100        318
+dev   318       3.3285    14.0561     0.0278     0.0234    97.6600    85.9400    85.6600    85.8000    86.4400        309
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   319      11.2470   415.3812     0.0054     0.0052    99.4800    96.8100    95.9700    96.3900    96.5100        318
+dev   319       3.2802    14.2275     0.0275     0.0232    97.6800    86.8600    85.5400    86.2000    86.4400        309
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   320      11.4061   407.5716     0.0050     0.0048    99.5200    96.8600    96.2700    96.5600    96.5600        320
+dev   320       3.2756    14.0801     0.0278     0.0235    97.6500    86.6100    85.6800    86.1400    86.4400        309
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   321      11.6130   413.7652     0.0052     0.0049    99.5100    96.6900    96.2600    96.4700    96.5600        320
+dev   321       3.2650    14.2140     0.0275     0.0231    97.6900    86.3200    86.1300    86.2300    86.4400        309
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   322      11.5386   416.9398     0.0049     0.0048    99.5200    96.8100    96.2800    96.5400    96.5600        320
+dev   322       3.2304    14.0620     0.0271     0.0231    97.6900    86.4800    85.9300    86.2100    86.4400        309
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   323      11.2015   414.5097     0.0050     0.0048    99.5200    96.7300    96.3800    96.5600    96.5600        320
+dev   323       3.2686    14.2052     0.0275     0.0232    97.6800    86.0900    86.0100    86.0500    86.4400        309
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   324      10.8539   409.9048     0.0052     0.0050    99.5000    96.7500    96.2600    96.5000    96.5600        320
+dev   324       3.2929    14.0836     0.0277     0.0235    97.6500    86.2000    85.9100    86.0600    86.4400        309
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   325      11.7648   417.5580     0.0054     0.0051    99.4900    96.5700    96.2700    96.4200    96.5600        320
+dev   325       3.3281    14.2099     0.0277     0.0235    97.6500    86.3500    85.9500    86.1500    86.4400        309
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   326      11.2283   417.3734     0.0049     0.0047    99.5300    96.7400    96.4800    96.6100    96.6100        326
+dev   326       3.3160    14.1037     0.0275     0.0232    97.6800    86.1000    85.9100    86.0100    86.4400        309
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   327      11.3527   417.8174     0.0052     0.0049    99.5100    96.6300    96.3800    96.5000    96.6100        326
+dev   327       3.3353    14.2466     0.0276     0.0233    97.6700    85.9000    85.8500    85.8800    86.4400        309
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   328      11.4839   417.2125     0.0051     0.0049    99.5100    96.6200    96.4300    96.5200    96.6100        326
+dev   328       3.3770    14.1494     0.0278     0.0234    97.6600    86.0100    85.9600    85.9900    86.4400        309
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   329          nan   418.4017     0.0054     0.0051    99.4900    96.7800    95.9700    96.3800    96.6100        326
+dev   329       3.3973    14.2179     0.0290     0.0245    97.5500    86.1700    84.9000    85.5300    86.4400        309
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   330      10.4124   415.8391     0.0048     0.0047    99.5300    96.8600    96.3700    96.6100    96.6100        326
+dev   330       3.3138    14.1361     0.0274     0.0231    97.6900    86.5600    85.9500    86.2500    86.4400        309
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   331      10.2701   417.8969     0.0045     0.0045    99.5500    96.9100    96.5600    96.7300    96.7300        331
+dev   331       3.2534    14.1850     0.0265     0.0223    97.7700    86.8500    86.6200    86.7400    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   332      10.2754   417.3183     0.0046     0.0045    99.5500    97.0000    96.4900    96.7500    96.7500        332
+dev   332       3.2967    14.0542     0.0269     0.0225    97.7500    86.4100    86.0300    86.2200    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   333      10.2744   414.2884     0.0048     0.0046    99.5400    97.0800    96.3900    96.7300    96.7500        332
+dev   333       3.2544    14.1677     0.0268     0.0226    97.7400    86.9100    86.1500    86.5300    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   334       9.9973   415.2064     0.0050     0.0048    99.5200    96.8100    96.3800    96.5900    96.7500        332
+dev   334       3.3382    14.0946     0.0273     0.0230    97.7000    86.4300    85.9800    86.2100    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   335      10.1287   416.2133     0.0052     0.0049    99.5100    96.7100    96.4600    96.5800    96.7500        332
+dev   335       3.3633    14.2030     0.0280     0.0237    97.6300    85.8100    85.9000    85.8500    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   336      10.2336   417.2063     0.0045     0.0044    99.5600    97.2700    96.5600    96.9100    96.9100        336
+dev   336       3.3391    14.0942     0.0276     0.0236    97.6400    86.7400    85.6600    86.2000    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   337      10.6279   417.1733     0.0046     0.0044    99.5600    97.0900    96.5700    96.8300    96.9100        336
+dev   337       3.3128    14.2010     0.0271     0.0228    97.7200    86.5600    86.0500    86.3000    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   338      10.5573   416.6373     0.0046     0.0044    99.5600    97.1000    96.5800    96.8400    96.9100        336
+dev   338       3.2989    14.0337     0.0273     0.0230    97.7000    86.2500    85.9000    86.0700    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   339      10.3555   417.3807     0.0047     0.0046    99.5400    97.0400    96.4000    96.7200    96.9100        336
+dev   339       3.2736    14.1867     0.0271     0.0231    97.6900    86.4600    85.7500    86.1000    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   340      10.8462   416.8282     0.0048     0.0047    99.5300    96.9500    96.4500    96.7000    96.9100        336
+dev   340       3.4122    14.0927     0.0281     0.0237    97.6300    86.2100    85.7500    85.9800    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   341      10.6901   417.8252     0.0047     0.0046    99.5400    97.0900    96.4400    96.7600    96.9100        336
+dev   341       3.3765    14.1758     0.0269     0.0228    97.7200    86.4000    85.7500    86.0700    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   342      11.1969   413.2789     0.0047     0.0045    99.5500    96.9800    96.4700    96.7200    96.9100        336
+dev   342       3.2875    14.0716     0.0272     0.0232    97.6800    86.0400    85.4400    85.7400    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   343      10.8454   411.9888     0.0045     0.0044    99.5600    96.9900    96.7200    96.8600    96.9100        336
+dev   343       3.2911    14.1992     0.0274     0.0230    97.7000    86.2100    86.0800    86.1500    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   344      10.7442   411.2576     0.0047     0.0046    99.5400    96.8900    96.6100    96.7500    96.9100        336
+dev   344       3.2609    14.0730     0.0269     0.0228    97.7200    86.5700    86.2500    86.4100    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   345      11.0069   417.1941     0.0047     0.0046    99.5400    96.9400    96.6000    96.7700    96.9100        336
+dev   345       3.3268    14.1686     0.0276     0.0232    97.6800    86.0000    85.8800    85.9400    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   346      10.8631   409.6039     0.0048     0.0046    99.5400    96.9000    96.4900    96.7000    96.9100        336
+dev   346       3.2707    14.0571     0.0273     0.0228    97.7200    86.4700    85.8600    86.1700    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   347      11.2691   412.7170     0.0046     0.0045    99.5500    97.1100    96.5200    96.8100    96.9100        336
+dev   347       3.4515    14.2035     0.0280     0.0236    97.6400    86.2100    85.3100    85.7600    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   348      11.0605   413.2007     0.0046     0.0044    99.5600    97.0600    96.5400    96.8000    96.9100        336
+dev   348       3.3651    14.0664     0.0276     0.0230    97.7000    86.5700    85.7300    86.1500    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   349      10.8998   417.1531     0.0050     0.0048    99.5200    96.7700    96.4200    96.5900    96.9100        336
+dev   349       3.2666    14.1912     0.0283     0.0237    97.6300    85.6900    85.7300    85.7100    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   350      10.9753   415.2085     0.0044     0.0043    99.5700    97.2200    96.6000    96.9100    96.9100        336
+dev   350       3.2329    14.0530     0.0268     0.0228    97.7200    87.0900    85.7000    86.3900    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   351      10.3059   417.5952     0.0046     0.0045    99.5500    97.0400    96.5000    96.7700    96.9100        336
+dev   351       3.3217    14.1930     0.0276     0.0234    97.6600    86.2900    85.2900    85.7900    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   352      10.6344   415.3974     0.0045     0.0044    99.5600    96.9600    96.7000    96.8300    96.9100        336
+dev   352       3.3715    14.0710     0.0274     0.0231    97.6900    85.9800    86.0700    86.0200    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   353      11.1440   415.9600     0.0047     0.0045    99.5500    96.9500    96.7000    96.8200    96.9100        336
+dev   353       3.2867    14.2829     0.0270     0.0227    97.7300    86.3300    86.2700    86.3000    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   354      11.2373   413.5636     0.0046     0.0045    99.5500    96.9700    96.5500    96.7600    96.9100        336
+dev   354       3.3403    14.0789     0.0274     0.0231    97.6900    86.5000    86.0800    86.2900    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   355      10.9062   417.4522     0.0048     0.0048    99.5200    96.7500    96.4800    96.6200    96.9100        336
+dev   355       3.4958    14.2154     0.0280     0.0235    97.6500    85.7200    86.1000    85.9100    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   356      11.0883   417.1212     0.0047     0.0046    99.5400    97.0100    96.4500    96.7300    96.9100        336
+dev   356       3.4556    14.9180     0.0280     0.0240    97.6000    86.0900    85.2200    85.6600    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   357      11.0440   417.6027     0.0046     0.0044    99.5600    96.9800    96.7000    96.8400    96.9100        336
+dev   357       3.2972    14.2208     0.0268     0.0228    97.7200    86.2100    85.9800    86.1000    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   358      10.8964   417.3727     0.0046     0.0044    99.5600    97.0000    96.7000    96.8500    96.9100        336
+dev   358       3.3470    14.0656     0.0274     0.0233    97.6700    85.7400    85.7300    85.7400    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   359      10.8182   417.4737     0.0044     0.0044    99.5600    97.1300    96.6600    96.8900    96.9100        336
+dev   359       3.3133    14.2038     0.0266     0.0230    97.7000    86.2400    86.0000    86.1200    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   360      10.7693   417.7060     0.0045     0.0044    99.5600    97.0100    96.7200    96.8700    96.9100        336
+dev   360       3.2962    14.0681     0.0272     0.0229    97.7100    86.1500    86.1500    86.1500    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   361      11.2807   415.7767     0.0047     0.0046    99.5400    96.8900    96.4100    96.6500    96.9100        336
+dev   361       3.3313    14.1739     0.0269     0.0228    97.7200    86.7500    85.9300    86.3400    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   362      10.9987   417.0560     0.0044     0.0044    99.5600    97.0800    96.5100    96.7900    96.9100        336
+dev   362       3.3005    14.0899     0.0273     0.0231    97.6900    86.6500    85.6300    86.1400    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   363      10.4560   417.7383     0.0046     0.0045    99.5500    96.9400    96.5100    96.7200    96.9100        336
+dev   363       3.3686    14.2081     0.0272     0.0234    97.6600    86.4000    85.8800    86.1400    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   364      10.9594   417.3470     0.0043     0.0042    99.5800    97.1500    96.6800    96.9200    96.9200        364
+dev   364       3.2623    14.1017     0.0280     0.0238    97.6200    85.8100    85.4100    85.6100    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   365      10.5847   417.7586     0.0045     0.0045    99.5500    97.0800    96.5300    96.8100    96.9200        364
+dev   365       3.4797    14.1910     0.0291     0.0244    97.5600    86.1000    85.3400    85.7200    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   366      11.1195   416.8436     0.0044     0.0043    99.5700    97.1300    96.7500    96.9400    96.9400        366
+dev   366       3.3620    14.0725     0.0277     0.0238    97.6200    86.2000    85.5400    85.8700    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   367      10.3711   417.4389     0.0042     0.0042    99.5800    97.1100    96.8800    97.0000    97.0000        367
+dev   367       3.3677    14.1946     0.0271     0.0230    97.7000    85.7900    85.9300    85.8600    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   368      10.1589   411.2196     0.0044     0.0042    99.5800    97.1200    96.8200    96.9700    97.0000        367
+dev   368       3.4626    14.0925     0.0274     0.0234    97.6600    86.2200    85.8500    86.0300    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   369      10.8146   417.6134     0.0044     0.0044    99.5600    97.0400    96.7100    96.8800    97.0000        367
+dev   369       3.4509    14.1806     0.0277     0.0237    97.6300    85.8300    85.7500    85.7900    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   370      10.7398   415.8804     0.0043     0.0042    99.5800    97.0800    96.8400    96.9600    97.0000        367
+dev   370       3.3559    14.0933     0.0276     0.0234    97.6600    86.3800    86.1300    86.2600    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   371      10.5650   417.7726     0.0043     0.0042    99.5800    97.1700    96.9500    97.0600    97.0600        371
+dev   371       3.5278    14.2121     0.0287     0.0243    97.5700    85.5200    85.5600    85.5400    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   372      10.3404   417.0757     0.0046     0.0045    99.5500    97.0400    96.7700    96.9000    97.0600        371
+dev   372       3.4203    14.1120     0.0282     0.0238    97.6200    86.4000    86.0300    86.2100    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   373      10.7063   417.7632     0.0043     0.0043    99.5700    97.1900    96.6900    96.9400    97.0600        371
+dev   373       3.5094    14.1806     0.0279     0.0237    97.6300    86.4400    85.8100    86.1200    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   374      10.7384   415.7000     0.0042     0.0042    99.5800    97.2300    96.7900    97.0100    97.0600        371
+dev   374       3.3817    14.1012     0.0274     0.0232    97.6800    86.3200    86.1500    86.2400    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   375      10.6280   415.4750     0.0046     0.0044    99.5600    96.9900    96.7900    96.8900    97.0600        371
+dev   375       3.4954    14.1456     0.0280     0.0235    97.6500    86.2900    85.9800    86.1300    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   376      10.5162   417.0738     0.0044     0.0043    99.5700    97.0500    96.8200    96.9400    97.0600        371
+dev   376       3.4418    14.0989     0.0280     0.0238    97.6200    85.9200    85.9600    85.9400    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   377      10.0319   417.4958     0.0043     0.0042    99.5800    97.0900    96.9500    97.0200    97.0600        371
+dev   377       3.4648    14.2396     0.0280     0.0236    97.6400    85.7500    86.0500    85.9000    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   378      10.4817   416.5595     0.0044     0.0043    99.5700    97.0800    96.9300    97.0100    97.0600        371
+dev   378       3.3530    14.0929     0.0271     0.0228    97.7200    86.7200    86.6200    86.6700    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   379      10.5829   417.8365     0.0044     0.0043    99.5700    96.9800    96.9400    96.9600    97.0600        371
+dev   379       3.4397    14.2107     0.0277     0.0234    97.6600    85.3900    86.1500    85.7700    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   380      10.6888   413.5628     0.0043     0.0042    99.5800    97.2100    96.7900    97.0000    97.0600        371
+dev   380       3.4582    14.0690     0.0276     0.0235    97.6500    86.5300    85.7600    86.1500    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   381      10.4188   417.5743     0.0045     0.0044    99.5600    97.1000    96.7700    96.9400    97.0600        371
+dev   381       3.4299    14.2368     0.0277     0.0235    97.6500    86.5200    86.0100    86.2700    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   382      10.2159   413.5897     0.0044     0.0043    99.5700    97.1900    96.6800    96.9400    97.0600        371
+dev   382       3.4379    14.1159     0.0281     0.0237    97.6300    86.1700    85.6800    85.9200    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   383      10.4031   417.8192     0.0044     0.0043    99.5700    97.1100    96.8500    96.9800    97.0600        371
+dev   383       3.3942    14.1976     0.0267     0.0223    97.7700    86.4100    86.8700    86.6400    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   384      10.5115   410.2542     0.0041     0.0040    99.6000    97.2800    97.0500    97.1600    97.1600        384
+dev   384       3.3914    14.0559     0.0269     0.0227    97.7300    86.2900    86.4700    86.3800    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   385      10.4536   417.6788     0.0042     0.0041    99.5900    97.2600    96.8300    97.0500    97.1600        384
+dev   385       3.4410    14.2347     0.0275     0.0231    97.6900    86.4700    85.9300    86.2000    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   386      10.3333   418.1074     0.0040     0.0039    99.6100    97.3000    97.0600    97.1800    97.1800        386
+dev   386       3.5136    14.0844     0.0268     0.0225    97.7500    86.5300    86.3500    86.4400    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   387          nan   417.9499     0.0039     0.0038    99.6200    97.4000    97.0700    97.2300    97.2300        387
+dev   387       3.4125    14.2036     0.0269     0.0225    97.7500    86.8000    86.5400    86.6700    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   388          nan   414.2238     0.0040     0.0040    99.6000    97.2700    97.0400    97.1500    97.2300        387
+dev   388       3.4912    14.1178     0.0273     0.0229    97.7100    86.1400    86.3900    86.2600    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   389          nan   418.5160     0.0041     0.0040    99.6000    97.2300    97.0200    97.1300    97.2300        387
+dev   389       3.3528    14.2277     0.0270     0.0227    97.7300    85.9900    86.3300    86.1600    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   390          nan   417.1714     0.0042     0.0041    99.5900    97.2000    96.8900    97.0500    97.2300        387
+dev   390       3.3703    14.0752     0.0275     0.0231    97.6900    85.9400    85.8600    85.9000    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   391          nan   412.8914     0.0047     0.0045    99.5500    96.9700    96.7100    96.8400    97.2300        387
+dev   391       3.3885    14.1915     0.0285     0.0239    97.6100    85.4500    85.4300    85.4400    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   392          nan   414.2742     0.0053     0.0051    99.4900    96.5800    96.2600    96.4200    97.2300        387
+dev   392       3.3947    14.0774     0.0284     0.0238    97.6200    85.9200    85.4600    85.6900    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   393          nan   417.5305     0.0059     0.0055    99.4500    96.3300    95.9500    96.1400    97.2300        387
+dev   393       3.4009    14.1951     0.0299     0.0250    97.5000    84.9500    84.5300    84.7400    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   394          nan   417.0483     0.0064     0.0060    99.4000    95.7700    95.6700    95.7200    97.2300        387
+dev   394       3.2795    14.0567     0.0288     0.0242    97.5800    85.1500    85.1100    85.1300    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   395      14.9370   414.2112     0.0072     0.0066    99.3400    95.4400    95.2600    95.3500    97.2300        387
+dev   395       3.3544    14.2084     0.0303     0.0254    97.4600    84.3600    84.2100    84.2800    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   396      13.5547   411.8478     0.0066     0.0062    99.3800    95.7500    95.5700    95.6600    97.2300        387
+dev   396       3.4838    14.0786     0.0304     0.0255    97.4500    84.7000    84.5000    84.6000    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   397      12.6692   409.9787     0.0064     0.0061    99.3900    95.8000    95.6300    95.7200    97.2300        387
+dev   397       3.3852    14.2103     0.0299     0.0252    97.4800    84.4300    84.7000    84.5700    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   398      12.7637   406.4109     0.0060     0.0057    99.4300    96.1000    95.9000    96.0000    97.2300        387
+dev   398       3.3081    13.9529     0.0282     0.0236    97.6400    85.5000    85.6100    85.5500    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   399      12.4508   393.3192     0.0060     0.0056    99.4400    96.3200    95.7300    96.0200    97.2300        387
+dev   399       3.4775    14.1862     0.0295     0.0249    97.5100    86.1100    84.5000    85.3000    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   400      12.6596   394.8167     0.0059     0.0057    99.4300    96.1900    95.8100    96.0000    97.2300        387
+dev   400       3.4497    13.7912     0.0293     0.0248    97.5200    85.6500    84.9000    85.2800    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   401      12.3123   397.5780     0.0066     0.0061    99.3900    95.8600    95.5900    95.7200    97.2300        387
+dev   401       3.4973    14.1775     0.0303     0.0254    97.4600    84.9600    84.8200    84.8900    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   402      12.5613   415.2453     0.0057     0.0055    99.4500    96.6400    95.8500    96.2400    97.2300        387
+dev   402       3.4284    14.0243     0.0291     0.0245    97.5500    85.9700    84.7400    85.3500    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   403      12.4415   415.7711     0.0054     0.0051    99.4900    96.6800    96.0200    96.3500    97.2300        387
+dev   403       3.3839    14.1939     0.0283     0.0239    97.6100    85.9900    85.3400    85.6700    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   404      12.2163   416.8825     0.0062     0.0058    99.4200    95.6300    95.9500    95.7900    97.2300        387
+dev   404       3.4082    14.0763     0.0288     0.0244    97.5600    84.4500    86.0100    85.2300    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   405      12.7801   414.5528     0.0065     0.0060    99.4000    95.9200    95.6300    95.7700    97.2300        387
+dev   405       3.4357    14.2085     0.0284     0.0240    97.6000    85.6300    85.3600    85.5000    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   406      12.7086   412.6972     0.0054     0.0052    99.4800    96.3400    96.1600    96.2500    97.2300        387
+dev   406       3.4072    14.0950     0.0286     0.0238    97.6200    85.6700    85.5300    85.6000    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   407      12.8696   412.8471     0.0057     0.0055    99.4500    96.4300    95.8500    96.1400    97.2300        387
+dev   407       3.4303    13.8757     0.0295     0.0245    97.5500    85.7100    84.5700    85.1300    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   408      12.7148   398.3589     0.0061     0.0058    99.4200    96.1300    95.7600    95.9400    97.2300        387
+dev   408       3.4415    14.0617     0.0303     0.0253    97.4700    85.1100    84.8400    84.9700    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   409      12.2700   404.4632     0.0056     0.0054    99.4600    96.4800    95.9600    96.2200    97.2300        387
+dev   409       3.3525    14.1902     0.0283     0.0237    97.6300    86.2000    85.6400    85.9200    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   410      11.9758   395.4517     0.0058     0.0055    99.4500    96.7000    95.7800    96.2400    97.2300        387
+dev   410       3.3736    14.0823     0.0299     0.0249    97.5100    85.7400    84.3700    85.0500    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   411      12.2094   394.4341     0.0061     0.0057    99.4300    96.0100    95.8200    95.9200    97.2300        387
+dev   411       3.3303    14.1489     0.0295     0.0248    97.5200    85.1500    85.3100    85.2300    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   412      12.1593   394.3364     0.0052     0.0050    99.5000    96.6900    96.2800    96.4800    97.2300        387
+dev   412       3.2481    13.2052     0.0277     0.0233    97.6700    86.1100    85.6400    85.8800    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   413      12.0541   396.5717     0.0058     0.0054    99.4600    96.2600    96.1100    96.1900    97.2300        387
+dev   413       3.3882    14.2083     0.0288     0.0244    97.5600    85.2000    85.7100    85.4500    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   414      12.3096   401.0738     0.0052     0.0050    99.5000    96.6100    96.3200    96.4600    97.2300        387
+dev   414       3.4887    14.0359     0.0286     0.0240    97.6000    85.6200    85.5400    85.5800    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   415      11.8516   394.8254     0.0056     0.0053    99.4700    96.5000    96.0900    96.2900    97.2300        387
+dev   415       3.2991    13.4146     0.0284     0.0238    97.6200    85.9300    85.5100    85.7200    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   416      12.1200   398.3063     0.0059     0.0056    99.4400    96.1500    96.0500    96.1000    97.2300        387
+dev   416       3.3460    13.9654     0.0290     0.0244    97.5600    85.6600    85.4300    85.5400    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   417      12.0511   393.1855     0.0051     0.0049    99.5100    96.5800    96.3900    96.4900    97.2300        387
+dev   417       3.2905    14.1771     0.0280     0.0238    97.6200    85.8600    85.6600    85.7600    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   418      11.6449   402.3232     0.0051     0.0049    99.5100    96.7200    96.4300    96.5700    97.2300        387
+dev   418       3.4552    14.0881     0.0285     0.0240    97.6000    85.6200    85.4900    85.5600    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   419      11.3718   393.8280     0.0053     0.0050    99.5000    96.6200    96.2900    96.4600    97.2300        387
+dev   419       3.5093    14.1557     0.0286     0.0244    97.5600    85.2100    85.3100    85.2600    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   420      12.5047   396.3576     0.0050     0.0048    99.5200    96.8700    96.2600    96.5600    97.2300        387
+dev   420       3.4014    14.0668     0.0280     0.0237    97.6300    86.2900    85.3400    85.8100    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   421      11.5248   397.2760     0.0054     0.0052    99.4800    96.4200    96.1400    96.2800    97.2300        387
+dev   421       3.4241    13.5279     0.0284     0.0239    97.6100    85.6300    85.5100    85.5700    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   422      11.4754   392.8037     0.0053     0.0051    99.4900    96.6700    96.2600    96.4600    97.2300        387
+dev   422       3.4125    14.0881     0.0282     0.0239    97.6100    85.9000    85.6300    85.7600    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   423          nan   400.6012     0.0053     0.0051    99.4900    96.9500    95.9300    96.4400    97.2300        387
+dev   423       3.3754    14.1854     0.0287     0.0242    97.5800    87.1600    85.1100    86.1200    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   424      10.8949   397.9829     0.0051     0.0049    99.5100    96.7000    96.4000    96.5500    97.2300        387
+dev   424       3.3919    13.7607     0.0282     0.0237    97.6300    85.9600    85.9500    85.9500    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   425      10.1337   416.0170     0.0049     0.0047    99.5300    96.8400    96.4800    96.6600    97.2300        387
+dev   425       3.4820    14.1849     0.0282     0.0237    97.6300    86.2900    85.9000    86.0900    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   426      10.5326   413.5765     0.0049     0.0047    99.5300    97.0000    96.3700    96.6900    97.2300        387
+dev   426       3.3998    14.0782     0.0280     0.0237    97.6300    86.2700    85.4800    85.8700    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   427      10.5186   417.3789     0.0048     0.0047    99.5300    96.9100    96.4900    96.7000    97.2300        387
+dev   427       3.4202    14.1683     0.0284     0.0239    97.6100    85.6100    85.7000    85.6500    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   428      10.7414   415.2709     0.0047     0.0046    99.5400    96.9600    96.5900    96.7700    97.2300        387
+dev   428       3.4410    13.6098     0.0279     0.0236    97.6400    85.8800    85.7500    85.8100    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   429      10.4468   416.0210     0.0047     0.0046    99.5400    97.0400    96.5300    96.7900    97.2300        387
+dev   429       3.4225    14.2202     0.0275     0.0234    97.6600    86.2000    85.6400    85.9200    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   430      10.8439   415.2121     0.0048     0.0047    99.5300    96.8400    96.4000    96.6200    97.2300        387
+dev   430       3.4448    14.0713     0.0284     0.0239    97.6100    86.0700    85.5800    85.8200    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   431      10.8938   415.5028     0.0054     0.0051    99.4900    96.7600    96.0800    96.4200    97.2300        387
+dev   431       3.6100    14.1783     0.0298     0.0251    97.4900    85.5700    84.6300    85.1000    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   432      10.7069   412.6918     0.0051     0.0050    99.5000    96.6100    96.3400    96.4700    97.2300        387
+dev   432       3.5032    14.0861     0.0291     0.0246    97.5400    85.3600    85.3600    85.3600    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   433      11.7458   416.2494     0.0049     0.0048    99.5200    96.7400    96.3700    96.5500    97.2300        387
+dev   433       3.3818    14.2084     0.0279     0.0233    97.6700    86.4200    85.7800    86.1000    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   434          nan   415.0483     0.0047     0.0046    99.5400    97.0600    96.4400    96.7500    97.2300        387
+dev   434       3.4876    14.0703     0.0289     0.0243    97.5700    86.0900    85.2900    85.6900    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   435      11.1241   416.2688     0.0047     0.0046    99.5400    96.9300    96.4800    96.7100    97.2300        387
+dev   435       3.4838    14.1683     0.0281     0.0234    97.6600    86.2300    85.6600    85.9400    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   436      10.4353   415.7015     0.0048     0.0046    99.5400    96.7400    96.5100    96.6300    97.2300        387
+dev   436       3.5966    13.7331     0.0297     0.0247    97.5300    85.3600    85.0600    85.2100    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   437      10.1983   413.9759     0.0049     0.0048    99.5200    96.6300    96.5200    96.5700    97.2300        387
+dev   437       3.5136    13.4763     0.0291     0.0244    97.5600    85.2200    85.5100    85.3700    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   438      10.2540   413.7098     0.0049     0.0047    99.5300    96.7100    96.6100    96.6600    97.2300        387
+dev   438       3.5018    14.0661     0.0293     0.0246    97.5400    85.1100    85.2400    85.1800    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   439          nan   414.3043     0.0048     0.0046    99.5400    97.0300    96.4400    96.7300    97.2300        387
+dev   439       3.3722    14.2112     0.0288     0.0242    97.5800    85.8100    84.9000    85.3600    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   440      11.6308   416.7479     0.0053     0.0052    99.4800    96.4700    96.2500    96.3600    97.2300        387
+dev   440       3.3629    14.0955     0.0285     0.0241    97.5900    85.4200    85.4600    85.4400    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   441      10.7256   417.4218     0.0055     0.0052    99.4800    96.6000    96.0600    96.3300    97.2300        387
+dev   441       3.5155    14.2445     0.0300     0.0250    97.5000    85.3100    84.6200    84.9600    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   442          nan   416.6960     0.0053     0.0050    99.5000    96.7400    96.2500    96.4900    97.2300        387
+dev   442       3.4579    14.0862     0.0295     0.0248    97.5200    85.6600    84.7700    85.2100    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   443      13.0200   417.2968     0.0065     0.0061    99.3900    95.5600    95.8500    95.7000    97.2300        387
+dev   443       3.5084    14.2031     0.0300     0.0250    97.5000    84.1900    85.4100    84.8000    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   444      12.0185   417.1634     0.0063     0.0060    99.4000    95.8800    95.8300    95.8600    97.2300        387
+dev   444       3.5139    14.0937     0.0298     0.0249    97.5100    84.5700    85.4100    84.9900    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   445      12.5769   417.1588     0.0062     0.0059    99.4100    95.8700    95.8900    95.8800    97.2300        387
+dev   445       3.3866    14.2003     0.0297     0.0251    97.4900    84.6400    85.0200    84.8300    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   446      12.5010   416.2304     0.0063     0.0061    99.3900    95.8100    95.6900    95.7500    97.2300        387
+dev   446       3.6027    14.0423     0.0308     0.0257    97.4300    84.5700    84.5700    84.5700    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   447      12.4825   416.6244     0.0065     0.0062    99.3800    96.0900    95.3600    95.7200    97.2300        387
+dev   447       3.5658    14.1609     0.0321     0.0271    97.2900    84.7300    84.1300    84.4300    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   448      13.1434   414.4416     0.0062     0.0060    99.4000    95.8100    95.7400    95.7800    97.2300        387
+dev   448       3.3848    14.0770     0.0290     0.0246    97.5400    85.5200    85.5900    85.5600    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   449      12.9260   415.2182     0.0062     0.0059    99.4100    95.8900    95.8900    95.8900    97.2300        387
+dev   449       3.3900    14.2249     0.0306     0.0254    97.4600    84.2100    84.8400    84.5200    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   450      13.1121   412.3745     0.0062     0.0059    99.4100    96.0300    95.7300    95.8800    97.2300        387
+dev   450       3.3484    14.0829     0.0302     0.0252    97.4800    85.0800    84.7700    84.9300    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   451      13.2596   415.1688     0.0060     0.0057    99.4300    96.0300    95.8800    95.9600    97.2300        387
+dev   451       3.4025    14.2013     0.0296     0.0249    97.5100    85.1000    85.3200    85.2100    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   452      13.1044   414.0199     0.0064     0.0061    99.3900    95.6600    95.8900    95.7800    97.2300        387
+dev   452       3.3998    13.8191     0.0293     0.0245    97.5500    84.4400    85.2900    84.8600    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   453      13.1671   403.4983     0.0056     0.0054    99.4600    96.3000    95.9700    96.1400    97.2300        387
+dev   453       3.3905    14.1688     0.0290     0.0245    97.5500    85.1100    84.8700    84.9900    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   454      13.4163   401.0554     0.0060     0.0057    99.4300    96.2600    95.8600    96.0600    97.2300        387
+dev   454       3.4645    14.0865     0.0298     0.0250    97.5000    85.4000    84.6300    85.0100    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   455      12.8725   395.3069     0.0074     0.0069    99.3100    95.3000    95.2300    95.2600    97.2300        387
+dev   455       3.5407    14.2132     0.0308     0.0257    97.4300    84.6700    84.5700    84.6200    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   456      13.0722   393.9608     0.0064     0.0061    99.3900    95.9600    95.5900    95.7700    97.2300        387
+dev   456       3.4433    14.0613     0.0310     0.0260    97.4000    84.8300    84.3200    84.5700    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   457      13.1076   396.4688     0.0063     0.0060    99.4000    95.8300    95.6400    95.7300    97.2300        387
+dev   457       3.4476    14.2363     0.0297     0.0249    97.5100    84.7600    85.0100    84.8800    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   458      12.3413   397.3508     0.0062     0.0059    99.4100    96.4800    95.5500    96.0100    97.2300        387
+dev   458       3.5172    13.6758     0.0305     0.0257    97.4300    85.8500    84.0500    84.9400    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   459      12.9544   393.3073     0.0060     0.0058    99.4200    96.2000    95.8300    96.0200    97.2300        387
+dev   459       3.4774    14.1753     0.0293     0.0249    97.5100    85.5500    85.0700    85.3100    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   460      12.4040   414.3420     0.0059     0.0056    99.4400    96.1200    96.0900    96.1100    97.2300        387
+dev   460       3.4853    14.0353     0.0286     0.0242    97.5800    85.4900    85.7600    85.6300    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   461      12.3615   416.0008     0.0062     0.0060    99.4000    96.1300    95.6600    95.9000    97.2300        387
+dev   461       3.4181    14.2136     0.0294     0.0248    97.5200    85.7400    85.1100    85.4200    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   462      12.7605   416.9787     0.0062     0.0059    99.4100    95.9600    95.9900    95.9800    97.2300        387
+dev   462       3.5097    14.0687     0.0303     0.0254    97.4600    84.9400    85.4100    85.1700    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   463      12.4219   417.3557     0.0054     0.0053    99.4700    96.2900    96.2800    96.2800    97.2300        387
+dev   463       3.4029    14.2062     0.0286     0.0240    97.6000    85.2500    85.9000    85.5700    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   464      12.2807   417.3546     0.0057     0.0055    99.4500    96.2800    96.0300    96.1500    97.2300        387
+dev   464       3.4856    14.0971     0.0295     0.0248    97.5200    85.2300    85.2900    85.2600    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   465          nan   414.6589     0.0055     0.0053    99.4700    96.4600    96.1100    96.2900    97.2300        387
+dev   465       3.3011    14.1998     0.0288     0.0242    97.5800    85.8400    85.4800    85.6600    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   466          nan   415.2565     0.0050     0.0050    99.5000    96.7100    96.3000    96.5000    97.2300        387
+dev   466       3.2232    14.0977     0.0272     0.0229    97.7100    85.9900    85.8100    85.9000    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   467      12.4610   417.2783     0.0059     0.0057    99.4300    95.9400    96.0700    96.0000    97.2300        387
+dev   467       3.3817    14.1750     0.0286     0.0239    97.6100    85.1900    85.8800    85.5300    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   468      12.0060   416.3500     0.0059     0.0057    99.4300    95.9800    96.0500    96.0100    97.2300        387
+dev   468       3.4196    14.0693     0.0291     0.0244    97.5600    84.8100    85.4100    85.1100    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   469      11.6772   416.9084     0.0059     0.0057    99.4300    95.9500    96.0100    95.9800    97.2300        387
+dev   469       3.3636    14.1827     0.0289     0.0242    97.5800    84.9100    85.5800    85.2400    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   470      12.1692   416.9391     0.0055     0.0053    99.4700    96.2400    96.2000    96.2200    97.2300        387
+dev   470       3.4444    14.0902     0.0292     0.0244    97.5600    84.8900    85.3800    85.1300    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   471      12.0673   413.5427     0.0056     0.0055    99.4500    96.2100    96.0800    96.1400    97.2300        387
+dev   471       3.4298    14.2085     0.0283     0.0238    97.6200    85.2500    85.5100    85.3800    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   472      12.2495   414.9790     0.0056     0.0054    99.4600    96.1300    96.2100    96.1700    97.2300        387
+dev   472       3.3618    14.0954     0.0281     0.0238    97.6200    84.9200    85.8000    85.3600    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   473      12.4434   417.6832     0.0058     0.0056    99.4400    96.0800    96.0200    96.0500    97.2300        387
+dev   473       3.3909    14.2098     0.0290     0.0242    97.5800    84.9500    85.2700    85.1100    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   474      12.4385   415.1426     0.0056     0.0054    99.4600    96.1900    95.9900    96.0900    97.2300        387
+dev   474       3.4203    14.0694     0.0297     0.0249    97.5100    84.6300    84.7900    84.7100    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   475      13.0799   416.8872     0.0062     0.0057    99.4300    96.2000    95.9200    96.0600    97.2300        387
+dev   475       3.5609    14.1822     0.0295     0.0246    97.5400    85.1300    84.8500    84.9900    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   476      12.6273   413.5915     0.0056     0.0054    99.4600    96.1000    96.2300    96.1700    97.2300        387
+dev   476       3.4132    14.0791     0.0283     0.0239    97.6100    85.3400    86.0500    85.7000    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   477      13.1996   408.2034     0.0062     0.0059    99.4100    95.7400    95.8600    95.8000    97.2300        387
+dev   477       3.4771    14.2143     0.0295     0.0248    97.5200    84.5900    85.2600    84.9200    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   478      12.7818   415.1305     0.0058     0.0056    99.4400    96.3600    95.7500    96.0500    97.2300        387
+dev   478       3.3559    14.0936     0.0286     0.0238    97.6200    86.0000    85.2100    85.6000    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   479      12.6538   415.5525     0.0066     0.0062    99.3800    95.6700    95.7900    95.7300    97.2300        387
+dev   479       3.4894    14.1841     0.0306     0.0258    97.4200    83.8300    84.4700    84.1500    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   480      12.8069   413.6937     0.0056     0.0055    99.4500    96.1700    96.0000    96.0800    97.2300        387
+dev   480       3.1865    14.0666     0.0282     0.0239    97.6100    85.6700    85.7300    85.7000    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   481      12.7293   412.9927     0.0055     0.0052    99.4800    96.2400    96.3100    96.2700    97.2300        387
+dev   481       3.4341    14.1860     0.0289     0.0242    97.5800    84.9800    85.7100    85.3500    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   482      12.6054   414.7170     0.0053     0.0052    99.4800    96.2500    96.2100    96.2300    97.2300        387
+dev   482       3.3735    14.1000     0.0281     0.0235    97.6500    85.3100    85.9000    85.6000    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   483      12.4836   417.7670     0.0055     0.0053    99.4700    96.3000    96.1200    96.2100    97.2300        387
+dev   483       3.3293    14.1566     0.0285     0.0240    97.6000    85.2800    85.4900    85.3900    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   484      12.6222   416.6227     0.0061     0.0059    99.4100    96.0800    95.9100    96.0000    97.2300        387
+dev   484       3.3610    14.0887     0.0292     0.0247    97.5300    84.6300    85.0900    84.8600    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   485      12.5754   417.0128     0.0061     0.0057    99.4300    96.0300    96.0300    96.0300    97.2300        387
+dev   485       3.2766    14.2340     0.0290     0.0245    97.5500    85.3000    85.6400    85.4700    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   486      12.3432   412.9948     0.0057     0.0055    99.4500    96.5200    95.9400    96.2300    97.2300        387
+dev   486       3.3896    14.1154     0.0288     0.0245    97.5500    85.6900    85.2700    85.4800    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   487      12.6084   416.8287     0.0053     0.0052    99.4800    96.6800    96.1000    96.3900    97.2300        387
+dev   487       3.2797    13.2569     0.0283     0.0240    97.6000    85.7800    85.2100    85.4900    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   488      11.9289   415.8834     0.0060     0.0058    99.4200    96.1700    95.8000    95.9900    97.2300        387
+dev   488       3.3821    14.0742     0.0297     0.0251    97.4900    85.4300    84.6700    85.0500    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   489      11.9755   416.1285     0.0055     0.0053    99.4700    96.6100    95.9900    96.3000    97.2300        387
+dev   489       3.4039    14.1863     0.0295     0.0248    97.5200    85.9100    84.9900    85.4500    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   490          nan   416.1425     0.0055     0.0053    99.4700    96.5100    96.0300    96.2700    97.2300        387
+dev   490       3.3699    14.1067     0.0295     0.0245    97.5500    85.2600    85.0900    85.1800    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   491      11.2449   417.1124     0.0052     0.0050    99.5000    96.5600    96.3900    96.4800    97.2300        387
+dev   491       3.3705    14.1401     0.0287     0.0242    97.5800    85.3500    85.3800    85.3600    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   492      10.9889   416.4609     0.0050     0.0048    99.5200    96.6900    96.4900    96.5900    97.2300        387
+dev   492       3.4583    14.0757     0.0287     0.0241    97.5900    85.4900    85.3900    85.4400    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   493      10.9283   416.8549     0.0050     0.0049    99.5100    96.5300    96.4500    96.4900    97.2300        387
+dev   493       3.4181    14.2049     0.0290     0.0245    97.5500    84.9600    85.2700    85.1200    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   494      11.1930   415.6233     0.0048     0.0047    99.5300    96.6700    96.5700    96.6200    97.2300        387
+dev   494       3.4497    14.0877     0.0283     0.0242    97.5800    85.0600    85.5900    85.3300    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   495      11.1061   416.7493     0.0052     0.0050    99.5000    96.5500    96.4000    96.4700    97.2300        387
+dev   495       3.3934    14.1802     0.0289     0.0248    97.5200    85.0200    85.4800    85.2500    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   496          nan   416.8599     0.0052     0.0050    99.5000    96.6600    96.2400    96.4500    97.2300        387
+dev   496       3.3708    14.1023     0.0289     0.0246    97.5400    85.7100    84.9900    85.3500    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   497      11.8376   416.9213     0.0053     0.0051    99.4900    96.5500    96.2000    96.3700    97.2300        387
+dev   497       3.3839    14.2011     0.0278     0.0233    97.6700    86.3700    85.4300    85.9000    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   498      11.7029   416.6842     0.0057     0.0055    99.4500    96.0900    96.2300    96.1600    97.2300        387
+dev   498       3.3271    14.0809     0.0286     0.0241    97.5900    85.3300    85.9100    85.6200    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   499      11.1522   417.6305     0.0052     0.0051    99.4900    96.4600    96.3600    96.4100    97.2300        387
+dev   499       3.3926    14.2020     0.0286     0.0243    97.5700    85.5600    85.6300    85.5900    86.7400        331
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   500      11.4858   416.6239     0.0055     0.0053    99.4700    96.4100    96.2100    96.3100    97.2300        387
+dev   500       3.3877    14.0880     0.0292     0.0245    97.5500    85.3500    84.9200    85.1400    86.7400        331
+
