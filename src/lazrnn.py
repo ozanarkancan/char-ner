@@ -56,46 +56,42 @@ class RDNN:
 
         if self.drates[0] > 0:
             l_in_drop = lasagne.layers.DropoutLayer(l_in, p=self.drates[0])
-            self.layers = [(l_in_drop, l_in_drop)]
+            self.layers = [l_in_drop]
         else:
-            self.layers = [(l_in, l_in)]
+            self.layers = [l_in]
         for level, ltype, nonlin, n_hidden in zip(range(1,ldepth+1), self.deep_ltypes, self.deep_nonlins, self.n_hidden):
             prev_layer = self.layers[level-1]
             if ltype == 'recurrent':
                 LayerType = lasagne.layers.RecurrentLayer
-                l_forward = LayerType(prev_layer[0], n_hidden, mask_input=l_mask, grad_clipping=self.grad_clip, W_hid_to_hid=Identity(),
+                l_forward = LayerType(prev_layer, n_hidden, mask_input=l_mask, grad_clipping=self.grad_clip, W_hid_to_hid=Identity(),
                         W_in_to_hid=lasagne.init.GlorotUniform(gain='relu'), nonlinearity=nonlin)
-                l_backward = LayerType(prev_layer[1], n_hidden, mask_input=l_mask, grad_clipping=self.grad_clip, W_hid_to_hid=Identity(),
+                l_backward = LayerType(prev_layer, n_hidden, mask_input=l_mask, grad_clipping=self.grad_clip, W_hid_to_hid=Identity(),
                         W_in_to_hid=lasagne.init.GlorotUniform(gain='relu'), nonlinearity=nonlin, backwards=True)
             elif ltype == 'lstm':
                 LayerType = lasagne.layers.LSTMLayer
-                l_forward = LayerType(prev_layer[0], n_hidden, mask_input=l_mask, grad_clipping=self.grad_clip)
-                l_backward = LayerType(prev_layer[1], n_hidden, mask_input=l_mask, grad_clipping=self.grad_clip, backwards=True)
+                l_forward = LayerType(prev_layer, n_hidden, mask_input=l_mask, grad_clipping=self.grad_clip)
+                l_backward = LayerType(prev_layer, n_hidden, mask_input=l_mask, grad_clipping=self.grad_clip, backwards=True)
             elif ltype == 'gru':
                 LayerType = lasagne.layers.GRULayer
-                l_forward = LayerType(prev_layer[0], n_hidden, mask_input=l_mask, grad_clipping=self.grad_clip)
-                l_backward = LayerType(prev_layer[1], n_hidden, mask_input=l_mask, grad_clipping=self.grad_clip, backwards=True)
+                l_forward = LayerType(prev_layer, n_hidden, mask_input=l_mask, grad_clipping=self.grad_clip)
+                l_backward = LayerType(prev_layer, n_hidden, mask_input=l_mask, grad_clipping=self.grad_clip, backwards=True)
 
             logging.debug('l_forward: {}'.format(lasagne.layers.get_output_shape(l_forward)))
             logging.debug('l_backward: {}'.format(lasagne.layers.get_output_shape(l_backward)))
-            #if self.batch_norm:
-            #    logging.debug('using batch norm')
-            #    from batch_norm import BatchNormLayer, batch_norm
-            #    # l_concat = BatchNormLayer(l_concat, axes=(0,1))
-            #    l_concat = lasagne.layers.ConcatLayer([BatchNormLayer(l_forward, axes=(0,1)), BatchNormLayer(l_backward,axes=(0,1))], axis=2)
-            #else:
-            #    l_concat = lasagne.layers.ConcatLayer([l_forward, l_backward], axis=2)
-            #logging.debug('l_concat: {}'.format(lasagne.layers.get_output_shape(l_concat)))
+            if self.batch_norm:
+                logging.debug('using batch norm')
+                from batch_norm import BatchNormLayer, batch_norm
+                # l_concat = BatchNormLayer(l_concat, axes=(0,1))
+                l_concat = lasagne.layers.ConcatLayer([BatchNormLayer(l_forward, axes=(0,1)), BatchNormLayer(l_backward,axes=(0,1))], axis=2)
+            else:
+                l_concat = lasagne.layers.ConcatLayer([l_forward, l_backward], axis=2)
+            logging.debug('l_concat: {}'.format(lasagne.layers.get_output_shape(l_concat)))
 
             if self.drates[level] > 0:
-                #l_concat = lasagne.layers.DropoutLayer(l_concat, p=self.drates[level])
-                l_forward = lasagne.layers.DropoutLayer(l_forward, p=self.drates[level])
-                l_backward = lasagne.layers.DropoutLayer(l_backward, p=self.drates[level])
+                l_concat = lasagne.layers.DropoutLayer(l_concat, p=self.drates[level])
 
-            #self.layers.append(l_concat)
-            self.layers.append((l_forward, l_backward))
+            self.layers.append(l_concat)
         
-        l_concat = lasagne.layers.ConcatLayer([l_forward, l_backward], axis=2)
         l_concat = lasagne.layers.ConcatLayer([l_concat, l_in], axis=2) if self.in2out else l_concat
 
         if self.recout:
