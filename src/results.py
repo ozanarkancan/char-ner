@@ -4,14 +4,18 @@ from os import walk
 import re
 import pandas as pd
 import sys
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 LOG_DIR = '{}/logs'.format(ROOT_DIR)
 
 def get_arg_parser():
     parser = argparse.ArgumentParser(prog="results")
 
-    parser.add_argument("--job", default='collect',
-        choices=['collect','lang_results'], help= "job choice")
+    parser.add_argument("--job", default='lang_results',
+        choices=['lang_results', 'lang_best_plot'], help = "job choice")
+    parser.add_argument("--lang", default='eng',
+        choices=['eng', 'deu', 'spa', 'ned'], help ='language choice')
     
     return parser
 
@@ -80,11 +84,31 @@ def collect():
     all_results.save('all_results.pkl')
     return all_results
 
+def show_best_results(df):
+    g = df.groupby('lang')
+    print g['dev_best'].max()
+
+def plot_lang_best(df, lang):
+    idx = df.groupby('lang')['dev_best'].transform(max) == df['dev_best']
+    trn = df[idx][df['lang'] == lang]['trn_logs'].values[0]
+    dev = df[idx][df['lang'] == lang]['dev_logs'].values[0]
+
+    plt.title('{} best experiment'.format(lang))
+    plt.xlabel('epoch')
+    plt.ylabel('f1')
+    plt.plot(trn['epoch'], trn['f1'], label ='trn')
+    plt.plot(trn['epoch'], dev['f1'], label = 'dev')
+    plt.legend(bbox_to_anchor=(1.002, 1), loc=2, borderaxespad=0.)
+    plt.show()    
+
 if __name__ == "__main__":
     parser = get_arg_parser()
     args = vars(parser.parse_args())
     df = collect()
 
     if args['job'] == "lang_results":
-        g = df.groupby('lang')
-        print g['dev_best'].max()
+        show_best_results(df)
+    elif args['job'] == "lang_best_plot":
+        plot_lang_best(df, args['lang'])
+        
+
