@@ -88,6 +88,9 @@ def show_best_results(df):
     g = df.groupby('lang')
     print g['dev_best'].max()
 
+    print "\n**** Files ****"
+    print df[g['dev_best'].transform(max) == df['dev_best']]['file_name'].values
+
 def plot_lang_best(df, lang):
     idx = df.groupby('lang')['dev_best'].transform(max) == df['dev_best']
     trn = df[idx][df['lang'] == lang]['trn_logs'].values[0]
