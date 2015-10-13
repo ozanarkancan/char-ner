@@ -95,10 +95,12 @@ def plot_lang_best(df, lang):
 
     plt.title('{} best experiment'.format(lang))
     plt.xlabel('epoch')
-    plt.ylabel('f1')
-    plt.plot(trn['epoch'], trn['f1'], label ='trn')
-    plt.plot(trn['epoch'], dev['f1'], label = 'dev')
-    plt.legend(bbox_to_anchor=(1.002, 1), loc=2, borderaxespad=0.)
+    #plt.ylabel('f1')
+    plt.plot(trn['epoch'], trn['f1'], label ='trn f1')
+    plt.plot(trn['epoch'], dev['f1'], label = 'dev f1')
+    plt.plot(trn['epoch'], (1 - trn['cerr']) * 100, label='trn char acc')
+    plt.plot(trn['epoch'], (1 - dev['cerr']) * 100, label='dev char acc')
+    plt.legend(bbox_to_anchor=(1.0001, 1), loc=2, borderaxespad=0.)
     plt.show()    
 
 if __name__ == "__main__":
