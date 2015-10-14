@@ -102,6 +102,9 @@ class Feat(object):
     def feat_pos(self, ci, sent):
         return {'pt' : 'space_pt'} if d['c'] == ' ' else {'pt':sent['pts'][wi]}
 
+    def feat_ctag(self, ci, sent):
+        return {'ct' : 'space_ct'} if d['c'] == ' ' else {'ct':sent['cts'][wi]}
+
     def feat_cap(self, ci, sent):
         return {'is_capital' : sent['cseq'][ci].isupper()}
         
