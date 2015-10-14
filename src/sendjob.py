@@ -2,7 +2,7 @@ import argparse, subprocess
 from utils import ROOT_DIR
 
 STR = """#!/bin/bash
-#$ -N exper
+#$ -N exper-{}
 #$ -q biyofiz.q@{}
 #$ -S /bin/bash
 ##$ -l h_rt=00:59:00 #how many mins run
@@ -30,7 +30,7 @@ if __name__ == '__main__':
 
     args.smp = 1 if args.d == 'gpu' else args.smp
 
-    job_text = STR.format(args.m, args.smp, args.smp, args.d, args.script, args.script_args)
+    job_text = STR.format(args.d, args.m, args.smp, args.smp, args.d, args.script, args.script_args)
     print job_text
 
     if not args.p:
