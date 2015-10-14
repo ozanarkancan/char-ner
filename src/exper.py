@@ -124,19 +124,23 @@ class Reporter(object):
 
 class Validator(object):
 
-    def __init__(self, trn, dev, batcher, reporter):
+    def __init__(self, trn, dev, tst, batcher, reporter):
         self.trn = trn
         self.dev = dev
+        self.tst = tst
         self.trndat = batcher.get_batches(trn) 
         self.devdat = batcher.get_batches(dev) 
+        self.tstdat = batcher.get_batches(tst) 
         self.reporter = reporter
 
     def validate(self, rdnn, fepoch, patience=-1):
         logging.info('training the model...')
-        dbests = {'trn':(1,0.), 'dev':(1,0.)}
+        dbests = {'trn':(1,0.), 'dev':(1,0.), 'tst':(1,0.)}
         for e in range(1,fepoch+1): # foreach epoch
             logging.info(('{:<5} {:<5} ' + ('{:>10} '*10)).format('dset','epoch','mcost', 'mtime', 'cerr', 'werr', 'wacc', 'pre', 'recall', 'f1', 'best', 'best'))
-            for funcname, ddat, datname in zip(['train','predict'],[self.trndat,self.devdat],['trn','dev']):
+            for funcname, ddat, datname in zip(['train','predict', 'predict'],[self.trndat,self.devdat, self.tstdat],['trn','dev','tst']):
+                if datname == 'tst' and dbests['dev'][0] != e:
+                    continue
                 start_time = time.time()
                 mcost, pred = getattr(rdnn, funcname)(ddat)
                 end_time = time.time()
@@ -145,9 +149,12 @@ class Validator(object):
                 # cerr, werr, wacc, pre, recall, f1 = self.reporter.report(getattr(self.trn, pred) # find better solution for getattr
                 cerr, werr, wacc, pre, recall, f1, conll_print, char_conmat_str, word_conmat_str =\
                         self.reporter.report(getattr(self, datname), pred) # find better solution for getattr
+                
                 if f1 > dbests[datname][1]: dbests[datname] = (e,f1)
+                
                 logging.info(('{:<5} {:<5d} ' + ('{:>10.4f} '*9)+'{:>10d}')\
-                        .format(datname,e,mcost, mtime, cerr, werr, wacc, pre, recall, f1, dbests[datname][1],dbests[datname][0]))
+                    .format(datname,e,mcost, mtime, cerr, werr, wacc, pre, recall, f1, dbests[datname][1],dbests[datname][0]))
+                
                 logging.debug('')
                 logging.debug(conll_print)
                 logging.debug(char_conmat_str)
@@ -239,14 +246,15 @@ def main():
     if args['sorted']:
         trn = sorted(trn, key=lambda sent: len(sent['cseq']))
         dev = sorted(dev, key=lambda sent: len(sent['cseq']))
+        tst = sorted(tst, key=lambda sent: len(sent['cseq']))
 
     ntrnsent, ndevsent, ntstsent = list(map(len, (trn,dev,tst)))
     logger.info('# of sents trn, dev, tst: {} {} {}'.format(ntrnsent, ndevsent, ntstsent))
 
-    MAX_LENGTH = max(len(sent['cseq']) for sent in chain(trn,dev))
-    MIN_LENGTH = min(len(sent['cseq']) for sent in chain(trn,dev))
-    AVG_LENGTH = np.mean([len(sent['cseq']) for sent in chain(trn,dev)])
-    STD_LENGTH = np.std([len(sent['cseq']) for sent in chain(trn,dev)])
+    MAX_LENGTH = max(len(sent['cseq']) for sent in chain(trn,dev,tst))
+    MIN_LENGTH = min(len(sent['cseq']) for sent in chain(trn,dev,tst))
+    AVG_LENGTH = np.mean([len(sent['cseq']) for sent in chain(trn,dev,tst)])
+    STD_LENGTH = np.std([len(sent['cseq']) for sent in chain(trn,dev,tst)])
     logger.info('maxlen: {} minlen: {} avglen: {:.2f} stdlen: {:.2f}'.format(MAX_LENGTH, MIN_LENGTH, AVG_LENGTH, STD_LENGTH))
 
     feat = featchar.Feat(args['feat'])
@@ -255,7 +263,7 @@ def main():
     batcher = Batcher(args['n_batch'], feat)
     reporter = Reporter(feat, rep.get_ts)
 
-    validator = Validator(trn, dev, batcher, reporter) if args['curriculum'] < 2 else Curriculum(trn, dev, batcher, reporter, args['curriculum'])
+    validator = Validator(trn, dev, tst, batcher, reporter) if args['curriculum'] < 2 else Curriculum(trn, dev, batcher, reporter, args['curriculum'])
 
     # select rnn
     if args['rnn'] == 'dummy':
