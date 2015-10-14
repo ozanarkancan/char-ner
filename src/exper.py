@@ -4,8 +4,6 @@ import sys, time, datetime
 from itertools import *
 import random, numpy as np
 
-from sklearn.feature_extraction import DictVectorizer
-from sklearn.preprocessing import LabelEncoder
 from sklearn.metrics import confusion_matrix, classification_report
 
 import theano
@@ -43,7 +41,7 @@ def get_arg_parser():
     parser.add_argument("--fepoch", default=500, type=int, help="number of epochs")
     parser.add_argument("--patience", default=-1, type=int, help="how patient the validator is")
     parser.add_argument("--sample", default=0, type=int, help="num of sents to sample from trn in the order of K")
-    parser.add_argument("--feat", default='basic_seg', help="feat func to use")
+    parser.add_argument("--feat", default='basic', help="feat func to use")
     parser.add_argument("--grad_clip", default=-1, type=float, help="clip gradient messages in recurrent layers if they are above this value")
     parser.add_argument("--truncate", default=-1, type=int, help="backward step size")
     parser.add_argument("--log", default='das_auto', help="log file name")
@@ -55,38 +53,6 @@ def get_arg_parser():
     return parser
 
 
-class Feat(object):
-
-    def __init__(self, featfunc):
-        self.dvec = DictVectorizer(dtype=np.float32, sparse=False)
-        self.tseqenc = LabelEncoder()
-        self.tsenc = LabelEncoder()
-        self.featfunc = featfunc
-
-    def fit(self, trn):
-        self.dvec.fit(self.featfunc(ci, sent)  for sent in trn for ci,c in enumerate(sent['cseq']))
-        self.tseqenc.fit([t for sent in trn for t in sent['tseq']])
-        # self.tsenc.fit([t for sent in trn for t in sent['ts']]) TODO
-        self.tsenc.fit(['B-LOC', 'B-MISC', 'B-ORG', 'B-PER', 'I-LOC', 'I-MISC', 'I-ORG', 'I-PER', 'O'])
-        self.feature_names = self.dvec.get_feature_names()
-        self.ctag_classes = self.tseqenc.classes_
-        self.wtag_classes = self.tsenc.classes_
-        logging.info(self.feature_names)
-        logging.info(self.ctag_classes)
-        logging.info(self.wtag_classes)
-        self.NF = len(self.feature_names)
-        self.NC = len(self.ctag_classes)
-        logging.info('NF: {} NC: {}'.format(self.NF, self.NC))
-
-    def transform(self, sent):
-        Xsent = self.dvec.transform([self.featfunc(ci, sent) for ci,c in enumerate(sent['cseq'])]) # nchar x nf
-        ysent = self.one_hot(self.tseqenc.transform([t for t in sent['tseq']]), self.NC) # nchar x nc
-        return Xsent, ysent
-
-    def one_hot(self, labels, n_classes):
-        one_hot = np.zeros((labels.shape[0], n_classes)).astype(bool)
-        one_hot[range(labels.shape[0]), labels] = True
-        return one_hot
 
 class Batcher(object):
 
@@ -158,19 +124,23 @@ class Reporter(object):
 
 class Validator(object):
 
-    def __init__(self, trn, dev, batcher, reporter):
+    def __init__(self, trn, dev, tst, batcher, reporter):
         self.trn = trn
         self.dev = dev
+        self.tst = tst
         self.trndat = batcher.get_batches(trn) 
         self.devdat = batcher.get_batches(dev) 
+        self.tstdat = batcher.get_batches(tst) 
         self.reporter = reporter
 
     def validate(self, rdnn, fepoch, patience=-1):
         logging.info('training the model...')
-        dbests = {'trn':(1,0.), 'dev':(1,0.)}
+        dbests = {'trn':(1,0.), 'dev':(1,0.), 'tst':(1,0.)}
         for e in range(1,fepoch+1): # foreach epoch
             logging.info(('{:<5} {:<5} ' + ('{:>10} '*10)).format('dset','epoch','mcost', 'mtime', 'cerr', 'werr', 'wacc', 'pre', 'recall', 'f1', 'best', 'best'))
-            for funcname, ddat, datname in zip(['train','predict'],[self.trndat,self.devdat],['trn','dev']):
+            for funcname, ddat, datname in zip(['train','predict', 'predict'],[self.trndat,self.devdat, self.tstdat],['trn','dev','tst']):
+                if datname == 'tst' and dbests['dev'][0] != e:
+                    continue
                 start_time = time.time()
                 mcost, pred = getattr(rdnn, funcname)(ddat)
                 end_time = time.time()
@@ -179,9 +149,12 @@ class Validator(object):
                 # cerr, werr, wacc, pre, recall, f1 = self.reporter.report(getattr(self.trn, pred) # find better solution for getattr
                 cerr, werr, wacc, pre, recall, f1, conll_print, char_conmat_str, word_conmat_str =\
                         self.reporter.report(getattr(self, datname), pred) # find better solution for getattr
+                
                 if f1 > dbests[datname][1]: dbests[datname] = (e,f1)
+                
                 logging.info(('{:<5} {:<5d} ' + ('{:>10.4f} '*9)+'{:>10d}')\
-                        .format(datname,e,mcost, mtime, cerr, werr, wacc, pre, recall, f1, dbests[datname][1],dbests[datname][0]))
+                    .format(datname,e,mcost, mtime, cerr, werr, wacc, pre, recall, f1, dbests[datname][1],dbests[datname][0]))
+                
                 logging.debug('')
                 logging.debug(conll_print)
                 logging.debug(char_conmat_str)
@@ -273,24 +246,24 @@ def main():
     if args['sorted']:
         trn = sorted(trn, key=lambda sent: len(sent['cseq']))
         dev = sorted(dev, key=lambda sent: len(sent['cseq']))
+        tst = sorted(tst, key=lambda sent: len(sent['cseq']))
 
     ntrnsent, ndevsent, ntstsent = list(map(len, (trn,dev,tst)))
     logger.info('# of sents trn, dev, tst: {} {} {}'.format(ntrnsent, ndevsent, ntstsent))
 
-    MAX_LENGTH = max(len(sent['cseq']) for sent in chain(trn,dev))
-    MIN_LENGTH = min(len(sent['cseq']) for sent in chain(trn,dev))
-    AVG_LENGTH = np.mean([len(sent['cseq']) for sent in chain(trn,dev)])
-    STD_LENGTH = np.std([len(sent['cseq']) for sent in chain(trn,dev)])
+    MAX_LENGTH = max(len(sent['cseq']) for sent in chain(trn,dev,tst))
+    MIN_LENGTH = min(len(sent['cseq']) for sent in chain(trn,dev,tst))
+    AVG_LENGTH = np.mean([len(sent['cseq']) for sent in chain(trn,dev,tst)])
+    STD_LENGTH = np.std([len(sent['cseq']) for sent in chain(trn,dev,tst)])
     logger.info('maxlen: {} minlen: {} avglen: {:.2f} stdlen: {:.2f}'.format(MAX_LENGTH, MIN_LENGTH, AVG_LENGTH, STD_LENGTH))
 
-    featfunc = getattr(featchar,'get_cfeatures_'+args['feat'])
-    feat = Feat(featfunc)
+    feat = featchar.Feat(args['feat'])
     feat.fit(trn)
 
     batcher = Batcher(args['n_batch'], feat)
     reporter = Reporter(feat, rep.get_ts)
 
-    validator = Validator(trn, dev, batcher, reporter) if args['curriculum'] < 2 else Curriculum(trn, dev, batcher, reporter, args['curriculum'])
+    validator = Validator(trn, dev, tst, batcher, reporter) if args['curriculum'] < 2 else Curriculum(trn, dev, batcher, reporter, args['curriculum'])
 
     # select rnn
     if args['rnn'] == 'dummy':
