@@ -11,7 +11,7 @@ if __name__ == '__main__':
             l = l.strip()
             w,t = l.split(' ')
             sent['ws'].append(w)
-            sent['ts'].append(t)
+            sent['ts'].append(t.replace('PERS','PER'))
             if l in  ['. O', '? O', '! O']:
                 dset.append(sent)
                 sent = {'ws':[],'ts':[]}
@@ -27,6 +27,12 @@ if __name__ == '__main__':
             out.write('\n')
 
     with open('testa.bio','w') as out:
+        for sent in dev:
+            for w,t in zip(sent['ws'],sent['ts']):
+                out.write('%s\n'%'\t'.join((w,t)))
+            out.write('\n')
+
+    with open('testb.bio','w') as out:
         for sent in dev:
             for w,t in zip(sent['ws'],sent['ts']):
                 out.write('%s\n'%'\t'.join((w,t)))
