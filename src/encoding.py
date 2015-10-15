@@ -6,6 +6,7 @@ def iob2bilou(ts):
     return c4(' '.join(ts))
 
 
+
 def bio2iob(ts):
     phrases, curphrase = [], []
     for t in ts:
@@ -42,6 +43,7 @@ def bilou2io(ts):
 
 def iob2io(ts):
     return bilou2io(ts)
+
 
 def io2iob(ts):
     io_phrases = [(key,list(subite)) for key, subite in groupby(ts)]

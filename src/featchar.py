@@ -99,11 +99,15 @@ class Feat(object):
             d['wend'] = sent['wiseq'][ci+1] != sent['wiseq'][ci]
         return d
 
-    def feat_pos(self, ci, sent):
-        return {'pt' : 'space_pt'} if d['c'] == ' ' else {'pt':sent['pts'][wi]}
+    def feat_ptag(self, ci, sent):
+        c = sent['cseq'][ci]
+        wi = sent['wiseq'][ci]
+        return {'pt' : 'space_pt'} if c == ' ' else {'pt':sent['pts'][wi]}
 
     def feat_ctag(self, ci, sent):
-        return {'ct' : 'space_ct'} if d['c'] == ' ' else {'ct':sent['cts'][wi]}
+        c = sent['cseq'][ci]
+        wi = sent['wiseq'][ci]
+        return {'ct' : 'space_ct'} if c == ' ' else {'ct':sent['cts'][wi]}
 
     def feat_cap(self, ci, sent):
         return {'is_capital' : sent['cseq'][ci].isupper()}
