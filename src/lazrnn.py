@@ -26,7 +26,7 @@ def extract_rnn_params(kwargs):
     return dict((pname,kwargs[pname]) for pname in RDNN.param_names)
 
 class RDNN:
-    param_names = ['activation','n_hidden','drates','opt','grad_clip','lr','norm','recout','batch_norm', 'in2out']
+    param_names = ['activation','n_hidden','drates','opt','grad_clip','lr','norm','recout','batch_norm','in2out','emb']
 
     def __init__(self, nc, nf, kwargs):
         assert nf; assert nc
@@ -54,8 +54,19 @@ class RDNN:
         l_mask = lasagne.layers.InputLayer(shape=(N_BATCH_VAR, MAX_SEQ_LEN_VAR))
         logging.debug('l_mask: {}'.format(lasagne.layers.get_output_shape(l_mask)))
 
+        curlayer = l_in
+        if self.emb:
+            l_reshape = lasagne.layers.ReshapeLayer(l_in, (-1, nf))
+            logging.debug('l_reshape: {}'.format(lasagne.layers.get_output_shape(l_reshape)))
+            l_emb = lasagne.layers.DenseLayer(l_reshape, num_units=self.emb, nonlinearity=None)
+            logging.debug('l_emb: {}'.format(lasagne.layers.get_output_shape(l_emb)))
+            l_emb = lasagne.layers.ReshapeLayer(l_emb, (N_BATCH_VAR, MAX_SEQ_LEN_VAR, self.emb))
+            logging.debug('l_emb: {}'.format(lasagne.layers.get_output_shape(l_emb)))
+            curlayer = l_emb
+
         if self.drates[0] > 0:
-            l_in_drop = lasagne.layers.DropoutLayer(l_in, p=self.drates[0])
+            l_in_drop = lasagne.layers.DropoutLayer(curlayer, p=self.drates[0])
+            logging.debug('l_drop: {}'.format(lasagne.layers.get_output_shape(l_in_drop)))
             self.layers = [l_in_drop]
         else:
             self.layers = [l_in]
