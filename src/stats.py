@@ -1,27 +1,18 @@
-from utils import get_sents
+import random
 import numpy as np
 from collections import Counter
-from featchar import get_tseq2, get_cseq
-import random
-from itertools import product
-from collections import Counter
+from itertools import *
 
-def stat_num_of_chars(dset):
-    a = np.mean([len(''.join(sent['ws'])) for sent in dset])
-    return np.mean(a), np.std(a)
+import encoding
+from utils import get_sents
 
-def stat_num_of_words(dset):
-    a = [len(sent['ws']) for sent in dset]
-    return np.mean(a), np.std(a)
+""" assumes sents are in iob format """
 
-def char_tag_dist(trn):
-    tcounts =  Counter(t for sent in trn for t in sent['tseq'])
-    z = sum(tcounts.values())
-    tpercs = sorted((tcount/float(z), t) for t,tcount in tcounts.iteritems())
-    for tperc,t in tpercs:
-        print '%.4f\t%s'%(tperc,t)
 
+
+### SENT ###
 def contains_consecutive_same_type(sent):
+    encoding.iob2
     for t1,t2 in zip(sent['ts'], sent['ts'][1:]):
         if t1 != 'O' and t2 != 'O':
             t1_pos, t1_type = t1.split('-')
@@ -32,18 +23,23 @@ def contains_consecutive_same_type(sent):
     return False
 
 def num_of_phrases_sent(sent):
-    return sum(1 if t.startswith('B') or t.startswith('U') else 0 for t in sent['ts'])
+    ts = encoding.iob2bilou(sent['ts'])
+    return sum(1 for t in ts if t.startswith('B') or t.startswith('U'))
+
+### end SENT ###
+
+### DSET ###
+
+def stat_num_of_chars(dset):
+    a = np.mean([len(''.join(sent['ws'])) for sent in dset])
+    return np.mean(a), np.std(a)
+
+def stat_num_of_words(dset):
+    a = [len(sent['ws']) for sent in dset]
+    return np.mean(a), np.std(a)
 
 def num_of_consecutive_same_type(dset):
-    c = 0
-    for sent in dset:
-        for t1,t2 in zip(sent['ts'], sent['ts'][1:]):
-            if t1 != 'O' and t2 != 'O':
-                t1_pos, t1_type = t1.split('-')
-                t2_pos, t2_type = t2.split('-')
-                if t1_type == t2_type:
-                    c += (t1_pos,t2_pos) in [e for e in product(['U','L'],['B','U'])]
-    return c
+    return sum(1 for sent in dset for t in sent['ts'] if t.startswith('B'))
 
 def entity_tagged_vocab(dset):
     return set(w for sent in dset for w,t in zip(sent['ws'],sent['ts']) if t != 'O')
@@ -56,25 +52,66 @@ def unk_perc(trn, dset):
     return nom/float(z)
 
 def num_of_phrases(dset):
-    return sum(1 for sent in dset for t in sent['ts'] \
-            if t.startswith('B') or t.startswith('U'))
+    return sum(num_of_phrases_sent(sent) for sent in dset)
+
+def io_ideal(dev,tst):
+    from score import conlleval
+    print 'io tagging ideal scores'
+    for dset, dset_str in zip((dev,tst),('dev','tst')):
+        ts_gold = [sent['ts'] for sent in dset]
+        ts_pred = [encoding.io2iob(encoding.iob2io(sent['ts'])) for sent in dset]
+        r1,r2 = conlleval(ts_gold, ts_pred)
+        print '\t'.join([dset_str]+map(str,r1))
+
+def vocab(dset):
+    return set(w for sent in dset for w in sent['ws'])
+
+### end DSET ###
 
 if __name__ == '__main__':
-    trn,dev,tst = get_sents()
-    for sent in trn:
-        sent['tseq'] = get_tseq2(sent)
-        sent['cseq'] = get_cseq(sent)
-        if len(sent['cseq']) == 512:
-            print ' '.join(sent['ws'])
+    from tabulate import tabulate
+    from score import conlleval
+    """
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument('lang')
+    args = parser.parse_args()
+    """
 
-    print 'onemli:', num_of_consecutive_same_type(trn)
-    print 'onemli2:', num_of_consecutive_same_type(dev)
-    print 'onemli3:', num_of_consecutive_same_type(tst)
+    langs = ['eng','deu','ned']
+    dsetnames = ['trn','dev','tst']
 
-    print num_of_phrases([sent for sent in trn if not contains_consecutive_same_type(sent)]) / float(num_of_phrases(trn))
-    print num_of_phrases([sent for sent in dev if not contains_consecutive_same_type(sent)]) / float(num_of_phrases(dev))
-    print num_of_phrases([sent for sent in tst if not contains_consecutive_same_type(sent)]) / float(num_of_phrases(tst))
+    data = dict((lang,dict((dname,dset) for dname,dset in zip(dsetnames, get_sents(lang)))) for lang in langs)
 
+    for l,d in product(langs,dsetnames):
+        print len(data[l][d])
+
+    table = [('lang-dset', 'wacc','pre','rec','f1')]
+    for l, dname in product(langs,('dev','tst')):
+        dset = data[l][dname]
+        ts_gold = [sent['ts'] for sent in dset]
+        ts_pred = [encoding.io2iob(encoding.iob2io(sent['ts'])) for sent in dset]
+        r1,r2 = conlleval(ts_gold, ts_pred)
+        table.append([l+dname]+map(str,r1))
+    print tabulate(table)
+    print
+
+    """
+    print 'num of consecutive same type:'
+    for dstr, dset in zip(('trn','dev','tst'),(trn,dev,tst)):
+        print '{}\t{:.4f}'.format(dstr,num_of_consecutive_same_type(dset)/float(num_of_phrases(dset)))
+    print
+
+    a,b,c = map(vocab, (trn,dev,tst))
+    print 'vocab'
+    print 'trn\tdev\ttst'
+    print '{}\t{}\t{}'.format(*map(len,(a,b,c)))
+    print
+    print 'unk\tdev\t{:.2f}'.format(len(b.difference(a)) / float(len(b)))
+    print 'unk\ttst\t{:.2f}'.format(len(c.difference(a)) / float(len(c)))
+    """
+
+    """
     a,b,c = map(entity_tagged_vocab, (trn,dev,tst))
     print 'trn, dev, tst:', map(len,(a,b,c))
     print 'dev diff:', len(b.difference(a)) / float(len(b))
@@ -82,9 +119,5 @@ if __name__ == '__main__':
 
     print '-->', unk_perc(trn,dev)
     print '-->', unk_perc(trn,tst)
+    """
 
-    """
-    print 'cseq len counts:'
-    for k,v in sorted(Counter(len(sent['cseq']) for sent in trn).iteritems()):
-        print '{}\t{}'.format(k,v)
-    """
