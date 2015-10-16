@@ -1,5 +1,6 @@
 import argparse, subprocess
 from utils import ROOT_DIR
+import getpass
 
 STR = """#!/bin/bash
 #$ -N exper-{}
@@ -10,11 +11,11 @@ STR = """#!/bin/bash
 #$ -cwd
 #$ -o /tmp/job.out
 #$ -e /tmp/job.err
-#$ -M okuru13@ku.edu.tr
+#$ -M {}@ku.edu.tr
 #$ -m bea
  
 source ~/setenv.sh
-cd /mnt/kufs/scratch/okuru13/char-ner
+cd /mnt/kufs/scratch/{}/char-ner
 MKL_NUM_THREADS={} THEANO_FLAGS=mode=FAST_RUN,device={},floatX=float32 python src/{}.py {}
 """
 
@@ -28,11 +29,12 @@ if __name__ == '__main__':
     parser.add_argument("--smp", default=18, type=int)
     args = parser.parse_args()
 
+    username = getpass.getuser()
     args.smp = 1 if args.d.startswith('gpu') else args.smp
     queue = args.m.split('-')[0]
     queue = queue if queue == 'biyofiz' else 'all'
 
-    job_text = STR.format(args.d, queue, args.m, args.smp, args.smp, args.d, args.script, args.script_args)
+    job_text = STR.format(args.d, queue, args.m, args.smp, username, username, args.smp, args.d, args.script, args.script_args)
     print job_text
 
     if not args.p:
