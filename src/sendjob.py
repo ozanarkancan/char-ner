@@ -28,7 +28,7 @@ if __name__ == '__main__':
     parser.add_argument("--smp", default=18, type=int)
     args = parser.parse_args()
 
-    args.smp = 1 if args.d == 'gpu' else args.smp
+    args.smp = 1 if args.d.startswith('gpu') else args.smp
     queue = args.m.split('-')[0]
     queue = queue if queue == 'biyofiz' else 'all'
 
