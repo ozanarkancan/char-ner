@@ -38,7 +38,7 @@ def get_arg_parser():
     parser.add_argument("--lr", default=0.001, type=float, help="learning rate")
     parser.add_argument("--norm", default=5, type=float, help="Threshold for clipping norm of gradient")
     parser.add_argument("--n_batch", default=32, type=int, help="batch size")
-    parser.add_argument("--fepoch", default=500, type=int, help="number of epochs")
+    parser.add_argument("--fepoch", default=5000, type=int, help="number of epochs")
     parser.add_argument("--patience", default=-1, type=int, help="how patient the validator is")
     parser.add_argument("--sample", default=0, type=int, help="num of sents to sample from trn in the order of K")
     parser.add_argument("--feat", default='basic', help="feat func to use")
@@ -258,7 +258,7 @@ def main():
     logger.info('maxlen: {} minlen: {} avglen: {:.2f} stdlen: {:.2f}'.format(MAX_LENGTH, MIN_LENGTH, AVG_LENGTH, STD_LENGTH))
 
     feat = featchar.Feat(args['feat'])
-    feat.fit(trn)
+    feat.fit(trn,dev,tst)
 
     batcher = Batcher(args['n_batch'], feat)
     reporter = Reporter(feat, rep.get_ts)
