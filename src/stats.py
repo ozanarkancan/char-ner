@@ -83,17 +83,20 @@ if __name__ == '__main__':
 
     data = dict((lang,dict((dname,dset) for dname,dset in zip(dsetnames, get_sents(lang)))) for lang in langs)
 
-    for l,d in product(langs,dsetnames):
-        print len(data[l][d])
+    table = []
+    for dname in dsetnames:
+        table.append([dname]+map(len,[data[l][dname] for l in langs]))
+    print tabulate(table,headers=['#sent']+langs)
+    print
 
-    table = [('lang-dset', 'wacc','pre','rec','f1')]
+    table = []
     for l, dname in product(langs,('dev','tst')):
         dset = data[l][dname]
         ts_gold = [sent['ts'] for sent in dset]
         ts_pred = [encoding.io2iob(encoding.iob2io(sent['ts'])) for sent in dset]
         r1,r2 = conlleval(ts_gold, ts_pred)
-        table.append([l+dname]+map(str,r1))
-    print tabulate(table)
+        table.append([l+'-'+dname]+map(str,r1))
+    print tabulate(table, headers=['io-ideal', 'wacc','pre','rec','f1'])
     print
 
     """
