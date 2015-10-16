@@ -23,8 +23,8 @@ if __name__ == '__main__':
     parser.add_argument("--p", type=bool, default=False, help='just print, dont submit') 
     parser.add_argument("--script", default='exper')
     parser.add_argument("--script_args", required=True) 
-    parser.add_argument("--m", required=True, choices=['biyofiz-4-0','biyofiz-4-1','biyofiz-4-2','biyofiz-4-3','parcore-6-0'])
-    parser.add_argument("--d", required=True, choices=['gpu','cpu'])
+    parser.add_argument("--m", required=True, choices=['biyofiz-4-0','biyofiz-4-1','biyofiz-4-2','biyofiz-4-3','parcore-6-0','iui-5-0'])
+    parser.add_argument("--d", required=True, choices=['gpu','cpu','gpu0','gpu1'])
     parser.add_argument("--smp", default=18, type=int)
     args = parser.parse_args()
 
