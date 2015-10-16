@@ -78,7 +78,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
     """
 
-    langs = ['eng','deu','ned']
+    langs = ['eng','deu','tr', 'cze']
     dsetnames = ['trn','dev','tst']
 
     data = dict((lang,dict((dname,dset) for dname,dset in zip(dsetnames, get_sents(lang)))) for lang in langs)
@@ -87,6 +87,12 @@ if __name__ == '__main__':
     for dname in dsetnames:
         table.append([dname]+map(len,[data[l][dname] for l in langs]))
     print tabulate(table,headers=['#sent']+langs)
+    print
+
+    table = []
+    for dname in dsetnames:
+        table.append([dname]+[sum(len(sent['ws']) for sent in data[l][dname]) for l in langs])
+    print tabulate(table,headers=['#token']+langs)
     print
 
     table = []
