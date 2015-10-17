@@ -1,6 +1,6 @@
 #!/bin/bash
 #$ -N char-ner
-#$ -q biyofiz.q@biyofiz-4-1
+#$ -q all.q@iui-5-0
 #$ -cwd
 #$ -S /bin/bash
 #$ -e ../garbage/$JOB_ID.err
@@ -16,4 +16,4 @@ export LD_LIBRARY_PATH=/mnt/kufs/progs/cuda/cuda-6.5/lib64:/mnt/kufs/progs/cuda/
 export LD_LIBRARY_PATH=/mnt/kufs/scratch/ocan13/opt/OpenBLAS/lib:$LD_LIBRARY_PATH
 export CUDA_ROOT=/mnt/kufs/progs/cuda/cuda-6.5
 export PATH="/mnt/kufs/scratch/ocan13/anaconda/bin:$PATH"
-THEANO_FLAGS=blas.ldflags="-L/mnt/kufs/scratch/ocan13/opt/OpenBLAS/lib -lopenblas",mode=FAST_RUN,device=gpu,floatX=float32,nvcc.flags=-arch=sm_30,scan.allow_gc=False python src/exper.py --n_hidden 256 --fepoch 3000 --n_batch 256
+THEANO_FLAGS=blas.ldflags="-L/mnt/kufs/scratch/ocan13/opt/OpenBLAS/lib -lopenblas",mode=FAST_RUN,device=gpu1,floatX=float32,nvcc.flags=-arch=sm_30,scan.allow_gc=False python src/exper.py --n_hidden 256 --fepoch 3000 --n_batch 128

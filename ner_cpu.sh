@@ -1,6 +1,6 @@
 #!/bin/bash
 #$ -N char-ner
-#$ -q biyofiz.q@biyofiz-4-1
+#$ -q iui.q@iui-5-0
 #$ -cwd
 #$ -pe smp 18
 #$ -S /bin/bash
@@ -18,4 +18,4 @@ export LD_LIBRARY_PATH=/mnt/kufs/scratch/ocan13/opt/OpenBLAS/lib:$LD_LIBRARY_PAT
 export CUDA_ROOT=/mnt/kufs/progs/cuda/cuda-6.5
 export PATH="/mnt/kufs/scratch/ocan13/anaconda/bin:$PATH"
 OMP_NUM_THREADS=18
-THEANO_FLAGS=blas.ldflags="-L/mnt/kufs/scratch/ocan13/opt/OpenBLAS/lib -lopenblas",mode=FAST_RUN,device=cpu,floatX=float32,nvcc.flags=-arch=sm_30,scan.allow_gc=False python src/exper.py --activation bi-lstm bi-lstm --n_hidden 128 128 --drates 0.2 0.5 0.7 --feat basic --norm 5 --fepoch 1000 --lang ned --n_batch 32
+THEANO_FLAGS=blas.ldflags="-L/mnt/kufs/scratch/ocan13/opt/OpenBLAS/lib -lopenblas",mode=FAST_RUN,device=cpu,floatX=float32,nvcc.flags=-arch=sm_30,scan.allow_gc=False python src/exper.py --n_hidden 256 --n_batch 16
