@@ -30,7 +30,7 @@ def read_sents_eng(file):
 
 def get_sents(lang='eng'):
     readfunc = globals()['read_sents_'+lang]
-    if lang in ('spa','ned','arb'):
+    if lang in ('spa','ned','arb','cze','tr'):
         return map(readfunc, ['{}/{}/{}.bio'.format(DATA_DIR,lang,dset) for dset in ('train','testa','testb')])
     else:
         return map(readfunc, ['{}/{}/{}.iob'.format(DATA_DIR,lang,dset) for dset in ('train','testa','testb')])
@@ -52,6 +52,21 @@ def read_sents_deu(file):
     return sentences
 
 def read_sents_arb(file):
+    a,b,c,d,e = [],[],[],[], []
+    sentences = []
+    with open(file) as src:
+        for l in src:
+            if len(l.strip()):
+                w, t = l.strip().split('\t')
+                a.append(w); d.append(t)
+            else: # emtpy line
+                if len(a):
+                    d = encoding.bio2iob(d)
+                    sentences.append({'ws':a,'ts':d})
+                a,b,c,d = [],[],[],[]
+    return sentences
+
+def read_sents_tr(file):
     a,b,c,d,e = [],[],[],[], []
     sentences = []
     with open(file) as src:
@@ -94,6 +109,26 @@ def read_sents_ned(file):
             if len(l.strip()):
                 try:
                     w, pt, t = l.strip().split('\t')
+                except:
+                    print l
+                    assert False
+                a.append(w);b.append(pt);d.append(t);
+            else: # emtpy line
+                if len(a):
+                    d = encoding.bio2iob(d)
+                    sentences.append({'ws':a,'ts':d,'tsg':copy.deepcopy(d),\
+                            'pts':b})
+                a,b,c,d = [],[],[],[]
+    return sentences
+
+def read_sents_cze(file):
+    a,b,c,d = [],[],[],[]
+    sentences = []
+    with open(file) as src:
+        for l in src:
+            if len(l.strip()):
+                try:
+                    w, lem, pt, t = l.strip().split('\t')
                 except:
                     print l
                     assert False
