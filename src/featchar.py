@@ -49,6 +49,13 @@ class Feat(object):
     def feat_basic(self, ci, sent):
         return {'c': sent['cseq'][ci]}
 
+    def feat_dgen(self, ci, sent):
+        c = sent['cseq'][ci]
+        if c in string.digits:
+            return {'c': 'digit'}
+        else:
+            return {'c': 'digit'}
+
     def feat_gen(self, ci, sent):
         c = sent['cseq'][ci]
         if c in string.ascii_letters:
