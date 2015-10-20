@@ -9,8 +9,8 @@ STR = """#!/bin/bash
 ##$ -l h_rt=00:59:00 #how many mins run
 #$ -pe smp {}
 #$ -cwd
-#$ -o /tmp/job.out
-#$ -e /tmp/job.err
+#$ -o /dev/null
+#$ -e /dev/null
 #$ -M {}@ku.edu.tr
 #$ -m bea
  
