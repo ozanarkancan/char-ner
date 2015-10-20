@@ -54,7 +54,7 @@ class Feat(object):
         if c in string.digits:
             return {'c': 'digit'}
         else:
-            return {'c': 'digit'}
+            return {'c': c}
 
     def feat_gen(self, ci, sent):
         c = sent['cseq'][ci]
