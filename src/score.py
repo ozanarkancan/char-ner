@@ -1,7 +1,6 @@
 import re, subprocess
-from utils import ROOT_DIR
+from utils import SRC_DIR
 
-SRC_DIR = '{}/src'.format(ROOT_DIR)
 
 def conlleval(ts_gold, ts_pred):
     text = ''

@@ -9,6 +9,9 @@ __author__ = 'Onur Kuru'
 file_abspath = os.path.abspath(__file__)
 ROOT_DIR = os.path.abspath(os.path.join(file_abspath, os.pardir, os.pardir))
 DATA_DIR = '{}/data'.format(ROOT_DIR)
+SRC_DIR = '{}/src'.format(ROOT_DIR)
+SCRIPTS_DIR = '{}/scripts'.format(ROOT_DIR)
+
 WSTART = '/w'
 WEND = 'w/'
 
