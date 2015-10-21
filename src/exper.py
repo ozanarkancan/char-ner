@@ -12,7 +12,7 @@ import theano.tensor as T
 
 import featchar
 import rep
-from utils import get_sents, sample_sents
+from utils import get_sents, sample_sents, valid_file_name
 from utils import ROOT_DIR
 from score import conlleval
 from encoding import io2iob
@@ -50,6 +50,7 @@ def get_arg_parser():
     parser.add_argument("--in2out", default=0, type=int, help="connect input & output")
     parser.add_argument("--curriculum", default=1, type=int, help="curriculum learning: number of parts")
     parser.add_argument("--lang", default='eng', help="ner lang")
+    parser.add_argument("--save", default=False, action='store_true', help="save param values to file")
 
     return parser
 
@@ -115,7 +116,7 @@ class Reporter(object):
         (wacc, pre, recall, f1), conll_print = conlleval(lts, lts_pred)
         return cerr, werr, wacc, pre, recall, f1, conll_print, char_conmat_str, word_conmat_str
 
-    def get_conmat_str(self, y_true, y_pred, lblenc): # NOT USED
+    def get_conmat_str(self, y_true, y_pred, lblenc):
         str_list = []
         str_list.append('\t'.join(['bos'] + list(lblenc.classes_)))
         conmat = confusion_matrix(y_true,y_pred, labels=lblenc.transform(lblenc.classes_))
@@ -134,10 +135,10 @@ class Validator(object):
         self.tstdat = batcher.get_batches(tst) 
         self.reporter = reporter
 
-    def validate(self, rdnn, fepoch, patience=-1):
+    def validate(self, rdnn, argsd):
         logging.info('training the model...')
         dbests = {'trn':(1,0.), 'dev':(1,0.), 'tst':(1,0.)}
-        for e in range(1,fepoch+1): # foreach epoch
+        for e in range(1,argsd['fepoch']+1): # foreach epoch
             logging.info(('{:<5} {:<5} ' + ('{:>10} '*10)).format('dset','epoch','mcost', 'mtime', 'cerr', 'werr', 'wacc', 'pre', 'recall', 'f1', 'best', 'best'))
             for funcname, ddat, datname in zip(['train','predict', 'predict'],[self.trndat,self.devdat, self.tstdat],['trn','dev','tst']):
                 if datname == 'tst' and dbests['dev'][0] != e:
@@ -151,7 +152,15 @@ class Validator(object):
                 cerr, werr, wacc, pre, recall, f1, conll_print, char_conmat_str, word_conmat_str =\
                         self.reporter.report(getattr(self, datname), pred) # find better solution for getattr
                 
-                if f1 > dbests[datname][1]: dbests[datname] = (e,f1)
+                if f1 > dbests[datname][1]:
+                    dbests[datname] = (e,f1)
+                    if argsd['save'] and datname == 'dev': # save model to file
+                        lparams = ['feat', 'rep', 'activation', 'n_hidden', 'drates', 'recout', 'opt','lr','norm','n_batch', 'fepoch','in2out','emb','lang']
+                        param_log_name = ','.join(['{}:{}'.format(p,argsd[p]) for p in lparams])
+                        param_log_name = valid_file_name(param_log_name)
+                        rnn_param_values = rdnn.get_param_values()
+                        np.savez('{}/models/{}'.format(ROOT_DIR, param_log_name),rnn_param_values=rnn_param_values,args=argsd)
+
                 
                 logging.info(('{:<5} {:<5d} ' + ('{:>10.4f} '*9)+'{:>10d}')\
                     .format(datname,e,mcost, mtime, cerr, werr, wacc, pre, recall, f1, dbests[datname][1],dbests[datname][0]))
@@ -161,7 +170,7 @@ class Validator(object):
                 logging.debug(char_conmat_str)
                 logging.debug(word_conmat_str)
                 logging.debug('')
-            if patience > 0 and e - dbests['dev'][0] > patience:
+            if argsd['patience'] > 0 and e - dbests['dev'][0] > argsd['patience']:
                 logging.info('sabir tasti.')
                 break
             logging.info('')
@@ -192,8 +201,6 @@ class Curriculum(object):
             validator.validate(rdnn, fepoch, patience)
         
             
-def valid_file_name(s):
-    return "".join(i for i in s if i not in "\"\/ &*?<>|[]()'")
 
 def main():
     parser = get_arg_parser()
@@ -280,7 +287,7 @@ def main():
 
     rnn_params = extract_rnn_params(args)
     rdnn = RNN(feat.NC, feat.NF, args)
-    validator.validate(rdnn, args['fepoch'], args['patience'])
+    validator.validate(rdnn, args)
     # lr: scipy.stats.expon.rvs(loc=0.0001,scale=0.1,size=100)
     # norm: scipy.stats.expon.rvs(loc=0, scale=5,size=10)
 
