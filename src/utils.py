@@ -12,6 +12,9 @@ DATA_DIR = '{}/data'.format(ROOT_DIR)
 WSTART = '/w'
 WEND = 'w/'
 
+def valid_file_name(s):
+    return "".join(i for i in s if i not in "\"\/ &*?<>|[]()'")
+
 def read_sents_eng(file):
     a,b,c,d = [],[],[],[]
     sentences = []
