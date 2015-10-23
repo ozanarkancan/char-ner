@@ -4,26 +4,6 @@ from collections import Counter
 from encoding import iob2io
 import utils
 
-"""
-def get_ts2(tseqgrp):
-    ts = []
-    for tseq in tseqgrp:
-        if tseq[0].startswith('b-') and tseq[-1].startswith('i-'): # B
-            ts.append(tseq[0].upper())
-        elif tseq[0].startswith('i-') and tseq[-1].startswith('i-'): # I
-            ts.append(tseq[0].upper())
-        elif tseq[0].startswith('i-') and tseq[-1].startswith('l-'): # L
-            ts.append(tseq[-1].upper())
-        elif tseq[0].startswith('b-') and tseq[-1].startswith('l-'): # U
-            tp, ttype = tseq[0].split('-')
-            ts.append('U-'+ttype)
-        elif tseq[0].startswith('u-'): # U
-            ts.append(tseq[0].upper())
-        else: # 
-            ts.append(Counter(tseq).most_common(1)[0][0].upper())
-    return ts
-"""
-
 class Repstd(object):
 
     def get_cseq(self, sent):
@@ -49,6 +29,15 @@ class Repstd(object):
             else:
                 tseq.append('o')
         return tseq[:-1]
+
+    def pprint(self, sent, *margs):
+        args = [sent['cseq'],sent['tseq']]; args.extend(margs)
+        mlen = max(len(e) for e in chain(*args))
+        wgroup = [[e[0] for e in g] for k, g in groupby(enumerate(sent['wiseq']),lambda x: x[1] !=-1) if k]
+        space_indx = [i for i,wi in enumerate(sent['wiseq']) if wi==-1]
+        for cil, si in izip(wgroup, space_indx):
+            for a in args:
+                print ' '.join(map(('{:^%d}'%mlen).format, [a[ci] for ci in cil] + [a[si]]))
 
 
 class Repnospace(object):
@@ -91,35 +80,19 @@ def sent_word_indx(sent):
     arr[1:,0] += 1
     return arr
 
-def print_cseq(sent, *args): # TODO needs update according to new representations
-    mlen = max(len(e) for e in chain(*args))
-    wgroup = [[e[0] for e in g] for k, g in groupby(enumerate(sent['wiseq']),lambda x: x[1] !=-1) if k]
-    space_indx = [i for i,wi in enumerate(sent['wiseq']) if wi==-1]
-    for cil, si in izip(wgroup, space_indx):
-        for a in args:
-            print ' '.join(map(('{:^%d}'%mlen).format, [a[ci] for ci in cil] + [a[si]]))
-    for a in args:
-        print ' '.join(map(('{:^%d}'%mlen).format, [a[ci] for ci in cil]))
-
 
 if __name__ == '__main__':
     from utils import get_sents, sample_sents
     from encoding import io2iob
-    trn, dev, tst = get_sents('eng','iob')
+    trn, dev, tst = get_sents('eng')
 
     trn = sample_sents(trn, 3, 5,6)
-    repr1 = Repstd()
-    repr2 = Repnospace()
-    repr3 = Repspec()
+    r = Repstd()
 
-    for sent,r in product(trn,[repr1,repr2,repr3]):
+    for sent in trn:
         sent.update({
             'cseq': r.get_cseq(sent), 
             'wiseq': r.get_wiseq(sent), 
             'tseq': r.get_tseq(sent)})
-        print ''.join(map('{:^3}'.format,sent['cseq']))
-        print ''.join(map('{:^3}'.format,sent['wiseq']))
-        print ''.join(map('{:^3}'.format,sent['tseq']))
-        print ' '.join(get_ts(sent['wiseq'],sent['tseq']))
-        print
-        # print_cseq(sent, sent['cseq'], sent['tseq'])
+        r.pprint(sent)
+        print 

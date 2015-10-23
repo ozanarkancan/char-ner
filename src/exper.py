@@ -12,7 +12,7 @@ import theano.tensor as T
 
 import featchar
 import rep
-from utils import get_sents, sample_sents
+from utils import get_sents, sample_sents, valid_file_name
 from utils import ROOT_DIR
 from score import conlleval
 from encoding import io2iob
@@ -29,19 +29,20 @@ def get_arg_parser():
     
     parser.add_argument("--rnn", default='lazrnn', choices=['dummy','lazrnn','nerrnn'], help="which rnn to use")
     parser.add_argument("--rep", default='std', choices=['std','nospace','spec'], help="which representation to use")
-    parser.add_argument("--activation", default=['bi-relu'], nargs='+', help="activation function for hidden layer : sigmoid, tanh, rectify")
-    parser.add_argument("--n_hidden", default=[100], nargs='+', type=int, help="number of neurons in each hidden layer")
+    parser.add_argument("--activation", default=['bi-lstm'], nargs='+', help="activation function for hidden layer : sigmoid, tanh, rectify")
+    parser.add_argument("--n_hidden", default=[128], nargs='+', type=int, help="number of neurons in each hidden layer")
     parser.add_argument("--recout", default=1, type=int, help="use recurrent output layer")
     parser.add_argument("--batch_norm", default=0, type=int, help="whether to use batch norm between deep layers")
     parser.add_argument("--drates", default=[0, 0], nargs='+', type=float, help="dropout rates")
     parser.add_argument("--opt", default="adam", help="optimization method: sgd, rmsprop, adagrad, adam")
     parser.add_argument("--lr", default=0.001, type=float, help="learning rate")
-    parser.add_argument("--norm", default=2, type=float, help="Threshold for clipping norm of gradient")
-    parser.add_argument("--n_batch", default=20, type=int, help="batch size")
-    parser.add_argument("--fepoch", default=500, type=int, help="number of epochs")
+    parser.add_argument("--norm", default=5, type=float, help="Threshold for clipping norm of gradient")
+    parser.add_argument("--n_batch", default=32, type=int, help="batch size")
+    parser.add_argument("--fepoch", default=5000, type=int, help="number of epochs")
     parser.add_argument("--patience", default=-1, type=int, help="how patient the validator is")
     parser.add_argument("--sample", default=0, type=int, help="num of sents to sample from trn in the order of K")
     parser.add_argument("--feat", default='basic', help="feat func to use")
+    parser.add_argument("--emb", default=0, type=int, help="embedding layer size")
     parser.add_argument("--grad_clip", default=-1, type=float, help="clip gradient messages in recurrent layers if they are above this value")
     parser.add_argument("--truncate", default=-1, type=int, help="backward step size")
     parser.add_argument("--log", default='das_auto', help="log file name")
@@ -49,6 +50,7 @@ def get_arg_parser():
     parser.add_argument("--in2out", default=0, type=int, help="connect input & output")
     parser.add_argument("--curriculum", default=1, type=int, help="curriculum learning: number of parts")
     parser.add_argument("--lang", default='eng', help="ner lang")
+    parser.add_argument("--save", default=False, action='store_true', help="save param values to file")
 
     return parser
 
@@ -114,7 +116,7 @@ class Reporter(object):
         (wacc, pre, recall, f1), conll_print = conlleval(lts, lts_pred)
         return cerr, werr, wacc, pre, recall, f1, conll_print, char_conmat_str, word_conmat_str
 
-    def get_conmat_str(self, y_true, y_pred, lblenc): # NOT USED
+    def get_conmat_str(self, y_true, y_pred, lblenc):
         str_list = []
         str_list.append('\t'.join(['bos'] + list(lblenc.classes_)))
         conmat = confusion_matrix(y_true,y_pred, labels=lblenc.transform(lblenc.classes_))
@@ -133,10 +135,10 @@ class Validator(object):
         self.tstdat = batcher.get_batches(tst) 
         self.reporter = reporter
 
-    def validate(self, rdnn, fepoch, patience=-1):
+    def validate(self, rdnn, argsd):
         logging.info('training the model...')
         dbests = {'trn':(1,0.), 'dev':(1,0.), 'tst':(1,0.)}
-        for e in range(1,fepoch+1): # foreach epoch
+        for e in range(1,argsd['fepoch']+1): # foreach epoch
             logging.info(('{:<5} {:<5} ' + ('{:>10} '*10)).format('dset','epoch','mcost', 'mtime', 'cerr', 'werr', 'wacc', 'pre', 'recall', 'f1', 'best', 'best'))
             for funcname, ddat, datname in zip(['train','predict', 'predict'],[self.trndat,self.devdat, self.tstdat],['trn','dev','tst']):
                 if datname == 'tst' and dbests['dev'][0] != e:
@@ -150,7 +152,15 @@ class Validator(object):
                 cerr, werr, wacc, pre, recall, f1, conll_print, char_conmat_str, word_conmat_str =\
                         self.reporter.report(getattr(self, datname), pred) # find better solution for getattr
                 
-                if f1 > dbests[datname][1]: dbests[datname] = (e,f1)
+                if f1 > dbests[datname][1]:
+                    dbests[datname] = (e,f1)
+                    if argsd['save'] and datname == 'dev': # save model to file
+                        lparams = ['feat', 'rep', 'activation', 'n_hidden', 'drates', 'recout', 'opt','lr','norm','n_batch', 'fepoch','in2out','emb','lang']
+                        param_log_name = ','.join(['{}:{}'.format(p,argsd[p]) for p in lparams])
+                        param_log_name = valid_file_name(param_log_name)
+                        rnn_param_values = rdnn.get_param_values()
+                        np.savez('{}/models/{}'.format(ROOT_DIR, param_log_name),rnn_param_values=rnn_param_values,args=argsd)
+
                 
                 logging.info(('{:<5} {:<5d} ' + ('{:>10.4f} '*9)+'{:>10d}')\
                     .format(datname,e,mcost, mtime, cerr, werr, wacc, pre, recall, f1, dbests[datname][1],dbests[datname][0]))
@@ -160,7 +170,7 @@ class Validator(object):
                 logging.debug(char_conmat_str)
                 logging.debug(word_conmat_str)
                 logging.debug('')
-            if patience > 0 and e - dbests['dev'][0] > patience:
+            if argsd['patience'] > 0 and e - dbests['dev'][0] > argsd['patience']:
                 logging.info('sabir tasti.')
                 break
             logging.info('')
@@ -191,8 +201,6 @@ class Curriculum(object):
             validator.validate(rdnn, fepoch, patience)
         
             
-def valid_file_name(s):
-    return "".join(i for i in s if i not in "\"\/ &*?<>|[]()'")
 
 def main():
     parser = get_arg_parser()
@@ -209,8 +217,9 @@ def main():
     logger.setLevel(logging.DEBUG)
     shandler = logging.StreamHandler()
     shandler.setLevel(logging.INFO)
-    lparams = ['rnn', 'feat', 'rep', 'activation', 'n_hidden', 'drates', 'recout', 'opt','lr','norm','n_batch','batch_norm',\
-            'fepoch','patience','sample', 'in2out', 'lang','curriculum']
+    # lparams = ['rnn', 'feat', 'rep', 'activation', 'n_hidden', 'drates', 'recout', 'opt','lr','norm','n_batch','batch_norm',\
+            # 'fepoch','patience','sample', 'in2out', 'lang','curriculum']
+    lparams = ['feat', 'rep', 'activation', 'n_hidden', 'drates', 'recout', 'opt','lr','norm','n_batch', 'fepoch','in2out','emb','lang']
     param_log_name = ','.join(['{}:{}'.format(p,args[p]) for p in lparams])
     param_log_name = valid_file_name(param_log_name)
     base_log_name = '{}:{},{}'.format(host, theano.config.device, param_log_name if args['log'] == 'das_auto' else args['log'])
@@ -258,7 +267,7 @@ def main():
     logger.info('maxlen: {} minlen: {} avglen: {:.2f} stdlen: {:.2f}'.format(MAX_LENGTH, MIN_LENGTH, AVG_LENGTH, STD_LENGTH))
 
     feat = featchar.Feat(args['feat'])
-    feat.fit(trn)
+    feat.fit(trn,dev,tst)
 
     batcher = Batcher(args['n_batch'], feat)
     reporter = Reporter(feat, rep.get_ts)
@@ -278,7 +287,7 @@ def main():
 
     rnn_params = extract_rnn_params(args)
     rdnn = RNN(feat.NC, feat.NF, args)
-    validator.validate(rdnn, args['fepoch'], args['patience'])
+    validator.validate(rdnn, args)
     # lr: scipy.stats.expon.rvs(loc=0.0001,scale=0.1,size=100)
     # norm: scipy.stats.expon.rvs(loc=0, scale=5,size=10)
 

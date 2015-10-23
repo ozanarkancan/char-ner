@@ -1,0 +1,1232 @@
+activation:	['bi-lstm']
+batch_norm:	0
+curriculum:	1
+drates:	[0, 0]
+feat:	basic
+fepoch:	5000
+grad_clip:	-1
+in2out:	0
+lang:	eng
+log:	das_auto
+lr:	0.001
+n_batch:	32
+n_hidden:	[512]
+norm:	5
+opt:	adam
+patience:	-1
+recout:	1
+rep:	std
+rnn:	lazrnn
+sample:	0
+sorted:	1
+truncate:	-1
+base_log_name:	parcore-6-0:gpu,rnn:lazrnn,feat:basic,rep:std,activation:bi-lstm,n_hidden:512,drates:0,0,recout:1,opt:adam,lr:0.001,norm:5,n_batch:32,batch_norm:0,fepoch:5000,patience:-1,sample:0,in2out:0,lang:eng,curriculum:1
+# of sents trn, dev, tst: 14041 3250 3453
+maxlen: 512 minlen: 1 avglen: 76.89 stdlen: 65.57
+['c= ', 'c=!', 'c="', 'c=$', 'c=%', 'c=&', "c='", 'c=(', 'c=)', 'c=*', 'c=+', 'c=,', 'c=-', 'c=.', 'c=/', 'c=0', 'c=1', 'c=2', 'c=3', 'c=4', 'c=5', 'c=6', 'c=7', 'c=8', 'c=9', 'c=:', 'c=;', 'c==', 'c=?', 'c=@', 'c=A', 'c=B', 'c=C', 'c=D', 'c=E', 'c=F', 'c=G', 'c=H', 'c=I', 'c=J', 'c=K', 'c=L', 'c=M', 'c=N', 'c=O', 'c=P', 'c=Q', 'c=R', 'c=S', 'c=T', 'c=U', 'c=V', 'c=W', 'c=X', 'c=Y', 'c=Z', 'c=[', 'c=]', 'c=`', 'c=a', 'c=b', 'c=c', 'c=d', 'c=e', 'c=f', 'c=g', 'c=h', 'c=i', 'c=j', 'c=k', 'c=l', 'c=m', 'c=n', 'c=o', 'c=p', 'c=q', 'c=r', 'c=s', 'c=t', 'c=u', 'c=v', 'c=w', 'c=x', 'c=y', 'c=z']
+['loc' 'misc' 'o' 'org' 'per']
+['B-LOC' 'B-MISC' 'B-ORG' 'I-LOC' 'I-MISC' 'I-ORG' 'I-PER' 'O']
+NF: 85 NC: 5
+l_in: (None, None, 85)
+l_mask: (Subtensor{int64}.0, Subtensor{int64}.0)
+l_forward: (None, None, 512)
+l_backward: (None, None, 512)
+l_concat: (None, None, 1024)
+using recout.
+l_out: (None, None, 5)
+[W_in_to_ingate, W_hid_to_ingate, b_ingate, W_in_to_forgetgate, W_hid_to_forgetgate, b_forgetgate, W_in_to_cell, W_hid_to_cell, b_cell, W_in_to_outgate, W_hid_to_outgate, b_outgate, W_cell_to_ingate, W_cell_to_forgetgate, W_cell_to_outgate, W_in_to_ingate, W_hid_to_ingate, b_ingate, W_in_to_forgetgate, W_hid_to_forgetgate, b_forgetgate, W_in_to_cell, W_hid_to_cell, b_cell, W_in_to_outgate, W_hid_to_outgate, b_outgate, W_cell_to_ingate, W_cell_to_forgetgate, W_cell_to_outgate, W, b, W]
+Compiling functions...
+Compiling done.
+training the model...
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   1        50.2407   220.0418     0.1515     0.1184    88.1600    34.5100    38.0100    36.1800    36.1800          1
+
+processed 203621 tokens with 23499 phrases; found: 25883 phrases; correct: 8933.
+accuracy:  88.16%; precision:  34.51%; recall:  38.01%; FB1:  36.18
+              LOC: precision:  50.56%; recall:  47.30%; FB1:  48.87  6679
+             MISC: precision:  22.33%; recall:  11.63%; FB1:  15.30  1791
+              ORG: precision:  16.45%; recall:  11.44%; FB1:  13.49  4396
+              PER: precision:  34.06%; recall:  67.17%; FB1:  45.20  13017
+
+bos	loc	misc	o	org	per
+loc	19776	1703	11780	4055	15743
+misc	4447	4689	10051	5282	6299
+o	3583	4158	823362	13055	12941
+org	4388	2589	17609	13872	28267
+per	2769	576	12133	2171	54324
+
+bos	B-LOC	B-MISC	B-ORG	I-LOC	I-MISC	I-ORG	I-PER	O
+B-LOC	0	0	0	0	1	1	1	8
+B-MISC	0	0	0	0	1	16	12	6
+B-ORG	0	0	0	0	0	16	8	0
+I-LOC	0	0	0	3835	257	619	2532	1043
+I-MISC	0	0	0	893	684	745	1069	1167
+I-ORG	0	0	0	978	398	2193	4674	1758
+I-PER	0	0	0	587	98	324	9208	911
+O	0	0	0	704	662	2391	2221	163600
+
+
+dev   1        10.7799     7.9448     0.1481     0.1164    88.3600    34.5500    37.2300    35.8400    35.8400          1
+
+processed 51362 tokens with 5942 phrases; found: 6403 phrases; correct: 2212.
+accuracy:  88.36%; precision:  34.55%; recall:  37.23%; FB1:  35.84
+              LOC: precision:  49.44%; recall:  42.95%; FB1:  45.97  1596
+             MISC: precision:  17.24%; recall:   8.68%; FB1:  11.54  464
+              ORG: precision:  12.82%; recall:   9.84%; FB1:  11.13  1030
+              PER: precision:  36.55%; recall:  65.74%; FB1:  46.98  3313
+
+bos	loc	misc	o	org	per
+loc	4590	558	3187	1336	3849
+misc	1192	1032	2874	1261	1884
+o	812	1097	208321	3122	2906
+org	964	551	3890	2835	5674
+per	811	155	3689	523	15196
+
+bos	B-LOC	B-MISC	B-ORG	I-LOC	I-MISC	I-ORG	I-PER	O
+B-LOC	0	0	0	0	0	0	0	0
+B-MISC	0	0	0	0	0	0	2	2
+B-ORG	0	0	0	0	0	0	0	0
+I-LOC	0	0	0	887	87	206	623	291
+I-MISC	0	0	0	240	159	193	316	356
+I-ORG	0	0	0	214	95	446	927	410
+I-PER	0	0	0	177	28	81	2548	315
+O	0	0	0	151	156	579	527	41346
+
+
+tst   1        13.6669     7.2373     0.1706     0.1329    86.7100    31.2400    35.0700    33.0400    33.0400          1
+
+processed 46435 tokens with 5648 phrases; found: 6342 phrases; correct: 1981.
+accuracy:  86.71%; precision:  31.24%; recall:  35.07%; FB1:  33.04
+              LOC: precision:  43.84%; recall:  41.37%; FB1:  42.57  1574
+             MISC: precision:  16.74%; recall:  10.40%; FB1:  12.83  436
+              ORG: precision:  13.40%; recall:   8.37%; FB1:  10.30  1037
+              PER: precision:  32.75%; recall:  66.73%; FB1:  43.93  3295
+
+bos	loc	misc	o	org	per
+loc	3992	456	2684	1176	4027
+misc	854	790	2195	1220	1174
+o	1017	1547	180403	3698	3603
+org	1390	552	4109	2855	7553
+per	830	110	2651	625	13583
+
+bos	B-LOC	B-MISC	B-ORG	I-LOC	I-MISC	I-ORG	I-PER	O
+B-LOC	0	0	0	0	0	2	3	1
+B-MISC	0	0	0	0	0	6	2	1
+B-ORG	0	0	0	0	0	0	5	0
+I-LOC	0	0	0	783	63	176	645	252
+I-MISC	0	0	0	159	118	184	212	236
+I-ORG	0	0	0	322	91	445	1216	417
+I-PER	0	0	0	188	21	102	2298	164
+O	0	0	0	214	217	622	651	36619
+
+
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   2        32.7988   219.4704     0.1234     0.0967    90.3300    42.0600    47.3800    44.5600    44.5600          2
+
+processed 203621 tokens with 23499 phrases; found: 26471 phrases; correct: 11133.
+accuracy:  90.33%; precision:  42.06%; recall:  47.38%; FB1:  44.56
+              LOC: precision:  59.03%; recall:  54.72%; FB1:  56.79  6619
+             MISC: precision:  39.73%; recall:  23.97%; FB1:  29.90  2074
+              ORG: precision:  26.54%; recall:  25.95%; FB1:  26.24  6179
+              PER: precision:  41.06%; recall:  72.15%; FB1:  52.33  11599
+
+bos	loc	misc	o	org	per
+loc	24860	1841	5364	7299	13693
+misc	3398	8237	5277	8292	5564
+o	2533	2126	828392	12482	11566
+org	4461	3020	10446	24809	23989
+per	2670	453	5187	3525	60138
+
+bos	B-LOC	B-MISC	B-ORG	I-LOC	I-MISC	I-ORG	I-PER	O
+B-LOC	0	0	0	0	1	3	7	0
+B-MISC	0	0	0	0	1	23	6	5
+B-ORG	0	0	0	0	0	24	0	0
+I-LOC	0	0	0	4432	271	1058	2009	516
+I-MISC	0	0	0	607	1225	1276	887	563
+I-ORG	0	0	0	868	435	3830	3602	1266
+I-PER	0	0	0	470	59	538	9483	578
+O	0	0	0	463	303	2218	1638	164956
+
+
+dev   2         8.6240     7.9489     0.1188     0.0946    90.5400    43.4700    47.8800    45.5700    45.5700          2
+
+processed 51362 tokens with 5942 phrases; found: 6545 phrases; correct: 2845.
+accuracy:  90.54%; precision:  43.47%; recall:  47.88%; FB1:  45.57
+              LOC: precision:  59.28%; recall:  53.57%; FB1:  56.28  1660
+             MISC: precision:  40.34%; recall:  23.10%; FB1:  29.38  528
+              ORG: precision:  24.38%; recall:  24.91%; FB1:  24.64  1370
+              PER: precision:  43.99%; recall:  71.34%; FB1:  54.42  2987
+
+bos	loc	misc	o	org	per
+loc	6272	581	1517	1919	3231
+misc	963	2036	1489	1984	1771
+o	572	482	209550	2901	2753
+org	967	606	2127	5266	4948
+per	777	109	1596	1065	16827
+
+bos	B-LOC	B-MISC	B-ORG	I-LOC	I-MISC	I-ORG	I-PER	O
+B-LOC	0	0	0	0	0	0	0	0
+B-MISC	0	0	0	0	0	2	2	0
+B-ORG	0	0	0	0	0	0	0	0
+I-LOC	0	0	0	1093	88	285	471	157
+I-MISC	0	0	0	167	331	314	285	167
+I-ORG	0	0	0	203	88	791	739	271
+I-PER	0	0	0	150	15	164	2638	182
+O	0	0	0	90	76	525	418	41650
+
+
+tst   2        11.3412     7.2828     0.1420     0.1120    88.8000    39.8100    45.2500    42.3600    42.3600          2
+
+processed 46435 tokens with 5648 phrases; found: 6421 phrases; correct: 2556.
+accuracy:  88.80%; precision:  39.81%; recall:  45.25%; FB1:  42.36
+              LOC: precision:  54.95%; recall:  54.20%; FB1:  54.57  1645
+             MISC: precision:  30.99%; recall:  20.09%; FB1:  24.37  455
+              ORG: precision:  25.89%; recall:  22.40%; FB1:  24.02  1437
+              PER: precision:  39.49%; recall:  70.44%; FB1:  50.61  2884
+
+bos	loc	misc	o	org	per
+loc	5564	584	1360	1691	3136
+misc	661	1350	1215	1746	1261
+o	806	841	181799	3643	3179
+org	1524	629	2541	5107	6658
+per	899	83	1115	937	14765
+
+bos	B-LOC	B-MISC	B-ORG	I-LOC	I-MISC	I-ORG	I-PER	O
+B-LOC	0	0	0	0	0	0	4	2
+B-MISC	0	0	0	0	0	3	6	0
+B-ORG	0	0	0	0	0	0	5	0
+I-LOC	0	0	0	991	86	259	456	127
+I-MISC	0	0	0	106	197	276	196	134
+I-ORG	0	0	0	287	101	801	989	313
+I-PER	0	0	0	167	9	151	2331	115
+O	0	0	0	150	123	646	492	36912
+
+
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   3        26.5698   219.2883     0.1025     0.0807    91.9300    49.1600    52.1200    50.5900    50.5900          3
+
+processed 203621 tokens with 23499 phrases; found: 24917 phrases; correct: 12248.
+accuracy:  91.93%; precision:  49.16%; recall:  52.12%; FB1:  50.59
+              LOC: precision:  66.24%; recall:  58.12%; FB1:  61.92  6265
+             MISC: precision:  42.43%; recall:  37.52%; FB1:  39.83  3040
+              ORG: precision:  33.27%; recall:  30.82%; FB1:  32.00  5855
+              PER: precision:  49.81%; recall:  73.64%; FB1:  59.42  9757
+
+bos	loc	misc	o	org	per
+loc	27993	3122	5540	7160	9242
+misc	2401	12116	5258	6981	4012
+o	1855	2506	841328	5107	6303
+org	4178	4464	14686	27029	16368
+per	2145	917	5679	2790	60442
+
+bos	B-LOC	B-MISC	B-ORG	I-LOC	I-MISC	I-ORG	I-PER	O
+B-LOC	0	0	0	0	0	3	7	1
+B-MISC	0	0	0	0	2	18	7	8
+B-ORG	0	0	0	0	0	15	0	9
+I-LOC	0	0	0	4747	431	1108	1314	686
+I-MISC	0	0	0	408	1743	1083	646	678
+I-ORG	0	0	0	749	608	4142	2471	2031
+I-PER	0	0	0	377	115	410	9482	744
+O	0	0	0	354	344	768	1029	167083
+
+
+dev   3         7.8399     7.9630     0.1037     0.0838    91.6200    47.5200    49.7300    48.6000    48.6000          3
+
+processed 51362 tokens with 5942 phrases; found: 6219 phrases; correct: 2955.
+accuracy:  91.62%; precision:  47.52%; recall:  49.73%; FB1:  48.60
+              LOC: precision:  64.39%; recall:  49.70%; FB1:  56.10  1418
+             MISC: precision:  41.60%; recall:  34.38%; FB1:  37.65  762
+              ORG: precision:  27.98%; recall:  30.43%; FB1:  29.15  1458
+              PER: precision:  51.03%; recall:  71.50%; FB1:  59.55  2581
+
+bos	loc	misc	o	org	per
+loc	6164	1010	1678	2324	2344
+misc	721	2949	1507	1621	1445
+o	472	618	212370	1304	1494
+org	763	943	3044	5683	3481
+per	578	256	1690	942	16908
+
+bos	B-LOC	B-MISC	B-ORG	I-LOC	I-MISC	I-ORG	I-PER	O
+B-LOC	0	0	0	0	0	0	0	0
+B-MISC	0	0	0	0	0	2	2	0
+B-ORG	0	0	0	0	0	0	0	0
+I-LOC	0	0	0	1013	139	383	341	218
+I-MISC	0	0	0	123	438	273	227	203
+I-ORG	0	0	0	145	128	858	515	446
+I-PER	0	0	0	100	34	153	2627	235
+O	0	0	0	95	90	196	255	42123
+
+
+tst   3        10.4776     7.2720     0.1268     0.1010    89.9000    42.5500    44.9700    43.7300    43.7300          3
+
+processed 46435 tokens with 5648 phrases; found: 5970 phrases; correct: 2540.
+accuracy:  89.90%; precision:  42.55%; recall:  44.97%; FB1:  43.73
+              LOC: precision:  57.97%; recall:  46.88%; FB1:  51.84  1349
+             MISC: precision:  34.55%; recall:  32.34%; FB1:  33.41  657
+              ORG: precision:  27.64%; recall:  24.62%; FB1:  26.04  1480
+              PER: precision:  45.17%; recall:  69.39%; FB1:  54.72  2484
+
+bos	loc	misc	o	org	per
+loc	5314	929	1680	2094	2318
+misc	521	2083	1290	1408	931
+o	630	1008	184745	1820	2065
+org	1436	884	3979	5474	4686
+per	639	235	1246	1016	14663
+
+bos	B-LOC	B-MISC	B-ORG	I-LOC	I-MISC	I-ORG	I-PER	O
+B-LOC	0	0	0	0	0	0	4	2
+B-MISC	0	0	0	0	0	3	6	0
+B-ORG	0	0	0	0	0	0	5	0
+I-LOC	0	0	0	852	135	350	330	252
+I-MISC	0	0	0	75	307	216	146	165
+I-ORG	0	0	0	252	131	839	717	552
+I-PER	0	0	0	122	29	167	2292	163
+O	0	0	0	106	125	300	339	37453
+
+
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   4        24.6426   218.8432     0.0853     0.0680    93.2000    55.7100    60.1900    57.8600    57.8600          4
+
+processed 203621 tokens with 23499 phrases; found: 25386 phrases; correct: 14143.
+accuracy:  93.20%; precision:  55.71%; recall:  60.19%; FB1:  57.86
+              LOC: precision:  74.28%; recall:  64.94%; FB1:  69.30  6243
+             MISC: precision:  44.58%; recall:  43.66%; FB1:  44.11  3367
+              ORG: precision:  44.69%; recall:  48.32%; FB1:  46.43  6834
+              PER: precision:  55.37%; recall:  75.02%; FB1:  63.71  8942
+
+bos	loc	misc	o	org	per
+loc	32340	3476	3913	5927	7401
+misc	1757	14188	4517	6670	3636
+o	1499	2355	841279	5819	6147
+org	2954	4311	9863	38065	11532
+per	1611	1087	4581	3055	61639
+
+bos	B-LOC	B-MISC	B-ORG	I-LOC	I-MISC	I-ORG	I-PER	O
+B-LOC	0	0	0	0	0	5	6	0
+B-MISC	0	0	0	0	7	17	4	7
+B-ORG	0	0	0	0	0	14	1	9
+I-LOC	0	0	0	5300	487	918	1089	492
+I-MISC	0	0	0	309	2032	1031	551	635
+I-ORG	0	0	0	508	582	5866	1750	1295
+I-PER	0	0	0	289	163	462	9556	658
+O	0	0	0	291	338	929	994	167026
+
+
+dev   4         6.1373     9.9386     0.0873     0.0704    92.9600    54.8200    58.8500    56.7600    56.7600          4
+
+processed 51362 tokens with 5942 phrases; found: 6379 phrases; correct: 3497.
+accuracy:  92.96%; precision:  54.82%; recall:  58.85%; FB1:  56.76
+              LOC: precision:  74.63%; recall:  60.37%; FB1:  66.75  1486
+             MISC: precision:  44.30%; recall:  41.76%; FB1:  42.99  869
+              ORG: precision:  40.61%; recall:  47.58%; FB1:  43.82  1571
+              PER: precision:  55.65%; recall:  74.10%; FB1:  63.56  2453
+
+bos	loc	misc	o	org	per
+loc	7570	1136	1163	1515	2136
+misc	531	3515	1314	1556	1327
+o	366	579	212461	1459	1393
+org	513	974	1935	7806	2686
+per	446	341	1355	1042	17190
+
+bos	B-LOC	B-MISC	B-ORG	I-LOC	I-MISC	I-ORG	I-PER	O
+B-LOC	0	0	0	0	0	0	0	0
+B-MISC	0	0	0	0	0	2	2	0
+B-ORG	0	0	0	0	0	0	0	0
+I-LOC	0	0	0	1235	151	242	321	145
+I-MISC	0	0	0	92	527	256	205	184
+I-ORG	0	0	0	90	140	1198	405	259
+I-PER	0	0	0	76	53	166	2657	197
+O	0	0	0	73	88	240	228	42130
+
+
+tst   4         8.5284     8.4236     0.1059     0.0828    91.7200    51.2000    56.2000    53.5800    53.5800          4
+
+processed 46435 tokens with 5648 phrases; found: 6199 phrases; correct: 3174.
+accuracy:  91.72%; precision:  51.20%; recall:  56.20%; FB1:  53.58
+              LOC: precision:  67.29%; recall:  58.57%; FB1:  62.63  1452
+             MISC: precision:  39.80%; recall:  40.31%; FB1:  40.06  711
+              ORG: precision:  41.62%; recall:  43.95%; FB1:  42.75  1754
+              PER: precision:  51.88%; recall:  73.22%; FB1:  60.73  2282
+
+bos	loc	misc	o	org	per
+loc	6736	984	1041	1640	1934
+misc	378	2476	1167	1345	867
+o	511	870	184910	2185	1792
+org	1200	945	2596	8190	3528
+per	489	263	1026	992	15029
+
+bos	B-LOC	B-MISC	B-ORG	I-LOC	I-MISC	I-ORG	I-PER	O
+B-LOC	0	0	0	0	0	0	4	2
+B-MISC	0	0	0	0	0	4	4	1
+B-ORG	0	0	0	0	0	0	5	0
+I-LOC	0	0	0	1106	135	263	281	134
+I-MISC	0	0	0	56	371	198	124	160
+I-ORG	0	0	0	193	125	1294	543	336
+I-PER	0	0	0	98	37	157	2341	140
+O	0	0	0	88	103	372	283	37477
+
+
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   5        21.4089   246.2738     0.0810     0.0640    93.6000    58.8300    61.3700    60.0700    60.0700          5
+
+processed 203621 tokens with 23499 phrases; found: 24515 phrases; correct: 14422.
+accuracy:  93.60%; precision:  58.83%; recall:  61.37%; FB1:  60.07
+              LOC: precision:  76.52%; recall:  66.15%; FB1:  70.96  6172
+             MISC: precision:  52.88%; recall:  45.08%; FB1:  48.67  2931
+              ORG: precision:  45.08%; recall:  47.51%; FB1:  46.26  6661
+              PER: precision:  58.80%; recall:  77.97%; FB1:  67.04  8751
+
+bos	loc	misc	o	org	per
+loc	33184	3001	4147	6269	6456
+misc	1519	13916	4178	8092	3063
+o	1161	1974	844045	5354	4565
+org	3263	3125	10953	38737	10647
+per	1356	792	4647	2939	62239
+
+bos	B-LOC	B-MISC	B-ORG	I-LOC	I-MISC	I-ORG	I-PER	O
+B-LOC	0	0	0	0	0	4	3	4
+B-MISC	0	0	0	0	8	17	3	7
+B-ORG	0	0	0	0	0	23	0	1
+I-LOC	0	0	0	5394	406	955	977	554
+I-MISC	0	0	0	267	2008	1221	491	571
+I-ORG	0	0	0	542	396	5941	1650	1472
+I-PER	0	0	0	243	108	436	9691	650
+O	0	0	0	226	279	813	713	167547
+
+
+dev   5         5.7323     9.2397     0.0831     0.0664    93.3600    58.3900    60.6000    59.4800    59.4800          5
+
+processed 51362 tokens with 5942 phrases; found: 6167 phrases; correct: 3601.
+accuracy:  93.36%; precision:  58.39%; recall:  60.60%; FB1:  59.48
+              LOC: precision:  77.71%; recall:  62.44%; FB1:  69.24  1476
+             MISC: precision:  52.26%; recall:  43.93%; FB1:  47.73  775
+              ORG: precision:  41.61%; recall:  48.47%; FB1:  44.78  1562
+              PER: precision:  59.43%; recall:  75.95%; FB1:  66.68  2354
+
+bos	loc	misc	o	org	per
+loc	7865	975	1181	1609	1890
+misc	491	3459	1254	1976	1063
+o	258	466	213052	1349	1133
+org	543	689	2217	8116	2349
+per	400	259	1385	1143	17187
+
+bos	B-LOC	B-MISC	B-ORG	I-LOC	I-MISC	I-ORG	I-PER	O
+B-LOC	0	0	0	0	0	0	0	0
+B-MISC	0	0	0	0	0	4	0	0
+B-ORG	0	0	0	0	0	0	0	0
+I-LOC	0	0	0	1273	126	253	284	158
+I-MISC	0	0	0	79	521	312	174	178
+I-ORG	0	0	0	92	101	1244	353	302
+I-PER	0	0	0	69	41	182	2651	206
+O	0	0	0	56	62	206	173	42262
+
+
+tst   5         8.6923     8.4633     0.1064     0.0837    91.6300    52.0700    55.1000    53.5400    53.5800          4
+
+processed 46435 tokens with 5648 phrases; found: 5977 phrases; correct: 3112.
+accuracy:  91.63%; precision:  52.07%; recall:  55.10%; FB1:  53.54
+              LOC: precision:  69.81%; recall:  59.47%; FB1:  64.23  1421
+             MISC: precision:  42.51%; recall:  37.61%; FB1:  39.91  621
+              ORG: precision:  38.91%; recall:  38.35%; FB1:  38.63  1637
+              PER: precision:  53.05%; recall:  75.39%; FB1:  62.27  2298
+
+bos	loc	misc	o	org	per
+loc	6772	867	1060	1749	1887
+misc	351	2311	1168	1608	795
+o	389	812	185373	2185	1509
+org	1210	698	3280	7688	3583
+per	436	232	1069	982	15080
+
+bos	B-LOC	B-MISC	B-ORG	I-LOC	I-MISC	I-ORG	I-PER	O
+B-LOC	0	0	0	0	0	0	3	3
+B-MISC	0	0	0	0	0	4	4	1
+B-ORG	0	0	0	0	0	0	5	0
+I-LOC	0	0	0	1112	114	273	276	144
+I-MISC	0	0	0	50	341	237	123	158
+I-ORG	0	0	0	193	88	1211	542	457
+I-PER	0	0	0	83	33	152	2353	152
+O	0	0	0	70	112	362	247	37532
+
+
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   6        19.0855   243.7033     0.0707     0.0562    94.3800    63.3200    66.0600    64.6600    64.6600          6
+
+processed 203621 tokens with 23499 phrases; found: 24515 phrases; correct: 15523.
+accuracy:  94.38%; precision:  63.32%; recall:  66.06%; FB1:  64.66
+              LOC: precision:  78.30%; recall:  68.71%; FB1:  73.19  6266
+             MISC: precision:  56.05%; recall:  46.07%; FB1:  50.57  2826
+              ORG: precision:  52.57%; recall:  58.47%; FB1:  55.36  7031
+              PER: precision:  63.60%; recall:  80.86%; FB1:  71.20  8392
+
+bos	loc	misc	o	org	per
+loc	34922	2559	3423	6337	5816
+misc	1519	14265	4532	7467	2985
+o	1030	1526	845696	4725	4122
+org	2703	2573	8778	44595	8076
+per	1366	656	3869	2270	63812
+
+bos	B-LOC	B-MISC	B-ORG	I-LOC	I-MISC	I-ORG	I-PER	O
+B-LOC	0	0	0	0	0	3	4	4
+B-MISC	0	0	0	0	11	16	3	5
+B-ORG	0	0	0	0	0	23	0	1
+I-LOC	0	0	0	5626	331	954	908	467
+I-MISC	0	0	0	273	2099	1123	462	601
+I-ORG	0	0	0	465	334	6767	1266	1169
+I-PER	0	0	0	239	90	335	9913	551
+O	0	0	0	209	229	731	637	167772
+
+
+dev   6         5.1913     9.1824     0.0761     0.0608    93.9200    61.3100    63.7800    62.5200    62.5200          6
+
+processed 51362 tokens with 5942 phrases; found: 6182 phrases; correct: 3790.
+accuracy:  93.92%; precision:  61.31%; recall:  63.78%; FB1:  62.52
+              LOC: precision:  79.48%; recall:  64.29%; FB1:  71.08  1486
+             MISC: precision:  53.00%; recall:  44.03%; FB1:  48.10  766
+              ORG: precision:  46.10%; recall:  56.45%; FB1:  50.75  1642
+              PER: precision:  63.20%; recall:  78.50%; FB1:  70.02  2288
+
+bos	loc	misc	o	org	per
+loc	8215	891	1126	1602	1686
+misc	471	3533	1349	1897	993
+o	227	361	213386	1227	1057
+org	461	591	1817	8971	2074
+per	385	255	1197	1052	17485
+
+bos	B-LOC	B-MISC	B-ORG	I-LOC	I-MISC	I-ORG	I-PER	O
+B-LOC	0	0	0	0	0	0	0	0
+B-MISC	0	0	0	0	1	2	1	0
+B-ORG	0	0	0	0	0	0	0	0
+I-LOC	0	0	0	1315	125	241	259	154
+I-MISC	0	0	0	79	535	309	149	192
+I-ORG	0	0	0	82	79	1370	316	245
+I-PER	0	0	0	63	36	165	2710	175
+O	0	0	0	46	51	189	165	42308
+
+
+tst   6         7.9462     8.4069     0.0959     0.0761    92.3900    56.0400    59.3700    57.6600    57.6600          6
+
+processed 46435 tokens with 5648 phrases; found: 5983 phrases; correct: 3353.
+accuracy:  92.39%; precision:  56.04%; recall:  59.37%; FB1:  57.66
+              LOC: precision:  71.92%; recall:  60.49%; FB1:  65.71  1403
+             MISC: precision:  46.70%; recall:  39.32%; FB1:  42.69  591
+              ORG: precision:  44.18%; recall:  47.56%; FB1:  45.81  1788
+              PER: precision:  58.06%; recall:  79.04%; FB1:  66.95  2201
+
+bos	loc	misc	o	org	per
+loc	6946	685	1083	1858	1763
+misc	386	2340	1156	1562	789
+o	368	530	185946	2026	1398
+org	1005	613	2840	9146	2855
+per	445	190	921	842	15401
+
+bos	B-LOC	B-MISC	B-ORG	I-LOC	I-MISC	I-ORG	I-PER	O
+B-LOC	0	0	0	0	0	1	3	2
+B-MISC	0	0	0	0	0	4	4	1
+B-ORG	0	0	0	0	0	0	5	0
+I-LOC	0	0	0	1127	90	292	253	157
+I-MISC	0	0	0	57	356	224	119	153
+I-ORG	0	0	0	156	87	1409	441	398
+I-PER	0	0	0	81	26	136	2401	129
+O	0	0	0	66	85	342	220	37610
+
+
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   7        18.1958   243.9046     0.0781     0.0624    93.7600    58.5400    60.8200    59.6600    64.6600          6
+
+processed 203621 tokens with 23499 phrases; found: 24412 phrases; correct: 14292.
+accuracy:  93.76%; precision:  58.54%; recall:  60.82%; FB1:  59.66
+              LOC: precision:  76.30%; recall:  57.18%; FB1:  65.38  5351
+             MISC: precision:  59.36%; recall:  46.22%; FB1:  51.97  2677
+              ORG: precision:  44.62%; recall:  51.70%; FB1:  47.90  7324
+              PER: precision:  59.07%; recall:  81.09%; FB1:  68.35  9060
+
+bos	loc	misc	o	org	per
+loc	29192	2195	3885	10553	7232
+misc	1566	14105	4357	7635	3105
+o	897	1214	846340	3958	4690
+org	2511	2128	9625	41608	10853
+per	1355	607	3775	2150	64086
+
+bos	B-LOC	B-MISC	B-ORG	I-LOC	I-MISC	I-ORG	I-PER	O
+B-LOC	0	0	0	0	0	5	4	2
+B-MISC	0	0	0	0	13	11	4	7
+B-ORG	0	0	0	0	0	23	0	1
+I-LOC	0	0	0	4707	299	1698	1087	495
+I-MISC	0	0	0	272	2089	1153	483	561
+I-ORG	0	0	0	413	286	6287	1711	1304
+I-PER	0	0	0	233	98	318	9935	544
+O	0	0	0	176	195	605	697	167905
+
+
+dev   7         6.2351     9.2881     0.0828     0.0673    93.2700    56.5800    58.6200    57.5800    62.5200          6
+
+processed 51362 tokens with 5942 phrases; found: 6156 phrases; correct: 3483.
+accuracy:  93.27%; precision:  56.58%; recall:  58.62%; FB1:  57.58
+              LOC: precision:  74.45%; recall:  53.29%; FB1:  62.12  1315
+             MISC: precision:  57.41%; recall:  43.71%; FB1:  49.63  702
+              ORG: precision:  38.55%; recall:  48.84%; FB1:  43.09  1699
+              PER: precision:  59.26%; recall:  78.50%; FB1:  67.54  2440
+
+bos	loc	misc	o	org	per
+loc	6904	740	1324	2565	1987
+misc	508	3532	1298	1933	972
+o	236	292	213510	1023	1197
+org	475	515	2003	8254	2667
+per	465	181	1145	1027	17556
+
+bos	B-LOC	B-MISC	B-ORG	I-LOC	I-MISC	I-ORG	I-PER	O
+B-LOC	0	0	0	0	0	0	0	0
+B-MISC	0	0	0	0	1	2	1	0
+B-ORG	0	0	0	0	0	0	0	0
+I-LOC	0	0	0	1084	101	430	297	182
+I-MISC	0	0	0	85	536	311	152	180
+I-ORG	0	0	0	92	75	1235	410	280
+I-PER	0	0	0	75	28	165	2710	171
+O	0	0	0	50	42	152	175	42340
+
+
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   8        16.1481   241.4683     0.0591     0.0473    95.2700    68.0500    70.6700    69.3300    69.3300          8
+
+processed 203621 tokens with 23499 phrases; found: 24405 phrases; correct: 16607.
+accuracy:  95.27%; precision:  68.05%; recall:  70.67%; FB1:  69.33
+              LOC: precision:  81.11%; recall:  73.25%; FB1:  76.98  6448
+             MISC: precision:  62.89%; recall:  53.29%; FB1:  57.69  2913
+              ORG: precision:  57.69%; recall:  65.83%; FB1:  61.49  7213
+              PER: precision:  68.75%; recall:  81.58%; FB1:  74.62  7831
+
+bos	loc	misc	o	org	per
+loc	37285	2244	2847	6213	4468
+misc	1318	16593	3771	6635	2451
+o	783	1138	847963	4211	3004
+org	2366	2010	6240	49876	6233
+per	1397	546	3736	2218	64076
+
+bos	B-LOC	B-MISC	B-ORG	I-LOC	I-MISC	I-ORG	I-PER	O
+B-LOC	0	0	0	0	1	4	3	3
+B-MISC	0	0	0	0	17	10	2	6
+B-ORG	0	0	0	0	0	23	0	1
+I-LOC	0	0	0	5987	295	934	697	373
+I-MISC	0	0	0	227	2449	990	382	510
+I-ORG	0	0	0	403	283	7478	987	850
+I-PER	0	0	0	241	81	331	9948	527
+O	0	0	0	161	191	658	438	168130
+
+
+dev   8         4.4144     9.1255     0.0680     0.0546    94.5400    64.2400    66.8000    65.5000    65.5000          8
+
+processed 51362 tokens with 5942 phrases; found: 6178 phrases; correct: 3969.
+accuracy:  94.54%; precision:  64.24%; recall:  66.80%; FB1:  65.50
+              LOC: precision:  79.83%; recall:  66.58%; FB1:  72.60  1532
+             MISC: precision:  58.76%; recall:  50.22%; FB1:  54.15  788
+              ORG: precision:  49.23%; recall:  62.04%; FB1:  54.90  1690
+              PER: precision:  66.93%; recall:  78.77%; FB1:  72.37  2168
+
+bos	loc	misc	o	org	per
+loc	8581	811	994	1675	1459
+misc	446	4111	1087	1743	856
+o	206	253	213933	1100	766
+org	464	564	1416	9655	1815
+per	506	185	1139	1030	17514
+
+bos	B-LOC	B-MISC	B-ORG	I-LOC	I-MISC	I-ORG	I-PER	O
+B-LOC	0	0	0	0	0	0	0	0
+B-MISC	0	0	0	0	2	1	1	0
+B-ORG	0	0	0	0	0	0	0	0
+I-LOC	0	0	0	1358	114	249	235	138
+I-MISC	0	0	0	66	636	285	124	153
+I-ORG	0	0	0	80	75	1465	273	199
+I-PER	0	0	0	83	27	158	2708	173
+O	0	0	0	47	35	170	118	42389
+
+
+tst   8         7.2862     8.3283     0.0834     0.0659    93.4100    61.3600    65.1900    63.2200    63.2200          8
+
+processed 46435 tokens with 5648 phrases; found: 6001 phrases; correct: 3682.
+accuracy:  93.41%; precision:  61.36%; recall:  65.19%; FB1:  63.22
+              LOC: precision:  74.42%; recall:  63.67%; FB1:  68.63  1427
+             MISC: precision:  52.43%; recall:  44.59%; FB1:  48.19  597
+              ORG: precision:  52.21%; recall:  61.77%; FB1:  56.59  1965
+              PER: precision:  63.67%; recall:  79.22%; FB1:  70.60  2012
+
+bos	loc	misc	o	org	per
+loc	7318	682	923	2035	1377
+misc	311	2677	1114	1478	653
+o	313	687	186336	1848	1084
+org	892	541	1718	11171	2137
+per	484	170	907	925	15313
+
+bos	B-LOC	B-MISC	B-ORG	I-LOC	I-MISC	I-ORG	I-PER	O
+B-LOC	0	0	0	0	0	0	4	2
+B-MISC	0	0	0	0	0	4	5	0
+B-ORG	0	0	0	0	0	0	5	0
+I-LOC	0	0	0	1183	86	310	206	134
+I-MISC	0	0	0	49	408	204	97	151
+I-ORG	0	0	0	140	74	1700	350	227
+I-PER	0	0	0	85	21	148	2395	124
+O	0	0	0	58	107	304	166	37688
+
+
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   9        14.0537   240.3877     0.0538     0.0436    95.6400    70.4200    73.2700    71.8200    71.8200          9
+
+processed 203621 tokens with 23499 phrases; found: 24448 phrases; correct: 17217.
+accuracy:  95.64%; precision:  70.42%; recall:  73.27%; FB1:  71.82
+              LOC: precision:  82.19%; recall:  73.73%; FB1:  77.73  6405
+             MISC: precision:  65.14%; recall:  58.06%; FB1:  61.40  3064
+              ORG: precision:  60.85%; recall:  69.58%; FB1:  64.92  7228
+              PER: precision:  71.72%; recall:  84.23%; FB1:  77.47  7751
+
+bos	loc	misc	o	org	per
+loc	38032	2267	2523	5971	4264
+misc	1161	18043	3394	5954	2216
+o	641	1208	848582	4136	2532
+org	2223	2097	5187	51875	5343
+per	1250	475	3073	2120	65055
+
+bos	B-LOC	B-MISC	B-ORG	I-LOC	I-MISC	I-ORG	I-PER	O
+B-LOC	0	0	0	5	1	2	0	3
+B-MISC	0	0	0	0	19	8	2	6
+B-ORG	0	0	0	0	0	24	0	0
+I-LOC	0	0	0	6056	305	939	662	324
+I-MISC	0	0	0	200	2652	918	342	446
+I-ORG	0	0	0	380	287	7779	847	708
+I-PER	0	0	0	212	67	328	10125	396
+O	0	0	0	129	189	710	411	168139
+
+
+dev   9         3.9816     9.0979     0.0643     0.0525    94.7500    65.3000    68.1400    66.6900    66.6900          9
+
+processed 51362 tokens with 5942 phrases; found: 6201 phrases; correct: 4049.
+accuracy:  94.75%; precision:  65.30%; recall:  68.14%; FB1:  66.69
+              LOC: precision:  80.13%; recall:  67.17%; FB1:  73.08  1540
+             MISC: precision:  60.12%; recall:  52.82%; FB1:  56.24  810
+              ORG: precision:  50.44%; recall:  63.76%; FB1:  56.32  1695
+              PER: precision:  68.32%; recall:  79.97%; FB1:  73.69  2156
+
+bos	loc	misc	o	org	per
+loc	8781	799	889	1664	1387
+misc	480	4343	1011	1609	800
+o	166	293	213986	1123	690
+org	466	598	1153	10065	1632
+per	454	162	1012	1120	17626
+
+bos	B-LOC	B-MISC	B-ORG	I-LOC	I-MISC	I-ORG	I-PER	O
+B-LOC	0	0	0	0	0	0	0	0
+B-MISC	0	0	0	0	2	2	0	0
+B-ORG	0	0	0	0	0	0	0	0
+I-LOC	0	0	0	1382	115	257	217	123
+I-MISC	0	0	0	81	660	266	119	138
+I-ORG	0	0	0	81	87	1510	254	160
+I-PER	0	0	0	69	25	182	2724	149
+O	0	0	0	34	35	193	109	42388
+
+
+tst   9         7.0468     8.3346     0.0805     0.0646    93.5400    61.8100    65.9000    63.7900    63.7900          9
+
+processed 46435 tokens with 5648 phrases; found: 6022 phrases; correct: 3722.
+accuracy:  93.54%; precision:  61.81%; recall:  65.90%; FB1:  63.79
+              LOC: precision:  75.18%; recall:  63.01%; FB1:  68.56  1398
+             MISC: precision:  52.99%; recall:  49.29%; FB1:  51.07  653
+              ORG: precision:  53.06%; recall:  63.21%; FB1:  57.69  1979
+              PER: precision:  64.01%; recall:  78.85%; FB1:  70.66  1992
+
+bos	loc	misc	o	org	per
+loc	7463	705	797	2033	1337
+misc	321	2900	1053	1364	595
+o	255	739	186429	1851	994
+org	857	618	1582	11464	1938
+per	436	148	828	1106	15281
+
+bos	B-LOC	B-MISC	B-ORG	I-LOC	I-MISC	I-ORG	I-PER	O
+B-LOC	0	0	0	0	0	2	2	2
+B-MISC	0	0	0	0	1	5	3	0
+B-ORG	0	0	0	0	0	2	3	0
+I-LOC	0	0	0	1179	96	326	203	115
+I-MISC	0	0	0	47	451	191	91	129
+I-ORG	0	0	0	139	84	1732	322	214
+I-PER	0	0	0	71	21	175	2389	117
+O	0	0	0	52	105	315	166	37685
+
+
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   10       12.8518   242.4895     0.0483     0.0389    96.1100    72.5300    75.9400    74.2000    74.2000         10
+
+processed 203621 tokens with 23499 phrases; found: 24605 phrases; correct: 17846.
+accuracy:  96.11%; precision:  72.53%; recall:  75.94%; FB1:  74.20
+              LOC: precision:  82.49%; recall:  77.68%; FB1:  80.01  6723
+             MISC: precision:  65.84%; recall:  63.53%; FB1:  64.66  3317
+              ORG: precision:  62.43%; recall:  72.00%; FB1:  66.87  7290
+              PER: precision:  76.49%; recall:  84.32%; FB1:  80.22  7275
+
+bos	loc	misc	o	org	per
+loc	40244	2105	2053	5550	3105
+misc	1228	20477	2943	4768	1352
+o	690	1279	848264	4732	2134
+org	2283	2198	4422	53430	4392
+per	1429	523	2765	2228	65028
+
+bos	B-LOC	B-MISC	B-ORG	I-LOC	I-MISC	I-ORG	I-PER	O
+B-LOC	0	0	0	0	2	6	1	2
+B-MISC	0	0	0	0	21	7	2	5
+B-ORG	0	0	0	0	0	24	0	0
+I-LOC	0	0	0	6395	288	855	468	280
+I-MISC	0	0	0	212	3034	709	216	387
+I-ORG	0	0	0	387	295	8045	682	592
+I-PER	0	0	0	238	77	331	10115	367
+O	0	0	0	135	202	818	321	168102
+
+
+dev   10        3.7736     8.0433     0.0605     0.0492    95.0800    67.1100    70.2100    68.6200    68.6200         10
+
+processed 51362 tokens with 5942 phrases; found: 6217 phrases; correct: 4172.
+accuracy:  95.08%; precision:  67.11%; recall:  70.21%; FB1:  68.62
+              LOC: precision:  79.72%; recall:  70.17%; FB1:  74.64  1617
+             MISC: precision:  61.28%; recall:  58.35%; FB1:  59.78  878
+              ORG: precision:  52.17%; recall:  65.47%; FB1:  58.07  1683
+              PER: precision:  71.95%; recall:  79.64%; FB1:  75.60  2039
+
+bos	loc	misc	o	org	per
+loc	9186	790	818	1614	1112
+misc	480	4891	914	1404	554
+o	177	328	213884	1265	604
+org	495	641	1002	10293	1483
+per	606	181	933	1066	17588
+
+bos	B-LOC	B-MISC	B-ORG	I-LOC	I-MISC	I-ORG	I-PER	O
+B-LOC	0	0	0	0	0	0	0	0
+B-MISC	0	0	0	0	2	2	0	0
+B-ORG	0	0	0	0	0	0	0	0
+I-LOC	0	0	0	1443	108	251	173	119
+I-MISC	0	0	0	76	754	224	82	128
+I-ORG	0	0	0	85	89	1551	229	138
+I-PER	0	0	0	97	30	162	2721	139
+O	0	0	0	34	47	218	92	42368
+
+
+tst   10        6.7774     8.2878     0.0782     0.0629    93.7100    62.4900    67.4900    64.9000    64.9000         10
+
+processed 46435 tokens with 5648 phrases; found: 6100 phrases; correct: 3812.
+accuracy:  93.71%; precision:  62.49%; recall:  67.49%; FB1:  64.90
+              LOC: precision:  74.00%; recall:  64.33%; FB1:  68.83  1450
+             MISC: precision:  55.13%; recall:  55.84%; FB1:  55.48  711
+              ORG: precision:  52.53%; recall:  65.02%; FB1:  58.11  2056
+              PER: precision:  67.29%; recall:  78.35%; FB1:  72.40  1883
+
+bos	loc	misc	o	org	per
+loc	7552	705	730	2300	1048
+misc	337	3316	1000	1148	432
+o	300	801	186189	2145	833
+org	981	683	1272	11835	1688
+per	501	175	717	1205	15201
+
+bos	B-LOC	B-MISC	B-ORG	I-LOC	I-MISC	I-ORG	I-PER	O
+B-LOC	0	0	0	0	0	1	3	2
+B-MISC	0	0	0	0	1	4	4	0
+B-ORG	0	0	0	0	0	2	3	0
+I-LOC	0	0	0	1204	94	352	161	108
+I-MISC	0	0	0	49	517	152	67	124
+I-ORG	0	0	0	159	93	1783	283	173
+I-PER	0	0	0	78	21	198	2375	101
+O	0	0	0	59	116	369	142	37637
+
+
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   11       11.4253   241.9935     0.0515     0.0421    95.7900    69.2200    72.5600    70.8500    74.2000         10
+
+processed 203621 tokens with 23499 phrases; found: 24630 phrases; correct: 17050.
+accuracy:  95.79%; precision:  69.22%; recall:  72.56%; FB1:  70.85
+              LOC: precision:  78.87%; recall:  66.40%; FB1:  72.10  6011
+             MISC: precision:  59.43%; recall:  73.59%; FB1:  65.76  4257
+              ORG: precision:  58.48%; recall:  70.99%; FB1:  64.13  7673
+              PER: precision:  79.11%; recall:  80.18%; FB1:  79.64  6689
+
+bos	loc	misc	o	org	per
+loc	34642	3529	2790	9536	2560
+misc	961	23963	2567	2419	858
+o	562	2018	849432	3662	1425
+org	2756	3780	4204	53548	2437
+per	1923	1146	2884	3590	62430
+
+bos	B-LOC	B-MISC	B-ORG	I-LOC	I-MISC	I-ORG	I-PER	O
+B-LOC	0	0	0	0	3	4	1	3
+B-MISC	0	0	0	1	26	3	1	4
+B-ORG	0	0	0	0	0	24	0	0
+I-LOC	0	0	0	5534	495	1571	364	322
+I-MISC	0	0	0	164	3540	382	139	333
+I-ORG	0	0	0	475	536	8051	405	534
+I-PER	0	0	0	316	176	560	9715	361
+O	0	0	0	123	357	672	226	168200
+
+
+dev   11        5.0157    69.0730     0.0646     0.0522    94.7800    63.9500    67.0100    65.4400    68.6200         10
+
+processed 51362 tokens with 5942 phrases; found: 6227 phrases; correct: 3982.
+accuracy:  94.78%; precision:  63.95%; recall:  67.01%; FB1:  65.44
+              LOC: precision:  74.81%; recall:  60.48%; FB1:  66.89  1485
+             MISC: precision:  55.62%; recall:  69.20%; FB1:  61.67  1147
+              ORG: precision:  48.51%; recall:  63.09%; FB1:  54.85  1744
+              PER: precision:  74.93%; recall:  75.30%; FB1:  75.12  1851
+
+bos	loc	misc	o	org	per
+loc	7896	1174	998	2554	898
+misc	420	5873	801	799	350
+o	158	573	214104	1014	409
+org	634	1211	994	10074	1001
+per	792	378	1014	1413	16777
+
+bos	B-LOC	B-MISC	B-ORG	I-LOC	I-MISC	I-ORG	I-PER	O
+B-LOC	0	0	0	0	0	0	0	0
+B-MISC	0	0	0	0	3	1	0	0
+B-ORG	0	0	0	0	0	0	0	0
+I-LOC	0	0	0	1253	173	406	137	125
+I-MISC	0	0	0	72	898	132	55	107
+I-ORG	0	0	0	111	168	1523	151	139
+I-PER	0	0	0	126	59	220	2600	144
+O	0	0	0	28	86	183	56	42406
+
+
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   12       10.2462  1474.3185     0.0408     0.0330    96.7000    75.9100    78.8100    77.3300    77.3300         12
+
+processed 203621 tokens with 23499 phrases; found: 24396 phrases; correct: 18519.
+accuracy:  96.70%; precision:  75.91%; recall:  78.81%; FB1:  77.33
+              LOC: precision:  84.23%; recall:  79.83%; FB1:  81.97  6767
+             MISC: precision:  70.27%; recall:  71.50%; FB1:  70.88  3498
+              ORG: precision:  65.37%; recall:  76.33%; FB1:  70.43  7381
+              PER: precision:  82.01%; recall:  83.88%; FB1:  82.94  6750
+
+bos	loc	misc	o	org	per
+loc	41451	1922	1985	5704	1995
+misc	1024	23077	2376	3439	852
+o	491	1254	850326	3694	1334
+org	2009	1958	3834	56316	2608
+per	1418	546	2572	2991	64446
+
+bos	B-LOC	B-MISC	B-ORG	I-LOC	I-MISC	I-ORG	I-PER	O
+B-LOC	0	0	0	0	3	3	1	4
+B-MISC	0	0	0	0	25	5	1	4
+B-ORG	0	0	0	0	0	24	0	0
+I-LOC	0	0	0	6586	250	895	294	261
+I-MISC	0	0	0	175	3435	505	129	314
+I-ORG	0	0	0	333	267	8496	411	494
+I-PER	0	0	0	228	80	482	10018	320
+O	0	0	0	110	204	704	190	168370
+
+
+dev   12        3.5364    52.3659     0.0557     0.0453    95.4700    68.9500    72.0500    70.4600    70.4600         12
+
+processed 51362 tokens with 5942 phrases; found: 6209 phrases; correct: 4281.
+accuracy:  95.47%; precision:  68.95%; recall:  72.05%; FB1:  70.46
+              LOC: precision:  79.35%; recall:  72.78%; FB1:  75.92  1685
+             MISC: precision:  64.91%; recall:  65.62%; FB1:  65.26  932
+              ORG: precision:  53.18%; recall:  68.68%; FB1:  59.94  1732
+              PER: precision:  76.24%; recall:  76.98%; FB1:  76.61  1860
+
+bos	loc	misc	o	org	per
+loc	9569	663	782	1656	850
+misc	438	5501	746	1218	340
+o	158	379	214238	1091	392
+org	578	612	993	10722	1009
+per	703	193	936	1442	17100
+
+bos	B-LOC	B-MISC	B-ORG	I-LOC	I-MISC	I-ORG	I-PER	O
+B-LOC	0	0	0	0	0	0	0	0
+B-MISC	0	0	0	0	2	2	0	0
+B-ORG	0	0	0	0	0	0	0	0
+I-LOC	0	0	0	1506	93	258	130	107
+I-MISC	0	0	0	70	849	193	48	104
+I-ORG	0	0	0	102	81	1615	154	140
+I-PER	0	0	0	111	34	234	2637	133
+O	0	0	0	31	60	186	54	42428
+
+
+tst   12        7.7785    68.9109     0.0800     0.0654    93.4600    60.6400    64.7500    62.6300    64.9000         10
+
+processed 46435 tokens with 5648 phrases; found: 6031 phrases; correct: 3657.
+accuracy:  93.46%; precision:  60.64%; recall:  64.75%; FB1:  62.63
+              LOC: precision:  71.21%; recall:  56.35%; FB1:  62.92  1320
+             MISC: precision:  53.94%; recall:  60.40%; FB1:  56.99  786
+              ORG: precision:  48.80%; recall:  64.84%; FB1:  55.69  2207
+              PER: precision:  70.78%; recall:  75.20%; FB1:  72.92  1718
+
+bos	loc	misc	o	org	per
+loc	6746	724	864	3156	845
+misc	297	3716	916	1023	281
+o	236	857	186649	1903	623
+org	914	817	1548	11894	1286
+per	600	173	768	1613	14645
+
+bos	B-LOC	B-MISC	B-ORG	I-LOC	I-MISC	I-ORG	I-PER	O
+B-LOC	0	0	0	0	0	2	2	2
+B-MISC	0	0	0	0	0	6	1	2
+B-ORG	0	0	0	0	1	1	3	0
+I-LOC	0	0	0	1056	99	517	128	119
+I-MISC	0	0	0	49	566	137	44	113
+I-ORG	0	0	0	151	125	1799	206	210
+I-PER	0	0	0	104	24	266	2281	98
+O	0	0	0	46	123	346	110	37698
+
+
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   13        9.0218  1489.3883     0.0370     0.0304    96.9600    77.3100    80.7500    78.9900    78.9900         13
+
+processed 203621 tokens with 23499 phrases; found: 24545 phrases; correct: 18976.
+accuracy:  96.96%; precision:  77.31%; recall:  80.75%; FB1:  78.99
+              LOC: precision:  85.84%; recall:  81.15%; FB1:  83.43  6750
+             MISC: precision:  70.68%; recall:  71.44%; FB1:  71.05  3475
+              ORG: precision:  67.30%; recall:  79.84%; FB1:  73.04  7499
+              PER: precision:  83.26%; recall:  86.05%; FB1:  84.63  6821
+
+bos	loc	misc	o	org	per
+loc	42380	1774	1357	5543	2003
+misc	935	23831	1944	3237	821
+o	523	1511	849943	3657	1465
+org	1881	1642	2772	57958	2472
+per	1185	414	1851	2906	65617
+
+bos	B-LOC	B-MISC	B-ORG	I-LOC	I-MISC	I-ORG	I-PER	O
+B-LOC	0	0	0	4	3	4	0	0
+B-MISC	0	0	0	0	27	4	1	3
+B-ORG	0	0	0	0	0	24	0	0
+I-LOC	0	0	0	6711	239	865	292	179
+I-MISC	0	0	0	146	3506	514	117	275
+I-ORG	0	0	0	309	221	8741	373	357
+I-PER	0	0	0	201	70	455	10172	230
+O	0	0	0	101	268	692	209	168308
+
+
+dev   13        3.4531    76.9991     0.0544     0.0455    95.4500    68.6600    72.5000    70.5300    70.5300         13
+
+processed 51362 tokens with 5942 phrases; found: 6274 phrases; correct: 4308.
+accuracy:  95.45%; precision:  68.66%; recall:  72.50%; FB1:  70.53
+              LOC: precision:  80.63%; recall:  73.65%; FB1:  76.98  1678
+             MISC: precision:  64.12%; recall:  62.80%; FB1:  63.45  903
+              ORG: precision:  52.97%; recall:  70.54%; FB1:  60.51  1786
+              PER: precision:  74.99%; recall:  77.63%; FB1:  76.29  1907
+
+bos	loc	misc	o	org	per
+loc	9711	655	600	1627	927
+misc	460	5461	698	1212	412
+o	167	433	214093	1110	455
+org	569	663	745	10908	1029
+per	618	197	791	1436	17332
+
+bos	B-LOC	B-MISC	B-ORG	I-LOC	I-MISC	I-ORG	I-PER	O
+B-LOC	0	0	0	0	0	0	0	0
+B-MISC	0	0	0	0	2	2	0	0
+B-ORG	0	0	0	0	0	0	0	0
+I-LOC	0	0	0	1516	93	264	139	82
+I-MISC	0	0	0	76	826	195	59	108
+I-ORG	0	0	0	95	85	1646	156	110
+I-PER	0	0	0	94	31	247	2651	126
+O	0	0	0	36	70	200	67	42386
+
+
+tst   13        7.1960    40.8059     0.0784     0.0646    93.5400    60.3200    65.3000    62.7100    64.9000         10
+
+processed 46435 tokens with 5648 phrases; found: 6114 phrases; correct: 3688.
+accuracy:  93.54%; precision:  60.32%; recall:  65.30%; FB1:  62.71
+              LOC: precision:  73.46%; recall:  54.92%; FB1:  62.85  1247
+             MISC: precision:  55.63%; recall:  59.83%; FB1:  57.65  755
+              ORG: precision:  47.83%; recall:  67.61%; FB1:  56.02  2348
+              PER: precision:  69.67%; recall:  76.00%; FB1:  72.70  1764
+
+bos	loc	misc	o	org	per
+loc	6734	649	694	3362	896
+misc	311	3751	793	1081	297
+o	289	822	186425	2041	691
+org	894	784	1220	12225	1336
+per	480	146	635	1633	14905
+
+bos	B-LOC	B-MISC	B-ORG	I-LOC	I-MISC	I-ORG	I-PER	O
+B-LOC	0	0	0	0	1	1	2	2
+B-MISC	0	0	0	0	1	5	2	1
+B-ORG	0	0	0	0	0	2	3	0
+I-LOC	0	0	0	1034	93	565	134	93
+I-MISC	0	0	0	44	568	159	47	91
+I-ORG	0	0	0	139	113	1853	218	168
+I-PER	0	0	0	75	22	281	2315	80
+O	0	0	0	46	126	367	119	37665
+
+
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   14        7.8768  1549.1612     0.0358     0.0293    97.0700    78.5700    81.6000    80.0600    80.0600         14
+
+processed 203621 tokens with 23499 phrases; found: 24406 phrases; correct: 19176.
+accuracy:  97.07%; precision:  78.57%; recall:  81.60%; FB1:  80.06
+              LOC: precision:  86.47%; recall:  81.74%; FB1:  84.04  6749
+             MISC: precision:  74.61%; recall:  73.27%; FB1:  73.94  3376
+              ORG: precision:  67.56%; recall:  81.81%; FB1:  74.00  7654
+              PER: precision:  85.26%; recall:  85.61%; FB1:  85.43  6627
+
+bos	loc	misc	o	org	per
+loc	43005	1498	1295	5713	1546
+misc	890	23572	1805	3818	683
+o	1156	1022	849403	4357	1161
+org	1504	1222	2414	59769	1816
+per	1170	357	1821	3444	65181
+
+bos	B-LOC	B-MISC	B-ORG	I-LOC	I-MISC	I-ORG	I-PER	O
+B-LOC	0	0	0	7	2	1	1	0
+B-MISC	0	0	0	0	27	3	1	4
+B-ORG	0	0	0	0	0	24	0	0
+I-LOC	0	0	0	6804	189	880	225	188
+I-MISC	0	0	0	136	3542	545	102	233
+I-ORG	0	0	0	247	177	8974	281	322
+I-PER	0	0	0	190	59	535	10120	224
+O	0	0	0	204	190	789	173	168222
+
+
+dev   14        3.6203    49.4511     0.0542     0.0446    95.5400    69.4500    72.9600    71.1600    71.1600         14
+
+processed 51362 tokens with 5942 phrases; found: 6242 phrases; correct: 4335.
+accuracy:  95.54%; precision:  69.45%; recall:  72.96%; FB1:  71.16
+              LOC: precision:  80.46%; recall:  73.54%; FB1:  76.85  1679
+             MISC: precision:  66.22%; recall:  64.86%; FB1:  65.53  903
+              ORG: precision:  53.49%; recall:  73.15%; FB1:  61.80  1834
+              PER: precision:  76.94%; recall:  76.28%; FB1:  76.61  1826
+
+bos	loc	misc	o	org	per
+loc	9821	602	644	1753	700
+misc	474	5349	667	1417	336
+o	368	305	213991	1252	342
+org	474	467	684	11382	907
+per	612	187	787	1792	16996
+
+bos	B-LOC	B-MISC	B-ORG	I-LOC	I-MISC	I-ORG	I-PER	O
+B-LOC	0	0	0	0	0	0	0	0
+B-MISC	0	0	0	0	3	1	0	0
+B-ORG	0	0	0	0	0	0	0	0
+I-LOC	0	0	0	1532	91	275	106	90
+I-MISC	0	0	0	69	843	212	52	88
+I-ORG	0	0	0	78	69	1710	133	102
+I-PER	0	0	0	95	31	285	2613	125
+O	0	0	0	78	52	202	52	42375
+
+
+tst   14        7.2898    72.0146     0.0780     0.0643    93.5700    61.5400    65.7600    63.5800    64.9000         10
+
+processed 46435 tokens with 5648 phrases; found: 6035 phrases; correct: 3714.
+accuracy:  93.57%; precision:  61.54%; recall:  65.76%; FB1:  63.58
+              LOC: precision:  72.92%; recall:  57.13%; FB1:  64.07  1307
+             MISC: precision:  57.10%; recall:  60.11%; FB1:  58.57  739
+              ORG: precision:  48.73%; recall:  67.91%; FB1:  56.74  2315
+              PER: precision:  72.34%; recall:  74.89%; FB1:  73.59  1674
+
+bos	loc	misc	o	org	per
+loc	7012	572	663	3337	751
+misc	271	3746	777	1205	234
+o	547	582	186178	2436	525
+org	852	696	1182	12538	1191
+per	531	168	587	1850	14663
+
+bos	B-LOC	B-MISC	B-ORG	I-LOC	I-MISC	I-ORG	I-PER	O
+B-LOC	0	0	0	0	0	2	2	2
+B-MISC	0	0	0	0	0	5	2	2
+B-ORG	0	0	0	0	0	2	3	0
+I-LOC	0	0	0	1085	89	540	117	88
+I-MISC	0	0	0	37	577	166	37	92
+I-ORG	0	0	0	131	105	1877	199	179
+I-PER	0	0	0	90	22	297	2284	80
+O	0	0	0	98	100	409	91	37625
+
+
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   15        7.2951  1538.1111     0.0303     0.0250    97.5000    80.4700    83.9100    82.1600    82.1600         15
+
+processed 203621 tokens with 23499 phrases; found: 24504 phrases; correct: 19719.
+accuracy:  97.50%; precision:  80.47%; recall:  83.91%; FB1:  82.16
+              LOC: precision:  88.04%; recall:  83.28%; FB1:  85.59  6754
+             MISC: precision:  76.62%; recall:  75.77%; FB1:  76.19  3400
+              ORG: precision:  70.94%; recall:  83.44%; FB1:  76.68  7434
+              PER: precision:  85.22%; recall:  89.30%; FB1:  87.22  6916
+
+bos	loc	misc	o	org	per
+loc	43741	1464	1090	5021	1741
+misc	1037	24464	1526	3007	734
+o	446	913	850825	3424	1491
+org	1342	1205	2007	60276	1895
+per	828	265	1298	1968	67614
+
+bos	B-LOC	B-MISC	B-ORG	I-LOC	I-MISC	I-ORG	I-PER	O
+B-LOC	0	0	0	2	2	1	2	4
+B-MISC	0	0	0	0	26	4	1	4
+B-ORG	0	0	0	0	0	24	0	0
+I-LOC	0	0	0	6911	192	775	264	144
+I-MISC	0	0	0	165	3641	442	113	197
+I-ORG	0	0	0	219	174	9052	291	265
+I-PER	0	0	0	140	45	318	10452	173
+O	0	0	0	91	142	644	231	168470
+
+
+dev   15        3.3802    61.1290     0.0509     0.0418    95.8200    71.0200    74.6400    72.7800    72.7800         15
+
+processed 51362 tokens with 5942 phrases; found: 6245 phrases; correct: 4435.
+accuracy:  95.82%; precision:  71.02%; recall:  74.64%; FB1:  72.78
+              LOC: precision:  82.06%; recall:  74.20%; FB1:  77.93  1661
+             MISC: precision:  66.78%; recall:  64.75%; FB1:  65.75  894
+              ORG: precision:  55.90%; recall:  73.45%; FB1:  63.49  1762
+              PER: precision:  77.28%; recall:  80.89%; FB1:  79.05  1928
+
+bos	loc	misc	o	org	per
+loc	9843	627	509	1667	874
+misc	490	5448	603	1294	408
+o	174	332	214156	1158	438
+org	468	491	635	11275	1045
+per	505	173	607	1354	17735
+
+bos	B-LOC	B-MISC	B-ORG	I-LOC	I-MISC	I-ORG	I-PER	O
+B-LOC	0	0	0	0	0	0	0	0
+B-MISC	0	0	0	0	2	2	0	0
+B-ORG	0	0	0	0	0	0	0	0
+I-LOC	0	0	0	1537	92	262	131	72
+I-MISC	0	0	0	75	837	201	66	85
+I-ORG	0	0	0	74	64	1701	158	95
+I-PER	0	0	0	84	31	213	2726	95
+O	0	0	0	38	50	187	70	42414
+
+
+tst   15        7.4778    35.2599     0.0740     0.0613    93.8700    62.0300    67.2600    64.5400    64.9000         10
+
+processed 46435 tokens with 5648 phrases; found: 6124 phrases; correct: 3799.
+accuracy:  93.87%; precision:  62.03%; recall:  67.26%; FB1:  64.54
+              LOC: precision:  73.43%; recall:  57.31%; FB1:  64.38  1302
+             MISC: precision:  57.82%; recall:  61.11%; FB1:  59.42  742
+              ORG: precision:  50.13%; recall:  69.54%; FB1:  58.26  2304
+              PER: precision:  70.89%; recall:  77.86%; FB1:  74.21  1776
+
+bos	loc	misc	o	org	per
+loc	6988	581	579	3363	824
+misc	276	3869	728	1029	331
+o	482	677	186543	1917	649
+org	793	753	1096	12469	1348
+per	499	172	484	1407	15237
+
+bos	B-LOC	B-MISC	B-ORG	I-LOC	I-MISC	I-ORG	I-PER	O
+B-LOC	0	0	0	0	1	1	2	2
+B-MISC	0	0	0	0	0	6	2	1
+B-ORG	0	0	0	0	0	2	3	0
+I-LOC	0	0	0	1084	75	567	121	72
+I-MISC	0	0	0	40	579	139	53	98
+I-ORG	0	0	0	121	113	1883	211	163
+I-PER	0	0	0	81	26	237	2363	66
+O	0	0	0	85	110	330	118	37680
+
+
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 

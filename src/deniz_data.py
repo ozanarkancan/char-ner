@@ -1,9 +1,16 @@
 import logging
-from featchar import *
-import featchar
-from utils import get_sents, get_sent_indx, sample_sents
-from exper_lasagne import Feat
 import numpy as np
+from itertools import *
+from scipy.sparse import coo_matrix
+
+import featchar
+import rep
+from utils import get_sents, sample_sents
+
+def write_sparse(fname, mat):
+    with open(fname,'w') as out:
+        for i,j,v in zip(mat.row, mat.col, mat.data):
+            out.write('{} {} {}\n'.format(i,j,int(v)))
 
 if __name__ == '__main__':
     logger = logging.getLogger()
@@ -12,33 +19,51 @@ if __name__ == '__main__':
     shandler.setLevel(logging.INFO)
     logger.addHandler(shandler);
 
-    trn, dev, tst = get_sents()
+    trn, dev, tst = get_sents('eng')
 
-    ctag2wtag_func = get_ts2 
-    wtag2ctag_func = get_tseq2
+    """
+    trn = sample_sents(trn,5,2,4)
+    dev = sample_sents(dev,5,2,4)
+    tst = sample_sents(tst,5,2,4)
+    """
 
+    repobj = rep.Repstd()
     for d in (trn,dev,tst):
         for sent in d:
             sent.update({
-                'cseq': get_cseq(sent), 
-                'wiseq': get_wiseq(sent), 
-                'tseq': wtag2ctag_func(sent)})
+                'cseq': repobj.get_cseq(sent), 
+                'wiseq': repobj.get_wiseq(sent), 
+                'tseq': repobj.get_tseq(sent)})
 
 
     trn = sorted(trn, key=lambda sent: len(sent['cseq']))
     dev = sorted(dev, key=lambda sent: len(sent['cseq']))
+    tst = sorted(tst, key=lambda sent: len(sent['cseq']))
 
     ntrnsent, ndevsent, ntstsent = list(map(len, (trn,dev,tst)))
     logger.info('# of sents trn, dev, tst: {} {} {}'.format(ntrnsent, ndevsent, ntstsent))
 
 
-    MAX_LENGTH = max(len(sent['cseq']) for sent in chain(trn,dev))
-    MIN_LENGTH = min(len(sent['cseq']) for sent in chain(trn,dev))
+    MAX_LENGTH = max(len(sent['cseq']) for sent in chain(trn,dev,tst))
+    MIN_LENGTH = min(len(sent['cseq']) for sent in chain(trn,dev,tst))
     logger.info('maxlen: {} minlen: {}'.format(MAX_LENGTH, MIN_LENGTH))
 
-    feat = Feat(featchar.get_cfeatures_basic_seg)
-    feat.fit(trn)
+    feat = featchar.Feat('basic')
+    feat.fit(trn,dev,tst)
 
-    trndat = [feat.transform(sent) for sent in trn]
-    devdat = [feat.transform(sent) for sent in dev]
-    np.savez('/ai/home/okuru13/tmp/for_deniz.npz',trn=trndat,dev=devdat)
+    # for dset,dname in zip((trn,),('trn',)):
+    for dset,dname in zip((trn,dev,tst),('trn','dev','tst')):
+        Xsents, Ysents = [],[]
+        for sent in dset:
+            Xsent,Ysent = feat.transform(sent)
+            # print 'Xsent:{} Ysent:{}'.format(Xsent.shape, Ysent.shape)
+            Xpad = np.zeros((MAX_LENGTH-Xsent.shape[0],Xsent.shape[1]),dtype=np.bool)
+            Ypad = np.zeros((MAX_LENGTH-Ysent.shape[0],Ysent.shape[1]),dtype=np.bool)
+            Xsent = np.vstack((Xsent,Xpad))
+            Ysent = np.vstack((Ysent,Ypad))
+            Xsents.append(Xsent)
+            Ysents.append(Ysent)
+        Xsents = coo_matrix(np.vstack(Xsents))
+        Ysents = coo_matrix(np.vstack(Ysents))
+        write_sparse('/ai/home/okuru13/research/char-ner.jl/X{}.txt'.format(dname),Xsents)
+        write_sparse('/ai/home/okuru13/research/char-ner.jl/Y{}.txt'.format(dname),Ysents)

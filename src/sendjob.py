@@ -1,20 +1,21 @@
 import argparse, subprocess
 from utils import ROOT_DIR
+import getpass
 
 STR = """#!/bin/bash
 #$ -N exper-{}
-#$ -q biyofiz.q@{}
+#$ -q {}.q@{}
 #$ -S /bin/bash
 ##$ -l h_rt=00:59:00 #how many mins run
 #$ -pe smp {}
 #$ -cwd
-#$ -o /tmp/job.out
-#$ -e /tmp/job.err
-#$ -M okuru13@ku.edu.tr
+#$ -o /dev/null
+#$ -e /dev/null
+#$ -M {}@ku.edu.tr
 #$ -m bea
  
 source ~/setenv.sh
-cd /mnt/kufs/scratch/okuru13/char-ner
+cd /mnt/kufs/scratch/{}/char-ner
 MKL_NUM_THREADS={} THEANO_FLAGS=mode=FAST_RUN,device={},floatX=float32 python src/{}.py {}
 """
 
@@ -23,14 +24,17 @@ if __name__ == '__main__':
     parser.add_argument("--p", type=bool, default=False, help='just print, dont submit') 
     parser.add_argument("--script", default='exper')
     parser.add_argument("--script_args", required=True) 
-    parser.add_argument("--m", required=True, choices=['biyofiz-4-0','biyofiz-4-1','biyofiz-4-2','biyofiz-4-3'])
-    parser.add_argument("--d", required=True, choices=['gpu','cpu'])
+    parser.add_argument("--m", required=True, choices=['biyofiz-4-0','biyofiz-4-1','biyofiz-4-2','biyofiz-4-3','parcore-6-0','iui-5-0'])
+    parser.add_argument("--d", required=True, choices=['gpu','cpu','gpu0','gpu1'])
     parser.add_argument("--smp", default=18, type=int)
     args = parser.parse_args()
 
-    args.smp = 1 if args.d == 'gpu' else args.smp
+    username = getpass.getuser()
+    args.smp = 1 if args.d.startswith('gpu') else args.smp
+    queue = args.m.split('-')[0]
+    queue = queue if queue == 'biyofiz' else 'all'
 
-    job_text = STR.format(args.d, args.m, args.smp, args.smp, args.d, args.script, args.script_args)
+    job_text = STR.format(args.d, queue, args.m, args.smp, username, username, args.smp, args.d, args.script, args.script_args)
     print job_text
 
     if not args.p:

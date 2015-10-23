@@ -21,11 +21,11 @@ class Feat(object):
             d.update(getattr(self, 'feat_'+f)(ci,sent))
         return d
 
-    def fit(self, trn):
+    def fit(self, trn, dev, tst):
         self.dvec.fit(self.getcfeat(ci, sent)  for sent in trn for ci,c in enumerate(sent['cseq']))
         self.tseqenc.fit([t for sent in trn for t in sent['tseq']])
-        # self.tsenc.fit([t for sent in trn for t in sent['ts']]) TODO
-        self.tsenc.fit(['B-LOC', 'B-MISC', 'B-ORG', 'B-PER', 'I-LOC', 'I-MISC', 'I-ORG', 'I-PER', 'O'])
+        self.tsenc.fit([t for sent in chain(trn,dev,tst) for t in sent['ts']])
+        # self.tsenc.fit(['B-LOC', 'B-MISC', 'B-ORG', 'B-PER', 'I-LOC', 'I-MISC', 'I-ORG', 'I-PER', 'O'])
         self.feature_names = self.dvec.get_feature_names()
         self.ctag_classes = self.tseqenc.classes_
         self.wtag_classes = self.tsenc.classes_
@@ -48,6 +48,13 @@ class Feat(object):
 
     def feat_basic(self, ci, sent):
         return {'c': sent['cseq'][ci]}
+
+    def feat_dgen(self, ci, sent):
+        c = sent['cseq'][ci]
+        if c in string.digits:
+            return {'c': 'digit'}
+        else:
+            return {'c': c}
 
     def feat_gen(self, ci, sent):
         c = sent['cseq'][ci]
