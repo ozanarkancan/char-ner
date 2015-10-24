@@ -135,7 +135,6 @@ class RDNN:
         cost_train = cost(lasagne.layers.get_output(l_out, deterministic=False))
         cost_eval = cost(lasagne.layers.get_output(l_out, deterministic=True))
 
-        # cost_train = T.switch(T.or_(T.isnan(cost_train), T.isinf(cost_train)), 1000, cost_train)
 
         all_params = lasagne.layers.get_all_params(l_out, trainable=True)
         logging.debug(all_params)
@@ -146,7 +145,7 @@ class RDNN:
         all_grads = T.grad(cost_train, all_params)
 
         all_grads, total_norm = lasagne.updates.total_norm_constraint(all_grads, self.norm, return_norm=True)
-        all_grads = [T.switch(T.or_(T.isnan(total_norm), T.isinf(total_norm)), p*0.1 , g) for g,p in zip(all_grads, all_params)]
+        # all_grads = [T.switch(T.or_(T.isnan(total_norm), T.isinf(total_norm)), p*0.1 , g) for g,p in zip(all_grads, all_params)]
 
         updates = self.opt(all_grads, all_params, self.lr)
 
