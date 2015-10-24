@@ -52,6 +52,7 @@ def get_arg_parser():
     parser.add_argument("--curriculum", default=1, type=int, help="curriculum learning: number of parts")
     parser.add_argument("--lang", default='eng', help="ner lang")
     parser.add_argument("--save", default=False, action='store_true', help="save param values to file")
+    parser.add_argument("--reverse", default=False, action='store_true', help="reverse the training data as additional data")
 
     return parser
 
@@ -220,7 +221,8 @@ def main():
     shandler.setLevel(logging.INFO)
     # lparams = ['rnn', 'feat', 'rep', 'activation', 'n_hidden', 'drates', 'recout', 'opt','lr','norm','n_batch','batch_norm',\
             # 'fepoch','patience','sample', 'in2out', 'lang','curriculum']
-    lparams = ['feat', 'rep', 'activation', 'n_hidden', 'fbmerge', 'drates', 'recout', 'opt','lr','norm','n_batch', 'fepoch','in2out','emb','lang']
+    lparams = ['feat', 'rep', 'activation', 'n_hidden', 'fbmerge', 'drates',
+        'recout', 'opt','lr','norm','n_batch', 'fepoch','in2out','emb','lang', 'reverse']
     param_log_name = ','.join(['{}:{}'.format(p,args[p]) for p in lparams])
     param_log_name = valid_file_name(param_log_name)
     base_log_name = '{}:{},{}'.format(host, theano.config.device, param_log_name if args['log'] == 'das_auto' else args['log'])
@@ -252,6 +254,22 @@ def main():
                 'cseq': repobj.get_cseq(sent), 
                 'wiseq': repobj.get_wiseq(sent), 
                 'tseq': repobj.get_tseq(sent)})
+    
+    if args['reverse']:
+        def reverse_data(d):
+            copy_d = d.copy()
+            
+            for k in copy_d.keys():
+                if k == "wiseq":
+                    m = max(copy_d[k])
+                    copy_d[k] = map(lambda x: -1 if x == -1 else m - x, copy_d[k][::-1])
+                else:
+                    copy_d[k] = copy_d[k][::-1]
+            return copy_d
+
+        reversed = map(reverse_data, trn)
+        trn += reversed
+
 
     if args['sorted']:
         trn = sorted(trn, key=lambda sent: len(sent['cseq']))
