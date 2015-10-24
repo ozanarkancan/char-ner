@@ -53,6 +53,7 @@ def get_arg_parser():
     parser.add_argument("--lang", default='eng', help="ner lang")
     parser.add_argument("--save", default=False, action='store_true', help="save param values to file")
     parser.add_argument("--tagging", default='io', help="tag scheme to use")
+    parser.add_argument("--reverse", default=False, action='store_true', help="reverse the training data as additional data")
 
     return parser
 
@@ -219,7 +220,8 @@ def main():
     logger.setLevel(logging.DEBUG)
     shandler = logging.StreamHandler()
     shandler.setLevel(logging.INFO)
-    lparams = ['feat', 'rep', 'activation', 'n_hidden', 'fbmerge', 'drates', 'recout', 'opt','lr','norm','n_batch', 'fepoch','in2out','emb','lang','tagging']
+    lparams = ['feat', 'rep', 'activation', 'n_hidden', 'fbmerge', 'drates',
+        'recout', 'opt','lr','norm','n_batch', 'fepoch','in2out','emb','lang', 'reverse','tagging']
     param_log_name = ','.join(['{}:{}'.format(p,args[p]) for p in lparams])
     param_log_name = valid_file_name(param_log_name)
     base_log_name = '{}:{},{}'.format(host, theano.config.device, param_log_name if args['log'] == 'das_auto' else args['log'])
@@ -248,11 +250,26 @@ def main():
         for sent in d:
             if args['tagging'] == 'io':
                 sent['ts'] = encoding.any2io(sent['ts'])
-            sent['ts']
             sent.update({
                 'cseq': repobj.get_cseq(sent), 
                 'wiseq': repobj.get_wiseq(sent), 
                 'tseq': repobj.get_tseq(sent)})
+    
+    if args['reverse']:
+        def reverse_data(d):
+            copy_d = d.copy()
+            
+            for k in copy_d.keys():
+                if k == "wiseq":
+                    m = max(copy_d[k])
+                    copy_d[k] = map(lambda x: -1 if x == -1 else m - x, copy_d[k][::-1])
+                else:
+                    copy_d[k] = copy_d[k][::-1]
+            return copy_d
+
+        reversed = map(reverse_data, trn)
+        trn += reversed
+
 
     if args['sorted']:
         trn = sorted(trn, key=lambda sent: len(sent['cseq']))
