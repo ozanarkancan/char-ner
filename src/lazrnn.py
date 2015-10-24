@@ -1,5 +1,6 @@
 import lasagne, theano, numpy as np, logging
 from theano import tensor as T
+from batch_norm import BatchNormLayer
 
 class Identity(lasagne.init.Initializer):
 
@@ -30,7 +31,7 @@ def extract_rnn_params(kwargs):
     return dict((pname,kwargs[pname]) for pname in RDNN.param_names)
 
 class RDNN:
-    param_names = ['activation','n_hidden','drates','opt','grad_clip','lr','norm','recout','batch_norm','in2out','emb']
+    param_names = ['activation','n_hidden','fbmerge','drates','opt','grad_clip','lr','norm','recout','batch_norm','in2out','emb']
 
     def __init__(self, nc, nf, kwargs):
         assert nf; assert nc
@@ -38,16 +39,9 @@ class RDNN:
         for pname in RDNN.param_names:
             setattr(self, pname, kwargs[pname])
 
-        self.deep_ltypes, self.deep_nonlins = [], []
-        for act_str in self.activation:
-            bi, act = act_str.split('-')
-            if act in ['lstm','gru']:
-                self.deep_ltypes.append(act)
-                self.deep_nonlins.append(lasagne.nonlinearities.tanh)
-            else:
-                act = 'rectify' if act == 'relu' else act
-                self.deep_ltypes.append('recurrent')
-                self.deep_nonlins.append(getattr(lasagne.nonlinearities, act))
+        self.activation = [self.activation] * len(self.n_hidden)
+        self.deep_ltypes = [act_str.split('-')[1] for act_str in self.activation]
+
         self.opt = getattr(lasagne.updates, self.opt)
         self.grad_clip =  kwargs['grad_clip'] if kwargs['grad_clip'] > 0 else False
         ldepth = len(self.n_hidden)
@@ -75,10 +69,12 @@ class RDNN:
             self.layers = [l_in_drop]
         else:
             self.layers = [l_in]
-        for level, ltype, nonlin, n_hidden in zip(range(1,ldepth+1), self.deep_ltypes, self.deep_nonlins, self.n_hidden):
+        for level, ltype, n_hidden in zip(range(1,ldepth+1), self.deep_ltypes, self.n_hidden):
             prev_layer = self.layers[level-1]
-            if ltype == 'recurrent':
+            if ltype in ['relu','lrelu']:
                 LayerType = lasagne.layers.RecurrentLayer
+                if ltype == 'relu': nonlin = lasagne.nonlinearities.rectify
+                elif ltype == 'lrelu': nonlin = lasagne.nonlinearities.leaky_rectify
                 l_forward = LayerType(prev_layer, n_hidden, mask_input=l_mask, grad_clipping=self.grad_clip, W_hid_to_hid=Identity(),
                         W_in_to_hid=lasagne.init.GlorotUniform(gain='relu'), nonlinearity=nonlin)
                 l_backward = LayerType(prev_layer, n_hidden, mask_input=l_mask, grad_clipping=self.grad_clip, W_hid_to_hid=Identity(),
@@ -94,32 +90,34 @@ class RDNN:
 
             logging.debug('l_forward: {}'.format(lasagne.layers.get_output_shape(l_forward)))
             logging.debug('l_backward: {}'.format(lasagne.layers.get_output_shape(l_backward)))
+
+            if self.fbmerge == 'concat':
+                l_fbmerge = lasagne.layers.ConcatLayer([l_forward, l_backward], axis=2)
+            elif self.fbmerge == 'sum':
+                l_fbmerge = lasagne.layers.ElemwiseSumLayer([l_forward, l_backward])
+            logging.debug('l_fbmerge: {}'.format(lasagne.layers.get_output_shape(l_fbmerge)))
+
             if self.batch_norm:
-                logging.debug('using batch norm')
-                from batch_norm import BatchNormLayer, batch_norm
-                # l_concat = BatchNormLayer(l_concat, axes=(0,1))
-                l_concat = lasagne.layers.ConcatLayer([BatchNormLayer(l_forward, axes=(0,1)), BatchNormLayer(l_backward,axes=(0,1))], axis=2)
-            else:
-                l_concat = lasagne.layers.ConcatLayer([l_forward, l_backward], axis=2)
-            logging.debug('l_concat: {}'.format(lasagne.layers.get_output_shape(l_concat)))
+                logging.info('using batch norm')
+                l_fbmerge = BatchNormLayer(l_fbmerge, axes=(0,1))
 
             if self.drates[level] > 0:
-                l_concat = lasagne.layers.DropoutLayer(l_concat, p=self.drates[level])
+                l_fbmerge = lasagne.layers.DropoutLayer(l_fbmerge, p=self.drates[level])
 
-            self.layers.append(l_concat)
+            self.layers.append(l_fbmerge)
         
-        l_concat = lasagne.layers.ConcatLayer([l_concat, l_in], axis=2) if self.in2out else l_concat
+        l_fbmerge = lasagne.layers.ConcatLayer([l_fbmerge, l_in], axis=2) if self.in2out else l_fbmerge
 
         if self.recout:
             logging.info('using recout.')
-            l_out = lasagne.layers.RecurrentLayer(l_concat, num_units=nc, mask_input=l_mask, W_hid_to_hid=Identity(),
+            l_out = lasagne.layers.RecurrentLayer(l_fbmerge, num_units=nc, mask_input=l_mask, W_hid_to_hid=Identity(),
                     W_in_to_hid=lasagne.init.GlorotUniform(), nonlinearity=log_softmax)
                     # W_in_to_hid=lasagne.init.GlorotUniform(), nonlinearity=lasagne.nonlinearities.softmax) CHANGED
             logging.debug('l_out: {}'.format(lasagne.layers.get_output_shape(l_out)))
         else:
-            l_reshape = lasagne.layers.ReshapeLayer(l_concat, (-1, self.n_hidden[-1]*2))
+            l_reshape = lasagne.layers.ReshapeLayer(l_fbmerge, (-1, self.n_hidden[-1]*2))
             logging.debug('l_reshape: {}'.format(lasagne.layers.get_output_shape(l_reshape)))
-            l_rec_out = lasagne.layers.DenseLayer(l_reshape, num_units=nc, nonlinearity=lasagne.nonlinearities.softmax)
+            l_rec_out = lasagne.layers.DenseLayer(l_reshape, num_units=nc, nonlinearity=log_softmax)
 
             logging.debug('l_rec_out: {}'.format(lasagne.layers.get_output_shape(l_rec_out)))
             l_out = lasagne.layers.ReshapeLayer(l_rec_out, (N_BATCH_VAR, MAX_SEQ_LEN_VAR, nc))
@@ -161,7 +159,7 @@ class RDNN:
         # aux
         self.train_model_debug = theano.function(
                 inputs=[l_in.input_var, target_output, l_mask.input_var, out_mask],
-                outputs=[cost_train]+lasagne.layers.get_output([l_out, l_concat], deterministic=True)+[f_hid2hid, b_hid2hid, total_norm],
+                outputs=[cost_train]+lasagne.layers.get_output([l_out, l_fbmerge], deterministic=True)+[f_hid2hid, b_hid2hid, total_norm],
                 updates=updates)
         self.compute_cost = theano.function([l_in.input_var, target_output, l_mask.input_var, out_mask], cost_eval)
         self.compute_cost_train = theano.function([l_in.input_var, target_output, l_mask.input_var, out_mask], cost_train)
