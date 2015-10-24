@@ -157,7 +157,7 @@ class Validator(object):
                 if f1 > dbests[datname][1]:
                     dbests[datname] = (e,f1)
                     if argsd['save'] and datname == 'dev': # save model to file
-                        lparams = ['feat', 'rep', 'activation', 'n_hidden', 'fbmerge', 'drates', 'recout', 'opt','lr','norm','n_batch', 'fepoch','in2out','emb','lang']
+                        lparams = ['feat', 'rep', 'activation', 'n_hidden', 'fbmerge', 'drates', 'recout', 'opt','lr','norm','n_batch', 'fepoch','in2out','emb','lang','tagging']
                         param_log_name = ','.join(['{}:{}'.format(p,argsd[p]) for p in lparams])
                         param_log_name = valid_file_name(param_log_name)
                         rnn_param_values = rdnn.get_param_values()
@@ -219,7 +219,7 @@ def main():
     logger.setLevel(logging.DEBUG)
     shandler = logging.StreamHandler()
     shandler.setLevel(logging.INFO)
-    lparams = ['feat', 'rep', 'activation', 'n_hidden', 'fbmerge', 'drates', 'recout', 'opt','lr','norm','n_batch', 'fepoch','in2out','emb','lang']
+    lparams = ['feat', 'rep', 'activation', 'n_hidden', 'fbmerge', 'drates', 'recout', 'opt','lr','norm','n_batch', 'fepoch','in2out','emb','lang','tagging']
     param_log_name = ','.join(['{}:{}'.format(p,args[p]) for p in lparams])
     param_log_name = valid_file_name(param_log_name)
     base_log_name = '{}:{},{}'.format(host, theano.config.device, param_log_name if args['log'] == 'das_auto' else args['log'])
