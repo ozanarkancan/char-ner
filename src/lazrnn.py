@@ -108,11 +108,19 @@ class RDNN:
         
         l_fbmerge = lasagne.layers.ConcatLayer([l_fbmerge, l_in], axis=2) if self.in2out else l_fbmerge
 
-        if self.recout:
-            logging.info('using recout.')
+        if self.recout == 1:
+            logging.info('using recout:%d.'%self.recout)
             l_out = lasagne.layers.RecurrentLayer(l_fbmerge, num_units=nc, mask_input=l_mask, W_hid_to_hid=Identity(),
                     W_in_to_hid=lasagne.init.GlorotUniform(), nonlinearity=log_softmax)
                     # W_in_to_hid=lasagne.init.GlorotUniform(), nonlinearity=lasagne.nonlinearities.softmax) CHANGED
+            logging.debug('l_out: {}'.format(lasagne.layers.get_output_shape(l_out)))
+        elif self.recout == 2:
+            logging.info('using recout:%d.'%self.recout)
+            l_fout = lasagne.layers.RecurrentLayer(l_fbmerge, num_units=nc, mask_input=l_mask, W_hid_to_hid=Identity(),
+                    W_in_to_hid=lasagne.init.GlorotUniform(), nonlinearity=log_softmax)
+            l_bout = lasagne.layers.RecurrentLayer(l_fbmerge, num_units=nc, mask_input=l_mask, W_hid_to_hid=Identity(),
+                    W_in_to_hid=lasagne.init.GlorotUniform(), nonlinearity=log_softmax, backwards=True)
+            l_out = lasagne.layers.ElemwiseSumLayer([l_fout, l_bout], coeffs=0.5)
             logging.debug('l_out: {}'.format(lasagne.layers.get_output_shape(l_out)))
         else:
             l_reshape = lasagne.layers.ReshapeLayer(l_fbmerge, (-1, self.n_hidden[-1]*2))
