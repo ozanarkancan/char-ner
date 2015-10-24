@@ -12,10 +12,10 @@ import theano.tensor as T
 
 import featchar
 import rep
+import encoding
 from utils import get_sents, sample_sents, valid_file_name
 from utils import ROOT_DIR
 from score import conlleval
-from encoding import io2iob
 from lazrnn import RDNN, RDNN_Dummy, extract_rnn_params
 from nerrnn import RNNModel
 
@@ -52,6 +52,7 @@ def get_arg_parser():
     parser.add_argument("--curriculum", default=1, type=int, help="curriculum learning: number of parts")
     parser.add_argument("--lang", default='eng', help="ner lang")
     parser.add_argument("--save", default=False, action='store_true', help="save param values to file")
+    parser.add_argument("--tagging", default='io', help="tag scheme to use")
 
     return parser
 
@@ -105,7 +106,7 @@ class Reporter(object):
             tseq_pred = self.feat.tseqenc.inverse_transform(ipred)
             # tseqgrp_pred = get_tseqgrp(sent['wiseq'],tseq_pred)
             ts_pred = self.tfunc(sent['wiseq'],tseq_pred)
-            lts_pred.append(io2iob(ts_pred)) # changed
+            lts_pred.append(ts_pred) # changed
 
         y_true = self.feat.tsenc.transform([t for ts in lts for t in ts])
         y_pred = self.feat.tsenc.transform([t for ts in lts_pred for t in ts])
@@ -218,13 +219,10 @@ def main():
     logger.setLevel(logging.DEBUG)
     shandler = logging.StreamHandler()
     shandler.setLevel(logging.INFO)
-    # lparams = ['rnn', 'feat', 'rep', 'activation', 'n_hidden', 'drates', 'recout', 'opt','lr','norm','n_batch','batch_norm',\
-            # 'fepoch','patience','sample', 'in2out', 'lang','curriculum']
     lparams = ['feat', 'rep', 'activation', 'n_hidden', 'fbmerge', 'drates', 'recout', 'opt','lr','norm','n_batch', 'fepoch','in2out','emb','lang']
     param_log_name = ','.join(['{}:{}'.format(p,args[p]) for p in lparams])
     param_log_name = valid_file_name(param_log_name)
     base_log_name = '{}:{},{}'.format(host, theano.config.device, param_log_name if args['log'] == 'das_auto' else args['log'])
-    # base_log_name = '{:%d-%m-%y+%H:%M:%S}:{},{}'.format(datetime.datetime.now(), theano.config.device, param_log_name if args['log'] == 'das_auto' else args['log'])
     ihandler = logging.FileHandler('{}/{}.info'.format(LOG_DIR,base_log_name), mode='w')
     ihandler.setLevel(logging.INFO)
     dhandler = logging.FileHandler('{}/{}.debug'.format(LOG_DIR,base_log_name), mode='w')
@@ -248,6 +246,9 @@ def main():
 
     for d in (trn,dev,tst):
         for sent in d:
+            if args['tagging'] == 'io':
+                sent['ts'] = encoding.any2io(sent['ts'])
+            sent['ts']
             sent.update({
                 'cseq': repobj.get_cseq(sent), 
                 'wiseq': repobj.get_wiseq(sent), 
