@@ -18,149 +18,22 @@ WEND = 'w/'
 def valid_file_name(s):
     return "".join(i for i in s if i not in "\"\/ &*?<>|[]()'")
 
-def read_sents_eng(file):
-    a,b,c,d = [],[],[],[]
-    sentences = []
-    with open(file) as src:
-        for l in src:
-            if len(l.strip()):
-                w, pt, ct, t = l.strip().split('\t')
-                a.append(w);b.append(pt);
-                c.append(ct);d.append(t);
-            else: # emtpy line
-                if len(a):
-                    sentences.append({'ws':a,'ts':d,'tsg':copy.deepcopy(d),\
-                            'pts':b,'cts':c})
-                a,b,c,d = [],[],[],[]
-    return sentences
-
 def get_sents(lang='eng'):
-    readfunc = globals()['read_sents_'+lang]
-    if lang in ('spa','ned','arb','cze','tr'):
-        return map(readfunc, ['{}/{}/{}.bio'.format(DATA_DIR,lang,dset) for dset in ('train','testa','testb')])
-    else:
-        return map(readfunc, ['{}/{}/{}.iob'.format(DATA_DIR,lang,dset) for dset in ('train','testa','testb')])
+    return map(read_sents, ['{}/{}/{}.bio'.format(DATA_DIR,lang,dset) for dset in ('train','testa','testb')])
 
-def read_sents_deu(file):
-    a,b,c,d,e = [],[],[],[], []
+def read_sents(file, delim='\t'):
+    a = []
     sentences = []
     with open(file) as src:
         for l in src:
             if len(l.strip()):
-                w, lem, pt, ct, t = l.strip().split('\t')
-                a.append(w);b.append(pt);
-                c.append(ct);d.append(t);e.append(lem)
+                a.append(l.strip().split(delim))
             else: # emtpy line
                 if len(a):
-                    sentences.append({'ws':a,'ts':d,'tsg':copy.deepcopy(d),\
-                            'pts':b,'cts':c,'lems':e})
-                a,b,c,d = [],[],[],[]
-    return sentences
-
-def read_sents_arb(file):
-    a,b,c,d,e = [],[],[],[], []
-    sentences = []
-    with open(file) as src:
-        for l in src:
-            if len(l.strip()):
-                w, t = l.strip().split('\t')
-                a.append(w); d.append(t)
-            else: # emtpy line
-                if len(a):
-                    d = encoding.bio2iob(d)
-                    sentences.append({'ws':a,'ts':d})
-                a,b,c,d = [],[],[],[]
-    return sentences
-
-def read_sents_tr(file):
-    a,b,c,d,e = [],[],[],[], []
-    sentences = []
-    with open(file) as src:
-        for l in src:
-            if len(l.strip()):
-                w, t = l.strip().split('\t')
-                a.append(w); d.append(t)
-            else: # emtpy line
-                if len(a):
-                    d = encoding.bio2iob(d)
-                    sentences.append({'ws':a,'ts':d})
-                a,b,c,d = [],[],[],[]
-    return sentences
-
-def read_sents_dse(file):
-    a,b,c,d = [],[],[],[]
-    sentences = []
-    with open(file) as src:
-        for l in src:
-            if len(l.strip()):
-                try:
-                    w, pt, t = l.strip().split('\t')
-                except:
-                    print l
-                    assert False
-                a.append(w);b.append(pt);d.append(t);
-            else: # emtpy line
-                if len(a):
-                    d = encoding.bio2iob(d)
-                    sentences.append({'ws':a,'ts':d,'tsg':copy.deepcopy(d),\
-                            'pts':b})
-                a,b,c,d = [],[],[],[]
-    return sentences
-
-def read_sents_ned(file):
-    a,b,c,d = [],[],[],[]
-    sentences = []
-    with open(file) as src:
-        for l in src:
-            if len(l.strip()):
-                try:
-                    w, pt, t = l.strip().split('\t')
-                except:
-                    print l
-                    assert False
-                a.append(w);b.append(pt);d.append(t);
-            else: # emtpy line
-                if len(a):
-                    d = encoding.bio2iob(d)
-                    sentences.append({'ws':a,'ts':d,'tsg':copy.deepcopy(d),\
-                            'pts':b})
-                a,b,c,d = [],[],[],[]
-    return sentences
-
-def read_sents_cze(file):
-    a,b,c,d = [],[],[],[]
-    sentences = []
-    with open(file) as src:
-        for l in src:
-            if len(l.strip()):
-                try:
-                    w, lem, pt, t = l.strip().split('\t')
-                except:
-                    print l
-                    assert False
-                a.append(w);b.append(pt);d.append(t);
-            else: # emtpy line
-                if len(a):
-                    d = encoding.bio2iob(d)
-                    sentences.append({'ws':a,'ts':d,'tsg':copy.deepcopy(d),\
-                            'pts':b})
-                a,b,c,d = [],[],[],[]
-    return sentences
-
-def read_sents_spa(file):
-    a,b,c,d = [],[],[],[]
-    sentences = []
-    with open(file) as src:
-        for l in src:
-            if len(l.strip()):
-                w, pt, t = l.strip().split('\t')
-                a.append(w);b.append(pt);d.append(t);
-            else: # emtpy line
-                if len(a):
-                    d = encoding.bio2iob(d)
-                    sentences.append({'ws':a,'ts':d,'tsg':copy.deepcopy(d),\
-                            'pts':b})
-                a,b,c,d = [],[],[],[]
+                    ws = [el[0] for el in a]
+                    ts = [el[-1] for el in a]
+                    sentences.append({'ws':ws,'ts':ts})
+                a = []
     return sentences
 
 
@@ -187,12 +60,9 @@ def get_sent_indx_word(dset):
     return indexes
 
 if __name__ == '__main__':
-    trn,dev,tst = get_sents('dse')
-    print 'total:', sum(any(1 for t in sent['ts'] if t.startswith('B')) for sent in chain(trn,dev,tst))
-
-    print map(len, (trn,dev,tst))
-
-    sents = sample_sents(trn,5,5,10)
-    for sent in sents:
-        print sent['ws']
-        print sent['ts']
+    trn,dev,tst = get_sents('eng')
+    sents = sample_sents(trn,10)
+    sent = sents[0]
+    print sent['ws']
+    print sent['ts']
+    print encoding.any2io(sent['ts'])

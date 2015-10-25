@@ -108,11 +108,19 @@ class RDNN:
         
         l_fbmerge = lasagne.layers.ConcatLayer([l_fbmerge, l_in], axis=2) if self.in2out else l_fbmerge
 
-        if self.recout:
-            logging.info('using recout.')
+        if self.recout == 1:
+            logging.info('using recout:%d.'%self.recout)
             l_out = lasagne.layers.RecurrentLayer(l_fbmerge, num_units=nc, mask_input=l_mask, W_hid_to_hid=Identity(),
                     W_in_to_hid=lasagne.init.GlorotUniform(), nonlinearity=log_softmax)
                     # W_in_to_hid=lasagne.init.GlorotUniform(), nonlinearity=lasagne.nonlinearities.softmax) CHANGED
+            logging.debug('l_out: {}'.format(lasagne.layers.get_output_shape(l_out)))
+        elif self.recout == 2:
+            logging.info('using recout:%d.'%self.recout)
+            l_fout = lasagne.layers.RecurrentLayer(l_fbmerge, num_units=nc, mask_input=l_mask, W_hid_to_hid=Identity(),
+                    W_in_to_hid=lasagne.init.GlorotUniform(), nonlinearity=log_softmax)
+            l_bout = lasagne.layers.RecurrentLayer(l_fbmerge, num_units=nc, mask_input=l_mask, W_hid_to_hid=Identity(),
+                    W_in_to_hid=lasagne.init.GlorotUniform(), nonlinearity=log_softmax, backwards=True)
+            l_out = lasagne.layers.ElemwiseSumLayer([l_fout, l_bout], coeffs=0.5)
             logging.debug('l_out: {}'.format(lasagne.layers.get_output_shape(l_out)))
         else:
             l_reshape = lasagne.layers.ReshapeLayer(l_fbmerge, (-1, self.n_hidden[-1]*2))
@@ -135,7 +143,6 @@ class RDNN:
         cost_train = cost(lasagne.layers.get_output(l_out, deterministic=False))
         cost_eval = cost(lasagne.layers.get_output(l_out, deterministic=True))
 
-        # cost_train = T.switch(T.or_(T.isnan(cost_train), T.isinf(cost_train)), 1000, cost_train)
 
         all_params = lasagne.layers.get_all_params(l_out, trainable=True)
         logging.debug(all_params)
@@ -146,7 +153,7 @@ class RDNN:
         all_grads = T.grad(cost_train, all_params)
 
         all_grads, total_norm = lasagne.updates.total_norm_constraint(all_grads, self.norm, return_norm=True)
-        all_grads = [T.switch(T.or_(T.isnan(total_norm), T.isinf(total_norm)), p*0.1 , g) for g,p in zip(all_grads, all_params)]
+        # all_grads = [T.switch(T.or_(T.isnan(total_norm), T.isinf(total_norm)), p*0.1 , g) for g,p in zip(all_grads, all_params)]
 
         updates = self.opt(all_grads, all_params, self.lr)
 
