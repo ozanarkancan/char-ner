@@ -1,7 +1,6 @@
 from itertools import *
 from collections import Counter
 
-from encoding import iob2io
 import utils
 
 class Repstd(object):
@@ -17,15 +16,14 @@ class Repstd(object):
         return wiseq[:-1]
 
     def get_tseq(self, sent):
-        """ io """
         tseq = []
         for w, t, tnext in zip(sent['ws'],sent['ts'], chain(sent['ts'][1:],[None])):
             tp, sep, ttype = (t, '', 'O') if t == 'O' else (t.split('-')[0], '-', t.split('-')[1])
-            tseq.extend(ttype.lower() for c in w)
+            tseq.extend(t.lower() for c in w)
 
             # handle space
-            if t == tnext:
-                tseq.append(ttype.lower())
+            if tnext and tnext != 'O' and t != 'O' and t.split('-')[1] == tnext.split('-')[1]:
+                tseq.append(t.lower())
             else:
                 tseq.append('o')
         return tseq[:-1]
@@ -49,8 +47,6 @@ class Repnospace(object):
         return [wi for wi,w in enumerate(sent['ws']) for c in w]
 
     def get_tseq(self, sent): 
-        """ assumes sent['ts'] is in iob scheme """
-        ts = iob2io(sent['ts'])
         return [ts[wi].lower() for wi,w in enumerate(sent['ws']) for c in w]
 
 class Repspec(object):
@@ -62,9 +58,15 @@ class Repspec(object):
         return [wi for wi,w in enumerate(sent['ws']) for c in [utils.WSTART]+list(w)+[utils.WEND]]
 
     def get_tseq(self, sent):
-        """ assumes sent['ts'] is in iob scheme """
-        ts = iob2io(sent['ts'])
-        return [ts[wi].lower() for wi,w in enumerate(sent['ws']) for c in [utils.WSTART]+list(w)+[utils.WEND]]
+        return [sent['ts'][wi].lower() for wi,w in enumerate(sent['ws']) for c in [utils.WSTART]+list(w)+[utils.WEND]]
+
+    def pprint(self, sent, *margs):
+        args = [sent['cseq'],sent['tseq']]; args.extend(margs)
+        mlen = max(len(e) for e in chain(*args))
+        wgroup = [[e[0] for e in g] for k, g in groupby(enumerate(sent['wiseq']), lambda x: x[1])]
+        for cil in wgroup:
+            for a in args:
+                print ' '.join(map(('{:^%d}'%mlen).format, [a[ci] for ci in cil]))
 
 def get_ts(wiseq, tseq):
     tgroup = [[e[0] for e in g] for k, g in groupby(enumerate(wiseq),lambda x: x[1]) if k >= 0]
@@ -83,11 +85,16 @@ def sent_word_indx(sent):
 
 if __name__ == '__main__':
     from utils import get_sents, sample_sents
-    from encoding import io2iob
+    from encoding import any2io
     trn, dev, tst = get_sents('eng')
 
     trn = sample_sents(trn, 3, 5,6)
     r = Repstd()
+
+    """
+    for sent in trn:
+        sent['ts'] = any2io(sent['ts'])
+    """
 
     for sent in trn:
         sent.update({
@@ -95,4 +102,4 @@ if __name__ == '__main__':
             'wiseq': r.get_wiseq(sent), 
             'tseq': r.get_tseq(sent)})
         r.pprint(sent)
-        print 
+        print
