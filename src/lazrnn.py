@@ -153,7 +153,7 @@ class RDNN:
         all_grads = T.grad(cost_train, all_params)
 
         all_grads, total_norm = lasagne.updates.total_norm_constraint(all_grads, self.norm, return_norm=True)
-        # all_grads = [T.switch(T.or_(T.isnan(total_norm), T.isinf(total_norm)), p*0.1 , g) for g,p in zip(all_grads, all_params)]
+        all_grads = [T.switch(T.or_(T.isnan(total_norm), T.isinf(total_norm)), p*0.01 , g) for g,p in zip(all_grads, all_params)]
 
         updates = self.opt(all_grads, all_params, self.lr)
 
