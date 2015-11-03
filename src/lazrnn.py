@@ -11,6 +11,25 @@ def log_softmax(x):
     xdev = x - x.max(1, keepdims=True)
     return xdev - T.log(T.sum(T.exp(xdev), axis=1, keepdims=True))
 
+class LogSoftMerge(lasagne.layers.MergeLayer):
+
+    def __init__(self, incomings):
+        super(LogSoftMerge, self).__init__(incomings)
+
+    def get_output_for(self, inputs, **kwargs):
+        """
+        inputs : list of Theano expressions
+        Returns
+        -------
+        Theano expressions
+            The output of this layer given the inputs to this layer.
+        """
+
+        return T.log((T.exp(inputs[0]) + T.exp(inputs[1])) * 0.5)
+
+    def get_output_shape_for(self, input_shapes):
+        return input_shapes[0]
+
 class RDNN_Dummy:
     def __init__(self, nc, nf, kwargs):
         self.nc = nc
@@ -120,7 +139,8 @@ class RDNN:
                     W_in_to_hid=lasagne.init.GlorotUniform(), nonlinearity=log_softmax)
             l_bout = lasagne.layers.RecurrentLayer(l_fbmerge, num_units=nc, mask_input=l_mask, W_hid_to_hid=Identity(),
                     W_in_to_hid=lasagne.init.GlorotUniform(), nonlinearity=log_softmax, backwards=True)
-            l_out = lasagne.layers.ElemwiseSumLayer([l_fout, l_bout], coeffs=0.5)
+            # l_out = lasagne.layers.ElemwiseSumLayer([l_fout, l_bout], coeffs=0.5)
+            l_out = LogSoftMerge([l_fout, l_bout])
             logging.debug('l_out: {}'.format(lasagne.layers.get_output_shape(l_out)))
         else:
             l_reshape = lasagne.layers.ReshapeLayer(l_fbmerge, (-1, self.n_hidden[-1]*2))
@@ -136,9 +156,12 @@ class RDNN:
         target_output = T.tensor3('target_output')
         out_mask = T.tensor3('mask')
 
+        """
         def cost(output):
+            return -T.sum(out_mask*target_output*T.log(output))/T.sum(out_mask)
+        """
+        def cost(output): # expects log softmax output
             return -T.sum(out_mask*target_output*output)/T.sum(out_mask)
-            # return -T.sum(out_mask*target_output*T.log(output))/T.sum(out_mask) CHANGED
 
         cost_train = cost(lasagne.layers.get_output(l_out, deterministic=False))
         cost_eval = cost(lasagne.layers.get_output(l_out, deterministic=True))
