@@ -31,7 +31,7 @@ def read_sents(file, delim='\t'):
             else: # emtpy line
                 if len(a):
                     ws = [el[0] for el in a]
-                    ts = [el[-1] for el in a]
+                    ts = [el[-1].upper() for el in a]
                     sentences.append({'ws':ws,'ts':ts})
                 a = []
     return sentences
