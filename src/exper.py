@@ -52,6 +52,7 @@ def get_arg_parser():
     parser.add_argument("--curriculum", default=1, type=int, help="curriculum learning: number of parts")
     parser.add_argument("--lang", default='eng', help="ner lang")
     parser.add_argument("--save", default=False, action='store_true', help="save param values to file")
+    parser.add_argument("--shuf", default=1, type=int, help="shuffle the batches.")
     parser.add_argument("--tagging", default='io', help="tag scheme to use")
     parser.add_argument("--reverse", default=False, action='store_true', help="reverse the training data as additional data")
 
@@ -69,6 +70,7 @@ class Batcher(object):
         nf = self.feat.NF 
         sent_batches = [dset[i:i+self.batch_size] for i in range(0, len(dset), self.batch_size)]
         X_batches, Xmsk_batches, y_batches, ymsk_batches = [], [], [], []
+        batches = []
         for batch in sent_batches:
             mlen = max(len(sent['cseq']) for sent in batch)
             X_batch = np.zeros((len(batch), mlen, nf),dtype=theano.config.floatX)
@@ -82,11 +84,15 @@ class Batcher(object):
                 Xmsk_batch[si,:nchar] = True
                 y_batch[si,:nchar,:] = ysent
                 ymsk_batch[si,:nchar,:] = True
+            batches.append((X_batch, Xmsk_batch, y_batch, ymsk_batch))
+        return batches
+        """
             X_batches.append(X_batch)
             Xmsk_batches.append(Xmsk_batch)
             y_batches.append(y_batch)
             ymsk_batches.append(ymsk_batch)
         return X_batches, Xmsk_batches, y_batches, ymsk_batches
+        """
 
 class Reporter(object):
 
@@ -146,10 +152,20 @@ class Validator(object):
             for funcname, ddat, datname in zip(['train','predict', 'predict'],[self.trndat,self.devdat, self.tstdat],['trn','dev','tst']):
                 if datname == 'tst' and dbests['dev'][0] != e:
                     continue
+                if datname == 'trn' and argsd['shuf']:
+                    logging.debug('shuffling trn batches...')
+                    batch_ids = range(len(self.trndat))
+                    random.shuffle(batch_ids)
+                    ddat = map(ddat.__getitem__, batch_ids)
                 start_time = time.time()
                 mcost, pred = getattr(rdnn, funcname)(ddat)
                 end_time = time.time()
                 mtime = end_time - start_time
+
+                if datname == 'trn' and argsd['shuf']:
+                    logging.debug('restoring the order of trn batches...')
+                    pred = [p for i, p in sorted(zip(batch_ids,pred))]
+                pred = [p for b in pred for p in b]
                 
                 # cerr, werr, wacc, pre, recall, f1 = self.reporter.report(getattr(self.trn, pred) # find better solution for getattr
                 cerr, werr, wacc, pre, recall, f1, conll_print, char_conmat_str, word_conmat_str =\
@@ -221,7 +237,7 @@ def main():
     shandler = logging.StreamHandler()
     shandler.setLevel(logging.INFO)
     lparams = ['feat', 'rep', 'activation', 'n_hidden', 'fbmerge', 'drates',
-        'recout', 'opt','lr','norm','n_batch', 'fepoch','in2out','emb','lang', 'reverse','tagging']
+        'recout', 'opt','lr','norm','n_batch', 'shuf', 'fepoch','in2out','emb','lang', 'reverse','tagging']
     param_log_name = ','.join(['{}:{}'.format(p,args[p]) for p in lparams])
     param_log_name = valid_file_name(param_log_name)
     base_log_name = '{}:{},{}'.format(host, theano.config.device, param_log_name if args['log'] == 'das_auto' else args['log'])
