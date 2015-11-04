@@ -11,6 +11,25 @@ def log_softmax(x):
     xdev = x - x.max(1, keepdims=True)
     return xdev - T.log(T.sum(T.exp(xdev), axis=1, keepdims=True))
 
+class LogSoftMerge(lasagne.layers.MergeLayer):
+
+    def __init__(self, incomings):
+        super(LogSoftMerge, self).__init__(incomings)
+
+    def get_output_for(self, inputs, **kwargs):
+        """
+        inputs : list of Theano expressions
+        Returns
+        -------
+        Theano expressions
+            The output of this layer given the inputs to this layer.
+        """
+
+        return T.log((T.exp(inputs[0]) + T.exp(inputs[1])) * 0.5)
+
+    def get_output_shape_for(self, input_shapes):
+        return input_shapes[0]
+
 class RDNN_Dummy:
     def __init__(self, nc, nf, kwargs):
         self.nc = nc
@@ -20,11 +39,12 @@ class RDNN_Dummy:
 
     def predict(self, dsetdat):
         ecost, rnn_last_predictions = 0, []
-        for Xdset, Xdsetmsk, ydset, ydsetmsk in zip(*dsetdat):
+        for Xdset, Xdsetmsk, ydset, ydsetmsk in dsetdat:
             ecost += 0
             sentLens = Xdsetmsk.sum(axis=-1)
-            for i, slen in enumerate(sentLens):
-                rnn_last_predictions.append(np.random.random_integers(0,self.nc-1,slen))
+            
+            rnn_last_predictions.append(\
+                    [np.random.random_integers(0,self.nc-1,slen) for i, slen in enumerate(sentLens)])
         return ecost, rnn_last_predictions
 
 def extract_rnn_params(kwargs):
@@ -120,7 +140,8 @@ class RDNN:
                     W_in_to_hid=lasagne.init.GlorotUniform(), nonlinearity=log_softmax)
             l_bout = lasagne.layers.RecurrentLayer(l_fbmerge, num_units=nc, mask_input=l_mask, W_hid_to_hid=Identity(),
                     W_in_to_hid=lasagne.init.GlorotUniform(), nonlinearity=log_softmax, backwards=True)
-            l_out = lasagne.layers.ElemwiseSumLayer([l_fout, l_bout], coeffs=0.5)
+            # l_out = lasagne.layers.ElemwiseSumLayer([l_fout, l_bout], coeffs=0.5)
+            l_out = LogSoftMerge([l_fout, l_bout])
             logging.debug('l_out: {}'.format(lasagne.layers.get_output_shape(l_out)))
         else:
             l_reshape = lasagne.layers.ReshapeLayer(l_fbmerge, (-1, self.n_hidden[-1]*2))
@@ -136,9 +157,12 @@ class RDNN:
         target_output = T.tensor3('target_output')
         out_mask = T.tensor3('mask')
 
+        """
         def cost(output):
+            return -T.sum(out_mask*target_output*T.log(output))/T.sum(out_mask)
+        """
+        def cost(output): # expects log softmax output
             return -T.sum(out_mask*target_output*output)/T.sum(out_mask)
-            # return -T.sum(out_mask*target_output*T.log(output))/T.sum(out_mask) CHANGED
 
         cost_train = cost(lasagne.layers.get_output(l_out, deterministic=False))
         cost_eval = cost(lasagne.layers.get_output(l_out, deterministic=True))
@@ -173,39 +197,18 @@ class RDNN:
         logging.info("Compiling done.")
 
     def train(self, dsetdat):
-        tcost = sum(self.train_model(Xdset, ydset, Xdsetmsk, ydsetmsk) for Xdset, Xdsetmsk, ydset, ydsetmsk in zip(*dsetdat))
+        tcost = sum(self.train_model(Xdset, ydset, Xdsetmsk, ydsetmsk) for Xdset, Xdsetmsk, ydset, ydsetmsk in dsetdat)
         pcost, pred = self.predict(dsetdat)
         return tcost, pred
 
     def predict(self, dsetdat):
         ecost, rnn_last_predictions = 0, []
-        for Xdset, Xdsetmsk, ydset, ydsetmsk in zip(*dsetdat):
+        for Xdset, Xdsetmsk, ydset, ydsetmsk in dsetdat:
             bcost, pred = self.predict_model(Xdset, ydset, Xdsetmsk, ydsetmsk)
             ecost += bcost
             predictions = np.argmax(pred*ydsetmsk, axis=-1).flatten()
             sentLens, mlen = Xdsetmsk.sum(axis=-1), Xdset.shape[1]
-            for i, slen in enumerate(sentLens):
-                rnn_last_predictions.append(predictions[i*mlen:i*mlen+slen])
-        return ecost, rnn_last_predictions
-
-    def sing(self, dsetdat, mode):
-        ecost, rnn_last_predictions = 0, []
-        for Xdset, Xdsetmsk, ydset, ydsetmsk in zip(*dsetdat):
-            if mode == 'train':
-                bcost, pred, l_sum_out, f_hid2hid, b_hid2hid, total_norm = self.train_model(Xdset, ydset, Xdsetmsk, ydsetmsk)
-                logging.debug('cost: {}'.format(bcost))
-                logging.debug('lconcat mean {} max {} min {}'.format(np.mean(l_sum_out), np.max(l_sum_out), np.min(l_sum_out)))
-                logging.debug('forward hid2hid mean {} max {} min {}'.format(np.mean(f_hid2hid), np.max(f_hid2hid), np.min(f_hid2hid)))
-                logging.debug('backwar hid2hid mean {} max {} min {}'.format(np.mean(b_hid2hid), np.max(b_hid2hid), np.min(b_hid2hid)))
-                logging.debug('total_norm: {}'.format(total_norm))
-                # print 'mean {} max {} min {}'.format(np.mean(grads), np.max(grads), np.min(grads))
-            else:
-                bcost, pred = getattr(self, mode+'_model')(Xdset, ydset, Xdsetmsk, ydsetmsk)
-            ecost += bcost
-            predictions = np.argmax(pred*ydsetmsk, axis=-1).flatten()
-            sentLens, mlen = Xdsetmsk.sum(axis=-1), Xdset.shape[1]
-            for i, slen in enumerate(sentLens):
-                rnn_last_predictions.append(predictions[i*mlen:i*mlen+slen])
+            rnn_last_predictions.append([predictions[i*mlen:i*mlen+slen] for i, slen in enumerate(sentLens)])
         return ecost, rnn_last_predictions
 
     def get_param_values(self):
@@ -216,4 +219,3 @@ class RDNN:
 
 if __name__ == '__main__':
     print RDNN.params
-    pass
