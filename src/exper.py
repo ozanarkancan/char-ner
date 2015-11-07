@@ -44,7 +44,7 @@ def get_arg_parser():
     parser.add_argument("--sample", default=0, type=int, help="num of sents to sample from trn in the order of K")
     parser.add_argument("--feat", default='basic', help="feat func to use")
     parser.add_argument("--emb", default=0, type=int, help="embedding layer size")
-    parser.add_argument("--grad_clip", default=-1, type=float, help="clip gradient messages in recurrent layers if they are above this value")
+    parser.add_argument("--gclip", default=0, type=float, help="clip gradient messages in recurrent layers if they are above this value")
     parser.add_argument("--truncate", default=-1, type=int, help="backward step size")
     parser.add_argument("--log", default='das_auto', help="log file name")
     parser.add_argument("--sorted", default=1, type=int, help="sort datasets before training and prediction")
@@ -174,7 +174,7 @@ class Validator(object):
                 if f1 > dbests[datname][1]:
                     dbests[datname] = (e,f1)
                     if argsd['save'] and datname == 'dev': # save model to file
-                        lparams = ['feat', 'rep', 'activation', 'n_hidden', 'fbmerge', 'drates', 'recout', 'opt','lr','norm','n_batch', 'fepoch','in2out','emb','lang','tagging']
+                        lparams = ['feat', 'rep', 'activation', 'n_hidden', 'fbmerge', 'drates', 'recout', 'opt','lr','norm','gclip','truncate','n_batch', 'fepoch','in2out','emb','lang','tagging']
                         param_log_name = ','.join(['{}:{}'.format(p,argsd[p]) for p in lparams])
                         param_log_name = valid_file_name(param_log_name)
                         rnn_param_values = rdnn.get_param_values()
@@ -237,7 +237,7 @@ def main():
     shandler = logging.StreamHandler()
     shandler.setLevel(logging.INFO)
     lparams = ['feat', 'rep', 'activation', 'n_hidden', 'fbmerge', 'drates',
-        'recout', 'opt','lr','norm','n_batch', 'shuf', 'fepoch','in2out','emb','lang', 'reverse','tagging']
+        'recout', 'opt','lr','norm','gclip','truncate','n_batch', 'shuf', 'fepoch','in2out','emb','lang', 'reverse','tagging']
     param_log_name = ','.join(['{}:{}'.format(p,args[p]) for p in lparams])
     param_log_name = valid_file_name(param_log_name)
     base_log_name = '{}:{},{}'.format(host, theano.config.device, param_log_name if args['log'] == 'das_auto' else args['log'])
