@@ -3,8 +3,9 @@ import numpy as np
 from itertools import *
 from scipy.sparse import coo_matrix
 
-import featchar
 import rep
+import featchar
+import encoding
 from utils import get_sents, sample_sents
 
 def write_sparse(fname, mat):
@@ -30,6 +31,7 @@ if __name__ == '__main__':
     repobj = rep.Repstd()
     for d in (trn,dev,tst):
         for sent in d:
+            sent['ts'] = encoding.any2io(sent['ts'])
             sent.update({
                 'cseq': repobj.get_cseq(sent), 
                 'wiseq': repobj.get_wiseq(sent), 
@@ -50,7 +52,12 @@ if __name__ == '__main__':
 
     feat = featchar.Feat('basic')
     feat.fit(trn,dev,tst)
+    sent = dev[999]
+    Xsent, Ysent = feat.transform(sent)
+    print sent['cseq']
+    print [c+1 for r,c in zip(*np.where(Xsent))]
 
+    """
     # for dset,dname in zip((trn,),('trn',)):
     for dset,dname in zip((trn,dev,tst),('trn','dev','tst')):
         Xsents, Ysents = [],[]
@@ -67,3 +74,4 @@ if __name__ == '__main__':
         Ysents = coo_matrix(np.vstack(Ysents))
         write_sparse('/ai/home/okuru13/research/char-ner.jl/X{}.txt'.format(dname),Xsents)
         write_sparse('/ai/home/okuru13/research/char-ner.jl/Y{}.txt'.format(dname),Ysents)
+    """
