@@ -31,7 +31,7 @@ def get_arg_parser():
     parser.add_argument("--rep", default='std', choices=['std','nospace','spec'], help="which representation to use")
     parser.add_argument("--activation", default='bi-lstm', help="activation function for hidden layer: bi-relu bi-lstm bi-tanh")
     parser.add_argument("--fbmerge", default='concat', choices=['concat','sum'], help="how to merge forward backward layer outputs")
-    parser.add_argument("--n_hidden", default=['128'], nargs='+', help="number of neurons in each hidden layer")
+    parser.add_argument("--n_hidden", default=[128], nargs='+', type=int, help="number of neurons in each hidden layer")
     parser.add_argument("--recout", default=1, type=int, help="use recurrent output layer")
     parser.add_argument("--batch_norm", default=0, type=int, help="whether to use batch norm between deep layers")
     parser.add_argument("--drates", default=[0, 0], nargs='+', type=float, help="dropout rates")
