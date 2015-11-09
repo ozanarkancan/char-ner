@@ -70,7 +70,10 @@ def get_an_entry(params, trn_df, dev_df, tst_df, fname):
     else:
         entry.append("std")
     
-    entry.append(eval(params["activation"]))
+    if params["activation"].startswith("["):
+        entry.append(eval(params["activation"]))
+    else:
+        entry.append(params["activation"])
     entry.append(eval(params["n_hidden"]))
 
     if "fbmerge" in params:
