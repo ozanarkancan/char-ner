@@ -44,7 +44,7 @@ def get_arg_parser():
     parser.add_argument("--sample", default=0, type=int, help="num of sents to sample from trn in the order of K")
     parser.add_argument("--feat", default='basic', help="feat func to use")
     parser.add_argument("--emb", default=0, type=int, help="embedding layer size")
-    parser.add_argument("--grad_clip", default=-1, type=float, help="clip gradient messages in recurrent layers if they are above this value")
+    parser.add_argument("--gclip", default=0, type=float, help="clip gradient messages in recurrent layers if they are above this value")
     parser.add_argument("--truncate", default=-1, type=int, help="backward step size")
     parser.add_argument("--log", default='das_auto', help="log file name")
     parser.add_argument("--sorted", default=1, type=int, help="sort datasets before training and prediction")
@@ -52,9 +52,10 @@ def get_arg_parser():
     parser.add_argument("--curriculum", default=1, type=int, help="curriculum learning: number of parts")
     parser.add_argument("--lang", default='eng', help="ner lang")
     parser.add_argument("--save", default=False, action='store_true', help="save param values to file")
-    parser.add_argument("--shuf", default=1, type=int, help="shuffle the batches.")
+    parser.add_argument("--shuf", default=0, type=int, help="shuffle the batches.")
     parser.add_argument("--tagging", default='io', help="tag scheme to use")
     parser.add_argument("--reverse", default=False, action='store_true', help="reverse the training data as additional data")
+    parser.add_argument("--decoder", default=0, type=int, help="use decoder to prevent invalid tag transitions")
 
     return parser
 
@@ -147,9 +148,10 @@ class Validator(object):
     def validate(self, rdnn, argsd):
         logging.info('training the model...')
         dbests = {'trn':(1,0.), 'dev':(1,0.), 'tst':(1,0.)}
+        decoder = 'viterbi' if argsd['decoder'] else 'predict'
         for e in range(1,argsd['fepoch']+1): # foreach epoch
             logging.info(('{:<5} {:<5} ' + ('{:>10} '*10)).format('dset','epoch','mcost', 'mtime', 'cerr', 'werr', 'wacc', 'pre', 'recall', 'f1', 'best', 'best'))
-            for funcname, ddat, datname in zip(['train','predict', 'predict'],[self.trndat,self.devdat, self.tstdat],['trn','dev','tst']):
+            for funcname, ddat, datname in zip(['train',decoder,decoder],[self.trndat,self.devdat, self.tstdat],['trn','dev','tst']):
                 if datname == 'tst' and dbests['dev'][0] != e:
                     continue
                 if datname == 'trn' and argsd['shuf']:
@@ -174,8 +176,7 @@ class Validator(object):
                 if f1 > dbests[datname][1]:
                     dbests[datname] = (e,f1)
                     if argsd['save'] and datname == 'dev': # save model to file
-                        lparams = ['feat', 'rep', 'activation', 'n_hidden', 'fbmerge', 'drates', 'recout', 'opt','lr','norm','n_batch', 'fepoch','in2out','emb','lang','tagging']
-                        param_log_name = ','.join(['{}:{}'.format(p,argsd[p]) for p in lparams])
+                        param_log_name = ','.join(['{}:{}'.format(p,argsd[p]) for p in LPARAMS])
                         param_log_name = valid_file_name(param_log_name)
                         rnn_param_values = rdnn.get_param_values()
                         np.savez('{}/models/{}'.format(ROOT_DIR, param_log_name),rnn_param_values=rnn_param_values,args=argsd)
@@ -221,6 +222,9 @@ class Curriculum(object):
         
             
 
+LPARAMS = ['feat', 'rep', 'activation', 'n_hidden', 'fbmerge', 'drates',
+    'recout','decoder', 'opt','lr','norm','gclip','truncate','n_batch', 'shuf', 'emb','lang', 'reverse','tagging']
+
 def main():
     parser = get_arg_parser()
     args = vars(parser.parse_args())
@@ -236,9 +240,7 @@ def main():
     logger.setLevel(logging.DEBUG)
     shandler = logging.StreamHandler()
     shandler.setLevel(logging.INFO)
-    lparams = ['feat', 'rep', 'activation', 'n_hidden', 'fbmerge', 'drates',
-        'recout', 'opt','lr','norm','n_batch', 'shuf', 'fepoch','in2out','emb','lang', 'reverse','tagging']
-    param_log_name = ','.join(['{}:{}'.format(p,args[p]) for p in lparams])
+    param_log_name = ','.join(['{}:{}'.format(p,args[p]) for p in LPARAMS])
     param_log_name = valid_file_name(param_log_name)
     base_log_name = '{}:{},{}'.format(host, theano.config.device, param_log_name if args['log'] == 'das_auto' else args['log'])
     ihandler = logging.FileHandler('{}/{}.info'.format(LOG_DIR,base_log_name), mode='w')
@@ -322,6 +324,16 @@ def main():
 
     rnn_params = extract_rnn_params(args)
     rdnn = RNN(feat.NC, feat.NF, args)
+    """ tprobs """ # TODO
+    tfollow = set()
+    for sent in trn:
+        tseq = feat.tseqenc.transform([t for t in sent['tseq']])
+        tfollow.update(set(zip(tseq,tseq[1:])))
+    tprobs = np.zeros((feat.NC,feat.NC),dtype=np.float32)
+    for i,j in tfollow:
+        tprobs[i,j] = 1
+    rdnn.tprobs = tprobs
+    """ end tprobs """
     validator.validate(rdnn, args)
     # lr: scipy.stats.expon.rvs(loc=0.0001,scale=0.1,size=100)
     # norm: scipy.stats.expon.rvs(loc=0, scale=5,size=10)

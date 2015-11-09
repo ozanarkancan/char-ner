@@ -47,11 +47,22 @@ class RDNN_Dummy:
                     [np.random.random_integers(0,self.nc-1,slen) for i, slen in enumerate(sentLens)])
         return ecost, rnn_last_predictions
 
+    def viterbi(self, dsetdat):
+        from viterbi import viterbi_log
+        ecost, rnn_last_predictions = 0, []
+        for Xdset, Xdsetmsk, ydset, ydsetmsk in dsetdat:
+            ecost += 0
+            pred = np.log(np.random.rand(len(sentLens),mlen,self.nc))
+
+            sentLens, mlen = Xdsetmsk.sum(axis=-1), Xdset.shape[1]
+            rnn_last_predictions.append([viterbi_log(pred[i,:slen,:].T, self.tprobs, range(slen)) for i, slen in enumerate(sentLens)])
+        return ecost, rnn_last_predictions
+
 def extract_rnn_params(kwargs):
     return dict((pname,kwargs[pname]) for pname in RDNN.param_names)
 
 class RDNN:
-    param_names = ['activation','n_hidden','fbmerge','drates','opt','grad_clip','lr','norm','recout','batch_norm','in2out','emb']
+    param_names = ['activation','n_hidden','fbmerge','drates','opt','lr','norm','gclip','truncate','recout','batch_norm','in2out','emb']
 
     def __init__(self, nc, nf, kwargs):
         assert nf; assert nc
@@ -59,11 +70,12 @@ class RDNN:
         for pname in RDNN.param_names:
             setattr(self, pname, kwargs[pname])
 
+        self.gclip = False if self.gclip == 0 else self.gclip # mysteriously, we need this line
+
         self.activation = [self.activation] * len(self.n_hidden)
         self.deep_ltypes = [act_str.split('-')[1] for act_str in self.activation]
 
         self.opt = getattr(lasagne.updates, self.opt)
-        self.grad_clip =  kwargs['grad_clip'] if kwargs['grad_clip'] > 0 else False
         ldepth = len(self.n_hidden)
 
         # network
@@ -95,18 +107,18 @@ class RDNN:
                 LayerType = lasagne.layers.RecurrentLayer
                 if ltype == 'relu': nonlin = lasagne.nonlinearities.rectify
                 elif ltype == 'lrelu': nonlin = lasagne.nonlinearities.leaky_rectify
-                l_forward = LayerType(prev_layer, n_hidden, mask_input=l_mask, grad_clipping=self.grad_clip, W_hid_to_hid=Identity(),
-                        W_in_to_hid=lasagne.init.GlorotUniform(gain='relu'), nonlinearity=nonlin)
-                l_backward = LayerType(prev_layer, n_hidden, mask_input=l_mask, grad_clipping=self.grad_clip, W_hid_to_hid=Identity(),
-                        W_in_to_hid=lasagne.init.GlorotUniform(gain='relu'), nonlinearity=nonlin, backwards=True)
+                l_forward = LayerType(prev_layer, n_hidden, mask_input=l_mask, grad_clipping=self.gclip, gradient_steps=self.truncate,
+                        W_hid_to_hid=Identity(), W_in_to_hid=lasagne.init.GlorotUniform(gain='relu'), nonlinearity=nonlin)
+                l_backward = LayerType(prev_layer, n_hidden, mask_input=l_mask, grad_clipping=self.gclip, gradient_steps=self.truncate,
+                        W_hid_to_hid=Identity(), W_in_to_hid=lasagne.init.GlorotUniform(gain='relu'), nonlinearity=nonlin, backwards=True)
             elif ltype == 'lstm':
                 LayerType = lasagne.layers.LSTMLayer
-                l_forward = LayerType(prev_layer, n_hidden, mask_input=l_mask, grad_clipping=self.grad_clip)
-                l_backward = LayerType(prev_layer, n_hidden, mask_input=l_mask, grad_clipping=self.grad_clip, backwards=True)
+                l_forward = LayerType(prev_layer, n_hidden, mask_input=l_mask, grad_clipping=self.gclip, gradient_steps=self.truncate)
+                l_backward = LayerType(prev_layer, n_hidden, mask_input=l_mask, grad_clipping=self.gclip, gradient_steps=self.truncate, backwards=True)
             elif ltype == 'gru':
                 LayerType = lasagne.layers.GRULayer
-                l_forward = LayerType(prev_layer, n_hidden, mask_input=l_mask, grad_clipping=self.grad_clip)
-                l_backward = LayerType(prev_layer, n_hidden, mask_input=l_mask, grad_clipping=self.grad_clip, backwards=True)
+                l_forward = LayerType(prev_layer, n_hidden, mask_input=l_mask, grad_clipping=self.gclip, gradient_steps=self.truncate)
+                l_backward = LayerType(prev_layer, n_hidden, mask_input=l_mask, grad_clipping=self.gclip, gradient_steps=self.truncate, backwards=True)
 
             logging.debug('l_forward: {}'.format(lasagne.layers.get_output_shape(l_forward)))
             logging.debug('l_backward: {}'.format(lasagne.layers.get_output_shape(l_backward)))
@@ -140,8 +152,8 @@ class RDNN:
                     W_in_to_hid=lasagne.init.GlorotUniform(), nonlinearity=log_softmax)
             l_bout = lasagne.layers.RecurrentLayer(l_fbmerge, num_units=nc, mask_input=l_mask, W_hid_to_hid=Identity(),
                     W_in_to_hid=lasagne.init.GlorotUniform(), nonlinearity=log_softmax, backwards=True)
-            # l_out = lasagne.layers.ElemwiseSumLayer([l_fout, l_bout], coeffs=0.5)
-            l_out = LogSoftMerge([l_fout, l_bout])
+            l_out = lasagne.layers.ElemwiseSumLayer([l_fout, l_bout], coeffs=0.5)
+            # l_out = LogSoftMerge([l_fout, l_bout])
             logging.debug('l_out: {}'.format(lasagne.layers.get_output_shape(l_out)))
         else:
             l_reshape = lasagne.layers.ReshapeLayer(l_fbmerge, (-1, self.n_hidden[-1]*2))
@@ -209,6 +221,17 @@ class RDNN:
             predictions = np.argmax(pred*ydsetmsk, axis=-1).flatten()
             sentLens, mlen = Xdsetmsk.sum(axis=-1), Xdset.shape[1]
             rnn_last_predictions.append([predictions[i*mlen:i*mlen+slen] for i, slen in enumerate(sentLens)])
+        return ecost, rnn_last_predictions
+
+    def viterbi(self, dsetdat):
+        from viterbi import viterbi_log
+        ecost, rnn_last_predictions = 0, []
+        for Xdset, Xdsetmsk, ydset, ydsetmsk in dsetdat:
+            bcost, pred = self.predict_model(Xdset, ydset, Xdsetmsk, ydsetmsk)
+            ecost += bcost
+
+            sentLens, mlen = Xdsetmsk.sum(axis=-1), Xdset.shape[1]
+            rnn_last_predictions.append([viterbi_log(pred[i,:slen,:].T, self.tprobs, range(slen)) for i, slen in enumerate(sentLens)])
         return ecost, rnn_last_predictions
 
     def get_param_values(self):
