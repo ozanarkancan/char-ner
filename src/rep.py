@@ -83,7 +83,7 @@ def sent_word_indx(sent):
     return arr
 
 
-if __name__ == '__main__':
+def print_sample():
     from utils import get_sents, sample_sents
     from encoding import any2io
     trn, dev, tst = get_sents('eng')
@@ -91,15 +91,34 @@ if __name__ == '__main__':
     trn = sample_sents(trn, 3, 5,6)
     r = Repstd()
 
-    """
     for sent in trn:
         sent['ts'] = any2io(sent['ts'])
-    """
-
-    for sent in trn:
         sent.update({
             'cseq': r.get_cseq(sent), 
             'wiseq': r.get_wiseq(sent), 
             'tseq': r.get_tseq(sent)})
         r.pprint(sent)
         print
+
+def quick():
+    from utils import get_sents, sample_sents
+    from encoding import any2io
+    trn, dev, tst = get_sents('eng')
+
+    r = Repstd()
+
+    for sent in trn:
+        sent['ts'] = any2io(sent['ts'])
+        sent.update({
+            'cseq': r.get_cseq(sent), 
+            'wiseq': r.get_wiseq(sent), 
+            'tseq': r.get_tseq(sent)})
+    s = set()
+    for sent in trn:
+        tseq = [t for t in sent['tseq']]
+        s.update(set(zip(tseq,tseq[1:])))
+    print s
+
+if __name__ == '__main__':
+    quick()
+    pass
