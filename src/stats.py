@@ -119,6 +119,7 @@ if __name__ == '__main__':
     print
 
     """
+    unique, phrase, corpus
     a,b,c = map(vocab, (trn,dev,tst))
     print 'vocab'
     print 'trn\tdev\ttst'
