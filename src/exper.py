@@ -31,7 +31,7 @@ def get_arg_parser():
     parser.add_argument("--rep", default='std', choices=['std','nospace','spec'], help="which representation to use")
     parser.add_argument("--activation", default='bi-lstm', help="activation function for hidden layer: bi-relu bi-lstm bi-tanh")
     parser.add_argument("--fbmerge", default='concat', choices=['concat','sum'], help="how to merge forward backward layer outputs")
-    parser.add_argument("--n_hidden", default=[128], nargs='+', type=int, help="number of neurons in each hidden layer")
+    parser.add_argument("--n_hidden", default=['128'], nargs='+', help="number of neurons in each hidden layer")
     parser.add_argument("--recout", default=1, type=int, help="use recurrent output layer")
     parser.add_argument("--batch_norm", default=0, type=int, help="whether to use batch norm between deep layers")
     parser.add_argument("--drates", default=[0, 0], nargs='+', type=float, help="dropout rates")
@@ -151,7 +151,6 @@ class Validator(object):
         decoder = 'viterbi' if argsd['decoder'] else 'predict'
         for e in range(1,argsd['fepoch']+1): # foreach epoch
             logging.info(('{:<5} {:<5} ' + ('{:>10} '*10)).format('dset','epoch','mcost', 'mtime', 'cerr', 'werr', 'wacc', 'pre', 'recall', 'f1', 'best', 'best'))
-            # for funcname, ddat, datname in zip(['train','predict', 'predict'],[self.trndat,self.devdat, self.tstdat],['trn','dev','tst']): TODO
             for funcname, ddat, datname in zip(['train',decoder,decoder],[self.trndat,self.devdat, self.tstdat],['trn','dev','tst']):
                 if datname == 'tst' and dbests['dev'][0] != e:
                     continue
@@ -177,8 +176,7 @@ class Validator(object):
                 if f1 > dbests[datname][1]:
                     dbests[datname] = (e,f1)
                     if argsd['save'] and datname == 'dev': # save model to file
-                        lparams = ['feat', 'rep', 'activation', 'n_hidden', 'fbmerge', 'drates', 'recout','decoder','opt','lr','norm','gclip','truncate','n_batch', 'fepoch','in2out','emb','lang','tagging']
-                        param_log_name = ','.join(['{}:{}'.format(p,argsd[p]) for p in lparams])
+                        param_log_name = ','.join(['{}:{}'.format(p,argsd[p]) for p in LPARAMS])
                         param_log_name = valid_file_name(param_log_name)
                         rnn_param_values = rdnn.get_param_values()
                         np.savez('{}/models/{}'.format(ROOT_DIR, param_log_name),rnn_param_values=rnn_param_values,args=argsd)
@@ -224,6 +222,9 @@ class Curriculum(object):
         
             
 
+LPARAMS = ['feat', 'rep', 'activation', 'n_hidden', 'fbmerge', 'drates',
+    'recout','decoder', 'opt','lr','norm','gclip','truncate','n_batch', 'shuf', 'emb','lang', 'reverse','tagging']
+
 def main():
     parser = get_arg_parser()
     args = vars(parser.parse_args())
@@ -239,9 +240,7 @@ def main():
     logger.setLevel(logging.DEBUG)
     shandler = logging.StreamHandler()
     shandler.setLevel(logging.INFO)
-    lparams = ['feat', 'rep', 'activation', 'n_hidden', 'fbmerge', 'drates',
-        'recout','decoder', 'opt','lr','norm','gclip','truncate','n_batch', 'shuf', 'fepoch','in2out','emb','lang', 'reverse','tagging']
-    param_log_name = ','.join(['{}:{}'.format(p,args[p]) for p in lparams])
+    param_log_name = ','.join(['{}:{}'.format(p,args[p]) for p in LPARAMS])
     param_log_name = valid_file_name(param_log_name)
     base_log_name = '{}:{},{}'.format(host, theano.config.device, param_log_name if args['log'] == 'das_auto' else args['log'])
     ihandler = logging.FileHandler('{}/{}.info'.format(LOG_DIR,base_log_name), mode='w')

@@ -70,6 +70,15 @@ class RDNN:
         for pname in RDNN.param_names:
             setattr(self, pname, kwargs[pname])
 
+        self.n_hidden = []
+        for s in args['n_hidden']:
+            if 'x' in s:
+                r,h = map(int,s.split('x'))
+                self.n_hidden.extend([h]*r)
+            else:
+                self.n_hidden.append(int(s))
+        print self.n_hidden
+
         self.gclip = False if self.gclip == 0 else self.gclip # mysteriously, we need this line
 
         self.activation = [self.activation] * len(self.n_hidden)
