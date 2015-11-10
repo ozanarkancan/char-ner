@@ -59,10 +59,23 @@ def get_sent_indx_word(dset):
         start += len(sent['ws'])
     return indexes
 
+def get_subsents(sent):
+    subsents = []
+    cursubsent = {'ws':[],'ts':[]}
+    for w,t in zip(sent['ws'],sent['ts']):
+        cursubsent['ws'].append(w)
+        cursubsent['ts'].append(t)
+        if w == '.' and t == 'O':
+            subsents.append(cursubsent)
+            cursubsent = {'ws':[],'ts':[]}
+    if len(cursubsent['ws']) > 0:
+        subsents.append(cursubsent)
+    return subsents
+
 if __name__ == '__main__':
-    trn,dev,tst = get_sents('eng')
-    sents = sample_sents(trn,10)
-    sent = sents[0]
-    print sent['ws']
-    print sent['ts']
-    print encoding.any2io(sent['ts'])
+    trn,dev,tst = get_sents('tr')
+    print list(islice(reversed(sorted(len(sent['ws']) for sent in trn)),10))
+    print list(islice(reversed(sorted(len(sent['ws']) for sent in dev)),10))
+    for sent in trn:
+        if len(sent['ws'])>125:
+            print len(' '.join(sent['ws']))

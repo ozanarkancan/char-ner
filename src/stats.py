@@ -63,7 +63,7 @@ def io_ideal(dev,tst):
         r1,r2 = conlleval(ts_gold, ts_pred)
         print '\t'.join([dset_str]+map(str,r1))
 
-def vocab(dset):
+def get_vocab(dset):
     return set(w for sent in dset for w in sent['ws'])
 
 ### end DSET ###
@@ -118,9 +118,21 @@ if __name__ == '__main__':
     print tabulate(table, headers=['io-ideal', 'wacc','pre','rec','f1'])
     print
 
+    table = []
+    for dname in dsetnames:
+        table.append([dname]+[len(get_vocab(data[l][dname])) for l in langs])
+    print tabulate(table,headers=['size(vocab)']+langs)
+
+    """ TODO
+    table = []
+    for dname in dsetnames:
+        vtrn,vdev,vtst = map(get_vocab, (trn,dev,tst))
+        table.append([dname]+[len(get_vocab(data[l][dname])) for l in langs])
+    print tabulate(table,headers=['unk']+langs)
+    """
     """
     unique, phrase, corpus
-    a,b,c = map(vocab, (trn,dev,tst))
+    vtrn,vdev,vtst = map(get_vocab, (trn,dev,tst))
     print 'vocab'
     print 'trn\tdev\ttst'
     print '{}\t{}\t{}'.format(*map(len,(a,b,c)))
