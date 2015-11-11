@@ -191,8 +191,11 @@ class Validator(object):
                 logging.debug(word_conmat_str)
                 logging.debug('')
             if argsd['patience'] > 0 and e - dbests['dev'][0] > argsd['patience']:
-                logging.info('sabir tasti.')
-                break
+                #logging.info('sabir tasti.')
+                val = rdnn.lr.get_value()
+                logging.info('old lr: {}, new lr: {}'.format(val, val * 0.95))
+                rdnn.lr.set_value(val * 0.95)
+                #break
             logging.info('')
 
 class Curriculum(object):
