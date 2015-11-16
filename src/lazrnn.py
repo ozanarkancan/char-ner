@@ -69,7 +69,8 @@ class RDNN:
         self.kwargs = extract_rnn_params(kwargs)
         for pname in RDNN.param_names:
             setattr(self, pname, kwargs[pname])
-
+        
+        self.lr = theano.shared(np.array(self.lr, dtype='float32'), allow_downcast=True)
         self.gclip = False if self.gclip == 0 else self.gclip # mysteriously, we need this line
 
         self.activation = [self.activation] * len(self.n_hidden)
@@ -103,10 +104,11 @@ class RDNN:
             self.layers = [l_in]
         for level, ltype, n_hidden in zip(range(1,ldepth+1), self.deep_ltypes, self.n_hidden):
             prev_layer = self.layers[level-1]
-            if ltype in ['relu','lrelu']:
+            if ltype in ['relu','lrelu', 'relu6']:
                 LayerType = lasagne.layers.RecurrentLayer
                 if ltype == 'relu': nonlin = lasagne.nonlinearities.rectify
                 elif ltype == 'lrelu': nonlin = lasagne.nonlinearities.leaky_rectify
+                elif ltype == 'relu6': nonlin = lambda x: T.min(lasagne.nonlinearities.rectify(x), 6)
                 l_forward = LayerType(prev_layer, n_hidden, mask_input=l_mask, grad_clipping=self.gclip, gradient_steps=self.truncate,
                         W_hid_to_hid=Identity(), W_in_to_hid=lasagne.init.GlorotUniform(gain='relu'), nonlinearity=nonlin)
                 l_backward = LayerType(prev_layer, n_hidden, mask_input=l_mask, grad_clipping=self.gclip, gradient_steps=self.truncate,
@@ -194,7 +196,7 @@ class RDNN:
         updates = self.opt(all_grads, all_params, self.lr)
 
         logging.info("Compiling functions...")
-        self.train_model = theano.function(inputs=[l_in.input_var, target_output, l_mask.input_var, out_mask], outputs=cost_train, updates=updates)
+        self.train_model = theano.function(inputs=[l_in.input_var, target_output, l_mask.input_var, out_mask], outputs=cost_train, updates=updates, allow_input_downcast=True)
         self.predict_model = theano.function(
                 inputs=[l_in.input_var, target_output, l_mask.input_var, out_mask],
                 outputs=[cost_eval, lasagne.layers.get_output(l_out, deterministic=True)])

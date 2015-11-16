@@ -149,6 +149,7 @@ class Validator(object):
         logging.info('training the model...')
         dbests = {'trn':(1,0.), 'dev':(1,0.), 'tst':(1,0.)}
         decoder = 'viterbi' if argsd['decoder'] else 'predict'
+        anger = 0
         for e in range(1,argsd['fepoch']+1): # foreach epoch
             logging.info(('{:<5} {:<5} ' + ('{:>10} '*10)).format('dset','epoch','mcost', 'mtime', 'cerr', 'werr', 'wacc', 'pre', 'recall', 'f1', 'best', 'best'))
             for funcname, ddat, datname in zip(['train',decoder,decoder],[self.trndat,self.devdat, self.tstdat],['trn','dev','tst']):
@@ -190,9 +191,15 @@ class Validator(object):
                 logging.debug(char_conmat_str)
                 logging.debug(word_conmat_str)
                 logging.debug('')
-            if argsd['patience'] > 0 and e - dbests['dev'][0] > argsd['patience']:
-                logging.info('sabir tasti.')
-                break
+
+            anger = 0 if e == dbests['dev'][0] else anger + 1
+            if argsd['patience'] > 0 and anger > argsd['patience']:
+                #logging.info('sabir tasti.')
+                val = rdnn.lr.get_value()
+                logging.info('old lr: {}, new lr: {}'.format(val, val * 0.95))
+                rdnn.lr.set_value(val * 0.95)
+                anger = 0
+                #break
             logging.info('')
 
 class Curriculum(object):

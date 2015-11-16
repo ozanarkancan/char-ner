@@ -103,9 +103,28 @@ if __name__ == '__main__':
 
     table = []
     for l in langs:
-        nchar_sents = [sum(1 for c in ' '.join(sent['ws'])) for sent in chain(*data[l].values())]
-        table.append([l]+[int(f(nchar_sents)) for f in (np.min,np.max,np.mean,np.std)])
-    print tabulate(table,headers=['len(sent) (char)']+['min','max','mean','std'])
+        # nchar_sents = [sum(1 for w in sent['ws']) for sent in chain(*data[l].values())]
+        for dname in dsetnames:
+            nchar_sents = [sum(1 for w in sent['ws']) for sent in data[l][dname]]
+            table.append(['{}-{}'.format(l,dname)]+[int(f(nchar_sents)) for f in (np.min,np.max,np.mean,np.std)])
+        table.append(['...']*5)
+    print tabulate(table,headers=['#word per sent']+['min','max','mean','std'])
+    print
+
+    table = []
+    for l in langs:
+        # nchar_sents = [sum(1 for c in ' '.join(sent['ws'])) for sent in chain(*data[l].values())]
+        for dname in dsetnames:
+            nchar_sents = [sum(1 for c in ' '.join(sent['ws'])) for sent in data[l][dname]]
+            table.append(['{}-{}'.format(l,dname)]+[int(f(nchar_sents)) for f in (np.min,np.max,np.mean,np.std)])
+        table.append(['...']*5)
+    print tabulate(table,headers=['#char per sent']+['min','max','mean','std'])
+    print
+
+    table = []
+    for dname in dsetnames:
+        table.append([dname]+[len(get_vocab(data[l][dname])) for l in langs])
+    print tabulate(table,headers=['size(vocab)']+langs)
     print
 
     table = []
@@ -118,10 +137,6 @@ if __name__ == '__main__':
     print tabulate(table, headers=['io-ideal', 'wacc','pre','rec','f1'])
     print
 
-    table = []
-    for dname in dsetnames:
-        table.append([dname]+[len(get_vocab(data[l][dname])) for l in langs])
-    print tabulate(table,headers=['size(vocab)']+langs)
 
     """ TODO
     table = []
