@@ -1,0 +1,2308 @@
+activation:	bi-relu
+batch_norm:	0
+curriculum:	1
+decoder:	1
+drates:	[0, 0, 0]
+emb:	0
+fbmerge:	concat
+feat:	basic
+fepoch:	5000
+gclip:	0
+in2out:	0
+lang:	eng
+log:	das_auto
+lr:	0.001
+n_batch:	128
+n_hidden:	[200, 200]
+norm:	1.0
+opt:	adam
+patience:	5
+recout:	1
+rep:	std
+reverse:	False
+rnn:	lazrnn
+sample:	0
+save:	False
+shuf:	0
+sorted:	1
+tagging:	io
+truncate:	-1
+base_log_name:	iui-5-0:cpu,feat:basic,rep:std,activation:bi-relu,n_hidden:200,200,fbmerge:concat,drates:0,0,0,recout:1,decoder:1,opt:adam,lr:0.001,norm:1.0,gclip:0,truncate:-1,n_batch:128,shuf:0,emb:0,lang:eng,reverse:False,tagging:io
+# of sents trn, dev, tst: 14041 3250 3453
+maxlen: 512 minlen: 1 avglen: 76.89 stdlen: 65.57
+['c= ', 'c=!', 'c="', 'c=$', 'c=%', 'c=&', "c='", 'c=(', 'c=)', 'c=*', 'c=+', 'c=,', 'c=-', 'c=.', 'c=/', 'c=0', 'c=1', 'c=2', 'c=3', 'c=4', 'c=5', 'c=6', 'c=7', 'c=8', 'c=9', 'c=:', 'c=;', 'c==', 'c=?', 'c=@', 'c=A', 'c=B', 'c=C', 'c=D', 'c=E', 'c=F', 'c=G', 'c=H', 'c=I', 'c=J', 'c=K', 'c=L', 'c=M', 'c=N', 'c=O', 'c=P', 'c=Q', 'c=R', 'c=S', 'c=T', 'c=U', 'c=V', 'c=W', 'c=X', 'c=Y', 'c=Z', 'c=[', 'c=]', 'c=`', 'c=a', 'c=b', 'c=c', 'c=d', 'c=e', 'c=f', 'c=g', 'c=h', 'c=i', 'c=j', 'c=k', 'c=l', 'c=m', 'c=n', 'c=o', 'c=p', 'c=q', 'c=r', 'c=s', 'c=t', 'c=u', 'c=v', 'c=w', 'c=x', 'c=y', 'c=z']
+['i-loc' 'i-misc' 'i-org' 'i-per' 'o']
+['I-LOC' 'I-MISC' 'I-ORG' 'I-PER' 'O']
+NF: 85 NC: 5
+l_in: (None, None, 85)
+l_mask: (Subtensor{int64}.0, Subtensor{int64}.0)
+l_forward: (None, None, 200)
+l_backward: (None, None, 200)
+l_fbmerge: (None, None, 400)
+l_forward: (None, None, 200)
+l_backward: (None, None, 200)
+l_fbmerge: (None, None, 400)
+using recout:1.
+l_out: (None, None, 5)
+[W, b, W, W, b, W, W, b, W, W, b, W, W, b, W]
+Compiling functions...
+Compiling done.
+training the model...
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   1        86.6338   183.4399     0.2081     0.1823    81.7700    19.2900     7.9300    11.2400    11.2400          1
+
+processed 203621 tokens with 23429 phrases; found: 9628 phrases; correct: 1857.
+accuracy:  81.77%; precision:  19.29%; recall:   7.93%; FB1:  11.24
+              LOC: precision:  34.34%; recall:  10.09%; FB1:  15.59  2094
+             MISC: precision:   9.49%; recall:   3.17%; FB1:   4.76  1138
+              ORG: precision:  25.79%; recall:   9.86%; FB1:  14.27  2408
+              PER: precision:  10.26%; recall:   6.20%; FB1:   7.73  3988
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	8371	1738	3952	6386	32622
+i-misc	1067	4001	1349	2066	22341
+i-org	2804	2418	12004	6694	42811
+i-per	3654	891	2257	25593	39578
+o	5398	15722	5794	25125	804986
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	1411	287	543	960	5096
+I-MISC	155	610	186	305	3337
+I-ORG	430	410	1824	958	6403
+I-PER	574	138	348	3888	6180
+O	1198	3040	1246	5325	158769
+
+
+dev   1         4.7184    20.4194     0.2095     0.1868    81.3200    17.2100     6.3200     9.2400     9.2400          1
+
+processed 51362 tokens with 5938 phrases; found: 2179 phrases; correct: 375.
+accuracy:  81.32%; precision:  17.21%; recall:   6.32%; FB1:   9.24
+              LOC: precision:  25.90%; recall:   5.50%; FB1:   9.07  390
+             MISC: precision:  11.29%; recall:   3.05%; FB1:   4.80  248
+              ORG: precision:  26.05%; recall:  10.66%; FB1:  15.13  549
+              PER: precision:  10.38%; recall:   5.59%; FB1:   7.27  992
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	1356	735	1462	1528	8439
+i-misc	260	1077	281	653	5977
+i-org	437	427	2230	1367	9453
+i-per	927	301	487	7428	11231
+o	1118	3981	1066	6925	203163
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	235	107	227	232	1293
+I-MISC	44	172	36	98	918
+I-ORG	71	71	339	192	1419
+I-PER	142	49	72	1120	1766
+O	271	770	217	1597	39904
+
+
+tst   1         5.3442    18.7659     0.2287     0.2018    79.8200    15.3600     6.4700     9.1000     9.1000          1
+
+processed 46435 tokens with 5628 phrases; found: 2370 phrases; correct: 364.
+accuracy:  79.82%; precision:  15.36%; recall:   6.47%; FB1:   9.10
+              LOC: precision:  16.32%; recall:   3.73%; FB1:   6.07  380
+             MISC: precision:   3.40%; recall:   1.44%; FB1:   2.03  294
+              ORG: precision:  26.52%; recall:  12.14%; FB1:  16.65  758
+              PER: precision:   9.70%; recall:   5.63%; FB1:   7.12  938
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	1035	612	1509	1400	7784
+i-misc	210	796	283	418	4538
+i-org	610	525	3115	1789	10427
+i-per	832	274	636	6251	9806
+o	1245	4470	1964	6261	176304
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	185	101	245	210	1184
+I-MISC	34	119	39	69	657
+I-ORG	95	87	479	256	1579
+I-PER	136	45	97	976	1519
+O	315	823	375	1503	35307
+
+
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   2        14.8184   180.3557     0.1447     0.1219    87.8100    36.3500    25.0800    29.6800    29.6800          2
+
+processed 203621 tokens with 23429 phrases; found: 16166 phrases; correct: 5876.
+accuracy:  87.81%; precision:  36.35%; recall:  25.08%; FB1:  29.68
+              LOC: precision:  51.36%; recall:  23.87%; FB1:  32.60  3314
+             MISC: precision:  40.46%; recall:   9.34%; FB1:  15.18  786
+              ORG: precision:  31.20%; recall:  34.59%; FB1:  32.81  6981
+              PER: precision:  33.00%; recall:  25.42%; FB1:  28.72  5085
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	16096	558	11328	4295	20792
+i-misc	1879	4339	6303	1844	16459
+i-org	1612	661	36846	7145	20467
+i-per	1394	179	6089	43496	20815
+o	3693	2030	17958	10705	822639
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	2760	89	1763	604	3081
+I-MISC	301	628	944	267	2453
+I-ORG	329	96	5704	1028	2868
+I-PER	237	28	996	6747	3120
+O	822	370	3210	2219	162957
+
+
+dev   2         2.7892    20.1471     0.1508     0.1271    87.2900    36.1800    22.6700    27.8700    27.8700          2
+
+processed 51362 tokens with 5938 phrases; found: 3720 phrases; correct: 1346.
+accuracy:  87.29%; precision:  36.18%; recall:  22.67%; FB1:  27.87
+              LOC: precision:  59.38%; recall:  22.92%; FB1:  33.07  709
+             MISC: precision:  43.58%; recall:   8.50%; FB1:  14.22  179
+              ORG: precision:  27.19%; recall:  31.47%; FB1:  29.17  1552
+              PER: precision:  33.20%; recall:  23.07%; FB1:  27.23  1280
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	3396	225	3122	1007	5770
+i-misc	401	931	1495	549	4872
+i-org	312	165	6933	1567	4937
+i-per	400	44	1549	11508	6873
+o	695	299	4231	2538	208490
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	586	39	495	146	828
+I-MISC	76	141	243	81	727
+I-ORG	59	23	1072	242	696
+I-PER	70	7	262	1761	1049
+O	126	56	749	554	41274
+
+
+tst   2         3.2642    18.7562     0.1642     0.1361    86.3900    37.3000    25.6000    30.3700    30.3700          2
+
+processed 46435 tokens with 5628 phrases; found: 3863 phrases; correct: 1441.
+accuracy:  86.39%; precision:  37.30%; recall:  25.60%; FB1:  30.37
+              LOC: precision:  53.21%; recall:  21.96%; FB1:  31.09  686
+             MISC: precision:  27.74%; recall:   6.20%; FB1:  10.14  155
+              ORG: precision:  32.95%; recall:  36.35%; FB1:  34.57  1827
+              PER: precision:  36.07%; recall:  26.65%; FB1:  30.65  1195
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	2959	103	3118	904	5256
+i-misc	462	474	1300	455	3554
+i-org	451	208	8699	1818	5290
+i-per	310	97	1819	10494	5079
+o	802	529	5638	2725	180550
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	500	16	510	132	767
+I-MISC	80	72	188	64	514
+I-ORG	89	32	1358	276	741
+I-PER	67	15	292	1642	757
+O	161	94	960	563	36545
+
+
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   3         9.4262   180.5589     0.0986     0.0734    92.6600    55.8000    54.3700    55.0800    55.0800          3
+
+processed 203621 tokens with 23429 phrases; found: 22831 phrases; correct: 12739.
+accuracy:  92.66%; precision:  55.80%; recall:  54.37%; FB1:  55.08
+              LOC: precision:  76.32%; recall:  56.01%; FB1:  64.61  5232
+             MISC: precision:  55.42%; recall:  33.97%; FB1:  42.12  2086
+              ORG: precision:  45.56%; recall:  54.06%; FB1:  49.45  7471
+              PER: precision:  52.05%; recall:  63.42%; FB1:  57.18  8042
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	25955	1652	8422	7432	9608
+i-misc	2230	11820	5454	3453	7867
+i-org	1840	1462	43599	9239	10591
+i-per	1052	409	5050	56814	8648
+o	1342	3228	8999	8461	834995
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	4668	258	1303	1098	970
+I-MISC	392	1742	857	542	1060
+I-ORG	376	222	6752	1378	1297
+I-PER	198	61	853	9053	963
+O	167	471	1413	1071	166456
+
+
+dev   3         1.9577    20.4162     0.1059     0.0807    91.9300    53.3100    49.9700    51.5800    51.5800          3
+
+processed 51362 tokens with 5938 phrases; found: 5566 phrases; correct: 2967.
+accuracy:  91.93%; precision:  53.31%; recall:  49.97%; FB1:  51.58
+              LOC: precision:  74.21%; recall:  47.14%; FB1:  57.66  1167
+             MISC: precision:  53.12%; recall:  30.61%; FB1:  38.84  529
+              ORG: precision:  39.57%; recall:  50.93%; FB1:  44.54  1726
+              PER: precision:  53.03%; recall:  61.73%; FB1:  57.05  2144
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	5482	560	2657	1977	2844
+i-misc	731	2796	1083	1183	2455
+i-org	375	425	8477	1980	2657
+i-per	375	102	1296	15586	3015
+o	297	706	2004	2126	211120
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	975	85	455	301	278
+I-MISC	134	432	189	182	331
+I-ORG	74	67	1296	315	340
+I-PER	77	16	219	2501	336
+O	30	96	326	292	42015
+
+
+tst   3         2.4525    18.8239     0.1184     0.0885    91.1500    52.5100    51.9500    52.2300    52.2300          3
+
+processed 46435 tokens with 5628 phrases; found: 5568 phrases; correct: 2924.
+accuracy:  91.15%; precision:  52.51%; recall:  51.95%; FB1:  52.23
+              LOC: precision:  70.65%; recall:  49.40%; FB1:  58.14  1162
+             MISC: precision:  40.78%; recall:  25.54%; FB1:  31.41  434
+              ORG: precision:  45.23%; recall:  54.95%; FB1:  49.62  2012
+              PER: precision:  51.84%; recall:  62.83%; FB1:  56.81  1960
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	5366	590	2184	1626	2574
+i-misc	524	1705	1227	827	1962
+i-org	666	442	10080	2391	2887
+i-per	415	52	1430	13644	2258
+o	355	1073	3072	2236	183508
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	940	94	376	261	254
+I-MISC	89	260	197	127	245
+I-ORG	126	73	1589	378	330
+I-PER	78	9	248	2203	235
+O	54	145	499	292	37333
+
+
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   4         6.8455   181.1271     0.0758     0.0556    94.4400    63.9100    66.3400    65.1000    65.1000          4
+
+processed 203621 tokens with 23429 phrases; found: 24317 phrases; correct: 15542.
+accuracy:  94.44%; precision:  63.91%; recall:  66.34%; FB1:  65.10
+              LOC: precision:  74.06%; recall:  71.23%; FB1:  72.62  6857
+             MISC: precision:  61.83%; recall:  45.22%; FB1:  52.24  2489
+              ORG: precision:  55.37%; recall:  62.60%; FB1:  58.77  7119
+              PER: precision:  63.46%; recall:  75.50%; FB1:  68.96  7852
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	34629	1356	6159	5543	5382
+i-misc	2599	15264	4582	2723	5656
+i-org	3792	1472	46465	6576	8426
+i-per	1578	515	3773	60243	5864
+o	2350	2875	5256	5312	841232
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	5893	213	975	817	399
+I-MISC	443	2253	729	432	736
+I-ORG	706	240	7159	1005	915
+I-PER	289	83	643	9536	577
+O	337	392	746	641	167462
+
+
+dev   4         1.5862    20.5013     0.0823     0.0620    93.8000    62.2900    63.7800    63.0200    63.0200          4
+
+processed 51362 tokens with 5938 phrases; found: 6080 phrases; correct: 3787.
+accuracy:  93.80%; precision:  62.29%; recall:  63.78%; FB1:  63.02
+              LOC: precision:  74.75%; recall:  66.41%; FB1:  70.34  1632
+             MISC: precision:  62.61%; recall:  44.88%; FB1:  52.28  658
+              ORG: precision:  49.57%; recall:  59.51%; FB1:  54.08  1610
+              PER: precision:  62.25%; recall:  73.67%; FB1:  67.48  2180
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	8139	485	1822	1406	1668
+i-misc	749	3788	990	1023	1698
+i-org	657	378	9091	1708	2080
+i-per	538	166	1268	16349	2053
+o	619	669	1048	1386	212531
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	1368	85	304	224	113
+I-MISC	130	585	174	165	214
+I-ORG	116	61	1380	287	248
+I-PER	97	32	219	2597	204
+O	94	87	149	181	42248
+
+
+tst   4         2.3727    18.7712     0.0962     0.0719    92.8100    59.3100    61.8700    60.5600    60.5600          4
+
+processed 46435 tokens with 5628 phrases; found: 5871 phrases; correct: 3482.
+accuracy:  92.81%; precision:  59.31%; recall:  61.87%; FB1:  60.56
+              LOC: precision:  68.58%; recall:  66.73%; FB1:  67.64  1617
+             MISC: precision:  48.98%; recall:  37.95%; FB1:  42.76  537
+              ORG: precision:  52.45%; recall:  59.36%; FB1:  55.69  1874
+              PER: precision:  61.15%; recall:  69.70%; FB1:  65.14  1843
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	7611	527	1506	1134	1562
+i-misc	669	2492	950	691	1443
+i-org	1232	543	10520	1855	2316
+i-per	654	49	1497	14044	1555
+o	765	924	2163	1347	185045
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	1260	93	265	183	124
+I-MISC	108	382	151	106	171
+I-ORG	216	87	1645	295	253
+I-PER	120	9	261	2235	148
+O	118	126	345	161	37573
+
+
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   5         5.3724   180.6747     0.0619     0.0473    95.2700    68.1700    70.5800    69.3500    69.3500          5
+
+processed 203621 tokens with 23429 phrases; found: 24258 phrases; correct: 16536.
+accuracy:  95.27%; precision:  68.17%; recall:  70.58%; FB1:  69.35
+              LOC: precision:  73.39%; recall:  79.53%; FB1:  76.34  7726
+             MISC: precision:  62.67%; recall:  55.39%; FB1:  58.81  3008
+              ORG: precision:  61.95%; recall:  62.17%; FB1:  62.06  6320
+              PER: precision:  70.32%; recall:  76.76%; FB1:  73.40  7204
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	39806	1855	4094	3934	3380
+i-misc	2639	18716	2923	1716	4830
+i-org	4527	2629	47106	5698	6771
+i-per	2312	726	2975	61475	4485
+o	1847	2423	3247	3808	845700
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	6534	271	647	565	280
+I-MISC	474	2718	481	281	639
+I-ORG	842	396	7059	867	861
+I-PER	422	114	492	9616	484
+O	273	321	482	447	168055
+
+
+dev   5         1.2819    20.3869     0.0679     0.0533    94.6700    66.5700    67.8300    67.1900    67.1900          5
+
+processed 51362 tokens with 5938 phrases; found: 6051 phrases; correct: 4028.
+accuracy:  94.67%; precision:  66.57%; recall:  67.83%; FB1:  67.19
+              LOC: precision:  75.23%; recall:  74.90%; FB1:  75.07  1829
+             MISC: precision:  60.77%; recall:  53.49%; FB1:  56.89  808
+              ORG: precision:  55.85%; recall:  59.06%; FB1:  57.41  1418
+              PER: precision:  68.59%; recall:  74.32%; FB1:  71.34  1996
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	9533	654	1135	1048	1150
+i-misc	735	4683	580	678	1572
+i-org	798	596	9274	1496	1750
+i-per	789	240	1098	16635	1612
+o	357	580	668	959	213689
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	1536	106	188	169	95
+I-MISC	132	697	113	112	214
+I-ORG	143	90	1361	248	250
+I-PER	143	36	189	2605	176
+O	44	71	97	123	42424
+
+
+tst   5         1.7605    18.6954     0.0845     0.0659    93.4100    61.5300    64.3600    62.9100    62.9100          5
+
+processed 46435 tokens with 5628 phrases; found: 5887 phrases; correct: 3622.
+accuracy:  93.41%; precision:  61.53%; recall:  64.36%; FB1:  62.91
+              LOC: precision:  66.45%; recall:  73.41%; FB1:  69.75  1836
+             MISC: precision:  53.78%; recall:  50.36%; FB1:  52.01  649
+              ORG: precision:  55.79%; recall:  56.70%; FB1:  56.24  1683
+              PER: precision:  64.81%; recall:  68.89%; FB1:  66.79  1719
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	8675	542	1079	896	1148
+i-misc	709	3219	543	554	1220
+i-org	1517	778	10490	1707	1974
+i-per	912	130	1401	14063	1293
+o	723	762	1591	1057	186111
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	1397	89	183	147	109
+I-MISC	113	487	86	86	146
+I-ORG	267	120	1580	268	261
+I-PER	159	22	244	2206	142
+O	120	93	269	136	37705
+
+
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   6         4.4957   180.8023     0.0523     0.0403    95.9700    73.2500    74.3400    73.7900    73.7900          6
+
+processed 203621 tokens with 23429 phrases; found: 23779 phrases; correct: 17417.
+accuracy:  95.97%; precision:  73.25%; recall:  74.34%; FB1:  73.79
+              LOC: precision:  80.29%; recall:  80.31%; FB1:  80.30  7130
+             MISC: precision:  68.31%; recall:  63.65%; FB1:  65.90  3171
+              ORG: precision:  64.83%; recall:  68.51%; FB1:  66.62  6654
+              PER: precision:  76.38%; recall:  78.97%; FB1:  77.65  6824
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	39933	1789	4766	3077	3504
+i-misc	1536	20341	3106	1213	4628
+i-org	3200	1917	51519	3767	6328
+i-per	1760	717	2886	61964	4646
+o	785	1743	2902	2209	849386
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	6552	265	725	448	307
+I-MISC	263	2988	514	201	627
+I-ORG	578	299	7664	587	897
+I-PER	332	115	474	9708	499
+O	136	229	437	281	168495
+
+
+dev   6         1.1532    20.1690     0.0606     0.0487    95.1300    70.0600    70.3400    70.2000    70.2000          6
+
+processed 51362 tokens with 5938 phrases; found: 5962 phrases; correct: 4177.
+accuracy:  95.13%; precision:  70.06%; recall:  70.34%; FB1:  70.20
+              LOC: precision:  79.00%; recall:  73.92%; FB1:  76.38  1719
+             MISC: precision:  65.27%; recall:  61.22%; FB1:  63.18  861
+              ORG: precision:  57.87%; recall:  63.61%; FB1:  60.60  1474
+              PER: precision:  73.58%; recall:  76.22%; FB1:  74.88  1908
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	9462	589	1388	825	1256
+i-misc	520	5174	636	516	1402
+i-org	596	510	9917	1258	1633
+i-per	688	217	1088	16798	1583
+o	174	464	592	579	214444
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	1507	97	234	132	124
+I-MISC	92	778	107	86	205
+I-ORG	108	78	1443	206	257
+I-PER	122	37	185	2631	174
+O	30	59	88	79	42503
+
+
+tst   6         2.0094    18.6597     0.0774     0.0610    93.9000    64.6000    66.4900    65.5300    65.5300          6
+
+processed 46435 tokens with 5628 phrases; found: 5793 phrases; correct: 3742.
+accuracy:  93.90%; precision:  64.60%; recall:  66.49%; FB1:  65.53
+              LOC: precision:  72.80%; recall:  70.70%; FB1:  71.73  1614
+             MISC: precision:  56.22%; recall:  56.71%; FB1:  56.47  699
+              ORG: precision:  56.75%; recall:  62.68%; FB1:  59.57  1829
+              PER: precision:  68.81%; recall:  70.25%; FB1:  69.52  1651
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	8296	626	1410	800	1208
+i-misc	411	3496	631	409	1298
+i-org	1193	687	11306	1393	1887
+i-per	645	127	1546	14200	1281
+o	343	728	1522	669	186982
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	1331	100	239	132	123
+I-MISC	66	531	97	60	164
+I-ORG	198	105	1709	224	260
+I-PER	115	20	256	2229	153
+O	62	102	264	94	37801
+
+
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   7         3.8247   180.6749     0.0474     0.0368    96.3200    74.7600    76.1400    75.4400    75.4400          7
+
+processed 203621 tokens with 23429 phrases; found: 23859 phrases; correct: 17838.
+accuracy:  96.32%; precision:  74.76%; recall:  76.14%; FB1:  75.44
+              LOC: precision:  77.03%; recall:  85.31%; FB1:  80.96  7896
+             MISC: precision:  71.55%; recall:  65.18%; FB1:  68.21  3100
+              ORG: precision:  67.75%; recall:  68.99%; FB1:  68.36  6412
+              PER: precision:  80.51%; recall:  78.70%; FB1:  79.60  6451
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	43450	1268	3367	1891	3093
+i-misc	1950	20654	2606	916	4698
+i-org	4196	1951	51123	3070	6391
+i-per	2653	659	2303	61673	4685
+o	829	1097	2063	1514	851522
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	7033	188	499	266	311
+I-MISC	338	3065	445	145	600
+I-ORG	740	289	7632	467	897
+I-PER	490	101	376	9667	494
+O	150	131	353	205	168739
+
+
+dev   7         1.0534    20.1313     0.0570     0.0451    95.4900    71.8400    72.2100    72.0200    72.0200          7
+
+processed 51362 tokens with 5938 phrases; found: 5969 phrases; correct: 4288.
+accuracy:  95.49%; precision:  71.84%; recall:  72.21%; FB1:  72.02
+              LOC: precision:  77.40%; recall:  79.59%; FB1:  78.48  1889
+             MISC: precision:  70.78%; recall:  63.07%; FB1:  66.71  818
+              ORG: precision:  60.26%; recall:  65.47%; FB1:  62.76  1457
+              PER: precision:  75.84%; recall:  74.32%; FB1:  75.08  1805
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	10283	431	1079	579	1148
+i-misc	613	5159	608	383	1485
+i-org	874	496	9821	1052	1671
+i-per	959	235	936	16542	1702
+o	179	227	425	439	214983
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	1633	67	176	98	120
+I-MISC	107	790	112	62	197
+I-ORG	149	70	1457	175	241
+I-PER	159	39	167	2597	187
+O	27	27	71	65	42569
+
+
+tst   7         1.5287    18.8047     0.0745     0.0589    94.1100    65.3700    67.1300    66.2400    66.2400          7
+
+processed 46435 tokens with 5628 phrases; found: 5779 phrases; correct: 3778.
+accuracy:  94.11%; precision:  65.37%; recall:  67.13%; FB1:  66.24
+              LOC: precision:  68.93%; recall:  74.37%; FB1:  71.55  1793
+             MISC: precision:  57.79%; recall:  56.71%; FB1:  57.25  680
+              ORG: precision:  58.35%; recall:  62.02%; FB1:  60.13  1760
+              PER: precision:  72.57%; recall:  69.39%; FB1:  70.95  1546
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	8807	447	1305	557	1224
+i-misc	475	3520	527	362	1361
+i-org	1636	695	11084	1181	1870
+i-per	914	155	1373	13903	1454
+o	449	474	1150	501	187670
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	1403	74	222	91	135
+I-MISC	78	528	79	55	178
+I-ORG	270	100	1690	189	247
+I-PER	158	26	233	2198	158
+O	78	78	205	80	37882
+
+
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   8         3.4049   180.5395     0.0433     0.0347    96.5300    75.9700    78.2000    77.0700    77.0700          8
+
+processed 203621 tokens with 23429 phrases; found: 24119 phrases; correct: 18322.
+accuracy:  96.53%; precision:  75.97%; recall:  78.20%; FB1:  77.07
+              LOC: precision:  79.33%; recall:  85.78%; FB1:  82.43  7708
+             MISC: precision:  67.62%; recall:  68.44%; FB1:  68.03  3444
+              ORG: precision:  70.74%; recall:  70.45%; FB1:  70.59  6271
+              PER: precision:  81.27%; recall:  82.45%; FB1:  81.86  6696
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	43825	1529	3116	2226	2373
+i-misc	1648	23059	2218	913	2986
+i-org	3930	2282	52330	3192	4997
+i-per	1944	718	1686	64099	3526
+o	827	2840	2100	1667	849591
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	7059	222	474	307	235
+I-MISC	300	3386	372	151	384
+I-ORG	699	341	7762	493	730
+I-PER	361	107	275	9977	408
+O	147	444	378	230	168379
+
+
+dev   8         0.9770    20.1876     0.0548     0.0450    95.5000    71.2300    73.1200    72.1600    72.1600          8
+
+processed 51362 tokens with 5938 phrases; found: 6096 phrases; correct: 4342.
+accuracy:  95.50%; precision:  71.23%; recall:  73.12%; FB1:  72.16
+              LOC: precision:  77.22%; recall:  79.15%; FB1:  78.17  1883
+             MISC: precision:  65.86%; recall:  65.14%; FB1:  65.50  908
+              ORG: precision:  61.87%; recall:  65.70%; FB1:  63.73  1424
+              PER: precision:  74.91%; recall:  76.49%; FB1:  75.69  1881
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	10345	577	1115	677	806
+i-misc	584	5676	506	455	1027
+i-org	895	542	9890	1239	1348
+i-per	845	245	832	17120	1332
+o	180	761	451	495	214366
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	1628	89	182	110	85
+I-MISC	106	858	90	73	141
+I-ORG	154	82	1450	204	202
+I-PER	147	44	143	2653	162
+O	30	116	79	71	42463
+
+
+tst   8         1.6595    18.7190     0.0741     0.0592    94.0800    65.4500    67.9100    66.6600    66.6600          8
+
+processed 46435 tokens with 5628 phrases; found: 5840 phrases; correct: 3822.
+accuracy:  94.08%; precision:  65.45%; recall:  67.91%; FB1:  66.66
+              LOC: precision:  70.61%; recall:  71.12%; FB1:  70.86  1674
+             MISC: precision:  53.11%; recall:  59.16%; FB1:  55.97  772
+              ORG: precision:  59.50%; recall:  62.98%; FB1:  61.19  1753
+              PER: precision:  72.33%; recall:  73.41%; FB1:  72.87  1641
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	8412	622	1715	627	964
+i-misc	366	4038	498	417	926
+i-org	1458	762	11273	1381	1592
+i-per	805	162	1066	14540	1226
+o	388	1339	1150	544	186823
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	1334	95	280	103	113
+I-MISC	60	611	79	61	107
+I-ORG	246	114	1696	219	221
+I-PER	141	27	171	2288	146
+O	75	192	207	90	37759
+
+
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   9         3.1354   180.2458     0.0401     0.0323    96.7700    77.4100    79.7100    78.5400    78.5400          9
+
+processed 203621 tokens with 23429 phrases; found: 24125 phrases; correct: 18675.
+accuracy:  96.77%; precision:  77.41%; recall:  79.71%; FB1:  78.54
+              LOC: precision:  82.35%; recall:  85.86%; FB1:  84.07  7433
+             MISC: precision:  74.37%; recall:  70.70%; FB1:  72.49  3235
+              ORG: precision:  73.20%; recall:  69.48%; FB1:  71.29  5977
+              PER: precision:  77.18%; recall:  87.47%; FB1:  82.00  7480
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	44144	1080	2486	3318	2041
+i-misc	1612	22789	2082	1440	2901
+i-org	3302	1738	51876	4797	5018
+i-per	1132	323	858	66861	2799
+o	580	1994	1704	2091	850656
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	7068	173	378	493	185
+I-MISC	283	3381	334	235	360
+I-ORG	585	271	7658	774	737
+I-PER	210	53	132	10391	342
+O	98	301	320	304	168555
+
+
+dev   9         0.8918    20.1913     0.0511     0.0422    95.7800    72.8800    74.4900    73.6700    73.6700          9
+
+processed 51362 tokens with 5938 phrases; found: 6069 phrases; correct: 4423.
+accuracy:  95.78%; precision:  72.88%; recall:  74.49%; FB1:  73.67
+              LOC: precision:  81.26%; recall:  79.31%; FB1:  80.28  1793
+             MISC: precision:  69.94%; recall:  65.90%; FB1:  67.86  865
+              ORG: precision:  64.22%; recall:  63.16%; FB1:  63.68  1319
+              PER: precision:  72.37%; recall:  82.19%; FB1:  76.97  2092
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	10388	520	896	981	735
+i-misc	541	5574	522	562	1049
+i-org	769	420	9803	1594	1328
+i-per	584	121	469	18021	1179
+o	118	558	388	593	214596
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	1632	85	145	161	71
+I-MISC	95	846	94	89	144
+I-ORG	131	68	1427	261	205
+I-PER	96	21	83	2800	149
+O	18	84	73	93	42491
+
+
+tst   9         1.6225    18.6845     0.0688     0.0551    94.4900    67.9600    70.8100    69.3500    69.3500          9
+
+processed 46435 tokens with 5628 phrases; found: 5864 phrases; correct: 3985.
+accuracy:  94.49%; precision:  67.96%; recall:  70.81%; FB1:  69.35
+              LOC: precision:  74.96%; recall:  75.27%; FB1:  75.11  1669
+             MISC: precision:  55.67%; recall:  60.17%; FB1:  57.84  749
+              ORG: precision:  65.06%; recall:  62.62%; FB1:  63.82  1594
+              PER: precision:  69.11%; recall:  79.16%; FB1:  73.80  1852
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	9043	491	1074	892	840
+i-misc	360	3870	556	518	941
+i-org	1304	596	11206	1711	1649
+i-per	541	125	644	15345	1144
+o	316	1152	1004	861	186911
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	1425	81	178	148	93
+I-MISC	55	586	85	77	115
+I-ORG	214	91	1678	279	234
+I-PER	93	23	103	2419	135
+O	63	182	175	133	37770
+
+
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   10        2.5111   180.4569     0.0346     0.0274    97.2600    81.0000    82.0100    81.5100    81.5100         10
+
+processed 203621 tokens with 23429 phrases; found: 23721 phrases; correct: 19215.
+accuracy:  97.26%; precision:  81.00%; recall:  82.01%; FB1:  81.51
+              LOC: precision:  86.72%; recall:  86.17%; FB1:  86.44  7084
+             MISC: precision:  77.95%; recall:  74.17%; FB1:  76.01  3238
+              ORG: precision:  74.31%; recall:  75.97%; FB1:  75.13  6438
+              PER: precision:  82.80%; recall:  87.33%; FB1:  85.01  6961
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	44220	1210	3132	2347	2160
+i-misc	995	23826	2331	804	2868
+i-org	2453	1466	54992	3150	4670
+i-per	987	441	1254	66344	2947
+o	361	1010	1408	1339	852907
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	7080	177	476	340	224
+I-MISC	167	3512	397	139	378
+I-ORG	420	229	8202	496	678
+I-PER	179	67	203	10339	340
+O	62	146	252	203	168915
+
+
+dev   10        0.8772    20.2075     0.0495     0.0402    95.9800    74.4700    74.8700    74.6700    74.6700         10
+
+processed 51362 tokens with 5938 phrases; found: 5970 phrases; correct: 4446.
+accuracy:  95.98%; precision:  74.47%; recall:  74.87%; FB1:  74.67
+              LOC: precision:  83.27%; recall:  76.43%; FB1:  79.70  1686
+             MISC: precision:  72.18%; recall:  68.41%; FB1:  70.25  870
+              ORG: precision:  62.17%; recall:  68.01%; FB1:  64.96  1467
+              PER: precision:  77.14%; recall:  81.54%; FB1:  79.28  1947
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	10043	483	1391	751	852
+i-misc	396	5629	648	425	1150
+i-org	584	412	10341	1278	1299
+i-per	591	190	660	17698	1235
+o	85	259	406	390	215113
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	1577	80	221	121	95
+I-MISC	67	850	116	69	166
+I-ORG	98	64	1528	210	192
+I-PER	95	31	114	2760	149
+O	12	42	66	55	42584
+
+
+tst   10        1.7231    18.7227     0.0692     0.0552    94.4800    67.9000    69.5600    68.7200    69.3500          9
+
+processed 46435 tokens with 5628 phrases; found: 5766 phrases; correct: 3915.
+accuracy:  94.48%; precision:  67.90%; recall:  69.56%; FB1:  68.72
+              LOC: precision:  76.38%; recall:  68.29%; FB1:  72.11  1486
+             MISC: precision:  59.35%; recall:  62.77%; FB1:  61.01  733
+              ORG: precision:  60.75%; recall:  66.36%; FB1:  63.43  1809
+              PER: precision:  71.69%; recall:  77.06%; FB1:  74.28  1738
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	8091	508	2004	778	959
+i-misc	235	3976	551	442	1041
+i-org	1130	669	11671	1434	1562
+i-per	471	176	928	14976	1248
+o	265	756	1045	619	187559
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	1280	82	325	125	113
+I-MISC	39	591	84	69	135
+I-ORG	181	101	1766	232	216
+I-PER	81	27	147	2360	158
+O	54	112	182	99	37876
+
+
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   11        2.1591   180.2402     0.0322     0.0263    97.3700    81.3600    83.7300    82.5300    82.5300         11
+
+processed 203621 tokens with 23429 phrases; found: 24112 phrases; correct: 19618.
+accuracy:  97.37%; precision:  81.36%; recall:  83.73%; FB1:  82.53
+              LOC: precision:  84.91%; recall:  89.42%; FB1:  87.11  7508
+             MISC: precision:  78.84%; recall:  76.20%; FB1:  77.50  3289
+              ORG: precision:  72.78%; recall:  79.21%; FB1:  75.86  6854
+              PER: precision:  87.63%; recall:  85.79%; FB1:  86.70  6461
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	46702	803	3087	1081	1396
+i-misc	1253	24544	2357	490	2180
+i-org	2424	1238	57185	1703	4181
+i-per	1429	429	1732	65714	2669
+o	1230	1365	2645	1111	850674
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	7424	116	453	151	153
+I-MISC	211	3611	402	86	283
+I-ORG	411	193	8566	259	596
+I-PER	263	69	282	10213	301
+O	222	208	511	181	168456
+
+
+dev   11        0.8399    20.1217     0.0490     0.0409    95.9100    73.9200    75.8200    74.8600    74.8600         11
+
+processed 51362 tokens with 5938 phrases; found: 6090 phrases; correct: 4502.
+accuracy:  95.91%; precision:  73.92%; recall:  75.82%; FB1:  74.86
+              LOC: precision:  80.24%; recall:  81.33%; FB1:  80.78  1862
+             MISC: precision:  73.15%; recall:  68.85%; FB1:  70.93  864
+              ORG: precision:  59.75%; recall:  70.17%; FB1:  64.54  1575
+              PER: precision:  80.21%; recall:  77.90%; FB1:  79.04  1789
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	10942	356	1229	446	547
+i-misc	565	5727	856	258	842
+i-org	636	410	10821	933	1114
+i-per	782	182	999	17196	1215
+o	534	332	785	320	214282
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	1704	62	193	72	63
+I-MISC	96	866	153	43	110
+I-ORG	108	66	1589	156	173
+I-PER	122	33	175	2672	147
+O	88	54	133	52	42432
+
+
+tst   11        1.8015    18.6677     0.0682     0.0550    94.5000    68.0400    71.4500    69.7000    69.7000         11
+
+processed 46435 tokens with 5628 phrases; found: 5910 phrases; correct: 4021.
+accuracy:  94.50%; precision:  68.04%; recall:  71.45%; FB1:  69.70
+              LOC: precision:  73.92%; recall:  76.23%; FB1:  75.06  1714
+             MISC: precision:  59.73%; recall:  64.65%; FB1:  62.09  750
+              ORG: precision:  60.41%; recall:  68.66%; FB1:  64.27  1882
+              PER: precision:  74.74%; recall:  72.29%; FB1:  73.50  1564
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	9236	519	1353	500	732
+i-misc	408	4013	656	334	834
+i-org	1094	674	12082	1057	1559
+i-per	767	170	1305	14368	1189
+o	731	774	1454	481	186804
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	1438	86	228	81	92
+I-MISC	66	610	102	49	91
+I-ORG	174	101	1842	168	211
+I-PER	132	28	214	2259	140
+O	135	119	263	75	37731
+
+
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   12        1.9098   180.6214     0.0286     0.0233    97.6700    83.0700    85.1400    84.0900    84.0900         12
+
+processed 203621 tokens with 23429 phrases; found: 24013 phrases; correct: 19947.
+accuracy:  97.67%; precision:  83.07%; recall:  85.14%; FB1:  84.09
+              LOC: precision:  87.12%; recall:  90.36%; FB1:  88.71  7394
+             MISC: precision:  78.17%; recall:  78.40%; FB1:  78.29  3413
+              ORG: precision:  75.93%; recall:  80.75%; FB1:  78.27  6697
+              PER: precision:  88.37%; recall:  87.15%; FB1:  87.76  6509
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	47187	832	2789	1028	1233
+i-misc	1044	25567	1878	407	1928
+i-org	2204	1430	58129	1633	3335
+i-per	1247	542	1778	66106	2300
+o	602	1721	2089	861	851752
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	7484	119	413	150	131
+I-MISC	176	3761	327	69	260
+I-ORG	363	229	8681	257	495
+I-PER	233	75	277	10278	265
+O	94	265	384	153	168682
+
+
+dev   12        0.7995    20.0828     0.0468     0.0387    96.1300    74.9600    76.7400    75.8400    75.8400         12
+
+processed 51362 tokens with 5938 phrases; found: 6079 phrases; correct: 4557.
+accuracy:  96.13%; precision:  74.96%; recall:  76.74%; FB1:  75.84
+              LOC: precision:  82.12%; recall:  82.74%; FB1:  82.43  1851
+             MISC: precision:  71.09%; recall:  71.79%; FB1:  71.44  927
+              ORG: precision:  61.61%; recall:  70.02%; FB1:  65.55  1524
+              PER: precision:  80.98%; recall:  78.12%; FB1:  79.52  1777
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	11010	441	1118	435	516
+i-misc	399	6152	692	227	778
+i-org	703	438	10761	981	1031
+i-per	828	237	1163	17079	1067
+o	233	530	616	308	214566
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	1713	71	175	71	64
+I-MISC	68	933	122	37	108
+I-ORG	117	71	1580	163	161
+I-PER	128	40	197	2657	127
+O	37	79	101	53	42489
+
+
+tst   12        1.6508    18.7448     0.0668     0.0535    94.6500    68.2100    71.7800    69.9500    69.9500         12
+
+processed 46435 tokens with 5628 phrases; found: 5923 phrases; correct: 4040.
+accuracy:  94.65%; precision:  68.21%; recall:  71.78%; FB1:  69.95
+              LOC: precision:  75.04%; recall:  77.08%; FB1:  76.05  1707
+             MISC: precision:  56.73%; recall:  64.50%; FB1:  60.36  788
+              ORG: precision:  61.00%; recall:  68.48%; FB1:  64.52  1859
+              PER: precision:  75.08%; recall:  72.85%; FB1:  73.95  1569
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	9296	562	1320	487	675
+i-misc	313	4226	554	326	826
+i-org	1100	791	12134	1042	1399
+i-per	798	251	1332	14339	1079
+o	424	1097	1398	453	186872
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	1458	88	222	75	82
+I-MISC	50	638	81	53	96
+I-ORG	169	121	1834	169	203
+I-PER	137	36	216	2260	124
+O	86	153	251	74	37759
+
+
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   13        1.6640   180.1791     0.0257     0.0211    97.8900    84.8900    86.2100    85.5500    85.5500         13
+
+processed 203621 tokens with 23429 phrases; found: 23794 phrases; correct: 20199.
+accuracy:  97.89%; precision:  84.89%; recall:  86.21%; FB1:  85.55
+              LOC: precision:  89.63%; recall:  89.24%; FB1:  89.44  7098
+             MISC: precision:  81.18%; recall:  79.87%; FB1:  80.52  3348
+              ORG: precision:  76.82%; recall:  84.14%; FB1:  80.31  6897
+              PER: precision:  90.23%; recall:  88.20%; FB1:  89.20  6451
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	46617	807	3184	843	1618
+i-misc	763	25984	2109	314	1654
+i-org	1515	994	60001	1150	3071
+i-per	896	406	1989	66761	1921
+o	499	1541	1589	890	852506
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	7381	109	477	133	197
+I-MISC	127	3815	353	52	246
+I-ORG	251	161	8936	181	496
+I-PER	165	65	313	10362	223
+O	85	233	284	149	168827
+
+
+dev   13        0.7697    20.3980     0.0445     0.0371    96.2900    75.7800    77.3300    76.5500    76.5500         13
+
+processed 51362 tokens with 5938 phrases; found: 6060 phrases; correct: 4592.
+accuracy:  96.29%; precision:  75.78%; recall:  77.33%; FB1:  76.55
+              LOC: precision:  84.43%; recall:  82.09%; FB1:  83.25  1786
+             MISC: precision:  72.90%; recall:  71.79%; FB1:  72.34  904
+              ORG: precision:  61.14%; recall:  72.86%; FB1:  66.49  1598
+              PER: precision:  81.72%; recall:  78.61%; FB1:  80.13  1772
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	10942	384	1332	389	473
+i-misc	360	6123	805	221	739
+i-org	542	379	11185	888	920
+i-per	709	174	1255	17248	988
+o	208	515	521	310	214699
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	1700	63	204	64	63
+I-MISC	60	924	140	36	108
+I-ORG	91	66	1639	148	148
+I-PER	106	31	217	2675	120
+O	33	79	77	50	42520
+
+
+tst   13        1.5927    18.8800     0.0649     0.0515    94.8500    69.3600    72.4100    70.8500    70.8500         13
+
+processed 46435 tokens with 5628 phrases; found: 5875 phrases; correct: 4075.
+accuracy:  94.85%; precision:  69.36%; recall:  72.41%; FB1:  70.85
+              LOC: precision:  77.41%; recall:  75.87%; FB1:  76.63  1629
+             MISC: precision:  59.60%; recall:  64.94%; FB1:  62.15  755
+              ORG: precision:  61.40%; recall:  71.56%; FB1:  66.09  1930
+              PER: precision:  75.53%; recall:  72.91%; FB1:  74.20  1561
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	9154	563	1492	482	649
+i-misc	355	4136	683	283	788
+i-org	913	653	12529	1053	1318
+i-per	627	222	1542	14370	1038
+o	463	936	1168	544	187133
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	1432	89	249	78	77
+I-MISC	55	625	99	40	99
+I-ORG	140	98	1910	165	183
+I-PER	107	34	252	2259	121
+O	86	132	203	86	37816
+
+
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   14        1.5331   180.4973     0.0229     0.0194    98.0600    85.6800    87.8500    86.7500    86.7500         14
+
+processed 203621 tokens with 23429 phrases; found: 24021 phrases; correct: 20582.
+accuracy:  98.06%; precision:  85.68%; recall:  87.85%; FB1:  86.75
+              LOC: precision:  91.69%; recall:  89.87%; FB1:  90.77  6988
+             MISC: precision:  79.54%; recall:  82.05%; FB1:  80.78  3510
+              ORG: precision:  79.68%; recall:  84.14%; FB1:  81.85  6649
+              PER: precision:  88.52%; recall:  92.20%; FB1:  90.32  6874
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	47332	1130	2612	1318	677
+i-misc	428	27071	1590	535	1200
+i-org	1360	1064	59926	2014	2367
+i-per	489	266	914	69076	1228
+o	375	2038	1817	1262	851533
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	7452	171	393	192	89
+I-MISC	76	3952	275	90	200
+I-ORG	233	169	8915	315	393
+I-PER	87	43	136	10693	169
+O	63	316	344	191	168664
+
+
+dev   14        0.7345    20.1705     0.0426     0.0359    96.4100    76.5400    78.8000    77.6500    77.6500         14
+
+processed 51362 tokens with 5938 phrases; found: 6113 phrases; correct: 4679.
+accuracy:  96.41%; precision:  76.54%; recall:  78.80%; FB1:  77.65
+              LOC: precision:  86.79%; recall:  81.16%; FB1:  83.88  1718
+             MISC: precision:  71.76%; recall:  73.09%; FB1:  72.42  935
+              ORG: precision:  63.96%; recall:  71.74%; FB1:  67.63  1504
+              PER: precision:  79.50%; recall:  84.42%; FB1:  81.89  1956
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	10808	566	1223	580	343
+i-misc	305	6313	707	353	570
+i-org	448	385	10999	1275	807
+i-per	487	164	765	18330	628
+o	125	778	584	514	214252
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	1677	86	191	90	50
+I-MISC	54	947	126	55	86
+I-ORG	72	63	1610	207	140
+I-PER	74	27	135	2826	87
+O	19	113	94	75	42458
+
+
+tst   14        1.6969    18.7512     0.0624     0.0503    94.9700    70.3700    74.1800    72.2300    72.2300         14
+
+processed 46435 tokens with 5628 phrases; found: 5933 phrases; correct: 4175.
+accuracy:  94.97%; precision:  70.37%; recall:  74.18%; FB1:  72.23
+              LOC: precision:  80.51%; recall:  75.57%; FB1:  77.96  1560
+             MISC: precision:  59.16%; recall:  67.10%; FB1:  62.88  786
+              ORG: precision:  63.94%; recall:  70.35%; FB1:  66.99  1822
+              PER: precision:  73.03%; recall:  79.72%; FB1:  76.23  1765
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	9071	632	1504	657	476
+i-misc	207	4338	620	393	687
+i-org	798	661	12355	1495	1157
+i-per	474	158	957	15455	755
+o	393	1164	1210	777	186700
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	1423	93	246	106	57
+I-MISC	31	650	88	60	89
+I-ORG	124	96	1870	237	169
+I-PER	80	25	150	2414	104
+O	70	175	217	121	37740
+
+
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   15        1.4509   180.2944     0.0269     0.0221    97.7900    83.9300    86.3800    85.1400    86.7500         14
+
+processed 203621 tokens with 23429 phrases; found: 24114 phrases; correct: 20239.
+accuracy:  97.79%; precision:  83.93%; recall:  86.38%; FB1:  85.14
+              LOC: precision:  93.81%; recall:  87.17%; FB1:  90.37  6624
+             MISC: precision:  75.97%; recall:  82.69%; FB1:  79.19  3704
+              ORG: precision:  80.44%; recall:  79.53%; FB1:  79.98  6226
+              PER: precision:  82.05%; recall:  93.98%; FB1:  87.61  7560
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	45249	1437	1961	3252	1170
+i-misc	248	27156	1033	943	1444
+i-org	1052	1850	56465	4152	3212
+i-per	199	227	503	69875	1169
+o	158	2406	1021	1648	851792
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	7173	211	281	493	139
+I-MISC	43	3987	182	166	215
+I-ORG	171	293	8431	646	484
+I-PER	42	34	85	10823	144
+O	28	395	206	247	168702
+
+
+dev   15        0.7949    20.3651     0.0455     0.0378    96.2200    75.4300    77.5700    76.4900    77.6500         14
+
+processed 51362 tokens with 5938 phrases; found: 6106 phrases; correct: 4606.
+accuracy:  96.22%; precision:  75.43%; recall:  77.57%; FB1:  76.49
+              LOC: precision:  89.50%; recall:  77.52%; FB1:  83.08  1591
+             MISC: precision:  66.70%; recall:  72.66%; FB1:  69.55  1000
+              ORG: precision:  68.28%; recall:  68.23%; FB1:  68.26  1340
+              PER: precision:  73.56%; recall:  86.86%; FB1:  79.66  2175
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	10230	796	840	1193	461
+i-misc	187	6318	500	529	714
+i-org	404	600	10090	1852	968
+i-per	293	135	483	18774	689
+o	27	863	261	598	214504
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	1594	122	131	187	60
+I-MISC	33	956	91	84	104
+I-ORG	62	95	1486	296	153
+I-PER	47	25	90	2898	89
+O	3	131	50	91	42484
+
+
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   16        1.3841   180.5931     0.0233     0.0193    98.0700    85.2600    87.9400    86.5800    86.7500         14
+
+processed 203621 tokens with 23429 phrases; found: 24165 phrases; correct: 20604.
+accuracy:  98.07%; precision:  85.26%; recall:  87.94%; FB1:  86.58
+              LOC: precision:  86.75%; recall:  94.21%; FB1:  90.32  7742
+             MISC: precision:  84.55%; recall:  81.40%; FB1:  82.95  3276
+              ORG: precision:  83.05%; recall:  77.86%; FB1:  80.37  5904
+              PER: precision:  85.81%; recall:  94.17%; FB1:  89.79  7243
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	49862	376	596	1283	952
+i-misc	1100	26488	1274	856	1106
+i-org	3715	726	56031	3680	2579
+i-per	610	102	365	70156	740
+o	590	1755	1071	1665	851944
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	7832	61	87	189	128
+I-MISC	175	3895	204	141	178
+I-ORG	608	114	8338	557	408
+I-PER	109	19	62	10844	94
+O	96	256	196	257	168773
+
+
+dev   16        0.7725    20.3362     0.0417     0.0348    96.5200    76.5600    79.1500    77.8300    77.8300         16
+
+processed 51362 tokens with 5938 phrases; found: 6139 phrases; correct: 4700.
+accuracy:  96.52%; precision:  76.56%; recall:  79.15%; FB1:  77.83
+              LOC: precision:  80.29%; recall:  86.94%; FB1:  83.48  1989
+             MISC: precision:  76.37%; recall:  70.04%; FB1:  73.07  842
+              ORG: precision:  71.30%; recall:  64.65%; FB1:  67.81  1216
+              PER: precision:  76.15%; recall:  86.48%; FB1:  80.99  2092
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	11680	318	471	685	366
+i-misc	677	6020	423	521	607
+i-org	1045	316	9975	1807	771
+i-per	788	59	266	18795	466
+o	185	640	312	645	214471
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	1814	46	77	111	46
+I-MISC	107	911	77	79	94
+I-ORG	162	54	1453	289	134
+I-PER	124	11	50	2894	70
+O	25	82	56	93	42503
+
+
+tst   16        1.6932    18.7173     0.0617     0.0498    95.0200    70.4200    74.8800    72.5800    72.5800         16
+
+processed 46435 tokens with 5628 phrases; found: 5984 phrases; correct: 4214.
+accuracy:  95.02%; precision:  70.42%; recall:  74.88%; FB1:  72.58
+              LOC: precision:  73.36%; recall:  80.20%; FB1:  76.63  1817
+             MISC: precision:  64.66%; recall:  63.64%; FB1:  64.15  682
+              ORG: precision:  68.94%; recall:  64.73%; FB1:  66.77  1555
+              PER: precision:  70.88%; recall:  84.60%; FB1:  77.14  1930
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	9772	324	889	842	513
+i-misc	503	4071	453	565	653
+i-org	1475	469	11375	2036	1111
+i-per	617	80	416	16149	537
+o	555	1110	890	949	186740
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	1523	51	153	134	64
+I-MISC	72	615	68	81	82
+I-ORG	230	73	1708	321	164
+I-PER	106	14	60	2518	75
+O	97	156	163	150	37757
+
+
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   17        1.2735   180.0594     0.0210     0.0177    98.2300    86.8700    88.9500    87.9000    87.9000         17
+
+processed 203621 tokens with 23429 phrases; found: 23989 phrases; correct: 20840.
+accuracy:  98.23%; precision:  86.87%; recall:  88.95%; FB1:  87.90
+              LOC: precision:  90.52%; recall:  93.06%; FB1:  91.77  7329
+             MISC: precision:  85.35%; recall:  82.52%; FB1:  83.91  3290
+              ORG: precision:  83.83%; recall:  82.90%; FB1:  83.36  6227
+              PER: precision:  86.49%; recall:  93.61%; FB1:  89.91  7143
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	49273	394	1416	1321	665
+i-misc	644	26857	1402	907	1014
+i-org	2009	853	59348	2493	2028
+i-per	528	108	487	70076	774
+o	616	1304	1499	2198	851408
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	7742	60	196	207	92
+I-MISC	107	3947	227	150	162
+I-ORG	329	137	8842	391	326
+I-PER	102	18	74	10836	98
+O	101	194	285	343	168655
+
+
+dev   17        0.7272    20.3492     0.0410     0.0348    96.5200    77.1000    79.4400    78.2500    78.2500         17
+
+processed 51362 tokens with 5938 phrases; found: 6118 phrases; correct: 4717.
+accuracy:  96.52%; precision:  77.10%; recall:  79.44%; FB1:  78.25
+              LOC: precision:  82.82%; recall:  84.49%; FB1:  83.64  1874
+             MISC: precision:  76.21%; recall:  71.90%; FB1:  73.99  866
+              ORG: precision:  70.17%; recall:  69.28%; FB1:  69.72  1324
+              PER: precision:  76.73%; recall:  85.56%; FB1:  80.90  2054
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	11362	380	720	753	305
+i-misc	494	6120	564	488	582
+i-org	707	290	10761	1510	646
+i-per	660	108	515	18600	491
+o	220	495	482	745	214311
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	1766	61	112	116	39
+I-MISC	81	922	92	82	91
+I-ORG	113	50	1574	243	112
+I-PER	104	16	86	2873	70
+O	37	75	86	121	42440
+
+
+tst   17        1.6785    19.1439     0.0611     0.0496    95.0400    71.2800    75.0000    73.0900    73.0900         17
+
+processed 46435 tokens with 5628 phrases; found: 5922 phrases; correct: 4221.
+accuracy:  95.04%; precision:  71.28%; recall:  75.00%; FB1:  73.09
+              LOC: precision:  77.46%; recall:  79.60%; FB1:  78.52  1708
+             MISC: precision:  65.46%; recall:  65.37%; FB1:  65.42  692
+              ORG: precision:  67.75%; recall:  67.87%; FB1:  67.81  1659
+              PER: precision:  70.91%; recall:  81.69%; FB1:  75.92  1863
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	9637	339	1165	748	451
+i-misc	311	4156	500	626	652
+i-org	1173	540	12108	1662	983
+i-per	586	74	739	15729	671
+o	478	830	1130	1188	186618
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	1509	54	184	119	59
+I-MISC	46	630	76	85	81
+I-ORG	185	86	1814	260	151
+I-PER	103	11	108	2461	90
+O	94	118	199	192	37720
+
+
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   18        1.3861   179.7291     0.0202     0.0168    98.3200    87.0900    89.2300    88.1500    88.1500         18
+
+processed 203621 tokens with 23429 phrases; found: 24004 phrases; correct: 20905.
+accuracy:  98.32%; precision:  87.09%; recall:  89.23%; FB1:  88.15
+              LOC: precision:  91.49%; recall:  93.07%; FB1:  92.27  7252
+             MISC: precision:  81.64%; recall:  85.87%; FB1:  83.70  3579
+              ORG: precision:  85.32%; recall:  80.59%; FB1:  82.89  5948
+              PER: precision:  86.82%; recall:  95.05%; FB1:  90.75  7225
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	49091	661	1052	1648	617
+i-misc	493	28100	686	639	906
+i-org	2085	1610	57661	3033	2342
+i-per	372	115	345	70516	625
+o	336	1700	1002	1491	852496
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	7726	97	146	246	82
+I-MISC	82	4144	117	106	144
+I-ORG	323	264	8593	480	365
+I-PER	73	17	52	10904	82
+O	58	273	188	226	168833
+
+
+dev   18        0.7182    20.1560     0.0396     0.0331    96.6900    77.7900    80.0600    78.9100    78.9100         18
+
+processed 51362 tokens with 5938 phrases; found: 6111 phrases; correct: 4754.
+accuracy:  96.69%; precision:  77.79%; recall:  80.06%; FB1:  78.91
+              LOC: precision:  84.51%; recall:  84.65%; FB1:  84.58  1840
+             MISC: precision:  71.31%; recall:  75.27%; FB1:  73.24  969
+              ORG: precision:  73.09%; recall:  66.44%; FB1:  69.61  1219
+              PER: precision:  77.63%; recall:  87.79%; FB1:  82.39  2083
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	11305	434	551	893	337
+i-misc	377	6540	310	442	579
+i-org	742	564	10282	1546	780
+i-per	561	120	378	18813	502
+o	145	655	286	590	214577
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	1754	67	87	138	48
+I-MISC	63	993	50	70	92
+I-ORG	119	93	1499	249	132
+I-PER	87	21	65	2911	65
+O	23	102	47	81	42506
+
+
+tst   18        1.4529    18.6996     0.0612     0.0499    95.0100    71.0500    74.9300    72.9400    73.0900         17
+
+processed 46435 tokens with 5628 phrases; found: 5935 phrases; correct: 4217.
+accuracy:  95.01%; precision:  71.05%; recall:  74.93%; FB1:  72.94
+              LOC: precision:  79.16%; recall:  78.64%; FB1:  78.90  1651
+             MISC: precision:  59.10%; recall:  67.97%; FB1:  63.22  797
+              ORG: precision:  68.90%; recall:  65.16%; FB1:  66.98  1566
+              PER: precision:  70.80%; recall:  84.11%; FB1:  76.88  1921
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	9479	528	1051	815	467
+i-misc	303	4366	421	532	623
+i-org	1026	736	11549	2009	1146
+i-per	550	149	548	15982	570
+o	394	1126	952	927	186845
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	1477	81	171	136	60
+I-MISC	42	657	63	74	82
+I-ORG	154	116	1733	314	179
+I-PER	94	22	82	2496	79
+O	76	180	172	142	37753
+
+
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   19        1.1854   180.0124     0.0200     0.0165    98.3500    87.9200    89.9400    88.9200    88.9200         19
+
+processed 203621 tokens with 23429 phrases; found: 23966 phrases; correct: 21071.
+accuracy:  98.35%; precision:  87.92%; recall:  89.94%; FB1:  88.92
+              LOC: precision:  95.13%; recall:  88.23%; FB1:  91.55  6612
+             MISC: precision:  85.77%; recall:  85.40%; FB1:  85.58  3388
+              ORG: precision:  79.31%; recall:  90.03%; FB1:  84.33  7148
+              PER: precision:  91.02%; recall:  94.03%; FB1:  92.50  6818
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	45554	674	4772	1402	667
+i-misc	138	27551	1915	417	803
+i-org	483	459	63017	1252	1520
+i-per	205	136	1112	69821	699
+o	228	1454	2232	1068	852043
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	7232	95	680	212	78
+I-MISC	27	4051	313	72	130
+I-ORG	82	77	9424	193	249
+I-PER	40	27	165	10805	91
+O	46	232	388	163	168749
+
+
+dev   19        0.7162    20.4835     0.0413     0.0344    96.5600    77.0800    78.9700    78.0100    78.9100         18
+
+processed 51362 tokens with 5938 phrases; found: 6083 phrases; correct: 4689.
+accuracy:  96.56%; precision:  77.08%; recall:  78.97%; FB1:  78.01
+              LOC: precision:  89.79%; recall:  78.06%; FB1:  83.52  1597
+             MISC: precision:  77.78%; recall:  74.73%; FB1:  76.22  882
+              ORG: precision:  61.08%; recall:  76.44%; FB1:  67.90  1678
+              PER: precision:  80.17%; recall:  83.82%; FB1:  81.95  1926
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	10427	407	1670	673	343
+i-misc	136	6337	929	346	500
+i-org	220	233	11735	1146	580
+i-per	372	98	1302	18104	498
+o	135	477	702	471	214468
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	1616	64	262	106	46
+I-MISC	23	964	143	57	81
+I-ORG	35	42	1729	186	100
+I-PER	58	17	204	2798	72
+O	24	64	114	68	42489
+
+
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   20        1.0372   180.0811     0.0161     0.0137    98.6300    89.4500    91.8600    90.6400    90.6400         20
+
+processed 203621 tokens with 23429 phrases; found: 24060 phrases; correct: 21521.
+accuracy:  98.63%; precision:  89.45%; recall:  91.86%; FB1:  90.64
+              LOC: precision:  93.41%; recall:  93.90%; FB1:  93.66  7166
+             MISC: precision:  89.26%; recall:  86.19%; FB1:  87.70  3286
+              ORG: precision:  81.97%; recall:  90.47%; FB1:  86.01  6950
+              PER: precision:  93.08%; recall:  93.89%; FB1:  93.48  6658
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	49537	167	2377	689	299
+i-misc	404	27506	1897	378	639
+i-org	1105	428	63188	841	1169
+i-per	451	103	1113	69822	484
+o	393	1049	2275	1112	852196
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	7768	23	355	106	45
+I-MISC	72	4054	304	57	106
+I-ORG	184	75	9418	127	221
+I-PER	81	16	168	10791	72
+O	67	165	384	170	168792
+
+
+dev   20        0.6677    20.1537     0.0385     0.0324    96.7600    78.0300    80.9200    79.4500    79.4500         20
+
+processed 51362 tokens with 5938 phrases; found: 6158 phrases; correct: 4805.
+accuracy:  96.76%; precision:  78.03%; recall:  80.92%; FB1:  79.45
+              LOC: precision:  85.79%; recall:  83.78%; FB1:  84.77  1794
+             MISC: precision:  80.62%; recall:  73.86%; FB1:  77.09  841
+              ORG: precision:  63.70%; recall:  77.33%; FB1:  69.86  1628
+              PER: precision:  81.85%; recall:  84.20%; FB1:  83.01  1895
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	11264	286	1224	510	236
+i-misc	302	6167	942	333	504
+i-org	424	172	11794	1017	507
+i-per	618	80	1067	18230	379
+o	212	408	758	499	214376
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	1743	45	191	78	37
+I-MISC	45	941	149	55	78
+I-ORG	69	32	1731	166	94
+I-PER	97	14	172	2810	56
+O	36	54	120	76	42473
+
+
+tst   20        1.4998    18.6800     0.0593     0.0483    95.1700    71.6100    75.8000    73.6500    73.6500         20
+
+processed 46435 tokens with 5628 phrases; found: 5957 phrases; correct: 4266.
+accuracy:  95.17%; precision:  71.61%; recall:  75.80%; FB1:  73.65
+              LOC: precision:  80.12%; recall:  78.82%; FB1:  79.47  1635
+             MISC: precision:  68.21%; recall:  65.95%; FB1:  67.06  670
+              ORG: precision:  61.79%; recall:  74.03%; FB1:  67.36  1984
+              PER: precision:  76.32%; recall:  78.73%; FB1:  77.50  1668
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	9498	296	1575	611	360
+i-misc	304	4118	829	367	627
+i-org	949	346	13188	1277	706
+i-per	553	97	1449	15230	470
+o	355	917	1614	715	186643
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	1488	44	244	96	53
+I-MISC	43	622	115	51	87
+I-ORG	144	56	1978	195	123
+I-PER	90	16	232	2369	66
+O	66	134	275	111	37737
+
+
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   21        0.9456   179.9179     0.0147     0.0124    98.7600    90.5100    92.0200    91.2600    91.2600         21
+
+processed 203621 tokens with 23429 phrases; found: 23819 phrases; correct: 21559.
+accuracy:  98.76%; precision:  90.51%; recall:  92.02%; FB1:  91.26
+              LOC: precision:  91.96%; recall:  95.46%; FB1:  93.67  7400
+             MISC: precision:  92.20%; recall:  84.81%; FB1:  88.35  3130
+              ORG: precision:  85.14%; recall:  89.88%; FB1:  87.45  6648
+              PER: precision:  93.48%; recall:  94.06%; FB1:  93.77  6641
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	50557	53	1419	620	420
+i-misc	645	26764	1869	466	1080
+i-org	1399	196	62680	942	1514
+i-per	464	62	706	69793	948
+o	529	455	1396	652	853993
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	7935	8	199	92	63
+I-MISC	105	3973	284	78	153
+I-ORG	238	37	9353	138	259
+I-PER	86	8	114	10799	121
+O	99	69	252	114	169044
+
+
+dev   21        0.6751    20.3645     0.0377     0.0317    96.8300    79.0700    80.7500    79.9000    79.9000         21
+
+processed 51362 tokens with 5938 phrases; found: 6064 phrases; correct: 4795.
+accuracy:  96.83%; precision:  79.07%; recall:  80.75%; FB1:  79.90
+              LOC: precision:  83.19%; recall:  85.96%; FB1:  84.55  1898
+             MISC: precision:  84.49%; recall:  72.98%; FB1:  78.32  793
+              ORG: precision:  67.16%; recall:  74.87%; FB1:  70.80  1495
+              PER: precision:  82.11%; recall:  83.71%; FB1:  82.90  1878
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	11574	152	929	540	325
+i-misc	522	6003	779	292	652
+i-org	581	136	11429	1081	687
+i-per	655	52	898	18132	637
+o	259	242	509	337	214906
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	1797	25	145	84	43
+I-MISC	81	921	126	45	95
+I-ORG	94	24	1681	169	124
+I-PER	107	9	149	2794	90
+O	43	31	90	53	42542
+
+
+tst   21        1.6268    18.9214     0.0588     0.0474    95.2600    71.9200    75.4400    73.6400    73.6500         20
+
+processed 46435 tokens with 5628 phrases; found: 5904 phrases; correct: 4246.
+accuracy:  95.26%; precision:  71.92%; recall:  75.44%; FB1:  73.64
+              LOC: precision:  76.65%; recall:  81.17%; FB1:  78.84  1760
+             MISC: precision:  73.23%; recall:  64.36%; FB1:  68.51  609
+              ORG: precision:  64.72%; recall:  72.34%; FB1:  68.32  1851
+              PER: precision:  74.41%; recall:  77.49%; FB1:  75.92  1684
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	9777	210	1286	609	458
+i-misc	456	3927	750	402	710
+i-org	1069	246	12742	1449	960
+i-per	727	69	1213	15095	695
+o	579	614	1261	538	187252
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	1537	32	201	95	60
+I-MISC	65	603	104	57	89
+I-ORG	160	39	1916	226	155
+I-PER	124	10	195	2349	95
+O	101	88	220	87	37827
+
+
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   22        0.8485   180.0564     0.0129     0.0110    98.9000    91.4900    92.6400    92.0600    92.0600         22
+
+processed 203621 tokens with 23429 phrases; found: 23724 phrases; correct: 21705.
+accuracy:  98.90%; precision:  91.49%; recall:  92.64%; FB1:  92.06
+              LOC: precision:  92.54%; recall:  96.73%; FB1:  94.59  7452
+             MISC: precision:  91.83%; recall:  84.84%; FB1:  88.19  3144
+              ORG: precision:  87.74%; recall:  89.90%; FB1:  88.81  6452
+              PER: precision:  93.78%; recall:  94.86%; FB1:  94.32  6676
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	51460	44	774	424	367
+i-misc	722	27023	1587	492	1000
+i-org	1525	214	62556	903	1533
+i-per	523	52	620	70002	776
+o	292	426	1056	629	854622
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	8051	6	111	69	60
+I-MISC	109	3992	255	84	153
+I-ORG	253	36	9333	151	252
+I-PER	91	9	94	10840	94
+O	46	79	192	106	169155
+
+
+dev   22        0.6460    20.3107     0.0360     0.0302    96.9800    79.3000    81.3700    80.3300    80.3300         22
+
+processed 51362 tokens with 5938 phrases; found: 6093 phrases; correct: 4832.
+accuracy:  96.98%; precision:  79.30%; recall:  81.37%; FB1:  80.33
+              LOC: precision:  82.43%; recall:  88.13%; FB1:  85.19  1964
+             MISC: precision:  83.57%; recall:  72.00%; FB1:  77.36  791
+              ORG: precision:  70.30%; recall:  74.50%; FB1:  72.34  1421
+              PER: precision:  81.01%; recall:  84.31%; FB1:  82.63  1917
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	11877	163	693	491	296
+i-misc	569	5985	709	361	624
+i-org	726	109	11376	1033	670
+i-per	760	41	740	18196	637
+o	179	221	419	353	215081
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	1842	27	106	73	46
+I-MISC	95	910	110	59	94
+I-ORG	115	23	1669	171	114
+I-PER	118	8	119	2815	89
+O	27	35	68	56	42573
+
+
+tst   22        1.6649    18.6358     0.0575     0.0460    95.4000    72.8800    75.8400    74.3300    74.3300         22
+
+processed 46435 tokens with 5628 phrases; found: 5856 phrases; correct: 4268.
+accuracy:  95.40%; precision:  72.88%; recall:  75.84%; FB1:  74.33
+              LOC: precision:  76.57%; recall:  81.23%; FB1:  78.83  1763
+             MISC: precision:  72.65%; recall:  64.79%; FB1:  68.50  618
+              ORG: precision:  66.50%; recall:  72.28%; FB1:  69.27  1800
+              PER: precision:  75.94%; recall:  78.66%; FB1:  77.28  1675
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	9850	227	1206	549	508
+i-misc	449	3990	735	425	646
+i-org	1179	299	12728	1334	926
+i-per	761	114	1038	15170	716
+o	502	596	1149	615	187382
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	1537	36	189	91	72
+I-MISC	63	611	104	60	80
+I-ORG	177	49	1908	209	153
+I-PER	126	14	159	2375	99
+O	86	83	195	93	37866
+
+
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   23        0.7898   180.4093     0.0121     0.0101    98.9900    91.9500    93.0200    92.4800    92.4800         23
+
+processed 203621 tokens with 23429 phrases; found: 23702 phrases; correct: 21794.
+accuracy:  98.99%; precision:  91.95%; recall:  93.02%; FB1:  92.48
+              LOC: precision:  92.53%; recall:  96.93%; FB1:  94.68  7468
+             MISC: precision:  92.17%; recall:  89.24%; FB1:  90.68  3295
+              ORG: precision:  87.56%; recall:  91.09%; FB1:  89.29  6551
+              PER: precision:  95.66%; recall:  92.59%; FB1:  94.10  6388
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	51714	60	807	158	330
+i-misc	506	28330	1158	146	684
+i-org	1487	286	63170	384	1404
+i-per	858	123	1227	68812	953
+o	416	677	1027	387	854518
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	8098	6	115	27	51
+I-MISC	72	4208	191	27	95
+I-ORG	240	54	9432	62	237
+I-PER	150	20	190	10651	117
+O	61	92	178	74	169173
+
+
+dev   23        0.7005    20.3104     0.0395     0.0330    96.7000    77.7300    79.6400    78.6700    80.3300         22
+
+processed 51362 tokens with 5938 phrases; found: 6084 phrases; correct: 4729.
+accuracy:  96.70%; precision:  77.73%; recall:  79.64%; FB1:  78.67
+              LOC: precision:  80.78%; recall:  87.37%; FB1:  83.94  1987
+             MISC: precision:  78.84%; recall:  74.29%; FB1:  76.50  865
+              ORG: precision:  66.03%; recall:  74.94%; FB1:  70.21  1522
+              PER: precision:  84.04%; recall:  78.01%; FB1:  80.91  1710
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	11815	266	775	318	346
+i-misc	541	6195	647	225	640
+i-org	887	215	11398	728	686
+i-per	966	129	1387	17135	757
+o	187	355	484	226	215001
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	1836	43	115	50	50
+I-MISC	90	945	99	37	97
+I-ORG	138	38	1674	113	129
+I-PER	151	22	220	2651	105
+O	31	49	83	36	42560
+
+
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   24        0.6697   180.5975     0.0117     0.0096    99.0400    92.5800    93.2300    92.9000    92.9000         24
+
+processed 203621 tokens with 23429 phrases; found: 23596 phrases; correct: 21844.
+accuracy:  99.04%; precision:  92.58%; recall:  93.23%; FB1:  92.90
+              LOC: precision:  93.75%; recall:  96.54%; FB1:  95.12  7341
+             MISC: precision:  93.03%; recall:  90.54%; FB1:  91.76  3312
+              ORG: precision:  88.33%; recall:  90.96%; FB1:  89.63  6485
+              PER: precision:  95.28%; recall:  93.23%; FB1:  94.24  6458
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	51364	136	891	182	496
+i-misc	280	28673	732	211	928
+i-org	1488	364	62790	394	1695
+i-per	666	194	1145	68756	1212
+o	213	353	685	350	855424
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	8031	18	141	33	74
+I-MISC	42	4248	139	32	132
+I-ORG	229	63	9409	64	260
+I-PER	114	28	179	10671	136
+O	33	42	129	66	169308
+
+
+dev   24        0.7335    20.3171     0.0388     0.0321    96.7900    78.6300    79.6700    79.1500    80.3300         22
+
+processed 51362 tokens with 5938 phrases; found: 6017 phrases; correct: 4731.
+accuracy:  96.79%; precision:  78.63%; recall:  79.67%; FB1:  79.15
+              LOC: precision:  84.04%; recall:  87.43%; FB1:  85.70  1911
+             MISC: precision:  77.60%; recall:  75.49%; FB1:  76.53  893
+              ORG: precision:  67.86%; recall:  75.09%; FB1:  71.29  1484
+              PER: precision:  82.42%; recall:  77.36%; FB1:  79.81  1729
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	11750	266	712	352	440
+i-misc	332	6424	533	212	747
+i-org	674	354	11298	751	837
+i-per	898	191	1368	16958	959
+o	70	232	391	253	215307
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	1824	41	109	59	61
+I-MISC	55	974	89	33	117
+I-ORG	108	53	1675	123	133
+I-PER	141	35	217	2635	121
+O	10	33	66	43	42607
+
+
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   25        0.6755   180.5205     0.0127     0.0103    98.9700    92.1400    92.5500    92.3500    92.9000         24
+
+processed 203621 tokens with 23429 phrases; found: 23533 phrases; correct: 21684.
+accuracy:  98.97%; precision:  92.14%; recall:  92.55%; FB1:  92.35
+              LOC: precision:  92.78%; recall:  96.32%; FB1:  94.52  7401
+             MISC: precision:  91.22%; recall:  90.42%; FB1:  90.82  3373
+              ORG: precision:  89.95%; recall:  86.87%; FB1:  88.38  6081
+              PER: precision:  93.89%; recall:  95.00%; FB1:  94.44  6678
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	51311	186	331	429	812
+i-misc	247	28607	353	479	1138
+i-org	2018	717	60485	758	2753
+i-per	534	198	365	69731	1145
+o	218	305	370	331	855801
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	8037	29	60	65	106
+I-MISC	42	4248	77	80	146
+I-ORG	329	104	9062	129	401
+I-PER	89	30	55	10820	134
+O	40	36	74	62	169366
+
+
+dev   25        0.7780    20.1260     0.0393     0.0324    96.7600    79.0700    79.9900    79.5300    80.3300         22
+
+processed 51362 tokens with 5938 phrases; found: 6007 phrases; correct: 4750.
+accuracy:  96.76%; precision:  79.07%; recall:  79.99%; FB1:  79.53
+              LOC: precision:  82.78%; recall:  87.15%; FB1:  84.91  1934
+             MISC: precision:  76.95%; recall:  77.45%; FB1:  77.20  924
+              ORG: precision:  72.12%; recall:  69.05%; FB1:  70.55  1284
+              PER: precision:  81.07%; recall:  82.08%; FB1:  81.58  1865
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	11737	270	456	501	556
+i-misc	350	6444	359	269	826
+i-org	912	524	10392	1015	1071
+i-per	837	280	652	17636	969
+o	118	270	274	193	215398
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	1820	41	71	81	81
+I-MISC	56	985	61	44	122
+I-ORG	145	78	1525	168	176
+I-PER	128	46	107	2745	123
+O	16	37	50	32	42624
+
+
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   26        0.6175   180.3369     0.0115     0.0096    99.0400    92.8300    93.1500    92.9900    92.9900         26
+
+processed 203621 tokens with 23429 phrases; found: 23509 phrases; correct: 21824.
+accuracy:  99.04%; precision:  92.83%; recall:  93.15%; FB1:  92.99
+              LOC: precision:  93.08%; recall:  97.03%; FB1:  95.01  7431
+             MISC: precision:  90.09%; recall:  91.36%; FB1:  90.72  3451
+              ORG: precision:  90.42%; recall:  88.31%; FB1:  89.35  6150
+              PER: precision:  96.29%; recall:  94.50%; FB1:  95.39  6477
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	51633	161	545	141	589
+i-misc	259	28954	470	131	1010
+i-org	1835	752	61663	529	1952
+i-per	609	291	450	69553	1070
+o	293	486	607	286	855353
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	8081	24	93	23	76
+I-MISC	43	4292	92	24	142
+I-ORG	298	117	9219	79	312
+I-PER	104	39	69	10778	138
+O	47	65	113	49	169304
+
+
+dev   26        0.7876    20.1098     0.0379     0.0313    96.8700    79.4400    80.1800    79.8100    80.3300         22
+
+processed 51362 tokens with 5938 phrases; found: 5993 phrases; correct: 4761.
+accuracy:  96.87%; precision:  79.44%; recall:  80.18%; FB1:  79.81
+              LOC: precision:  82.75%; recall:  87.48%; FB1:  85.05  1942
+             MISC: precision:  74.20%; recall:  78.32%; FB1:  76.21  969
+              ORG: precision:  72.74%; recall:  70.84%; FB1:  71.78  1306
+              PER: precision:  83.61%; recall:  80.62%; FB1:  82.09  1776
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	11748	382	601	329	460
+i-misc	301	6530	403	216	798
+i-org	874	484	10846	906	804
+i-per	884	372	658	17641	819
+o	116	360	325	222	215230
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	1829	56	90	52	67
+I-MISC	47	997	64	34	126
+I-ORG	137	78	1598	144	135
+I-PER	137	60	112	2724	116
+O	14	48	57	36	42604
+
+
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   27        0.5649   179.9368     0.0130     0.0105    98.9500    91.5500    92.4200    91.9900    92.9900         26
+
+processed 203621 tokens with 23429 phrases; found: 23652 phrases; correct: 21654.
+accuracy:  98.95%; precision:  91.55%; recall:  92.42%; FB1:  91.99
+              LOC: precision:  91.85%; recall:  97.12%; FB1:  94.42  7538
+             MISC: precision:  87.32%; recall:  94.06%; FB1:  90.56  3666
+              ORG: precision:  89.48%; recall:  82.63%; FB1:  85.91  5815
+              PER: precision:  95.37%; recall:  95.85%; FB1:  95.61  6633
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	51674	392	173	216	614
+i-misc	208	29669	124	146	677
+i-org	3047	1708	58455	903	2618
+i-per	410	264	188	70058	1053
+o	193	512	281	282	855757
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	8082	60	29	36	90
+I-MISC	33	4422	27	27	84
+I-ORG	475	268	8745	131	406
+I-PER	70	41	30	10867	120
+O	31	67	56	57	169367
+
+
+dev   27        0.8053    20.1534     0.0390     0.0322    96.7800    79.1200    80.0300    79.5700    80.3300         22
+
+processed 51362 tokens with 5938 phrases; found: 6006 phrases; correct: 4752.
+accuracy:  96.78%; precision:  79.12%; recall:  80.03%; FB1:  79.57
+              LOC: precision:  83.03%; recall:  88.68%; FB1:  85.76  1962
+             MISC: precision:  70.19%; recall:  78.76%; FB1:  74.23  1030
+              ORG: precision:  75.04%; recall:  65.47%; FB1:  69.93  1170
+              PER: precision:  82.54%; recall:  82.63%; FB1:  82.58  1844
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	11960	409	291	403	457
+i-misc	291	6680	245	210	822
+i-org	1126	862	9833	1078	1015
+i-per	800	309	443	17871	951
+o	115	393	153	240	215352
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	1854	64	47	63	66
+I-MISC	48	1018	40	34	128
+I-ORG	176	133	1443	170	170
+I-PER	125	53	72	2775	124
+O	16	53	31	43	42616
+
+
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   28        0.4671   179.7130     0.0114     0.0094    99.0600    92.5700    93.0700    92.8200    92.9900         26
+
+processed 203621 tokens with 23429 phrases; found: 23555 phrases; correct: 21806.
+accuracy:  99.06%; precision:  92.57%; recall:  93.07%; FB1:  92.82
+              LOC: precision:  90.03%; recall:  98.70%; FB1:  94.16  7815
+             MISC: precision:  92.92%; recall:  92.89%; FB1:  92.90  3402
+              ORG: precision:  91.63%; recall:  84.50%; FB1:  87.92  5807
+              PER: precision:  96.28%; recall:  95.27%; FB1:  95.77  6531
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	52637	64	41	87	240
+i-misc	427	29344	184	93	776
+i-org	3755	798	59423	798	1957
+i-per	785	153	141	69971	923
+o	275	278	323	200	855949
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	8223	10	7	16	41
+I-MISC	69	4346	39	20	119
+I-ORG	582	114	8906	118	305
+I-PER	142	19	23	10827	117
+O	46	34	65	38	169395
+
+
+dev   28        0.7490    20.0829     0.0381     0.0316    96.8400    79.6000    80.3800    79.9900    80.3300         22
+
+processed 51362 tokens with 5938 phrases; found: 5996 phrases; correct: 4773.
+accuracy:  96.84%; precision:  79.60%; recall:  80.38%; FB1:  79.99
+              LOC: precision:  78.57%; recall:  91.62%; FB1:  84.59  2142
+             MISC: precision:  77.51%; recall:  77.34%; FB1:  77.43  916
+              ORG: precision:  77.43%; recall:  65.47%; FB1:  70.95  1134
+              PER: precision:  83.26%; recall:  81.54%; FB1:  82.39  1804
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	12367	212	225	338	378
+i-misc	526	6488	197	256	781
+i-org	1485	513	9998	1054	864
+i-per	1098	230	379	17739	928
+o	176	285	238	200	215354
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	1921	30	33	54	56
+I-MISC	88	988	33	39	120
+I-ORG	234	80	1467	164	147
+I-PER	174	38	62	2747	128
+O	29	38	43	33	42616
+
+
+old lr: 0.0010000000475, new lr: 0.000950000045123
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpuvb0Kw/dd644293a545d16789c3c8a9c2d51f54.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpuvb0Kw/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpOI1d2k/c1d2eb388ed2fdd754edb7557717840a.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpOI1d2k/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpBa9j9V/bdd4f3e312446e550160b2800244cf47.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpBa9j9V/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmp5kVFc0/3823b9bc0786ba5060666f82cac14686.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmp5kVFc0/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpjgMQYV/2702a19e2941f768bf56889a45125aee.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpjgMQYV/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpEYHz55/e01ad835246b5bd7c97fc4625497d8fc.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpEYHz55/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpozCCY8/278c03775af95824d8e838262910797c.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpozCCY8/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpaBthKB/af50ef24af41ab12c51e35c4e479298c.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpaBthKB/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpKGrpn4/14d0f3fd692653ffe5d95b06edbd8d26.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpKGrpn4/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpnOgvFp/dac91eaec68766db616c7869a349a679.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpnOgvFp/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmp14wEYs/ebd0187e0dc9085648969b8c762ac44a.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmp14wEYs/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpig_VSo/22f43881df0e74376eefa20dce1a3fc5.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpig_VSo/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpfF5jWe/cf2059bf30da726ae70ebc682582b6ee.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpfF5jWe/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpVGGHzM/d4559860bf3ada252fc2942a534453dc.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpVGGHzM/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmp0RlJUM/5454ed16b83abf575e3ecb68b8d544fe.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmp0RlJUM/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpbrZ_pu/cb671e97df5e8f0683c7d825d38689e0.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpbrZ_pu/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmp1pmj6x/62b4284aa4a4e21960c9473e45e4089c.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmp1pmj6x/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmp8IJy4H/b9fc47d7557d42f6700f57d1551e621f.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmp8IJy4H/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpG6iPdm/0e46e03c68313190addbdc427200e3c0.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpG6iPdm/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpBadJ1F/01af38fd1d6495a156efc2832608523a.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpBadJ1F/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpGEqCxY/f9985618acf86f1b3bd8dd843eaaa00e.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpGEqCxY/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpc7HsEd/a5a9be93438b8a8e9979ee4e4eb887cb.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpc7HsEd/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmptAOh5q/0dd174ff69c92322e5e76c1ce7efcc16.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmptAOh5q/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpMC4m7o/7d8bc4ce2c0af625c2337ac1d6fa11be.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpMC4m7o/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpl2D9Xj/c3aeee0870c98ca098d26e2e640813c2.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpl2D9Xj/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpO2SqBU/2c1ef59dfb687189306544fb24ad0f05.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpO2SqBU/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmp2qALTM/4b5fb4aeff2195306c7b0b083ef2cd84.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmp2qALTM/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpqtaGvB/4da7199488f09d804f9da936742ccea9.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpqtaGvB/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpQZm4tq/5bfd533c8917f34f812ec0da2e401632.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpQZm4tq/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpaErPAE/50a7414b5260c70d40b38fea9db0bb0a.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpaErPAE/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpngx6tV/fe472dfc31dde4c1d9ba9607ef8fd179.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpngx6tV/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmp9PDnTW/ad69dea8536b2a0006eea64351bbc6c0.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmp9PDnTW/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpcTvh6Y/1d837ce00f8ed55b0e785a194cc25390.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpcTvh6Y/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpcjudsO/99aec793295324a4eb2cdc7680f599fe.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpcjudsO/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpLeCMni/f426a313f56f0c958ec7ccbe4a8fa5c8.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpLeCMni/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpcqOYN6/4ea0f1ef9e6cabbf9725ce41ff6e5ac0.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpcqOYN6/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpKGDAt6/b772280a9b17eb505bb1cc5778809053.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpKGDAt6/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpsVU0rr/2ece6476cd7a472ee44b1561248a85ba.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpsVU0rr/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpLvcvKt/f53ab5ae6c7794718f5b5671cb71278e.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpLvcvKt/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmp9NrfcF/645ca208bd847842f527b27a9a48f40a.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmp9NrfcF/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpYlqmqe/9f44682b1b6fd855bf459bf94fdddc90.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpYlqmqe/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpcGxF9M/880838ab3ed02b50e463f16e9af6b9e1.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpcGxF9M/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpf50d7K/5fa1020dffe92884b8501ddbc2e40674.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpf50d7K/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpR4x9Sk/67d4f77836bae94552a17e0bef49fd51.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpR4x9Sk/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmp40MltU/ff88a3dd5c52f88a244831932fd7b7dc.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmp40MltU/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpcrsJYq/367cf508c7fe9e33bdc769883d519b4f.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpcrsJYq/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpVSQmOq/d8828b43b4a073cc55e63ae7a517adf5.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpVSQmOq/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmp0HLIme/c6db0aeb4bd8851c5cd19969f8ab49a0.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmp0HLIme/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpUZE8GE/fe544e1ab0f718ccdf18e48e600a057f.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpUZE8GE/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpbHYT4n/4d053c67afbbc0568f5814e484507211.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpbHYT4n/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpq3B0EP/baebcb18b292fe481091ae186c6baf94.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpq3B0EP/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpPZX00X/c39293dcd6230ed80e16c4ebdf09073f.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpPZX00X/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpy1Y4zF/86906945a9774701981bfd913f28fc56.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpy1Y4zF/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpHQusXu/ac2248c8c52d60d0b20ec16bd0facf29.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpHQusXu/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmplWSzIC/c4c39297df875d7efb53104a61f726af.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmplWSzIC/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmp2qigYO/b6a4226d3acc086921f9cbb4cd975d37.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmp2qigYO/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpiStY6C/239bec1512321ec588f0b1164278fb64.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpiStY6C/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpkz2kUH/18d5a8a6a9092d5ba63e47774ced3130.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpkz2kUH/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpLQbJED/9e7a14d531aa4599048ede6b9381968c.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpLQbJED/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpXtim4Q/c4a16df393e9bd47d7b5c27654fae48a.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpXtim4Q/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmp_c6wLS/acae7b905fe2bdc6e9ed024439c42561.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmp_c6wLS/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpcs3PLo/189a227fd7c57223e6e5a59fcc916ea7.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpcs3PLo/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpHSm3KL/a8b452ae1fdca8182aef2af30ebe76c0.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpHSm3KL/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpVVvBEk/6a1e3554ab5820fc2b974484023486f2.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpVVvBEk/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpHdz15Q/f8b232beb4743b3e8af4e13eecc12612.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpHdz15Q/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpiuS2cv/834dc0c5ccb8a6d9b28af4b063131265.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpiuS2cv/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpvosBGI/c076a8f1d094f7606d75696d2c58f951.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpvosBGI/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpeuXeLX/195ebd8a4e8a6a15a3e96ac7d6c3760e.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpeuXeLX/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmp2l0lys/e0b28ec03e051f80e055d0173c808bbb.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmp2l0lys/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpdDaFWP/1d7231524ec80986ca59bda804968676.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpdDaFWP/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpxK3jzk/da219126c82e6b806cf855c66d2b6ab1.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpxK3jzk/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpyI9vs8/b84ead93572b1813a6d44ba8f8dbecb8.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpyI9vs8/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpwMOtf0/2c28ad39d61647c4c8a21b794e40837f.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpwMOtf0/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmp_yE423/31d18189063fd5d69070103e0199cad0.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmp_yE423/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpgrN2HL/af78e0ca57163a5741e4575ca1018b25.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpgrN2HL/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpBQN7k2/3b954c6c91c558fc0540bd32a0ad3036.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpBQN7k2/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmp597Iv3/c91e732ac44dfc7cef1b3eb5465a0141.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmp597Iv3/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpr4CO9L/e0725fa721c070df445f435b7ed2ba19.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpr4CO9L/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmp1FFOED/ae852d90a3c7e119c4bb35c46cc454f4.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmp1FFOED/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmp34kB92/1a4b05ed488e790fae39c92daf5e8909.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmp34kB92/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpdOvxn7/ebfae0e8ab5aa6a1dbecdd33fea5f043.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpdOvxn7/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpPlWADd/ac45348aeae3cad8532b57ddf38500f2.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpPlWADd/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpPSxDRE/7221dd5d9ddef01fda6bfa3b74819535.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpPSxDRE/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpPnkFym/50fc950f994c92d187225e7d99ccb284.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpPnkFym/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpelEgUY/e8e9522eacddb68e196de5cb9aa0002e.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpelEgUY/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpi9M77R/6f460c7850dfb440e4d9250b02b8d201.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpi9M77R/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpTKimQl/89b74aa3d27aa09009e51aaff76e84e9.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpTKimQl/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpoMwqz2/3dc328bb5c4ee2199cd8769b5f0de02b.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpoMwqz2/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpOvcYwK/882d3d554715690c2e8a2d9b057396f7.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpOvcYwK/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmp4A9RYm/0193c05cfa39182794daf09703c765af.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmp4A9RYm/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpiV8fUU/28ff31265a88362ac18ff70d64e229a6.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpiV8fUU/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpzuZ2ov/3e6a4d870880531bd4a418135c7e48d8.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpzuZ2ov/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpWV5Ku5/c06c4111e774df21fced14fa15ab6e87.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpWV5Ku5/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpbCiRhS/021bf42a44656e3c442bdef1209c4aa8.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpbCiRhS/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpJtAMbM/507c42658d3ecfc9fcd2870b20a1289e.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpJtAMbM/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpS304Iw/d81b007ac05817a86d2a3359c6205acc.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpS304Iw/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpHZfF78/943369c7c09a75f89b7161200d6ceb5a.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpHZfF78/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpmm2cc_/b5bd96b49a8abc36318c95aab67750f0.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpmm2cc_/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmprKZuOS/e2b901d8c24ebf418645e80d78cdb28e.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmprKZuOS/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpEgfDny/4e5288253869d6a924b427aca12622f8.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpEgfDny/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpIFWmRt/5695edfc44990df49273329ca7987d98.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpIFWmRt/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpOwRbx0/f0c70c6cb39edeb753588795195a4f35.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpOwRbx0/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmp8yHodO/7588b2ead68c63e3ac8f28e509bc6ca4.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmp8yHodO/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpb61VtZ/cb49458af77818fb8ecf325a972c206e.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpb61VtZ/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmp99jR4g/a74e6e400452a5d84cebeb5f8747b9b6.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmp99jR4g/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmp9OXlll/7f202298df64343ea8e1bd347cf86f4b.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmp9OXlll/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpSetUW3/0e7937527830f3334013435c9ce95640.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpSetUW3/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpAfiP2h/2a437121e51e5a4d5cc32d80f403ed74.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpAfiP2h/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmp6SKf0A/a405e39a877d51202dc11fbbe76d93bd.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmp6SKf0A/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpuYIgwf/694457888d3dd06ab87e1c443b3837f6.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpuYIgwf/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpxiZIxN/809d0be29b7af7da63150bfa32b9d78f.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpxiZIxN/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpELnzqn/75a2a089baa443684d2919070b84bdd0.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpELnzqn/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpWkpB6_/66547f7903f703483b573fa753cd617e.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpWkpB6_/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpOXc38L/4b66569561bd0ff259c99721e81ef2d6.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpOXc38L/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpTpbWSi/70420f6d255528e496b6dcec592c9bfd.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpTpbWSi/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmp7PfnXc/a8ba7e8ea3036d15744085cd31ff20af.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmp7PfnXc/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpLSIgZF/1c0bcec92e1d40a95ab074894c77739e.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpLSIgZF/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpstWtSy/a0c0d004885b47900367b972585efa2a.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpstWtSy/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmptR3j1X/61605b9dd5d7c059e27f25392f4d3336.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmptR3j1X/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmphGMrNW/b3087a05c4a162407ac6c337523d55cc.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmphGMrNW/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpoiT6JN/ddde6ae9a09770eed554831e9a1050c2.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpoiT6JN/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmp6AZu5l/ea2beff641a3e33a26508aba3072e4f9.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmp6AZu5l/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpzMGF55/5f4b2aa3a52a01cfeb1680b8bc43f387.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpzMGF55/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpUJvULG/4144111602ea20d54ff9b8ea7520de24.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpUJvULG/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpyVWi6b/a517c5e10175aa916ad070a66f208448.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpyVWi6b/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpiuZyCe/6ccdd54c5d614b785e7ea02f9b958857.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpiuZyCe/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpiNKfIE/ad7aac9283430aa8eb2c6fc445f878ea.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpiNKfIE/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpUgVMPT/d4cde9b6daf5510a31d63d8fe218c6fa.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpUgVMPT/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpzmCove/5584968742b66d6366372e9dbb905d3d.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpzmCove/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpdRU5gP/4821e34259cb06b7e63c88913365489e.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpdRU5gP/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpfflnz5/b3b1156621a6a5c74c2e47d3491e58d2.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpfflnz5/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpGIfbIt/7eb7c080d329d952761fe90bb180c5b7.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpGIfbIt/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpoQkOwk/cb696444e2cfd3b8898d37acc4865c9a.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpoQkOwk/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpgzO3uR/04112f1e876ab12fd708ab7492cf746a.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpgzO3uR/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmp9F7kB2/e3eba8d0f54056816d782fcbb6a2fd16.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmp9F7kB2/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpguxL2d/efe2597f25fd5dac4d6e6d2de4558585.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpguxL2d/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpdzudct/f39fc45f6bf27a55a14e5ac1de7e122b.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpdzudct/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpJD8REN/864ce287b5a1a649371e23208afba603.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpJD8REN/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmp_F0ktT/78ee396b6afecf5c4ea491808006ec2f.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmp_F0ktT/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmphlA4U2/b87297bdff6ac168a654e69c9d45ef0d.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmphlA4U2/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpdBUoYV/ad1320dffe1dcf3611ca35380930961b.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpdBUoYV/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpFHZ_Du/36efd228a0713af061f6a1f6649a796c.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpFHZ_Du/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpxoAcXY/bb682b14781aa8fb02a9e6d23efba425.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpxoAcXY/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpe9Qr1a/03ce8124f4c8117d6958b2a20ae452fb.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpe9Qr1a/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpqdZnSi/0b25fc16a4855b989d6f1060afa2d134.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpqdZnSi/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpltrLnN/834640bef852fe36ade028e56ee499c3.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpltrLnN/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpflNxsK/d0a382d975ebcfd2203b5fb6a8bb0573.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpflNxsK/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmp5Kz8CE/e312b6bb32a371fac0f437988eab91cf.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmp5Kz8CE/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpxh93EG/dd66a7df5f9f0e34f6f59e9d458acfd4.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpxh93EG/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpD7NJv7/bec9912ba3e4bd4457173e90e2c78288.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpD7NJv7/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmp0FT04M/b7f23ba319dbd6d1e05be9a7bb3dfa92.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmp0FT04M/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpgo1Rt7/2a55c3739c66a64a5174fa46a7c7fbb3.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpgo1Rt7/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpvPLzP4/b5c7e2a71522aefc3f8390de088f1691.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpvPLzP4/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmp8C2su8/9ce24ac2af95768bdb6470aa3846e8a1.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmp8C2su8/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpT1nmB2/d8b38e71850520028730472f4139fd35.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpT1nmB2/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpURGy6T/5c17f6fb1002cfa170d6af5652cfbe32.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpURGy6T/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpWoQcHz/3cd02952770f1709ed3952189ff21a71.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpWoQcHz/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpZIJuqS/3e39449fa8fc7a0f4608363dc533626b.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpZIJuqS/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpsVnn9Z/e24743b609b86ba09ce1d55222b8405d.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpsVnn9Z/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpcbS4sT/95b0308523bcfa6d1912f01a71add681.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpcbS4sT/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmp2_mt17/e01ad835246b5bd7c97fc4625497d8fc.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmp2_mt17/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpHPSiBm/29ad43614dbb353db2a77d07557ae06a.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpHPSiBm/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmprOo7YI/499a30788e567381404b22186a8dc692.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmprOo7YI/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmps7KhE1/25de41063ac49187731495804f6f8813.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmps7KhE1/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpmcu_U3/afaf1820ae1ba942f9584b897f870209.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpmcu_U3/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpLeA3AD/c77982c6935e8566daa05819de7eb825.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpLeA3AD/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpuoIi3i/a4d63cb9610a0bd592a104c7e27c57d0.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpuoIi3i/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpk7yZw1/79abc3d370bea5590e2524ea35657d5e.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpk7yZw1/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmp12JiFm/5fd64666a6da34c08985402272488678.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmp12JiFm/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmp8_jzan/12e415cae21b5f2b3af988eb4124af7b.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmp8_jzan/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmph9vJJt/96584c02a287677bb63cd88556b08806.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmph9vJJt/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpXOKXkP/5fe6a773a5f619d05fd6163dde700fb2.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpXOKXkP/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmp93Cu7S/5ddb56cab8f3a3448504da2d413d3af7.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmp93Cu7S/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmp_2c361/14c257e299d7004d6076f6e625cee68d.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmp_2c361/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpn4zLQn/1f0c90e8f3d64004d7b409435abc2655.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpn4zLQn/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpsn9Hfy/7e09a2840c1bce05f9c167ed8dd4c13f.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpsn9Hfy/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmp9jqjmP/327e84e638a9596fc20c55ea623525af.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmp9jqjmP/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpiijYov/5de4d72958e07175637d5707b2e0bf9d.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpiijYov/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpqsZgig/eb980ee1509069269927b334b1a85948.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpqsZgig/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpzWZYnV/b9e0b17e8dafe86777d60e9ddd1f8e90.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpzWZYnV/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpDM7sYe/f366f632c604983cb1b520d04188c0d1.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpDM7sYe/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpp1fNU8/469de9184a7d56b6ba5aa83e82a5bc75.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpp1fNU8/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpJPNopf/33c57011ea954ac5b3f3751b91dd5c65.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpJPNopf/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpdBhPk7/e18c0af570f33ac3465e8e9435a59738.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpdBhPk7/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpShWhHg/99ce5435b622727ce6593e11ca4d7740.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpShWhHg/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmp2fa00s/c1927e63d1671ad669af8de50d31f39f.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmp2fa00s/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpS34Qvr/e884d307dbf80097a4352535ae3be324.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpS34Qvr/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpgAitJC/da2a03419947cf4f2db05277fde8bc4c.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmpgAitJC/key.pkl because the corresponding module is gone from the file system.
+A module that was loaded by this ModuleCache can no longer be read from file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmp8MZXS9/5c14c6ef53677989a4e57e2398090a5e.so... this could lead to problems.
+Removing key file /mnt/kufs/scratch/ocan13/.theano/compiledir_Linux-2.6-el6.x86_64-x86_64-with-centos-6.5-Final-x86_64-2.7.10-64/tmp8MZXS9/key.pkl because the corresponding module is gone from the file system.
