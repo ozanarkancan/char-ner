@@ -1,8 +1,8 @@
-activation:	bi-relu
-batch_norm:	0
+activation:	bi-lstm
+batch_norm:	128
 curriculum:	1
 decoder:	0
-drates:	[0, 0]
+drates:	[0.3, 0.5, 0.5, 0.7]
 emb:	0
 fbmerge:	concat
 feat:	basic
@@ -11,12 +11,12 @@ gclip:	0
 in2out:	0
 lang:	cze
 log:	das_auto
-lr:	0.001
+lr:	0.005
 n_batch:	32
-n_hidden:	[128]
-norm:	1.0
+n_hidden:	[128, 128, 128]
+norm:	10.0
 opt:	adam
-patience:	-1
+patience:	5
 recout:	1
 rep:	std
 reverse:	False
@@ -27,20 +27,23 @@ shuf:	0
 sorted:	1
 tagging:	io
 truncate:	-1
-base_log_name:	biyofiz-4-1:gpu0,feat:basic,rep:std,activation:bi-relu,n_hidden:128,fbmerge:concat,drates:0,0,recout:1,decoder:0,opt:adam,lr:0.001,norm:1.0,gclip:0,truncate:-1,n_batch:32,shuf:0,emb:0,lang:cze,reverse:False,tagging:io
+base_log_name:	iui-5-0:cpu,feat:basic,rep:std,activation:bi-lstm,n_hidden:128,128,128,fbmerge:concat,drates:0.3,0.5,0.5,0.7,recout:1,decoder:0,opt:adam,lr:0.005,norm:10.0,gclip:0,truncate:-1,n_batch:32,shuf:0,emb:0,lang:cze,reverse:False,tagging:io
 # of sents trn, dev, tst: 4644 572 577
 maxlen: 691 minlen: 3 avglen: 156.05 stdlen: 99.52
 ['c= ', 'c=!', 'c="', 'c=$', 'c=%', 'c=&', "c='", 'c=(', 'c=)', 'c=*', 'c=+', 'c=,', 'c=-', 'c=.', 'c=/', 'c=0', 'c=1', 'c=2', 'c=3', 'c=4', 'c=5', 'c=6', 'c=7', 'c=8', 'c=9', 'c=:', 'c=;', 'c=<', 'c==', 'c=>', 'c=?', 'c=@', 'c=A', 'c=B', 'c=C', 'c=D', 'c=E', 'c=F', 'c=G', 'c=H', 'c=I', 'c=J', 'c=K', 'c=L', 'c=M', 'c=N', 'c=O', 'c=P', 'c=Q', 'c=R', 'c=S', 'c=T', 'c=U', 'c=V', 'c=W', 'c=X', 'c=Y', 'c=Z', 'c=[', 'c=\\', 'c=]', 'c=_', 'c=`', 'c=a', 'c=b', 'c=c', 'c=d', 'c=e', 'c=f', 'c=g', 'c=h', 'c=i', 'c=j', 'c=k', 'c=l', 'c=m', 'c=n', 'c=o', 'c=p', 'c=q', 'c=r', 'c=s', 'c=t', 'c=u', 'c=v', 'c=w', 'c=x', 'c=y', 'c=z', 'c=\x81', 'c=\x84', 'c=\x87', 'c=\x88', 'c=\x89', 'c=\x8c', 'c=\x8d', 'c=\x8e', 'c=\x8f', 'c=\x90', 'c=\x98', 'c=\x99', 'c=\x9a', 'c=\x9b', 'c=\x9c', 'c=\x9d', 'c=\xa0', 'c=\xa1', 'c=\xa2', 'c=\xa4', 'c=\xa5', 'c=\xa7', 'c=\xa9', 'c=\xad', 'c=\xae', 'c=\xaf', 'c=\xb0', 'c=\xb1', 'c=\xb3', 'c=\xb5', 'c=\xb6', 'c=\xb9', 'c=\xba', 'c=\xbc', 'c=\xbd', 'c=\xbe', 'c=\xc2', 'c=\xc3', 'c=\xc4', 'c=\xc5']
 ['i-a' 'i-g' 'i-i' 'i-m' 'i-o' 'i-p' 'i-t' 'o']
 ['I-A' 'I-G' 'I-I' 'I-M' 'I-O' 'I-P' 'I-T' 'O']
 NF: 129 NC: 8
+using batch norm
+using batch norm
+using batch norm
 using recout:1.
 Compiling functions...
 Compiling done.
 training the model...
 dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
-trn   1        31.5113    21.3968     0.2025     0.2125    78.7500    14.6700     6.9600     9.4400     9.4400          1
-dev   1         1.7993     0.6823     0.2137     0.2255    77.4500    13.2100     5.8600     8.1200     8.1200          1
-tst   1         2.0067     0.8391     0.2227     0.2383    76.1700    13.0100     6.0700     8.2800     8.2800          1
+trn   1        42.4285   698.4298     0.5638     0.5562    44.3800     0.9100     0.8100     0.8600     0.8600          1
+dev   1        10.9761    21.3209     0.5562     0.5508    44.9200     0.7800     0.6500     0.7100     0.7100          1
+tst   1        22.2226    24.4075     0.5682     0.5633    43.6700     0.5000     0.4200     0.4600     0.4600          1
 
 dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
