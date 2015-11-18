@@ -81,7 +81,7 @@ if __name__ == '__main__':
     print list(islice(reversed(sorted(len(sent['ws']) for sent in tst)),10))
     trn1 = []
     for sent in trn:
-        if len(sent['ws']) > 1000:
+        if len(sent['ws']) > 200:
             print ' '.join(sent['ws'])
         trn1.extend(get_subsents(sent))
     print list(islice(reversed(sorted(len(sent['ws']) for sent in trn1)),10))
