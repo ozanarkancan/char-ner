@@ -19,7 +19,9 @@ def valid_file_name(s):
     return "".join(i for i in s if i not in "\"\/ &*?<>|[]()'")
 
 def get_sents(lang='eng'):
-    return map(read_sents, ['{}/{}/{}.bio'.format(DATA_DIR,lang,dset) for dset in ('train','testa','testb')])
+    trn,dev,tst = map(read_sents, ['{}/{}/{}.bio'.format(DATA_DIR,lang,dset) for dset in ('train','testa','testb')])
+    trn = filter(lambda sent: len(sent['ws'])<1000,trn)
+    return trn,dev,tst 
 
 def read_sents(file, delim='\t'):
     a = []
@@ -59,10 +61,28 @@ def get_sent_indx_word(dset):
         start += len(sent['ws'])
     return indexes
 
+def get_subsents(sent):
+    subsents = []
+    cursubsent = {'ws':[],'ts':[]}
+    for w,t in zip(sent['ws'],sent['ts']):
+        cursubsent['ws'].append(w)
+        cursubsent['ts'].append(t)
+        if w == '.' and t == 'O':
+            subsents.append(cursubsent)
+            cursubsent = {'ws':[],'ts':[]}
+    if len(cursubsent['ws']) > 0:
+        subsents.append(cursubsent)
+    return subsents
+
 if __name__ == '__main__':
-    trn,dev,tst = get_sents('eng')
-    sents = sample_sents(trn,10)
-    sent = sents[0]
-    print sent['ws']
-    print sent['ts']
-    print encoding.any2io(sent['ts'])
+    trn,dev,tst = get_sents('ned')
+    print list(islice(reversed(sorted(len(sent['ws']) for sent in trn)),10))
+    print list(islice(reversed(sorted(len(sent['ws']) for sent in dev)),10))
+    print list(islice(reversed(sorted(len(sent['ws']) for sent in tst)),10))
+    trn1 = []
+    for sent in trn:
+        if len(sent['ws']) > 200:
+            print ' '.join(sent['ws'])
+        trn1.extend(get_subsents(sent))
+    print list(islice(reversed(sorted(len(sent['ws']) for sent in trn1)),10))
+    print len(trn), len(trn1)
