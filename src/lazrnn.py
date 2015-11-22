@@ -83,7 +83,7 @@ class RDNN:
         default_gate = lambda : lasagne.layers.Gate(W_in=lasagne.init.GlorotUniform(), 
             W_hid=lasagne.init.GlorotUniform())
         
-        forget_gate = lambda lasagne.layers.Gate(W_in=lasagne.init.GlorotUniform(), 
+        forget_gate = lambda : lasagne.layers.Gate(W_in=lasagne.init.GlorotUniform(), 
             W_hid=lasagne.init.GlorotUniform(),
             b=lasagne.init.Constant(1.))
         
@@ -123,9 +123,9 @@ class RDNN:
             elif ltype == 'lstm':
                 LayerType = lasagne.layers.LSTMLayer
                 l_forward = LayerType(prev_layer, n_hidden, ingate=default_gate(),
-                    forgetgate=forget_gate(), outgate=defaultgate(), mask_input=l_mask, grad_clipping=self.gclip, gradient_steps=self.truncate)
+                    forgetgate=forget_gate(), outgate=default_gate(), mask_input=l_mask, grad_clipping=self.gclip, gradient_steps=self.truncate)
                 l_backward = LayerType(prev_layer, n_hidden, ingate=default_gate(),
-                    forgetgate=forget_gate(), outgate=defaultgate(), mask_input=l_mask, grad_clipping=self.gclip, gradient_steps=self.truncate, backwards=True)
+                    forgetgate=forget_gate(), outgate=default_gate(), mask_input=l_mask, grad_clipping=self.gclip, gradient_steps=self.truncate, backwards=True)
             elif ltype == 'gru':
                 LayerType = lasagne.layers.GRULayer
                 l_forward = LayerType(prev_layer, n_hidden, mask_input=l_mask, grad_clipping=self.gclip, gradient_steps=self.truncate)
