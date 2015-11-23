@@ -80,6 +80,13 @@ class RDNN:
         ldepth = len(self.n_hidden)
 
         # network
+        default_gate = lambda : lasagne.layers.Gate(W_in=lasagne.init.GlorotUniform(), 
+            W_hid=lasagne.init.GlorotUniform())
+        
+        forget_gate = lambda : lasagne.layers.Gate(W_in=lasagne.init.GlorotUniform(), 
+            W_hid=lasagne.init.GlorotUniform(),
+            b=lasagne.init.Constant(1.))
+        
         l_in = lasagne.layers.InputLayer(shape=(None, None, nf))
         logging.debug('l_in: {}'.format(lasagne.layers.get_output_shape(l_in)))
         N_BATCH_VAR, MAX_SEQ_LEN_VAR, _ = l_in.input_var.shape # symbolic ref to input_var shape
@@ -115,8 +122,10 @@ class RDNN:
                         W_hid_to_hid=Identity(), W_in_to_hid=lasagne.init.GlorotUniform(gain='relu'), nonlinearity=nonlin, backwards=True)
             elif ltype == 'lstm':
                 LayerType = lasagne.layers.LSTMLayer
-                l_forward = LayerType(prev_layer, n_hidden, mask_input=l_mask, grad_clipping=self.gclip, gradient_steps=self.truncate)
-                l_backward = LayerType(prev_layer, n_hidden, mask_input=l_mask, grad_clipping=self.gclip, gradient_steps=self.truncate, backwards=True)
+                l_forward = LayerType(prev_layer, n_hidden, ingate=default_gate(),
+                    forgetgate=forget_gate(), outgate=default_gate(), mask_input=l_mask, grad_clipping=self.gclip, gradient_steps=self.truncate)
+                l_backward = LayerType(prev_layer, n_hidden, ingate=default_gate(),
+                    forgetgate=forget_gate(), outgate=default_gate(), mask_input=l_mask, grad_clipping=self.gclip, gradient_steps=self.truncate, backwards=True)
             elif ltype == 'gru':
                 LayerType = lasagne.layers.GRULayer
                 l_forward = LayerType(prev_layer, n_hidden, mask_input=l_mask, grad_clipping=self.gclip, gradient_steps=self.truncate)
