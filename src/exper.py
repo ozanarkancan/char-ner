@@ -13,7 +13,7 @@ import theano.tensor as T
 import featchar
 import rep
 import encoding
-from utils import get_sents, sample_sents, valid_file_name
+from utils import get_sents, sample_sents, valid_file_name, break2subsents
 from utils import ROOT_DIR
 from score import conlleval
 from lazrnn import RDNN, RDNN_Dummy, extract_rnn_params
@@ -57,6 +57,7 @@ def get_arg_parser():
     parser.add_argument("--reverse", default=False, action='store_true', help="reverse the training data as additional data")
     parser.add_argument("--decoder", default=0, type=int, help="use decoder to prevent invalid tag transitions")
     parser.add_argument("--breaktrn", default=0, type=int, help="break trn sents to subsents")
+    parser.add_argument("--sentcap", default=0, type=int, help="consider sents lt this as trn")
 
     return parser
 
@@ -266,6 +267,9 @@ def main():
 
     if args['breaktrn']:
         trn = [subsent for sent in trn for subsent in break2subsents(sent)]
+
+    if args['sentcap']:
+        trn = filter(lambda sent: len(sent['ws'])<args['sentcap'], trn)
 
     if args['sample']>0:
         trn_size = args['sample']*1000

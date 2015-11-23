@@ -119,20 +119,6 @@ def break2subsents(sent):
     return subsents
 
 if __name__ == '__main__':
-    trn,dev,tst = get_sents('eng')
-    sents = random.sample(trn,10)
-    sent = sents[0]
-    for w,t in zip(sent['ws'],sent['ts']):
-        print w,t
-    print
-
-    for s in break2subsents(sent):
-        for w,t in zip(s['ws'],s['ts']):
-            print w,t
-        print
-    """
-    sents2=[]
-    for sent in trn:
-        sents2.extend(get_subsents2(sent))
-    print list(islice(reversed(sorted(len(ts) for ts in sents2)),20))
-    """
+    trn,dev,tst = get_sents('arb')
+    trn = [subsent for sent in trn for subsent in break2subsents(sent)]
+    print list(islice(reversed(sorted(len(sent['ts']) for sent in trn)),20))
