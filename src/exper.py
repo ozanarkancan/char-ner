@@ -52,10 +52,11 @@ def get_arg_parser():
     parser.add_argument("--curriculum", default=1, type=int, help="curriculum learning: number of parts")
     parser.add_argument("--lang", default='eng', help="ner lang")
     parser.add_argument("--save", default=False, action='store_true', help="save param values to file")
-    parser.add_argument("--shuf", default=0, type=int, help="shuffle the batches.")
+    parser.add_argument("--shuf", default=1, type=int, help="shuffle the batches.")
     parser.add_argument("--tagging", default='io', help="tag scheme to use")
     parser.add_argument("--reverse", default=False, action='store_true', help="reverse the training data as additional data")
     parser.add_argument("--decoder", default=0, type=int, help="use decoder to prevent invalid tag transitions")
+    parser.add_argument("--breaktrn", default=0, type=int, help="break trn sents to subsents")
 
     return parser
 
@@ -199,7 +200,6 @@ class Validator(object):
                 logging.info('old lr: {}, new lr: {}'.format(val, val * 0.95))
                 rdnn.lr.set_value(val * 0.95)
                 anger = 0
-                #break
             logging.info('')
 
 class Curriculum(object):
@@ -229,8 +229,8 @@ class Curriculum(object):
         
             
 
-LPARAMS = ['feat', 'rep', 'activation', 'n_hidden', 'fbmerge', 'drates',
-    'recout','decoder', 'opt','lr','norm','gclip','truncate','n_batch', 'shuf', 'emb','lang', 'reverse','tagging']
+LPARAMS = ['activation', 'n_hidden', 'fbmerge', 'drates',
+    'recout','decoder', 'opt','lr','norm','gclip','truncate','n_batch', 'shuf', 'breaktrn', 'emb','lang', 'reverse','tagging']
 
 def main():
     parser = get_arg_parser()
@@ -263,6 +263,9 @@ def main():
     logger.info('{}:\t{}'.format('base_log_name',base_log_name))
 
     trn, dev, tst = get_sents(args['lang'])
+
+    if args['breaktrn']:
+        trn = [subsent for sent in trn for subsent in break2subsents(sent)]
 
     if args['sample']>0:
         trn_size = args['sample']*1000
