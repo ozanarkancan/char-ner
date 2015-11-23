@@ -66,19 +66,9 @@ def io_ideal(dev,tst):
 def get_vocab(dset):
     return set(w for sent in dset for w in sent['ws'])
 
-### end DSET ###
-
-if __name__ == '__main__':
-    from tabulate import tabulate
-    from score import conlleval
-    """
-    import argparse
-    parser = argparse.ArgumentParser()
-    parser.add_argument('lang')
-    args = parser.parse_args()
-    """
-
-    langs = ['eng', 'deu', 'spa', 'ned', 'tr', 'cze', 'ger']
+def main():
+    langs = ['eng', 'deu', 'spa', 'ned', 'tr', 'cze', 'ger', 'arb']
+    # langs = ['eng', 'deu']
     dsetnames = ['trn','dev','tst']
 
     data = dict((lang,dict((dname,dset) for dname,dset in zip(dsetnames, get_sents(lang)))) for lang in langs)
@@ -86,7 +76,7 @@ if __name__ == '__main__':
     table = []
     for dname in dsetnames:
         table.append([dname]+map(len,[data[l][dname] for l in langs]))
-    print tabulate(table,headers=['#sent']+langs)
+    print tabulate(table,headers=['#sent']+langs, tablefmt='latex')
     print
 
     table = []
@@ -129,6 +119,24 @@ if __name__ == '__main__':
 
     table = []
     for l, dname in product(langs,('dev','tst')):
+        vdst = get_vocab(data[l][dname])
+        vsrc = get_vocab(data[l]['trn'])
+        vdiff = vdst.difference(vsrc)
+        uperc = len(vdiff) / float(len(vdst)) * 100
+
+        cnt = Counter(w for sent in data[l][dname] for w,t in zip(sent['ws'],sent['ts']) if t!='O')
+        pperc = sum(cnt[w] for w in vdiff) / float(sum(cnt.values())) * 100
+
+        cnt = Counter(w for sent in data[l][dname] for w in sent['ws'])
+        cperc = sum(cnt[w] for w in vdiff) / float(sum(cnt.values())) * 100
+
+
+        table.append([l+'-'+dname]+[uperc, pperc, cperc])
+    print tabulate(table, headers=['unk', 'unique', 'phrase', 'corpus'], floatfmt='.2f')
+
+    """
+    table = []
+    for l, dname in product(langs,('dev','tst')):
         dset = data[l][dname]
         ts_gold = [sent['ts'] for sent in dset]
         ts_pred = [encoding.any2io(sent['ts']) for sent in dset]
@@ -136,33 +144,34 @@ if __name__ == '__main__':
         table.append([l+'-'+dname]+map(str,r1))
     print tabulate(table, headers=['io-ideal', 'wacc','pre','rec','f1'])
     print
+    """
 
 
-    """ TODO
+    pass
+
+def paper():
+    langs = ['eng', 'deu', 'spa', 'ned', 'tr', 'cze', 'ger', 'arb']
+    # langs = ['eng', 'deu']
+    dsetnames = ['trn','dev','tst']
+
+    data = dict((lang,dict((dname,dset) for dname,dset in zip(dsetnames, get_sents(lang)))) for lang in langs)
+
     table = []
-    for dname in dsetnames:
-        vtrn,vdev,vtst = map(get_vocab, (trn,dev,tst))
-        table.append([dname]+[len(get_vocab(data[l][dname])) for l in langs])
-    print tabulate(table,headers=['unk']+langs)
-    """
-    """
-    unique, phrase, corpus
-    vtrn,vdev,vtst = map(get_vocab, (trn,dev,tst))
-    print 'vocab'
-    print 'trn\tdev\ttst'
-    print '{}\t{}\t{}'.format(*map(len,(a,b,c)))
+    for l in langs:
+        table.append([l]+map(len,[data[l][dname] for dname in dsetnames]))
+    print tabulate(table,headers=['#sent']+dsetnames, tablefmt='latex')
     print
-    print 'unk\tdev\t{:.2f}'.format(len(b.difference(a)) / float(len(b)))
-    print 'unk\ttst\t{:.2f}'.format(len(c.difference(a)) / float(len(c)))
-    """
 
-    """
-    a,b,c = map(entity_tagged_vocab, (trn,dev,tst))
-    print 'trn, dev, tst:', map(len,(a,b,c))
-    print 'dev diff:', len(b.difference(a)) / float(len(b))
-    print 'tst diff:', len(c.difference(a)) / float(len(c))
+### end DSET ###
 
-    print '-->', unk_perc(trn,dev)
-    print '-->', unk_perc(trn,tst)
+if __name__ == '__main__':
+    from tabulate import tabulate
+    from score import conlleval
     """
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument('lang')
+    args = parser.parse_args()
+    """
+    paper()
 
