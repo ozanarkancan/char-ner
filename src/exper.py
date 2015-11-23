@@ -57,7 +57,7 @@ def get_arg_parser():
     parser.add_argument("--reverse", default=False, action='store_true', help="reverse the training data as additional data")
     parser.add_argument("--decoder", default=0, type=int, help="use decoder to prevent invalid tag transitions")
     parser.add_argument("--breaktrn", default=0, type=int, help="break trn sents to subsents")
-    parser.add_argument("--sentcap", default=0, type=int, help="consider sents lt this as trn")
+    parser.add_argument("--captrn", default=0, type=int, help="consider sents lt this as trn")
 
     return parser
 
@@ -231,7 +231,7 @@ class Curriculum(object):
             
 
 LPARAMS = ['activation', 'n_hidden', 'fbmerge', 'drates',
-    'recout','decoder', 'opt','lr','norm','gclip','truncate','n_batch', 'shuf', 'breaktrn', 'emb','lang', 'reverse','tagging']
+    'recout','decoder', 'opt','lr','norm','gclip','truncate','n_batch', 'shuf', 'breaktrn', 'captrn', 'emb','lang', 'reverse','tagging']
 
 def main():
     parser = get_arg_parser()
@@ -268,8 +268,8 @@ def main():
     if args['breaktrn']:
         trn = [subsent for sent in trn for subsent in break2subsents(sent)]
 
-    if args['sentcap']:
-        trn = filter(lambda sent: len(sent['ws'])<args['sentcap'], trn)
+    if args['captrn']:
+        trn = filter(lambda sent: len(sent['ws'])<args['captrn'], trn)
 
     if args['sample']>0:
         trn_size = args['sample']*1000
