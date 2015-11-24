@@ -62,7 +62,7 @@ def extract_rnn_params(kwargs):
     return dict((pname,kwargs[pname]) for pname in RDNN.param_names)
 
 class RDNN:
-    param_names = ['activation','n_hidden','fbmerge','drates','opt','lr','norm','gclip','truncate','recout','batch_norm','in2out','emb']
+    param_names = ['activation','n_hidden','fbmerge','drates','opt','lr','norm','gclip','truncate','recout','batch_norm','in2out','emb','fbias']
 
     def __init__(self, nc, nf, kwargs):
         assert nf; assert nc
@@ -85,7 +85,7 @@ class RDNN:
         
         forget_gate = lambda : lasagne.layers.Gate(W_in=lasagne.init.GlorotUniform(), 
             W_hid=lasagne.init.GlorotUniform(),
-            b=lasagne.init.Constant(1.))
+            b=lasagne.init.Constant(self.fbias))
         
         l_in = lasagne.layers.InputLayer(shape=(None, None, nf))
         logging.debug('l_in: {}'.format(lasagne.layers.get_output_shape(l_in)))

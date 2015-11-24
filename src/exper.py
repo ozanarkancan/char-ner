@@ -58,6 +58,7 @@ def get_arg_parser():
     parser.add_argument("--decoder", default=0, type=int, help="use decoder to prevent invalid tag transitions")
     parser.add_argument("--breaktrn", default=0, type=int, help="break trn sents to subsents")
     parser.add_argument("--captrn", default=0, type=int, help="consider sents lt this as trn")
+    parser.add_argument("--fbias", default=0., type=float, help="forget gate bias")
 
     return parser
 
@@ -231,7 +232,8 @@ class Curriculum(object):
             
 
 LPARAMS = ['activation', 'n_hidden', 'fbmerge', 'drates',
-    'recout','decoder', 'opt','lr','norm','gclip','truncate','n_batch', 'shuf', 'breaktrn', 'captrn', 'emb','lang', 'reverse','tagging']
+    'recout','decoder', 'opt','lr','norm','gclip','truncate','n_batch', 'shuf',
+    'breaktrn', 'captrn', 'emb','lang', 'reverse','tagging', 'fbias']
 
 def main():
     parser = get_arg_parser()
