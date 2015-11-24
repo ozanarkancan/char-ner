@@ -10,7 +10,7 @@ STR = """#!/bin/bash
 #$ -pe smp {}
 #$ -cwd
 #$ -o /dev/null
-#$ -e /dev/null
+#$ -e /mnt/kufs/scratch/okuru13/char-ner/job.err
 #$ -M {}@ku.edu.tr
 #$ -m bea
  

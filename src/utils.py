@@ -74,15 +74,51 @@ def get_subsents(sent):
         subsents.append(cursubsent)
     return subsents
 
+def top10(lang):
+    langs = ['eng', 'deu', 'spa', 'ned', 'tr', 'cze', 'ger', 'arb']
+    for l in langs:
+        trn,dev,tst = get_sents(l)
+        print l, top10(l)
+    return list(islice(reversed(sorted(len(sent['ws']) for sent in trn)),20))
+    # return sum(1 for sent in trn if len(sent['ws'])>50)
+
+def ff(o_list):
+    N = len(o_list)
+    k = 5
+    if N > 5:
+        ii = range(0,N-k,k)
+        ll = [o_list[i:i+k] for i in ii[:-1]]
+        return ll + [o_list[ii[-1]:]]
+    else:
+        return [o_list]
+
+def break2subsents(sent):
+    phrases = []
+    for k,g in groupby(sent['ts'],lambda x:x=='O'):
+        g = list(g)
+        if k:
+            phrases.extend(ff(g))
+        else:
+            phrases.append(g)
+    """ for p in phrases:
+        print p,p[0]=='O' """
+
+    tt = [p[0]=='O' for p in phrases]
+    ii =  [i+1 for i,(t1,t2) in enumerate(zip(tt,tt[1:])) if t1==t2]
+    # print ii
+    # print
+    pi = [0]+ii+[len(phrases)]
+    subsents=[]
+    tphrases = [[t for t in chain.from_iterable(phrases[s:e])] for s,e in zip(pi,pi[1:])]
+    cnt = count(0)
+    for tphrase in tphrases:
+        nsent = {}
+        nsent['ws'] = [sent['ws'][cnt.next()] for t in tphrase]
+        nsent['ts'] = tphrase
+        subsents.append(nsent)
+    return subsents
+
 if __name__ == '__main__':
-    trn,dev,tst = get_sents('ned')
-    print list(islice(reversed(sorted(len(sent['ws']) for sent in trn)),10))
-    print list(islice(reversed(sorted(len(sent['ws']) for sent in dev)),10))
-    print list(islice(reversed(sorted(len(sent['ws']) for sent in tst)),10))
-    trn1 = []
-    for sent in trn:
-        if len(sent['ws']) > 200:
-            print ' '.join(sent['ws'])
-        trn1.extend(get_subsents(sent))
-    print list(islice(reversed(sorted(len(sent['ws']) for sent in trn1)),10))
-    print len(trn), len(trn1)
+    trn,dev,tst = get_sents('arb')
+    trn = [subsent for sent in trn for subsent in break2subsents(sent)]
+    print list(islice(reversed(sorted(len(sent['ts']) for sent in trn)),20))

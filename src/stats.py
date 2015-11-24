@@ -66,19 +66,8 @@ def io_ideal(dev,tst):
 def get_vocab(dset):
     return set(w for sent in dset for w in sent['ws'])
 
-### end DSET ###
-
-if __name__ == '__main__':
-    from tabulate import tabulate
-    from score import conlleval
-    """
-    import argparse
-    parser = argparse.ArgumentParser()
-    parser.add_argument('lang')
-    args = parser.parse_args()
-    """
-
-    langs = ['eng', 'deu', 'spa', 'ned', 'tr', 'cze', 'ger']
+def main():
+    langs = ['eng', 'deu', 'spa', 'ned', 'tr', 'cze', 'ger', 'arb']
     # langs = ['eng', 'deu']
     dsetnames = ['trn','dev','tst']
 
@@ -87,7 +76,7 @@ if __name__ == '__main__':
     table = []
     for dname in dsetnames:
         table.append([dname]+map(len,[data[l][dname] for l in langs]))
-    print tabulate(table,headers=['#sent']+langs)
+    print tabulate(table,headers=['#sent']+langs, tablefmt='latex')
     print
 
     table = []
@@ -157,4 +146,32 @@ if __name__ == '__main__':
     print
     """
 
+
+    pass
+
+def paper():
+    langs = ['eng', 'deu', 'spa', 'ned', 'tr', 'cze', 'ger', 'arb']
+    # langs = ['eng', 'deu']
+    dsetnames = ['trn','dev','tst']
+
+    data = dict((lang,dict((dname,dset) for dname,dset in zip(dsetnames, get_sents(lang)))) for lang in langs)
+
+    table = []
+    for l in langs:
+        table.append([l]+map(len,[data[l][dname] for dname in dsetnames]))
+    print tabulate(table,headers=['#sent']+dsetnames, tablefmt='latex')
+    print
+
+### end DSET ###
+
+if __name__ == '__main__':
+    from tabulate import tabulate
+    from score import conlleval
+    """
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument('lang')
+    args = parser.parse_args()
+    """
+    paper()
 

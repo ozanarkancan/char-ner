@@ -1,0 +1,71 @@
+Using gpu device 0: Tesla K20m
+activation:	bi-lstm
+batch_norm:	0
+curriculum:	1
+decoder:	0
+drates:	[0.3, 0.5, 0.5, 0.7]
+emb:	0
+fbmerge:	concat
+feat:	basic
+fepoch:	5000
+gclip:	0
+in2out:	0
+lang:	arb
+log:	das_auto
+lr:	0.001
+n_batch:	32
+n_hidden:	[128, 128, 128]
+norm:	1.0
+opt:	adam
+patience:	-1
+recout:	1
+rep:	std
+reverse:	False
+rnn:	lazrnn
+sample:	0
+save:	False
+shuf:	0
+sorted:	1
+tagging:	io
+truncate:	-1
+base_log_name:	biyofiz-4-0:gpu,feat:basic,rep:std,activation:bi-lstm,n_hidden:128,128,128,fbmerge:concat,drates:0.3,0.5,0.5,0.7,recout:1,decoder:0,opt:adam,lr:0.001,norm:1.0,gclip:0,truncate:-1,n_batch:32,shuf:0,emb:0,lang:arb,reverse:False,tagging:io
+# of sents trn, dev, tst: 3998 889 889
+maxlen: 8643 minlen: 1 avglen: 293.46 stdlen: 287.14
+['c= ', 'c=!', 'c="', 'c=#', 'c=%', 'c=&', "c='", 'c=(', 'c=)', 'c=*', 'c=+', 'c=,', 'c=-', 'c=.', 'c=/', 'c=0', 'c=1', 'c=2', 'c=3', 'c=4', 'c=5', 'c=6', 'c=7', 'c=8', 'c=9', 'c=:', 'c=;', 'c==', 'c=>', 'c=?', 'c=A', 'c=B', 'c=C', 'c=D', 'c=E', 'c=F', 'c=G', 'c=H', 'c=I', 'c=J', 'c=L', 'c=M', 'c=N', 'c=O', 'c=P', 'c=R', 'c=S', 'c=T', 'c=U', 'c=V', 'c=W', 'c=X', 'c=Y', 'c=[', 'c=]', 'c=a', 'c=b', 'c=c', 'c=d', 'c=e', 'c=f', 'c=g', 'c=h', 'c=i', 'c=k', 'c=l', 'c=m', 'c=n', 'c=o', 'c=p', 'c=q', 'c=r', 'c=s', 'c=t', 'c=u', 'c=v', 'c=w', 'c=x', 'c=y', 'c=\x80', 'c=\x81', 'c=\x82', 'c=\x83', 'c=\x84', 'c=\x85', 'c=\x86', 'c=\x87', 'c=\x88', 'c=\x89', 'c=\x8a', 'c=\x8b', 'c=\x8c', 'c=\x8d', 'c=\x8e', 'c=\x8f', 'c=\x90', 'c=\x91', 'c=\x92', 'c=\x93', 'c=\x99', 'c=\x9b', 'c=\x9c', 'c=\x9d', 'c=\x9f', 'c=\xa1', 'c=\xa2', 'c=\xa3', 'c=\xa4', 'c=\xa5', 'c=\xa6', 'c=\xa7', 'c=\xa8', 'c=\xa9', 'c=\xaa', 'c=\xab', 'c=\xac', 'c=\xad', 'c=\xae', 'c=\xaf', 'c=\xb0', 'c=\xb1', 'c=\xb2', 'c=\xb3', 'c=\xb4', 'c=\xb5', 'c=\xb6', 'c=\xb7', 'c=\xb8', 'c=\xb9', 'c=\xba', 'c=\xbb', 'c=\xc2', 'c=\xc3', 'c=\xd8', 'c=\xd9', 'c=\xe2', 'c=\xef']
+['i-loc' 'i-misc' 'i-org' 'i-per' 'o']
+['I-LOC' 'I-MISC' 'I-ORG' 'I-PER' 'O']
+NF: 137 NC: 5
+using recout:1.
+/mnt/kufs/scratch/okuru13/opt/anaconda/lib/python2.7/site-packages/theano/scan_module/scan.py:1017: Warning: In the strict mode, all neccessary shared variables must be passed as a part of non_sequences
+  'must be passed as a part of non_sequences', Warning)
+Compiling functions...
+/mnt/kufs/scratch/okuru13/opt/anaconda/lib/python2.7/site-packages/theano/scan_module/scan_perform_ext.py:133: RuntimeWarning: numpy.ndarray size changed, may indicate binary incompatibility
+  from scan_perform.scan_perform import *
+Compiling done.
+training the model...
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+Error allocating 531025920 bytes of device memory (out of memory). Driver report 118063104 bytes free and 5032706048 bytes total 
+Traceback (most recent call last):
+  File "src/exper.py", line 349, in <module>
+    main()
+  File "src/exper.py", line 344, in main
+    validator.validate(rdnn, args)
+  File "src/exper.py", line 164, in validate
+    mcost, pred = getattr(rdnn, funcname)(ddat)
+  File "/mnt/kufs/scratch/okuru13/char-ner/src/lazrnn.py", line 214, in train
+    tcost = sum(self.train_model(Xdset, ydset, Xdsetmsk, ydsetmsk) for Xdset, Xdsetmsk, ydset, ydsetmsk in dsetdat)
+  File "/mnt/kufs/scratch/okuru13/char-ner/src/lazrnn.py", line 214, in <genexpr>
+    tcost = sum(self.train_model(Xdset, ydset, Xdsetmsk, ydsetmsk) for Xdset, Xdsetmsk, ydset, ydsetmsk in dsetdat)
+  File "/mnt/kufs/scratch/okuru13/opt/anaconda/lib/python2.7/site-packages/theano/compile/function_module.py", line 606, in __call__
+    storage_map=self.fn.storage_map)
+  File "/mnt/kufs/scratch/okuru13/opt/anaconda/lib/python2.7/site-packages/theano/compile/function_module.py", line 595, in __call__
+    outputs = self.fn()
+MemoryError: Error allocating 531025920 bytes of device memory (out of memory).
+Apply node that caused the error: GpuDot22(GpuReshape{2}.0, GpuReshape{2}.0)
+Inputs types: [CudaNdarrayType(float32, matrix), CudaNdarrayType(float32, matrix)]
+Inputs shapes: [(259290, 256), (256, 512)]
+Inputs strides: [(256, 1), (512, 1)]
+Inputs values: ['not shown', 'not shown']
+
+HINT: Re-running with most Theano optimization disabled could give you a back-trace of when this node was created. This can be done with by setting the Theano flag 'optimizer=fast_compile'. If that does not work, Theano optimizations can be disabled with 'optimizer=None'.
+HINT: Use the Theano flag 'exception_verbosity=high' for a debugprint and storage map footprint of this apply node.
