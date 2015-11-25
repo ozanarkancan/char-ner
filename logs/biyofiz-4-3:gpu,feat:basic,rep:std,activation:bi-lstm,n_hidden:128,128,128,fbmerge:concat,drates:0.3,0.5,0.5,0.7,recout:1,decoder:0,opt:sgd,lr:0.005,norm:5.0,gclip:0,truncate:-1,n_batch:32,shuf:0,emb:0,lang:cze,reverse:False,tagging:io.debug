@@ -1,0 +1,768 @@
+activation:	bi-lstm
+batch_norm:	0
+curriculum:	1
+decoder:	0
+drates:	[0.3, 0.5, 0.5, 0.7]
+emb:	0
+fbmerge:	concat
+feat:	basic
+fepoch:	5000
+gclip:	0
+in2out:	0
+lang:	cze
+log:	das_auto
+lr:	0.005
+n_batch:	32
+n_hidden:	[128, 128, 128]
+norm:	5.0
+opt:	sgd
+patience:	-1
+recout:	1
+rep:	std
+reverse:	False
+rnn:	lazrnn
+sample:	0
+save:	False
+shuf:	0
+sorted:	1
+tagging:	io
+truncate:	-1
+base_log_name:	biyofiz-4-3:gpu,feat:basic,rep:std,activation:bi-lstm,n_hidden:128,128,128,fbmerge:concat,drates:0.3,0.5,0.5,0.7,recout:1,decoder:0,opt:sgd,lr:0.005,norm:5.0,gclip:0,truncate:-1,n_batch:32,shuf:0,emb:0,lang:cze,reverse:False,tagging:io
+# of sents trn, dev, tst: 4644 572 577
+maxlen: 691 minlen: 3 avglen: 156.05 stdlen: 99.52
+['c= ', 'c=!', 'c="', 'c=$', 'c=%', 'c=&', "c='", 'c=(', 'c=)', 'c=*', 'c=+', 'c=,', 'c=-', 'c=.', 'c=/', 'c=0', 'c=1', 'c=2', 'c=3', 'c=4', 'c=5', 'c=6', 'c=7', 'c=8', 'c=9', 'c=:', 'c=;', 'c=<', 'c==', 'c=>', 'c=?', 'c=@', 'c=A', 'c=B', 'c=C', 'c=D', 'c=E', 'c=F', 'c=G', 'c=H', 'c=I', 'c=J', 'c=K', 'c=L', 'c=M', 'c=N', 'c=O', 'c=P', 'c=Q', 'c=R', 'c=S', 'c=T', 'c=U', 'c=V', 'c=W', 'c=X', 'c=Y', 'c=Z', 'c=[', 'c=\\', 'c=]', 'c=_', 'c=`', 'c=a', 'c=b', 'c=c', 'c=d', 'c=e', 'c=f', 'c=g', 'c=h', 'c=i', 'c=j', 'c=k', 'c=l', 'c=m', 'c=n', 'c=o', 'c=p', 'c=q', 'c=r', 'c=s', 'c=t', 'c=u', 'c=v', 'c=w', 'c=x', 'c=y', 'c=z', 'c=\x81', 'c=\x84', 'c=\x87', 'c=\x88', 'c=\x89', 'c=\x8c', 'c=\x8d', 'c=\x8e', 'c=\x8f', 'c=\x90', 'c=\x98', 'c=\x99', 'c=\x9a', 'c=\x9b', 'c=\x9c', 'c=\x9d', 'c=\xa0', 'c=\xa1', 'c=\xa2', 'c=\xa4', 'c=\xa5', 'c=\xa7', 'c=\xa9', 'c=\xad', 'c=\xae', 'c=\xaf', 'c=\xb0', 'c=\xb1', 'c=\xb3', 'c=\xb5', 'c=\xb6', 'c=\xb9', 'c=\xba', 'c=\xbc', 'c=\xbd', 'c=\xbe', 'c=\xc2', 'c=\xc3', 'c=\xc4', 'c=\xc5']
+['i-a' 'i-g' 'i-i' 'i-m' 'i-o' 'i-p' 'i-t' 'o']
+['I-A' 'I-G' 'I-I' 'I-M' 'I-O' 'I-P' 'I-T' 'O']
+NF: 129 NC: 8
+l_in: (None, None, 129)
+l_mask: (Subtensor{int64}.0, Subtensor{int64}.0)
+l_drop: (None, None, 129)
+l_forward: (None, None, 128)
+l_backward: (None, None, 128)
+l_fbmerge: (None, None, 256)
+l_forward: (None, None, 128)
+l_backward: (None, None, 128)
+l_fbmerge: (None, None, 256)
+l_forward: (None, None, 128)
+l_backward: (None, None, 128)
+l_fbmerge: (None, None, 256)
+using recout:1.
+l_out: (None, None, 8)
+[W_in_to_ingate, W_hid_to_ingate, b_ingate, W_in_to_forgetgate, W_hid_to_forgetgate, b_forgetgate, W_in_to_cell, W_hid_to_cell, b_cell, W_in_to_outgate, W_hid_to_outgate, b_outgate, W_cell_to_ingate, W_cell_to_forgetgate, W_cell_to_outgate, W_in_to_ingate, W_hid_to_ingate, b_ingate, W_in_to_forgetgate, W_hid_to_forgetgate, b_forgetgate, W_in_to_cell, W_hid_to_cell, b_cell, W_in_to_outgate, W_hid_to_outgate, b_outgate, W_cell_to_ingate, W_cell_to_forgetgate, W_cell_to_outgate, W_in_to_ingate, W_hid_to_ingate, b_ingate, W_in_to_forgetgate, W_hid_to_forgetgate, b_forgetgate, W_in_to_cell, W_hid_to_cell, b_cell, W_in_to_outgate, W_hid_to_outgate, b_outgate, W_cell_to_ingate, W_cell_to_forgetgate, W_cell_to_outgate, W_in_to_ingate, W_hid_to_ingate, b_ingate, W_in_to_forgetgate, W_hid_to_forgetgate, b_forgetgate, W_in_to_cell, W_hid_to_cell, b_cell, W_in_to_outgate, W_hid_to_outgate, b_outgate, W_cell_to_ingate, W_cell_to_forgetgate, W_cell_to_outgate, W_in_to_ingate, W_hid_to_ingate, b_ingate, W_in_to_forgetgate, W_hid_to_forgetgate, b_forgetgate, W_in_to_cell, W_hid_to_cell, b_cell, W_in_to_outgate, W_hid_to_outgate, b_outgate, W_cell_to_ingate, W_cell_to_forgetgate, W_cell_to_outgate, W_in_to_ingate, W_hid_to_ingate, b_ingate, W_in_to_forgetgate, W_hid_to_forgetgate, b_forgetgate, W_in_to_cell, W_hid_to_cell, b_cell, W_in_to_outgate, W_hid_to_outgate, b_outgate, W_cell_to_ingate, W_cell_to_forgetgate, W_cell_to_outgate, input_to_hidden.W, input_to_hidden.b, hidden_to_hidden.W]
+Compiling functions...
+Compiling done.
+training the model...
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   1        37.6387   120.1935     0.2529     0.2664    73.3600     0.8000     0.2800     0.4200     0.4200          1
+
+processed 119681 tokens with 14163 phrases; found: 4989 phrases; correct: 40.
+accuracy:  73.36%; precision:   0.80%; recall:   0.28%; FB1:   0.42
+                A: precision:   0.00%; recall:   0.00%; FB1:   0.00  1
+                G: precision:   0.00%; recall:   0.00%; FB1:   0.00  2
+                I: precision:   0.99%; recall:   0.48%; FB1:   0.64  1215
+                M: precision:   0.00%; recall:   0.00%; FB1:   0.00  2
+                O: precision:   0.72%; recall:   0.91%; FB1:   0.80  3057
+                P: precision:  20.00%; recall:   0.03%; FB1:   0.05  5
+                T: precision:   0.71%; recall:   0.21%; FB1:   0.33  707
+
+bos	i-a	i-g	i-i	i-m	i-o	i-p	i-t	o
+i-a	0	0	0	0	169	0	17	368
+i-g	0	0	692	0	1574	1	429	23848
+i-i	0	0	1343	7	1513	3	535	32475
+i-m	0	0	97	0	196	0	50	2035
+i-o	3	5	988	1	2333	2	361	28142
+i-p	0	2	2219	0	1543	6	863	39750
+i-t	0	3	175	5	1810	0	353	11976
+o	4	3	9640	5	16586	18	4880	536575
+
+bos	I-A	I-G	I-I	I-M	I-O	I-P	I-T	O
+I-A	0	0	0	0	39	0	2	120
+I-G	0	0	88	0	239	0	62	3342
+I-I	0	0	169	1	288	1	87	4789
+I-M	0	0	14	0	36	0	11	369
+I-O	1	1	136	1	525	1	82	4959
+I-P	0	0	273	0	228	1	136	5735
+I-T	0	1	33	1	498	0	92	3062
+O	0	1	1391	2	4922	3	924	87015
+
+
+dev   1         2.7591     2.9850     0.2579     0.2696    73.0400     0.8100     0.2700     0.4000     0.4000          1
+
+processed 14796 tokens with 1860 phrases; found: 616 phrases; correct: 5.
+accuracy:  73.04%; precision:   0.81%; recall:   0.27%; FB1:   0.40
+                A: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                G: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                I: precision:   1.96%; recall:   0.93%; FB1:   1.27  153
+                M: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                O: precision:   0.27%; recall:   0.31%; FB1:   0.29  369
+                P: precision:   0.00%; recall:   0.00%; FB1:   0.00  1
+                T: precision:   1.08%; recall:   0.36%; FB1:   0.54  93
+
+bos	i-a	i-g	i-i	i-m	i-o	i-p	i-t	o
+i-a	0	0	0	0	49	0	10	132
+i-g	0	0	109	0	180	0	78	3306
+i-i	0	0	237	0	208	0	85	3480
+i-m	0	0	10	0	26	0	1	287
+i-o	0	0	142	0	382	0	60	3504
+i-p	0	0	298	0	240	0	100	5176
+i-t	0	0	55	0	104	0	64	1487
+o	0	0	1099	0	2190	3	626	65642
+
+bos	I-A	I-G	I-I	I-M	I-O	I-P	I-T	O
+I-A	0	0	0	0	13	0	4	39
+I-G	0	0	14	0	24	0	10	451
+I-I	0	0	32	0	44	0	12	518
+I-M	0	0	1	0	7	0	0	45
+I-O	0	0	21	0	106	0	12	619
+I-P	0	0	40	0	39	0	17	742
+I-T	0	0	12	0	21	0	18	372
+O	0	0	155	0	641	2	114	10651
+
+
+tst   1         2.9498     3.4584     0.2680     0.2791    72.0900     1.2200     0.4200     0.6300     0.6300          1
+
+processed 15061 tokens with 1894 phrases; found: 654 phrases; correct: 8.
+accuracy:  72.09%; precision:   1.22%; recall:   0.42%; FB1:   0.63
+                A: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                G: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                I: precision:   1.19%; recall:   0.66%; FB1:   0.85  168
+                M: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                O: precision:   1.01%; recall:   1.06%; FB1:   1.03  396
+                P: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                T: precision:   2.22%; recall:   0.56%; FB1:   0.89  90
+
+bos	i-a	i-g	i-i	i-m	i-o	i-p	i-t	o
+i-a	0	0	1	0	27	0	0	51
+i-g	0	0	115	0	172	0	83	2768
+i-i	0	0	267	0	200	0	56	4088
+i-m	0	0	1	0	10	0	3	236
+i-o	0	0	132	0	429	0	56	4517
+i-p	0	0	289	0	216	0	138	5358
+i-t	0	0	22	0	262	0	79	1681
+o	0	0	1273	0	2049	0	597	65876
+
+bos	I-A	I-G	I-I	I-M	I-O	I-P	I-T	O
+I-A	0	0	1	0	10	0	0	17
+I-G	0	0	16	0	31	0	12	392
+I-I	0	0	36	0	37	0	9	587
+I-M	0	0	0	0	3	0	1	44
+I-O	0	0	13	0	94	0	8	781
+I-P	0	0	37	0	31	0	17	772
+I-T	0	0	4	0	67	0	21	420
+O	0	0	171	0	610	0	113	10706
+
+
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   2        22.2670   120.3722     0.2266     0.2352    76.4800     1.1500     0.2000     0.3500     0.4200          1
+
+processed 119681 tokens with 14163 phrases; found: 2519 phrases; correct: 29.
+accuracy:  76.48%; precision:   1.15%; recall:   0.20%; FB1:   0.35
+                A: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                G: precision:   0.00%; recall:   0.00%; FB1:   0.00  1
+                I: precision:   0.00%; recall:   0.00%; FB1:   0.00  91
+                M: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                O: precision:   0.73%; recall:   0.58%; FB1:   0.64  1925
+                P: precision:   0.00%; recall:   0.00%; FB1:   0.00  3
+                T: precision:   3.01%; recall:   0.64%; FB1:   1.05  499
+
+bos	i-a	i-g	i-i	i-m	i-o	i-p	i-t	o
+i-a	0	0	0	0	104	0	27	423
+i-g	0	0	23	0	654	1	304	25562
+i-i	0	0	18	0	581	0	228	35049
+i-m	0	0	10	0	104	0	35	2229
+i-o	0	5	32	0	751	2	301	30744
+i-p	0	0	164	0	550	7	568	43094
+i-t	0	2	2	0	651	0	510	13157
+o	0	1	395	0	6681	26	2276	558332
+
+bos	I-A	I-G	I-I	I-M	I-O	I-P	I-T	O
+I-A	0	0	0	0	22	0	6	133
+I-G	0	0	2	0	89	0	44	3596
+I-I	0	0	4	0	112	0	38	5181
+I-M	0	0	1	0	19	0	9	401
+I-O	0	1	4	0	181	0	81	5439
+I-P	0	0	19	0	67	1	93	6193
+I-T	0	0	1	0	185	0	142	3359
+O	0	0	83	0	2438	3	525	91209
+
+
+dev   2         2.4649     2.9869     0.2323     0.2398    76.0200     1.0100     0.1600     0.2800     0.4000          1
+
+processed 14796 tokens with 1860 phrases; found: 297 phrases; correct: 3.
+accuracy:  76.02%; precision:   1.01%; recall:   0.16%; FB1:   0.28
+                A: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                G: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                I: precision:   0.00%; recall:   0.00%; FB1:   0.00  13
+                M: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                O: precision:   1.32%; recall:   0.94%; FB1:   1.09  228
+                P: precision:   0.00%; recall:   0.00%; FB1:   0.00  1
+                T: precision:   0.00%; recall:   0.00%; FB1:   0.00  55
+
+bos	i-a	i-g	i-i	i-m	i-o	i-p	i-t	o
+i-a	0	0	0	0	17	0	7	167
+i-g	0	0	11	0	44	0	42	3576
+i-i	0	0	3	0	68	0	44	3895
+i-m	0	0	0	0	11	0	4	309
+i-o	0	0	6	0	147	0	33	3902
+i-p	0	0	32	0	95	0	45	5642
+i-t	0	0	0	0	29	0	58	1623
+o	0	0	22	0	874	2	258	68404
+
+bos	I-A	I-G	I-I	I-M	I-O	I-P	I-T	O
+I-A	0	0	0	0	6	0	3	47
+I-G	0	0	2	0	6	0	7	484
+I-I	0	0	0	0	13	0	12	581
+I-M	0	0	0	0	2	0	1	50
+I-O	0	0	1	0	44	0	9	704
+I-P	0	0	6	0	11	0	8	813
+I-T	0	0	0	0	7	0	16	400
+O	0	0	8	0	306	1	60	11188
+
+
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   3        21.0375   123.9946     0.2178     0.2180    78.2000     1.5800     0.0800     0.1500     0.4200          1
+
+processed 119681 tokens with 14163 phrases; found: 697 phrases; correct: 11.
+accuracy:  78.20%; precision:   1.58%; recall:   0.08%; FB1:   0.15
+                A: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                G: precision:   0.00%; recall:   0.00%; FB1:   0.00  1
+                I: precision:   0.00%; recall:   0.00%; FB1:   0.00  19
+                M: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                O: precision:   1.20%; recall:   0.29%; FB1:   0.47  581
+                P: precision:   0.00%; recall:   0.00%; FB1:   0.00  8
+                T: precision:   4.55%; recall:   0.17%; FB1:   0.33  88
+
+bos	i-a	i-g	i-i	i-m	i-o	i-p	i-t	o
+i-a	0	4	0	0	24	0	5	521
+i-g	0	0	9	0	127	0	34	26374
+i-i	0	0	4	0	191	0	28	35653
+i-m	0	0	0	0	51	0	13	2314
+i-o	0	0	11	0	233	8	65	31518
+i-p	0	1	35	0	69	2	60	44216
+i-t	0	2	0	0	111	0	133	14076
+o	0	3	73	0	1650	27	303	565655
+
+bos	I-A	I-G	I-I	I-M	I-O	I-P	I-T	O
+I-A	0	1	0	0	3	0	1	156
+I-G	0	0	0	0	18	0	5	3708
+I-I	0	0	0	0	35	0	6	5294
+I-M	0	0	0	0	6	0	3	421
+I-O	0	0	1	0	55	2	20	5628
+I-P	0	0	3	0	7	0	11	6352
+I-T	0	0	0	0	29	0	40	3618
+O	0	1	20	0	658	7	72	93500
+
+
+dev   3         2.3290     2.9845     0.2236     0.2234    77.6600     1.3000     0.0500     0.1000     0.4000          1
+
+processed 14796 tokens with 1860 phrases; found: 77 phrases; correct: 1.
+accuracy:  77.66%; precision:   1.30%; recall:   0.05%; FB1:   0.10
+                A: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                G: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                I: precision:   0.00%; recall:   0.00%; FB1:   0.00  1
+                M: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                O: precision:   1.49%; recall:   0.31%; FB1:   0.52  67
+                P: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                T: precision:   0.00%; recall:   0.00%; FB1:   0.00  9
+
+bos	i-a	i-g	i-i	i-m	i-o	i-p	i-t	o
+i-a	0	0	0	0	7	0	0	184
+i-g	0	0	0	0	2	0	4	3667
+i-i	0	0	0	0	1	0	18	3991
+i-m	0	0	0	0	0	0	0	324
+i-o	0	0	7	0	31	0	3	4047
+i-p	0	0	3	0	18	0	0	5793
+i-t	0	0	0	0	10	0	4	1696
+o	0	0	0	0	160	0	48	69352
+
+bos	I-A	I-G	I-I	I-M	I-O	I-P	I-T	O
+I-A	0	0	0	0	3	0	0	53
+I-G	0	0	0	0	0	0	0	499
+I-I	0	0	0	0	0	0	8	598
+I-M	0	0	0	0	0	0	0	53
+I-O	0	0	1	0	8	0	1	748
+I-P	0	0	0	0	2	0	0	836
+I-T	0	0	0	0	2	0	1	420
+O	0	0	0	0	70	0	12	11481
+
+
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   4        20.2091   120.8277     0.2184     0.2198    78.0200     1.8700     0.1200     0.2300     0.4200          1
+
+processed 119681 tokens with 14163 phrases; found: 910 phrases; correct: 17.
+accuracy:  78.02%; precision:   1.87%; recall:   0.12%; FB1:   0.23
+                A: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                G: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                I: precision:   0.00%; recall:   0.00%; FB1:   0.00  12
+                M: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                O: precision:   1.46%; recall:   0.50%; FB1:   0.74  822
+                P: precision:   0.00%; recall:   0.00%; FB1:   0.00  2
+                T: precision:   6.76%; recall:   0.21%; FB1:   0.41  74
+
+bos	i-a	i-g	i-i	i-m	i-o	i-p	i-t	o
+i-a	0	0	0	0	31	0	3	520
+i-g	0	0	5	0	185	0	30	26324
+i-i	0	0	0	0	210	0	12	35654
+i-m	0	0	0	0	61	0	13	2304
+i-o	0	0	9	0	325	7	64	31430
+i-p	0	0	32	0	159	0	44	44148
+i-t	0	0	0	0	165	0	146	14011
+o	0	0	43	0	2328	1	233	565106
+
+bos	I-A	I-G	I-I	I-M	I-O	I-P	I-T	O
+I-A	0	0	0	0	5	0	0	156
+I-G	0	0	0	0	24	0	5	3702
+I-I	0	0	0	0	37	0	2	5296
+I-M	0	0	0	0	8	0	3	419
+I-O	0	0	2	0	77	2	18	5607
+I-P	0	0	2	0	17	0	7	6347
+I-T	0	0	0	0	42	0	42	3603
+O	0	0	12	0	927	0	65	93254
+
+
+dev   4         2.2802     2.9841     0.2242     0.2251    77.4900     1.9200     0.1100     0.2000     0.4000          1
+
+processed 14796 tokens with 1860 phrases; found: 104 phrases; correct: 2.
+accuracy:  77.49%; precision:   1.92%; recall:   0.11%; FB1:   0.20
+                A: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                G: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                I: precision:   0.00%; recall:   0.00%; FB1:   0.00  1
+                M: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                O: precision:   2.06%; recall:   0.62%; FB1:   0.96  97
+                P: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                T: precision:   0.00%; recall:   0.00%; FB1:   0.00  6
+
+bos	i-a	i-g	i-i	i-m	i-o	i-p	i-t	o
+i-a	0	0	0	0	18	0	0	173
+i-g	0	0	0	0	5	0	0	3668
+i-i	0	0	0	0	15	0	5	3990
+i-m	0	0	0	0	1	0	0	323
+i-o	0	0	7	0	51	0	3	4027
+i-p	0	0	1	0	29	0	1	5783
+i-t	0	0	0	0	13	0	0	1697
+o	0	0	0	0	237	0	45	69278
+
+bos	I-A	I-G	I-I	I-M	I-O	I-P	I-T	O
+I-A	0	0	0	0	5	0	0	51
+I-G	0	0	0	0	0	0	0	499
+I-I	0	0	0	0	4	0	3	599
+I-M	0	0	0	0	1	0	0	52
+I-O	0	0	1	0	16	0	1	740
+I-P	0	0	0	0	3	0	0	835
+I-T	0	0	0	0	3	0	0	420
+O	0	0	0	0	102	0	12	11449
+
+
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   5        19.7465   120.7985     0.2181     0.2198    78.0200     1.9400     0.1300     0.2500     0.4200          1
+
+processed 119681 tokens with 14163 phrases; found: 977 phrases; correct: 19.
+accuracy:  78.02%; precision:   1.94%; recall:   0.13%; FB1:   0.25
+                A: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                G: precision:   0.00%; recall:   0.00%; FB1:   0.00  1
+                I: precision:   0.00%; recall:   0.00%; FB1:   0.00  11
+                M: precision:   0.00%; recall:   0.00%; FB1:   0.00  2
+                O: precision:   1.48%; recall:   0.54%; FB1:   0.79  876
+                P: precision:   0.00%; recall:   0.00%; FB1:   0.00  5
+                T: precision:   7.32%; recall:   0.26%; FB1:   0.49  82
+
+bos	i-a	i-g	i-i	i-m	i-o	i-p	i-t	o
+i-a	0	0	0	0	70	0	7	477
+i-g	0	0	0	0	180	0	26	26338
+i-i	0	0	0	0	307	0	12	35557
+i-m	0	0	0	0	107	0	13	2258
+i-o	0	0	9	0	728	8	68	31022
+i-p	0	0	19	0	193	1	61	44109
+i-t	0	0	0	0	341	0	167	13814
+o	0	1	30	18	2542	16	242	564862
+
+bos	I-A	I-G	I-I	I-M	I-O	I-P	I-T	O
+I-A	0	0	0	0	13	0	1	147
+I-G	0	0	0	0	24	0	4	3703
+I-I	0	0	0	0	53	0	2	5280
+I-M	0	0	0	0	18	0	3	409
+I-O	0	0	2	0	139	2	21	5542
+I-P	0	0	2	0	24	0	16	6331
+I-T	0	0	0	0	80	0	49	3558
+O	0	1	9	7	985	3	67	93186
+
+
+dev   5         2.2518     2.9840     0.2248     0.2261    77.3900     1.7500     0.1100     0.2000     0.4000          1
+
+processed 14796 tokens with 1860 phrases; found: 114 phrases; correct: 2.
+accuracy:  77.39%; precision:   1.75%; recall:   0.11%; FB1:   0.20
+                A: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                G: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                I: precision:   0.00%; recall:   0.00%; FB1:   0.00  1
+                M: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                O: precision:   1.94%; recall:   0.62%; FB1:   0.95  103
+                P: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                T: precision:   0.00%; recall:   0.00%; FB1:   0.00  10
+
+bos	i-a	i-g	i-i	i-m	i-o	i-p	i-t	o
+i-a	0	0	0	0	52	0	0	139
+i-g	0	0	0	0	18	0	3	3652
+i-i	0	0	0	0	14	0	14	3982
+i-m	0	0	0	0	5	0	0	319
+i-o	0	0	6	0	81	0	3	3998
+i-p	0	0	1	0	29	0	0	5784
+i-t	0	0	0	0	22	0	0	1688
+o	0	0	0	0	305	0	52	69203
+
+bos	I-A	I-G	I-I	I-M	I-O	I-P	I-T	O
+I-A	0	0	0	0	13	0	0	43
+I-G	0	0	0	0	2	0	0	497
+I-I	0	0	0	0	4	0	7	595
+I-M	0	0	0	0	1	0	0	52
+I-O	0	0	1	0	20	0	1	736
+I-P	0	0	0	0	3	0	0	835
+I-T	0	0	0	0	5	0	0	418
+O	0	0	0	0	116	0	16	11431
+
+
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   6        19.3994   122.7081     0.2172     0.2172    78.2800     3.0200     0.1400     0.2700     0.4200          1
+
+processed 119681 tokens with 14163 phrases; found: 663 phrases; correct: 20.
+accuracy:  78.28%; precision:   3.02%; recall:   0.14%; FB1:   0.27
+                A: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                G: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                I: precision:   0.00%; recall:   0.00%; FB1:   0.00  5
+                M: precision:   0.00%; recall:   0.00%; FB1:   0.00  1
+                O: precision:   2.07%; recall:   0.50%; FB1:   0.80  579
+                P: precision:   0.00%; recall:   0.00%; FB1:   0.00  3
+                T: precision:  10.67%; recall:   0.34%; FB1:   0.66  75
+
+bos	i-a	i-g	i-i	i-m	i-o	i-p	i-t	o
+i-a	0	0	0	0	62	0	7	485
+i-g	0	0	0	0	104	0	22	26418
+i-i	0	0	0	0	259	0	12	35605
+i-m	0	0	0	0	96	0	13	2269
+i-o	0	0	4	0	555	4	64	31208
+i-p	0	0	8	0	132	0	44	44199
+i-t	0	0	0	0	280	0	183	13859
+o	0	0	6	9	1768	2	249	565677
+
+bos	I-A	I-G	I-I	I-M	I-O	I-P	I-T	O
+I-A	0	0	0	0	11	0	2	148
+I-G	0	0	0	0	8	0	4	3719
+I-I	0	0	0	0	46	0	4	5285
+I-M	0	0	0	0	16	0	3	411
+I-O	0	0	1	0	106	1	18	5580
+I-P	0	0	1	0	14	0	12	6346
+I-T	0	0	0	0	64	0	55	3568
+O	0	0	3	3	656	2	66	93528
+
+
+dev   6         2.2180     2.9824     0.2235     0.2230    77.7000     2.7400     0.1100     0.2100     0.4000          1
+
+processed 14796 tokens with 1860 phrases; found: 73 phrases; correct: 2.
+accuracy:  77.70%; precision:   2.74%; recall:   0.11%; FB1:   0.21
+                A: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                G: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                I: precision:   0.00%; recall:   0.00%; FB1:   0.00  1
+                M: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                O: precision:   3.08%; recall:   0.62%; FB1:   1.04  65
+                P: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                T: precision:   0.00%; recall:   0.00%; FB1:   0.00  7
+
+bos	i-a	i-g	i-i	i-m	i-o	i-p	i-t	o
+i-a	0	0	0	0	48	0	0	143
+i-g	0	0	0	0	11	0	2	3660
+i-i	0	0	0	0	9	0	15	3986
+i-m	0	0	0	0	5	0	0	319
+i-o	0	0	6	0	70	0	3	4009
+i-p	0	0	1	0	23	0	0	5790
+i-t	0	0	0	0	22	0	0	1688
+o	0	0	0	0	183	0	47	69330
+
+bos	I-A	I-G	I-I	I-M	I-O	I-P	I-T	O
+I-A	0	0	0	0	12	0	0	44
+I-G	0	0	0	0	1	0	0	498
+I-I	0	0	0	0	2	0	7	597
+I-M	0	0	0	0	1	0	0	52
+I-O	0	0	1	0	17	0	1	739
+I-P	0	0	0	0	3	0	0	835
+I-T	0	0	0	0	5	0	0	418
+O	0	0	0	0	70	0	14	11479
+
+
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   7        19.1299   123.6922     0.2163     0.2146    78.5400     3.0600     0.0700     0.1400     0.4200          1
+
+processed 119681 tokens with 14163 phrases; found: 327 phrases; correct: 10.
+accuracy:  78.54%; precision:   3.06%; recall:   0.07%; FB1:   0.14
+                A: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                G: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                I: precision:   0.00%; recall:   0.00%; FB1:   0.00  2
+                M: precision:   0.00%; recall:   0.00%; FB1:   0.00  1
+                O: precision:   2.18%; recall:   0.25%; FB1:   0.44  275
+                P: precision:   0.00%; recall:   0.00%; FB1:   0.00  5
+                T: precision:   9.09%; recall:   0.17%; FB1:   0.33  44
+
+bos	i-a	i-g	i-i	i-m	i-o	i-p	i-t	o
+i-a	0	1	0	0	23	0	3	527
+i-g	0	0	0	0	30	0	14	26500
+i-i	0	0	0	0	149	0	5	35722
+i-m	0	0	0	0	79	0	12	2287
+i-o	0	0	4	0	329	6	29	31467
+i-p	0	0	0	0	54	1	15	44313
+i-t	0	0	0	0	146	0	123	14053
+o	0	0	2	9	905	5	132	566658
+
+bos	I-A	I-G	I-I	I-M	I-O	I-P	I-T	O
+I-A	0	0	0	0	3	0	1	157
+I-G	0	0	0	0	3	0	2	3726
+I-I	0	0	0	0	21	0	1	5313
+I-M	0	0	0	0	14	0	3	413
+I-O	0	0	1	0	62	2	11	5630
+I-P	0	0	0	0	5	0	4	6364
+I-T	0	0	0	0	33	0	35	3619
+O	0	0	1	3	313	3	36	93902
+
+
+dev   7         2.1754     2.9921     0.2223     0.2207    77.9300     2.2700     0.0500     0.1100     0.4000          1
+
+processed 14796 tokens with 1860 phrases; found: 44 phrases; correct: 1.
+accuracy:  77.93%; precision:   2.27%; recall:   0.05%; FB1:   0.11
+                A: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                G: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                I: precision:   0.00%; recall:   0.00%; FB1:   0.00  1
+                M: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                O: precision:   2.70%; recall:   0.31%; FB1:   0.56  37
+                P: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                T: precision:   0.00%; recall:   0.00%; FB1:   0.00  6
+
+bos	i-a	i-g	i-i	i-m	i-o	i-p	i-t	o
+i-a	0	0	0	0	26	0	0	165
+i-g	0	0	0	0	9	0	0	3664
+i-i	0	0	0	0	3	0	10	3997
+i-m	0	0	0	0	1	0	0	323
+i-o	0	0	6	0	53	0	3	4026
+i-p	0	0	0	0	17	0	0	5797
+i-t	0	0	0	0	10	0	0	1700
+o	0	0	0	0	80	0	31	69449
+
+bos	I-A	I-G	I-I	I-M	I-O	I-P	I-T	O
+I-A	0	0	0	0	5	0	0	51
+I-G	0	0	0	0	1	0	0	498
+I-I	0	0	0	0	1	0	4	601
+I-M	0	0	0	0	0	0	0	53
+I-O	0	0	1	0	13	0	1	743
+I-P	0	0	0	0	1	0	0	837
+I-T	0	0	0	0	2	0	0	421
+O	0	0	0	0	35	0	10	11518
+
+
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   8        18.9854   119.4717     0.2164     0.2152    78.4800     3.1500     0.1000     0.1900     0.4200          1
+
+processed 119681 tokens with 14163 phrases; found: 445 phrases; correct: 14.
+accuracy:  78.48%; precision:   3.15%; recall:   0.10%; FB1:   0.19
+                A: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                G: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                I: precision:   0.00%; recall:   0.00%; FB1:   0.00  3
+                M: precision:   0.00%; recall:   0.00%; FB1:   0.00  1
+                O: precision:   1.89%; recall:   0.29%; FB1:   0.50  370
+                P: precision:   0.00%; recall:   0.00%; FB1:   0.00  3
+                T: precision:  10.29%; recall:   0.30%; FB1:   0.58  68
+
+bos	i-a	i-g	i-i	i-m	i-o	i-p	i-t	o
+i-a	0	2	0	0	37	0	6	509
+i-g	0	0	0	0	55	0	14	26475
+i-i	0	0	0	0	235	0	16	35625
+i-m	0	0	0	0	87	0	13	2278
+i-o	0	0	4	0	562	2	57	31210
+i-p	0	0	4	0	121	1	27	44230
+i-t	0	0	0	0	220	0	203	13899
+o	0	0	3	6	1193	4	242	566263
+
+bos	I-A	I-G	I-I	I-M	I-O	I-P	I-T	O
+I-A	0	0	0	0	8	0	2	151
+I-G	0	0	0	0	7	0	2	3722
+I-I	0	0	0	0	36	0	6	5293
+I-M	0	0	0	0	15	0	3	412
+I-O	0	0	1	0	101	1	18	5585
+I-P	0	0	1	0	14	0	10	6348
+I-T	0	0	0	0	46	0	57	3584
+O	0	0	1	2	417	2	68	93768
+
+
+dev   8         2.1582     2.9908     0.2227     0.2216    77.8400     1.9600     0.0500     0.1000     0.4000          1
+
+processed 14796 tokens with 1860 phrases; found: 51 phrases; correct: 1.
+accuracy:  77.84%; precision:   1.96%; recall:   0.05%; FB1:   0.10
+                A: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                G: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                I: precision:   0.00%; recall:   0.00%; FB1:   0.00  1
+                M: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                O: precision:   2.33%; recall:   0.31%; FB1:   0.55  43
+                P: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                T: precision:   0.00%; recall:   0.00%; FB1:   0.00  7
+
+bos	i-a	i-g	i-i	i-m	i-o	i-p	i-t	o
+i-a	0	0	0	0	44	0	0	147
+i-g	0	0	0	0	18	0	0	3655
+i-i	0	0	0	0	4	0	15	3991
+i-m	0	0	0	0	4	0	0	320
+i-o	0	0	6	0	58	0	3	4021
+i-p	0	0	0	0	22	0	0	5792
+i-t	0	0	0	0	15	0	6	1689
+o	0	0	0	0	115	0	42	69403
+
+bos	I-A	I-G	I-I	I-M	I-O	I-P	I-T	O
+I-A	0	0	0	0	9	0	0	47
+I-G	0	0	0	0	3	0	0	496
+I-I	0	0	0	0	1	0	7	598
+I-M	0	0	0	0	1	0	0	52
+I-O	0	0	1	0	12	0	1	744
+I-P	0	0	0	0	3	0	0	835
+I-T	0	0	0	0	3	0	2	418
+O	0	0	0	0	46	0	14	11503
+
+
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   9        18.7696   122.8777     0.2160     0.2143    78.5700     3.3100     0.1000     0.1900     0.4200          1
+
+processed 119681 tokens with 14163 phrases; found: 423 phrases; correct: 14.
+accuracy:  78.57%; precision:   3.31%; recall:   0.10%; FB1:   0.19
+                A: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                G: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                I: precision:   0.00%; recall:   0.00%; FB1:   0.00  2
+                M: precision:   0.00%; recall:   0.00%; FB1:   0.00  1
+                O: precision:   2.72%; recall:   0.37%; FB1:   0.65  331
+                P: precision:   0.00%; recall:   0.00%; FB1:   0.00  5
+                T: precision:   5.95%; recall:   0.21%; FB1:   0.41  84
+
+bos	i-a	i-g	i-i	i-m	i-o	i-p	i-t	o
+i-a	0	1	0	0	42	0	12	499
+i-g	0	0	0	0	66	0	15	26463
+i-i	0	0	0	0	311	0	31	35534
+i-m	0	0	0	0	98	0	13	2267
+i-o	0	0	4	0	887	1	71	30872
+i-p	0	0	0	0	152	1	35	44195
+i-t	0	0	0	0	330	0	257	13735
+o	0	0	2	8	1157	8	356	566180
+
+bos	I-A	I-G	I-I	I-M	I-O	I-P	I-T	O
+I-A	0	0	0	0	9	0	3	149
+I-G	0	0	0	0	9	0	2	3720
+I-I	0	0	0	0	46	0	10	5279
+I-M	0	0	0	0	17	0	3	410
+I-O	0	0	1	0	158	1	24	5522
+I-P	0	0	0	0	18	0	13	6342
+I-T	0	0	0	0	70	0	75	3542
+O	0	0	1	3	351	4	103	93796
+
+
+dev   9         2.1413     2.9806     0.2231     0.2223    77.7700     1.9200     0.0500     0.1000     0.4000          1
+
+processed 14796 tokens with 1860 phrases; found: 52 phrases; correct: 1.
+accuracy:  77.77%; precision:   1.92%; recall:   0.05%; FB1:   0.10
+                A: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                G: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                I: precision:   0.00%; recall:   0.00%; FB1:   0.00  1
+                M: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                O: precision:   2.38%; recall:   0.31%; FB1:   0.55  42
+                P: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                T: precision:   0.00%; recall:   0.00%; FB1:   0.00  9
+
+bos	i-a	i-g	i-i	i-m	i-o	i-p	i-t	o
+i-a	0	0	0	0	49	0	0	142
+i-g	0	0	0	0	19	0	2	3652
+i-i	0	0	0	0	12	0	17	3981
+i-m	0	0	0	0	6	0	0	318
+i-o	0	0	4	0	78	0	3	4003
+i-p	0	0	0	0	21	0	0	5793
+i-t	0	0	0	0	27	0	10	1673
+o	0	0	0	0	152	0	65	69343
+
+bos	I-A	I-G	I-I	I-M	I-O	I-P	I-T	O
+I-A	0	0	0	0	11	0	0	45
+I-G	0	0	0	0	3	0	0	496
+I-I	0	0	0	0	2	0	7	597
+I-M	0	0	0	0	1	0	0	52
+I-O	0	0	1	0	14	0	1	742
+I-P	0	0	0	0	2	0	0	836
+I-T	0	0	0	0	5	0	2	416
+O	0	0	0	0	53	0	19	11491
+
+
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn   10       18.5981   121.6350     0.2157     0.2142    78.5800     4.0400     0.1300     0.2600     0.4200          1
+
+processed 119681 tokens with 14163 phrases; found: 470 phrases; correct: 19.
+accuracy:  78.58%; precision:   4.04%; recall:   0.13%; FB1:   0.26
+                A: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                G: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                I: precision:   0.00%; recall:   0.00%; FB1:   0.00  3
+                M: precision:   0.00%; recall:   0.00%; FB1:   0.00  1
+                O: precision:   3.83%; recall:   0.58%; FB1:   1.00  366
+                P: precision:   0.00%; recall:   0.00%; FB1:   0.00  3
+                T: precision:   5.15%; recall:   0.21%; FB1:   0.41  97
+
+bos	i-a	i-g	i-i	i-m	i-o	i-p	i-t	o
+i-a	0	0	0	0	49	0	14	491
+i-g	0	0	0	0	75	0	19	26450
+i-i	0	0	0	0	427	0	49	35400
+i-m	0	0	0	0	101	0	13	2264
+i-o	0	0	4	0	1323	1	93	30414
+i-p	0	0	0	0	194	1	46	44142
+i-t	0	0	0	0	507	0	315	13500
+o	0	0	5	6	1405	8	438	565849
+
+bos	I-A	I-G	I-I	I-M	I-O	I-P	I-T	O
+I-A	0	0	0	0	9	0	3	149
+I-G	0	0	0	0	9	0	2	3720
+I-I	0	0	0	0	70	0	15	5250
+I-M	0	0	0	0	17	0	3	410
+I-O	0	0	1	0	235	1	27	5442
+I-P	0	0	0	0	21	0	16	6336
+I-T	0	0	0	0	113	0	94	3480
+O	0	0	2	2	405	2	127	93720
+
+
+dev   10        2.1292     2.9796     0.2232     0.2226    77.7400     3.0800     0.1100     0.2100     0.4000          1
+
+processed 14796 tokens with 1860 phrases; found: 65 phrases; correct: 2.
+accuracy:  77.74%; precision:   3.08%; recall:   0.11%; FB1:   0.21
+                A: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                G: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                I: precision:   0.00%; recall:   0.00%; FB1:   0.00  1
+                M: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                O: precision:   4.00%; recall:   0.62%; FB1:   1.08  50
+                P: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                T: precision:   0.00%; recall:   0.00%; FB1:   0.00  14
+
+bos	i-a	i-g	i-i	i-m	i-o	i-p	i-t	o
+i-a	0	0	0	0	56	0	0	135
+i-g	0	0	0	0	27	0	3	3643
+i-i	0	0	0	0	20	0	17	3973
+i-m	0	0	0	0	6	0	0	318
+i-o	0	0	4	0	134	0	10	3940
+i-p	0	0	0	0	22	0	3	5789
+i-t	0	0	0	0	54	0	13	1643
+o	0	0	0	0	201	0	84	69275
+
+bos	I-A	I-G	I-I	I-M	I-O	I-P	I-T	O
+I-A	0	0	0	0	12	0	0	44
+I-G	0	0	0	0	4	0	0	495
+I-I	0	0	0	0	4	0	7	595
+I-M	0	0	0	0	1	0	0	52
+I-O	0	0	1	0	25	0	2	730
+I-P	0	0	0	0	2	0	2	834
+I-T	0	0	0	0	11	0	3	409
+O	0	0	0	0	60	0	28	11475
+
+
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 

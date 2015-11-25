@@ -1,0 +1,568 @@
+activation:	bi-lstm
+batch_norm:	0
+breaktrn:	0
+captrn:	0
+curriculum:	1
+decoder:	0
+drates:	[0.3, 0.5, 0.5, 0.7]
+emb:	128
+fbias:	1.0
+fbmerge:	concat
+feat:	basic
+fepoch:	5000
+gclip:	0
+in2out:	0
+lang:	eng
+log:	das_auto
+lr:	1.0
+n_batch:	128
+n_hidden:	[128]
+norm:	5.0
+opt:	sgd
+patience:	-1
+recout:	1
+rep:	std
+reverse:	False
+rnn:	lazrnn
+sample:	0
+save:	False
+shuf:	1
+sorted:	1
+tagging:	io
+truncate:	-1
+base_log_name:	biyofiz-4-0:gpu,activation:bi-lstm,n_hidden:128,fbmerge:concat,drates:0.3,0.5,0.5,0.7,recout:1,decoder:0,opt:sgd,lr:1.0,norm:5.0,gclip:0,truncate:-1,n_batch:128,shuf:1,breaktrn:0,captrn:0,emb:128,lang:eng,reverse:False,tagging:io,fbias:1.0
+# of sents trn, dev, tst: 14041 3250 3453
+maxlen: 512 minlen: 1 avglen: 76.89 stdlen: 65.57
+['c= ', 'c=!', 'c="', 'c=$', 'c=%', 'c=&', "c='", 'c=(', 'c=)', 'c=*', 'c=+', 'c=,', 'c=-', 'c=.', 'c=/', 'c=0', 'c=1', 'c=2', 'c=3', 'c=4', 'c=5', 'c=6', 'c=7', 'c=8', 'c=9', 'c=:', 'c=;', 'c==', 'c=?', 'c=@', 'c=A', 'c=B', 'c=C', 'c=D', 'c=E', 'c=F', 'c=G', 'c=H', 'c=I', 'c=J', 'c=K', 'c=L', 'c=M', 'c=N', 'c=O', 'c=P', 'c=Q', 'c=R', 'c=S', 'c=T', 'c=U', 'c=V', 'c=W', 'c=X', 'c=Y', 'c=Z', 'c=[', 'c=]', 'c=`', 'c=a', 'c=b', 'c=c', 'c=d', 'c=e', 'c=f', 'c=g', 'c=h', 'c=i', 'c=j', 'c=k', 'c=l', 'c=m', 'c=n', 'c=o', 'c=p', 'c=q', 'c=r', 'c=s', 'c=t', 'c=u', 'c=v', 'c=w', 'c=x', 'c=y', 'c=z']
+['i-loc' 'i-misc' 'i-org' 'i-per' 'o']
+['I-LOC' 'I-MISC' 'I-ORG' 'I-PER' 'O']
+NF: 85 NC: 5
+l_in: (None, None, 85)
+l_mask: (Subtensor{int64}.0, Subtensor{int64}.0)
+l_reshape: (None, 85)
+l_emb: (None, 128)
+l_emb: (None, None, 128)
+l_drop: (None, None, 128)
+l_forward: (None, None, 128)
+l_backward: (None, None, 128)
+l_fbmerge: (None, None, 256)
+using recout:1.
+l_out: (None, None, 5)
+[W, b, W_in_to_ingate, W_hid_to_ingate, b_ingate, W_in_to_forgetgate, W_hid_to_forgetgate, b_forgetgate, W_in_to_cell, W_hid_to_cell, b_cell, W_in_to_outgate, W_hid_to_outgate, b_outgate, W_cell_to_ingate, W_cell_to_forgetgate, W_cell_to_outgate, W_in_to_ingate, W_hid_to_ingate, b_ingate, W_in_to_forgetgate, W_hid_to_forgetgate, b_forgetgate, W_in_to_cell, W_hid_to_cell, b_cell, W_in_to_outgate, W_hid_to_outgate, b_outgate, W_cell_to_ingate, W_cell_to_forgetgate, W_cell_to_outgate, input_to_hidden.W, input_to_hidden.b, hidden_to_hidden.W]
+Compiling functions...
+Compiling done.
+training the model...
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+shuffling trn batches...
+restoring the order of trn batches...
+trn   1            nan    22.8573     0.9344     0.9446     5.5400     0.4100     0.3500     0.3800     0.3800          1
+
+processed 203621 tokens with 23429 phrases; found: 20119 phrases; correct: 82.
+accuracy:   5.54%; precision:   0.41%; recall:   0.35%; FB1:   0.38
+              LOC: precision:   0.05%; recall:   0.04%; FB1:   0.05  6096
+             MISC: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+              ORG: precision:   0.56%; recall:   1.25%; FB1:   0.78  14023
+              PER: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	17036	0	34452	0	1581
+i-misc	12454	0	17868	0	502
+i-org	18671	0	45605	0	2455
+i-per	18845	0	51779	0	1349
+o	411021	0	437850	0	8154
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	2675	0	5622	0	0
+I-MISC	1845	0	2748	0	0
+I-ORG	2789	0	7232	0	4
+I-PER	2892	0	8236	0	0
+O	78866	0	89343	0	1369
+
+
+dev   1            nan     1.2436     0.9437     0.9526     4.7400     0.1300     0.1000     0.1100     0.1100          1
+
+processed 51362 tokens with 5938 phrases; found: 4784 phrases; correct: 6.
+accuracy:   4.74%; precision:   0.13%; recall:   0.10%; FB1:   0.11
+              LOC: precision:   0.00%; recall:   0.00%; FB1:   0.00  1538
+             MISC: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+              ORG: precision:   0.18%; recall:   0.45%; FB1:   0.26  3246
+              PER: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	4457	0	8650	0	413
+i-misc	3463	0	4658	0	127
+i-org	4471	0	8969	0	474
+i-per	7380	0	12669	0	325
+o	108764	0	105578	0	1911
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	695	0	1399	0	0
+I-MISC	540	0	728	0	0
+I-ORG	669	0	1423	0	0
+I-PER	1151	0	1998	0	0
+O	21118	0	21323	0	318
+
+
+tst   1            nan     1.1555     0.9313     0.9438     5.6200     0.2500     0.2100     0.2300     0.2300          1
+
+processed 46435 tokens with 5628 phrases; found: 4715 phrases; correct: 12.
+accuracy:   5.62%; precision:   0.25%; recall:   0.21%; FB1:   0.23
+              LOC: precision:   0.00%; recall:   0.00%; FB1:   0.00  1265
+             MISC: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+              ORG: precision:   0.35%; recall:   0.72%; FB1:   0.47  3450
+              PER: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	3596	0	8337	0	407
+i-misc	2546	0	3583	0	116
+i-org	4500	0	11219	0	747
+i-per	5633	0	11868	0	298
+o	86432	0	101927	0	1885
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	544	0	1381	0	0
+I-MISC	360	0	558	0	0
+I-ORG	699	0	1797	0	0
+I-PER	876	0	1897	0	0
+O	16708	0	21348	0	267
+
+
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+shuffling trn batches...
+restoring the order of trn batches...
+trn   2            nan    22.7225     0.4561     0.3996    60.0400     0.1600     0.0900     0.1100     0.3800          1
+
+processed 203621 tokens with 23429 phrases; found: 13439 phrases; correct: 21.
+accuracy:  60.04%; precision:   0.16%; recall:   0.09%; FB1:   0.11
+              LOC: precision:   0.17%; recall:   0.29%; FB1:   0.22  12066
+             MISC: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+              ORG: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+              PER: precision:   0.00%; recall:   0.00%; FB1:   0.00  1373
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	12457	0	0	1581	39031
+i-misc	8893	0	0	502	21429
+i-org	14501	0	0	2455	49775
+i-per	14625	0	0	1349	55999
+o	275483	0	0	8154	573388
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	1430	0	0	0	6867
+I-MISC	1018	0	0	0	3575
+I-ORG	1679	0	0	4	8342
+I-PER	1528	0	0	0	9600
+O	47392	0	0	1369	120817
+
+
+dev   2            nan     1.2455     0.4702     0.4187    58.1300     0.1500     0.0800     0.1100     0.1100          1
+
+processed 51362 tokens with 5938 phrases; found: 3396 phrases; correct: 5.
+accuracy:  58.13%; precision:   0.15%; recall:   0.08%; FB1:   0.11
+              LOC: precision:   0.16%; recall:   0.27%; FB1:   0.20  3078
+             MISC: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+              ORG: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+              PER: precision:   0.00%; recall:   0.00%; FB1:   0.00  318
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	3122	0	0	413	9985
+i-misc	2450	0	0	127	5671
+i-org	3366	0	0	474	10074
+i-per	5440	0	0	325	14609
+o	73525	0	0	1911	140817
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	353	0	0	0	1741
+I-MISC	291	0	0	0	977
+I-ORG	406	0	0	0	1686
+I-PER	658	0	0	0	2491
+O	12939	0	0	318	29502
+
+
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+shuffling trn batches...
+restoring the order of trn batches...
+trn   3            nan    23.2809     0.9607     0.9672     3.2800     0.4700     0.3900     0.4300     0.4300          3
+
+processed 203621 tokens with 23429 phrases; found: 19332 phrases; correct: 91.
+accuracy:   3.28%; precision:   0.47%; recall:   0.39%; FB1:   0.43
+              LOC: precision:   0.00%; recall:   0.00%; FB1:   0.00  5309
+             MISC: precision:   0.65%; recall:   2.67%; FB1:   1.04  14023
+              ORG: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+              PER: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	15007	36481	0	0	1581
+i-misc	11046	19276	0	0	502
+i-org	16801	47475	0	0	2455
+i-per	16523	54101	0	0	1349
+o	361473	487398	0	0	8154
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	2326	5971	0	0	0
+I-MISC	1619	2974	0	0	0
+I-ORG	2505	7516	0	0	4
+I-PER	2519	8609	0	0	0
+O	68754	99455	0	0	1369
+
+
+dev   3            nan     1.3215     0.9599     0.9664     3.3600     0.4800     0.3700     0.4200     0.4200          3
+
+processed 51362 tokens with 5938 phrases; found: 4621 phrases; correct: 22.
+accuracy:   3.36%; precision:   0.48%; recall:   0.37%; FB1:   0.42
+              LOC: precision:   0.00%; recall:   0.00%; FB1:   0.00  1375
+             MISC: precision:   0.68%; recall:   2.40%; FB1:   1.06  3246
+              ORG: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+              PER: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	3939	9168	0	0	413
+i-misc	3045	5076	0	0	127
+i-org	4025	9415	0	0	474
+i-per	6594	13455	0	0	325
+o	96336	118006	0	0	1911
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	611	1483	0	0	0
+I-MISC	469	799	0	0	0
+I-ORG	600	1492	0	0	0
+I-PER	1023	2126	0	0	0
+O	18611	23830	0	0	318
+
+
+tst   3            nan     1.2284     0.9631     0.9709     2.9100     0.0900     0.0700     0.0800     0.2300          1
+
+processed 46435 tokens with 5628 phrases; found: 4589 phrases; correct: 4.
+accuracy:   2.91%; precision:   0.09%; recall:   0.07%; FB1:   0.08
+              LOC: precision:   0.00%; recall:   0.00%; FB1:   0.00  1139
+             MISC: precision:   0.12%; recall:   0.58%; FB1:   0.19  3450
+              ORG: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+              PER: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	3230	8703	0	0	407
+i-misc	2281	3848	0	0	116
+i-org	4046	11673	0	0	747
+i-per	5068	12433	0	0	298
+o	76048	112311	0	0	1885
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	489	1436	0	0	0
+I-MISC	322	596	0	0	0
+I-ORG	623	1873	0	0	0
+I-PER	780	1993	0	0	0
+O	14626	23430	0	0	267
+
+
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+shuffling trn batches...
+restoring the order of trn batches...
+trn   4            nan    23.4616     0.9493     0.9596     4.0400     1.8000     4.2000     2.5200     2.5200          4
+
+processed 203621 tokens with 23429 phrases; found: 54862 phrases; correct: 985.
+accuracy:   4.04%; precision:   1.80%; recall:   4.20%; FB1:   2.52
+              LOC: precision:   0.00%; recall:   0.00%; FB1:   0.00  4846
+             MISC: precision:   0.35%; recall:   2.41%; FB1:   0.62  23158
+              ORG: precision:   3.54%; recall:  14.34%; FB1:   5.68  25485
+              PER: precision:   0.00%; recall:   0.00%; FB1:   0.00  1373
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	13114	14981	23393	1581	0
+i-misc	9542	8630	12150	502	0
+i-org	14678	17905	31693	2455	0
+i-per	14248	21607	34769	1349	0
+o	308136	245946	294789	8154	0
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	2051	3061	3185	0	0
+I-MISC	1404	1744	1445	0	0
+I-ORG	2196	3385	4440	4	0
+I-PER	2188	4219	4721	0	0
+O	59024	68507	40678	1369	0
+
+
+dev   4            nan     1.2444     0.9550     0.9637     3.6300     1.3300     2.9300     1.8300     1.8300          4
+
+processed 51362 tokens with 5938 phrases; found: 13036 phrases; correct: 174.
+accuracy:   3.63%; precision:   1.33%; recall:   2.93%; FB1:   1.83
+              LOC: precision:   0.00%; recall:   0.00%; FB1:   0.00  1276
+             MISC: precision:   0.22%; recall:   1.31%; FB1:   0.38  5476
+              ORG: precision:   2.72%; recall:  12.08%; FB1:   4.43  5966
+              PER: precision:   0.00%; recall:   0.00%; FB1:   0.00  318
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	3373	3830	5904	413	0
+i-misc	2628	2324	3169	127	0
+i-org	3552	3659	6229	474	0
+i-per	5639	5606	8804	325	0
+o	82751	59965	71626	1911	0
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	529	775	790	0	0
+I-MISC	405	482	381	0	0
+I-ORG	538	702	852	0	0
+I-PER	881	1072	1196	0	0
+O	16109	16513	9819	318	0
+
+
+tst   4            nan     1.1560     0.9468     0.9576     4.2400     2.6700     6.1800     3.7300     3.7300          4
+
+processed 46435 tokens with 5628 phrases; found: 13018 phrases; correct: 348.
+accuracy:   4.24%; precision:   2.67%; recall:   6.18%; FB1:   3.73
+              LOC: precision:   0.00%; recall:   0.00%; FB1:   0.00  1052
+             MISC: precision:   0.20%; recall:   1.59%; FB1:   0.35  5625
+              ORG: precision:   5.55%; recall:  20.35%; FB1:   8.72  6074
+              PER: precision:   0.00%; recall:   0.00%; FB1:   0.00  267
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	2707	3631	5595	407	0
+i-misc	1895	1753	2481	116	0
+i-org	3562	3983	8174	747	0
+i-per	4423	5023	8055	298	0
+o	64849	55890	67620	1885	0
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	414	730	781	0	0
+I-MISC	272	322	324	0	0
+I-ORG	552	710	1234	0	0
+I-PER	687	1034	1052	0	0
+O	12581	16188	9287	267	0
+
+
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+shuffling trn batches...
+restoring the order of trn batches...
+trn   5            nan    22.7083     0.9414     0.9531     4.6900     0.6800     0.7500     0.7200     2.5200          4
+
+processed 203621 tokens with 23429 phrases; found: 25749 phrases; correct: 176.
+accuracy:   4.69%; precision:   0.68%; recall:   0.75%; FB1:   0.72
+              LOC: precision:   1.01%; recall:   1.67%; FB1:   1.26  11767
+             MISC: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+              ORG: precision:   0.41%; recall:   0.91%; FB1:   0.56  13982
+              PER: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	17197	0	35872	0	0
+i-misc	11300	0	19524	0	0
+i-org	20664	0	46067	0	0
+i-per	18068	0	53905	0	0
+o	350410	0	506615	0	0
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	2439	0	5858	0	0
+I-MISC	1558	0	3035	0	0
+I-ORG	2911	0	7114	0	0
+I-PER	2697	0	8431	0	0
+O	69465	0	100113	0	0
+
+
+dev   5            nan     1.2445     0.9499     0.9596     4.0400     0.6000     0.6200     0.6100     1.8300          4
+
+processed 51362 tokens with 5938 phrases; found: 6151 phrases; correct: 37.
+accuracy:   4.04%; precision:   0.60%; recall:   0.62%; FB1:   0.61
+              LOC: precision:   1.10%; recall:   1.74%; FB1:   1.35  2909
+             MISC: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+              ORG: precision:   0.15%; recall:   0.37%; FB1:   0.22  3242
+              PER: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	4468	0	9052	0	0
+i-misc	3096	0	5152	0	0
+i-org	4752	0	9162	0	0
+i-per	6762	0	13612	0	0
+o	93204	0	123049	0	0
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	644	0	1450	0	0
+I-MISC	448	0	820	0	0
+I-ORG	661	0	1431	0	0
+I-PER	1046	0	2103	0	0
+O	18696	0	24063	0	0
+
+
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+shuffling trn batches...
+restoring the order of trn batches...
+trn   6            nan    22.7125     0.9665     0.9737     2.6300     0.4400     0.4000     0.4200     2.5200          4
+
+processed 203621 tokens with 23429 phrases; found: 20978 phrases; correct: 93.
+accuracy:   2.63%; precision:   0.44%; recall:   0.40%; FB1:   0.42
+              LOC: precision:   0.03%; recall:   0.03%; FB1:   0.03  6955
+             MISC: precision:   0.65%; recall:   2.67%; FB1:   1.04  14023
+              ORG: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+              PER: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	17491	35578	0	0	0
+i-misc	12199	18625	0	0	0
+i-org	20142	46589	0	0	0
+i-per	18906	53067	0	0	0
+o	393585	463440	0	0	0
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	2473	5824	0	0	0
+I-MISC	1719	2874	0	0	0
+I-ORG	2636	7389	0	0	0
+I-PER	2676	8452	0	0	0
+O	74766	94812	0	0	0
+
+
+dev   6            nan     1.2441     0.9652     0.9724     2.7600     0.4400     0.3700     0.4000     1.8300          4
+
+processed 51362 tokens with 5938 phrases; found: 4992 phrases; correct: 22.
+accuracy:   2.76%; precision:   0.44%; recall:   0.37%; FB1:   0.40
+              LOC: precision:   0.00%; recall:   0.00%; FB1:   0.00  1746
+             MISC: precision:   0.68%; recall:   2.40%; FB1:   1.06  3246
+              ORG: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+              PER: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	4590	8930	0	0	0
+i-misc	3358	4890	0	0	0
+i-org	4711	9203	0	0	0
+i-per	7317	13057	0	0	0
+o	104282	111971	0	0	0
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	645	1449	0	0	0
+I-MISC	496	772	0	0	0
+I-ORG	636	1456	0	0	0
+I-PER	1083	2066	0	0	0
+O	20082	22677	0	0	0
+
+
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+shuffling trn batches...
+restoring the order of trn batches...
+trn   7            nan    22.7146     0.9409     0.9516     4.8400     0.3800     0.3400     0.3600     2.5200          4
+
+processed 203621 tokens with 23429 phrases; found: 20848 phrases; correct: 80.
+accuracy:   4.84%; precision:   0.38%; recall:   0.34%; FB1:   0.36
+              LOC: precision:   0.02%; recall:   0.01%; FB1:   0.02  5452
+             MISC: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+              ORG: precision:   0.56%; recall:   1.25%; FB1:   0.78  14023
+              PER: precision:   0.00%; recall:   0.00%; FB1:   0.00  1373
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	15537	0	35951	1581	0
+i-misc	11420	0	18902	502	0
+i-org	17336	0	46940	2455	0
+i-per	17128	0	53496	1349	0
+o	375675	0	473196	8154	0
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	2428	0	5869	0	0
+I-MISC	1679	0	2914	0	0
+I-ORG	2593	0	7428	4	0
+I-PER	2629	0	8499	0	0
+O	71921	0	96288	1369	0
+
+
+dev   7            nan     1.2444     0.9497     0.9591     4.0900     0.1200     0.1000     0.1100     1.8300          4
+
+processed 51362 tokens with 5938 phrases; found: 4974 phrases; correct: 6.
+accuracy:   4.09%; precision:   0.12%; recall:   0.10%; FB1:   0.11
+              LOC: precision:   0.00%; recall:   0.00%; FB1:   0.00  1410
+             MISC: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+              ORG: precision:   0.18%; recall:   0.45%; FB1:   0.26  3246
+              PER: precision:   0.00%; recall:   0.00%; FB1:   0.00  318
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	4076	0	9031	413	0
+i-misc	3148	0	4973	127	0
+i-org	4148	0	9292	474	0
+i-per	6830	0	13219	325	0
+o	99940	0	114402	1911	0
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	635	0	1459	0	0
+I-MISC	486	0	782	0	0
+I-ORG	625	0	1467	0	0
+I-PER	1064	0	2085	0	0
+O	19379	0	23062	318	0
+
+
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+shuffling trn batches...
+restoring the order of trn batches...
+trn   8            nan    22.7249     0.7239     0.8198    18.0200     1.8400     2.6900     2.1800     2.5200          4
+
+processed 203621 tokens with 23429 phrases; found: 34307 phrases; correct: 630.
+accuracy:  18.02%; precision:   1.84%; recall:   2.69%; FB1:   2.18
+              LOC: precision:   1.06%; recall:   3.79%; FB1:   1.66  25394
+             MISC: precision:   0.15%; recall:   0.03%; FB1:   0.05  683
+              ORG: precision:   4.36%; recall:   5.70%; FB1:   4.94  8230
+              PER: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	31094	1672	3162	0	17141
+i-misc	19482	546	1004	0	9792
+i-org	37516	2490	4909	0	21816
+i-per	41473	1390	2698	0	26412
+o	571307	7915	16291	0	261512
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	6593	6	508	0	1190
+I-MISC	3784	1	112	0	696
+I-ORG	7815	12	862	0	1336
+I-PER	8759	8	667	0	1694
+O	133595	656	6081	0	29246
+
+
+dev   8            nan     1.2485     0.7326     0.8281    17.1900     1.6200     2.2200     1.8700     1.8700          8
+
+processed 51362 tokens with 5938 phrases; found: 8147 phrases; correct: 132.
+accuracy:  17.19%; precision:   1.62%; recall:   2.22%; FB1:   1.87
+              LOC: precision:   1.00%; recall:   3.32%; FB1:   1.54  6072
+             MISC: precision:   0.00%; recall:   0.00%; FB1:   0.00  172
+              ORG: precision:   3.73%; recall:   5.29%; FB1:   4.38  1903
+              PER: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	7962	417	826	0	4315
+i-misc	5249	132	254	0	2613
+i-org	8116	473	948	0	4377
+i-per	12628	332	650	0	6764
+o	146775	1892	3818	0	63768
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	1735	0	127	0	232
+I-MISC	1025	0	24	0	219
+I-ORG	1666	1	141	0	284
+I-PER	2556	1	165	0	427
+O	34190	170	1446	0	6953
+
+
+tst   8            nan     1.1583     0.7190     0.8235    17.6500     1.8300     2.6500     2.1600     3.7300          4
+
+processed 46435 tokens with 5628 phrases; found: 8148 phrases; correct: 149.
+accuracy:  17.65%; precision:   1.83%; recall:   2.65%; FB1:   2.16
+              LOC: precision:   0.89%; recall:   3.25%; FB1:   1.40  6078
+             MISC: precision:   0.00%; recall:   0.00%; FB1:   0.00  153
+              ORG: precision:   4.96%; recall:   5.74%; FB1:   5.32  1917
+              PER: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+
+bos	i-loc	i-misc	i-org	i-per	o
+i-loc	7025	413	814	0	4088
+i-misc	3919	120	232	0	1974
+i-org	9060	760	1494	0	5152
+i-per	10734	302	596	0	6167
+o	124943	1855	3767	0	59679
+
+bos	I-LOC	I-MISC	I-ORG	I-PER	O
+I-LOC	1502	1	148	0	274
+I-MISC	737	0	31	0	150
+I-ORG	1956	0	230	0	310
+I-PER	2163	0	161	0	449
+O	30359	152	1347	0	6465
+
+
+
+dset  epoch      mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+shuffling trn batches...
