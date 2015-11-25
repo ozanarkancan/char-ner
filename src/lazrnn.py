@@ -30,6 +30,7 @@ class LogSoftMerge(lasagne.layers.MergeLayer):
     def get_output_shape_for(self, input_shapes):
         return input_shapes[0]
 
+
 class RDNN_Dummy:
     def __init__(self, nc, nf, kwargs):
         self.nc = nc
@@ -62,7 +63,7 @@ def extract_rnn_params(kwargs):
     return dict((pname,kwargs[pname]) for pname in RDNN.param_names)
 
 class RDNN:
-    param_names = ['activation','n_hidden','fbmerge','drates','opt','lr','norm','gclip','truncate','recout','batch_norm','in2out','emb','fbias']
+    param_names =['activation','n_hidden','fbmerge','drates','opt','lr','norm','gclip','truncate','recout','batch_norm','in2out','emb','fbias','gnoise']
 
     def __init__(self, nc, nf, kwargs):
         assert nf; assert nc
@@ -111,11 +112,12 @@ class RDNN:
             self.layers = [l_in]
         for level, ltype, n_hidden in zip(range(1,ldepth+1), self.deep_ltypes, self.n_hidden):
             prev_layer = self.layers[level-1]
-            if ltype in ['relu','lrelu', 'relu6']:
+            if ltype in ['relu','lrelu', 'relu6', 'elu']:
                 LayerType = lasagne.layers.RecurrentLayer
                 if ltype == 'relu': nonlin = lasagne.nonlinearities.rectify
                 elif ltype == 'lrelu': nonlin = lasagne.nonlinearities.leaky_rectify
                 elif ltype == 'relu6': nonlin = lambda x: T.min(lasagne.nonlinearities.rectify(x), 6)
+                elif ltype == 'elu': nonlin = lambda x: T.switch(x >= 0, x, T.exp(x) - 1)
                 l_forward = LayerType(prev_layer, n_hidden, mask_input=l_mask, grad_clipping=self.gclip, gradient_steps=self.truncate,
                         W_hid_to_hid=Identity(), W_in_to_hid=lasagne.init.GlorotUniform(gain='relu'), nonlinearity=nonlin)
                 l_backward = LayerType(prev_layer, n_hidden, mask_input=l_mask, grad_clipping=self.gclip, gradient_steps=self.truncate,
@@ -201,8 +203,19 @@ class RDNN:
 
         all_grads, total_norm = lasagne.updates.total_norm_constraint(all_grads, self.norm, return_norm=True)
         all_grads = [T.switch(T.or_(T.isnan(total_norm), T.isinf(total_norm)), p*0.01 , g) for g,p in zip(all_grads, all_params)]
-
-        updates = self.opt(all_grads, all_params, self.lr)
+        
+        if self.gnoise:
+            from theano.tensor.shared_randomstreams import RandomStreams
+            srng = RandomStreams(seed=1234)
+            e_prev = theano.shared(lasagne.utils.floatX(0.))
+            nu = 0.01
+            gamma = 0.55
+            gs = [g + srng.normal(T.shape(g), std=(nu / ((1 + e_prev)**gamma))) for g in all_grads]
+            updates = self.opt(gs, all_params, self.lr)
+            updates[e_prev] = e_prev + 1
+        else:
+            updates = self.opt(all_grads, all_params, self.lr)
+        
 
         logging.info("Compiling functions...")
         self.train_model = theano.function(inputs=[l_in.input_var, target_output, l_mask.input_var, out_mask], outputs=cost_train, updates=updates, allow_input_downcast=True)
