@@ -487,7 +487,7 @@ if __name__ == '__main__':
     logger.addHandler(shandler);logger.addHandler(ihandler);logger.addHandler(dhandler);
 
     common = {}
-    common['lr'] = hp.choice('lr', [0, 0001, 0.001, 0.005, 0.01, 0.1, 1, 2])
+    common['lr'] = hp.choice('lr', [0.001, 0.001, 0.005, 0.01, 0.1, 1, 2])
     common['opt'] = hp.choice('opt', ['adam', 'sgd'])
     common['decoder'] = hp.choice('decoder', [0, 1])
     common['n_hidden'] = hp.choice('n_hidden', [64, 128, 256])
@@ -511,5 +511,5 @@ if __name__ == '__main__':
         trials=trials,
         )
 
-    print best
+    logger.info("Best: {}".format(best))
 

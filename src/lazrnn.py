@@ -155,7 +155,7 @@ class RDNN:
 
         if self.recout == 1:
             logging.info('using recout:%d.'%self.recout)
-            l_out = lasagne.layers.RecurrentLayer(l_fbmerge, num_units=nc, mask_input=l_mask, W_hid_to_hid=Identity(),
+            l_out = lasagne.layers.RecurrentLayer(l_fbmerge, num_units=nc, mask_input=l_mask, W_hid_to_hid=lasagne.init.GlorotUniform(),
                     W_in_to_hid=lasagne.init.GlorotUniform(), nonlinearity=log_softmax)
                     # W_in_to_hid=lasagne.init.GlorotUniform(), nonlinearity=lasagne.nonlinearities.softmax) CHANGED
             logging.debug('l_out: {}'.format(lasagne.layers.get_output_shape(l_out)))
