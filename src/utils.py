@@ -120,5 +120,8 @@ def break2subsents(sent):
 
 if __name__ == '__main__':
     trn,dev,tst = get_sents('arb')
-    trn = [subsent for sent in trn for subsent in break2subsents(sent)]
-    print list(islice(reversed(sorted(len(sent['ts']) for sent in trn)),20))
+    print len(trn)
+    # trn = [subsent for sent in trn for subsent in break2subsents(sent)]
+    trn = filter(lambda sent: len(sent['ws'])<100, trn)
+    print max(len(' '.join(sent['ws'])) for sent in trn)
+    print len(trn)
