@@ -163,6 +163,12 @@ def paper():
     print
 
     table = []
+    for l in langs:
+        table.append([l]+[sum(len(sent['ws']) for sent in data[l][dname]) for dname in dsetnames])
+    print tabulate(table,headers=['#token']+dsetnames, tablefmt='latex')
+    print
+
+    table = []
     for l, dname in product(langs,('dev','tst')):
         vdst = get_vocab(data[l][dname])
         vsrc = get_vocab(data[l]['trn'])

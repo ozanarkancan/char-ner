@@ -119,9 +119,8 @@ def break2subsents(sent):
     return subsents
 
 if __name__ == '__main__':
-    trn,dev,tst = get_sents('arb')
-    print len(trn)
-    # trn = [subsent for sent in trn for subsent in break2subsents(sent)]
-    trn = filter(lambda sent: len(sent['ws'])<100, trn)
-    print max(len(' '.join(sent['ws'])) for sent in trn)
-    print len(trn)
+    trn,dev,tst = get_sents('arbrev')
+    sent = random.choice(trn)
+    for w,t in zip(sent['ws'],sent['ts']):
+        print w,t
+    
