@@ -98,7 +98,7 @@ class RDNN:
         if self.emb:
             l_reshape = lasagne.layers.ReshapeLayer(l_in, (-1, nf))
             logging.debug('l_reshape: {}'.format(lasagne.layers.get_output_shape(l_reshape)))
-            l_emb = lasagne.layers.DenseLayer(l_reshape, num_units=self.emb, nonlinearity=None)
+            l_emb = lasagne.layers.DenseLayer(l_reshape, num_units=self.emb, nonlinearity=None, b=None)
             logging.debug('l_emb: {}'.format(lasagne.layers.get_output_shape(l_emb)))
             l_emb = lasagne.layers.ReshapeLayer(l_emb, (N_BATCH_VAR, MAX_SEQ_LEN_VAR, self.emb))
             logging.debug('l_emb: {}'.format(lasagne.layers.get_output_shape(l_emb)))
@@ -155,7 +155,7 @@ class RDNN:
 
         if self.recout == 1:
             logging.info('using recout:%d.'%self.recout)
-            l_out = lasagne.layers.RecurrentLayer(l_fbmerge, num_units=nc, mask_input=l_mask, W_hid_to_hid=Identity(),
+            l_out = lasagne.layers.RecurrentLayer(l_fbmerge, num_units=nc, mask_input=l_mask, W_hid_to_hid=lasagne.init.GlorotUniform(),
                     W_in_to_hid=lasagne.init.GlorotUniform(), nonlinearity=log_softmax)
                     # W_in_to_hid=lasagne.init.GlorotUniform(), nonlinearity=lasagne.nonlinearities.softmax) CHANGED
             logging.debug('l_out: {}'.format(lasagne.layers.get_output_shape(l_out)))
