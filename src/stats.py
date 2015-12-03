@@ -162,6 +162,29 @@ def paper():
     print tabulate(table,headers=['#sent']+dsetnames, tablefmt='latex')
     print
 
+    table = []
+    for l in langs:
+        table.append([l]+[sum(len(sent['ws']) for sent in data[l][dname]) for dname in dsetnames])
+    print tabulate(table,headers=['#token']+dsetnames, tablefmt='latex')
+    print
+
+    table = []
+    for l, dname in product(langs,('dev','tst')):
+        vdst = get_vocab(data[l][dname])
+        vsrc = get_vocab(data[l]['trn'])
+        vdiff = vdst.difference(vsrc)
+        uperc = len(vdiff) / float(len(vdst)) * 100
+
+        cnt = Counter(w for sent in data[l][dname] for w,t in zip(sent['ws'],sent['ts']) if t!='O')
+        pperc = sum(cnt[w] for w in vdiff) / float(sum(cnt.values())) * 100
+
+        cnt = Counter(w for sent in data[l][dname] for w in sent['ws'])
+        cperc = sum(cnt[w] for w in vdiff) / float(sum(cnt.values())) * 100
+
+
+        table.append([l+'-'+dname]+[uperc, pperc, cperc])
+    print tabulate(table, headers=['unk', 'unique', 'phrase', 'corpus'], tablefmt='latex', floatfmt='.2f')
+
 ### end DSET ###
 
 if __name__ == '__main__':

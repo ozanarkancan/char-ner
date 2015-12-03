@@ -98,7 +98,7 @@ class RDNN:
         if self.emb:
             l_reshape = lasagne.layers.ReshapeLayer(l_in, (-1, nf))
             logging.debug('l_reshape: {}'.format(lasagne.layers.get_output_shape(l_reshape)))
-            l_emb = lasagne.layers.DenseLayer(l_reshape, num_units=self.emb, nonlinearity=None)
+            l_emb = lasagne.layers.DenseLayer(l_reshape, num_units=self.emb, nonlinearity=None, b=None)
             logging.debug('l_emb: {}'.format(lasagne.layers.get_output_shape(l_emb)))
             l_emb = lasagne.layers.ReshapeLayer(l_emb, (N_BATCH_VAR, MAX_SEQ_LEN_VAR, self.emb))
             logging.debug('l_emb: {}'.format(lasagne.layers.get_output_shape(l_emb)))

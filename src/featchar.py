@@ -30,6 +30,8 @@ class Feat(object):
         self.ctag_classes = self.tseqenc.classes_
         self.wtag_classes = self.tsenc.classes_
         logging.info(self.feature_names)
+        for fn in self.feature_names:
+            logging.debug(fn)
         logging.info(self.ctag_classes)
         logging.info(self.wtag_classes)
         self.NF = len(self.feature_names)

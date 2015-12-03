@@ -32,7 +32,7 @@ def read_sents(file, delim='\t'):
                 a.append(l.strip().split(delim))
             else: # emtpy line
                 if len(a):
-                    ws = [el[0] for el in a]
+                    ws = [el[0].decode('utf-8') for el in a] # TODO
                     ts = [el[-1].upper() for el in a]
                     sentences.append({'ws':ws,'ts':ts})
                 a = []
@@ -119,6 +119,12 @@ def break2subsents(sent):
     return subsents
 
 if __name__ == '__main__':
-    trn,dev,tst = get_sents('arb')
-    trn = [subsent for sent in trn for subsent in break2subsents(sent)]
-    print list(islice(reversed(sorted(len(sent['ts']) for sent in trn)),20))
+    trn,dev,tst = get_sents('cze')
+    sent = random.choice(trn)
+    for w,t in zip(sent['ws'],sent['ts']):
+        print w,t
+        for c in w:
+            print c
+        print 
+
+    
