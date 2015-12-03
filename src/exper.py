@@ -59,6 +59,7 @@ def get_arg_parser():
     parser.add_argument("--breaktrn", default=0, type=int, help="break trn sents to subsents")
     parser.add_argument("--captrn", default=0, type=int, help="consider sents lt this as trn")
     parser.add_argument("--fbias", default=0., type=float, help="forget gate bias")
+    parser.add_argument("--eps", default=1e-8, type=float, help="epsilon for adam")
     parser.add_argument("--gnoise", default=False, action='store_true', help="adding time dependent noise to the gradients")
 
     return parser
@@ -234,7 +235,7 @@ class Curriculum(object):
 
 LPARAMS = ['activation', 'n_hidden', 'fbmerge', 'drates',
     'recout','decoder', 'opt','lr','norm','gclip','truncate','n_batch', 'shuf',
-    'breaktrn', 'captrn', 'emb','lang', 'reverse','tagging', 'fbias']
+    'breaktrn', 'captrn', 'emb','lang', 'reverse','tagging', 'fbias', 'eps']
 
 def main():
     parser = get_arg_parser()

@@ -60,6 +60,7 @@ def get_arg_parser():
     parser.add_argument("--breaktrn", default=0, type=int, help="break trn sents to subsents")
     parser.add_argument("--captrn", default=0, type=int, help="consider sents lt this as trn")
     parser.add_argument("--fbias", default=0., type=float, help="forget gate bias")
+    parser.add_argument("--eps", default=1e-8, type=float, help="epsilon for adam")
     parser.add_argument("--gnoise", default=False, action='store_true', help="adding time dependent noise to the gradients")
 
     return parser
@@ -200,17 +201,13 @@ class Validator(object):
             anger = 0 if e == dbests['dev'][0] else anger + 1
             if argsd['patience'] > 0 and anger > argsd['patience']:
                 #logging.info('sabir tasti.')
-                val = rdnn.lr.get_value()
-                logging.info('old lr: {}, new lr: {}'.format(val, val * 0.95))
-                rdnn.lr.set_value(val * 0.95)
-                anger = 0
                 break
             logging.info('')
         return dbests['dev'][1]
 
 LPARAMS = ['activation', 'n_hidden', 'fbmerge', 'drates',
     'recout','decoder', 'opt','lr','norm','gclip','truncate','n_batch', 'shuf',
-    'breaktrn', 'captrn', 'emb','lang', 'reverse','tagging', 'fbias']
+    'breaktrn', 'captrn', 'emb','lang', 'reverse','tagging', 'fbias', 'eps']
 
 def objective(hargs):
     logger = logging.getLogger()
