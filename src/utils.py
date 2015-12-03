@@ -19,11 +19,12 @@ def valid_file_name(s):
     return "".join(i for i in s if i not in "\"\/ &*?<>|[]()'")
 
 def get_sents(lang='eng'):
-    trn,dev,tst = map(read_sents, ['{}/{}/{}.bio'.format(DATA_DIR,lang,dset) for dset in ('train','testa','testb')])
+    enc = 'latin1' if lang in ['eng','deu','spa','ned'] else 'utf-8'
+    trn,dev,tst = map(read_sents, ['{}/{}/{}.bio'.format(DATA_DIR,lang,dset) for dset in ('train','testa','testb')], [enc for i in range(3)])
     trn = filter(lambda sent: len(sent['ws'])<1000,trn)
     return trn,dev,tst 
 
-def read_sents(file, delim='\t'):
+def read_sents(file, enc, delim='\t'):
     a = []
     sentences = []
     with open(file) as src:
@@ -32,7 +33,7 @@ def read_sents(file, delim='\t'):
                 a.append(l.strip().split(delim))
             else: # emtpy line
                 if len(a):
-                    ws = [el[0].decode('utf-8') for el in a] # TODO
+                    ws = [el[0].decode(enc) for el in a] # TODO
                     ts = [el[-1].upper() for el in a]
                     sentences.append({'ws':ws,'ts':ts})
                 a = []
@@ -119,7 +120,7 @@ def break2subsents(sent):
     return subsents
 
 if __name__ == '__main__':
-    trn,dev,tst = get_sents('cze')
+    trn,dev,tst = get_sents('spa')
     sent = random.choice(trn)
     for w,t in zip(sent['ws'],sent['ts']):
         print w,t
