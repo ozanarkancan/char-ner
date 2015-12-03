@@ -10,7 +10,8 @@ if __name__ == '__main__':
         for l in src:
             l = l.strip()
             w,t = l.split(' ')
-            sent['ws'].append(''.join(list(reversed(w))))
+            w_uni = w.decode('utf-8')
+            sent['ws'].append(''.join(reversed(w_uni)).encode('utf-8'))
             sent['ts'].append(t.replace('PERS','PER'))
             if l in  ['. O', '? O', '! O']:
                 dset.append(sent)
