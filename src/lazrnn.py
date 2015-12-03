@@ -63,7 +63,7 @@ def extract_rnn_params(kwargs):
     return dict((pname,kwargs[pname]) for pname in RDNN.param_names)
 
 class RDNN:
-    param_names =['activation','n_hidden','fbmerge','drates','opt','lr','norm','gclip','truncate','recout','batch_norm','in2out','emb','fbias','gnoise']
+    param_names =['activation','n_hidden','fbmerge','drates','opt','lr','norm','gclip','truncate','recout','batch_norm','in2out','emb','fbias','gnoise','eps']
 
     def __init__(self, nc, nf, kwargs):
         assert nf; assert nc
@@ -128,6 +128,7 @@ class RDNN:
                     forgetgate=forget_gate(), outgate=default_gate(), mask_input=l_mask, grad_clipping=self.gclip, gradient_steps=self.truncate)
                 l_backward = LayerType(prev_layer, n_hidden, ingate=default_gate(),
                     forgetgate=forget_gate(), outgate=default_gate(), mask_input=l_mask, grad_clipping=self.gclip, gradient_steps=self.truncate, backwards=True)
+
             elif ltype == 'gru':
                 LayerType = lasagne.layers.GRULayer
                 l_forward = LayerType(prev_layer, n_hidden, mask_input=l_mask, grad_clipping=self.gclip, gradient_steps=self.truncate)
@@ -155,7 +156,7 @@ class RDNN:
 
         if self.recout == 1:
             logging.info('using recout:%d.'%self.recout)
-            l_out = lasagne.layers.RecurrentLayer(l_fbmerge, num_units=nc, mask_input=l_mask, W_hid_to_hid=lasagne.init.GlorotUniform(),
+            l_out = lasagne.layers.RecurrentLayer(l_fbmerge, num_units=nc, mask_input=l_mask, W_hid_to_hid=Identity(),
                     W_in_to_hid=lasagne.init.GlorotUniform(), nonlinearity=log_softmax)
                     # W_in_to_hid=lasagne.init.GlorotUniform(), nonlinearity=lasagne.nonlinearities.softmax) CHANGED
             logging.debug('l_out: {}'.format(lasagne.layers.get_output_shape(l_out)))
@@ -211,10 +212,10 @@ class RDNN:
             nu = 0.01
             gamma = 0.55
             gs = [g + srng.normal(T.shape(g), std=(nu / ((1 + e_prev)**gamma))) for g in all_grads]
-            updates = self.opt(gs, all_params, self.lr)
+            updates = self.opt(gs, all_params, self.lr, self.eps)
             updates[e_prev] = e_prev + 1
         else:
-            updates = self.opt(all_grads, all_params, self.lr)
+            updates = self.opt(all_grads, all_params, self.lr, self.eps)
         
 
         logging.info("Compiling functions...")
