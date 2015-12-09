@@ -19,7 +19,7 @@ def valid_file_name(s):
     return "".join(i for i in s if i not in "\"\/ &*?<>|[]()'")
 
 def get_sents(lang='eng'):
-    enc = 'latin1' if lang in ['eng','deu','spa','ned'] else 'utf-8'
+    enc = 'latin1' if lang in ['eng','deu','spa','ned', 'ita'] else 'utf-8'
     trn,dev,tst = map(read_sents, ['{}/{}/{}.bio'.format(DATA_DIR,lang,dset) for dset in ('train','testa','testb')], [enc for i in range(3)])
     trn = filter(lambda sent: len(sent['ws'])<1000,trn)
     return trn,dev,tst 
@@ -120,7 +120,7 @@ def break2subsents(sent):
     return subsents
 
 if __name__ == '__main__':
-    trn,dev,tst = get_sents('spa')
+    trn,dev,tst = get_sents('ita')
     sent = random.choice(trn)
     for w,t in zip(sent['ws'],sent['ts']):
         print w,t

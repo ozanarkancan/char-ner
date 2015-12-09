@@ -150,7 +150,7 @@ def main():
     pass
 
 def paper():
-    langs = ['eng', 'deu', 'spa', 'ned', 'tr', 'cze', 'ger', 'arb']
+    langs = ['eng', 'deu', 'spa', 'ned', 'tr', 'cze', 'ger', 'arb', 'ita']
     # langs = ['eng', 'deu']
     dsetnames = ['trn','dev','tst']
 
