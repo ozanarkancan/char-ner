@@ -3,6 +3,7 @@ import argparse
 import sys, time, datetime
 from itertools import *
 import random, numpy as np
+from tabulate import tabulate
 
 from sklearn.metrics import confusion_matrix, classification_report
 
@@ -155,6 +156,7 @@ class Validator(object):
         dbests = {'trn':(1,0.), 'dev':(1,0.), 'tst':(1,0.)}
         decoder = 'viterbi' if argsd['decoder'] else 'predict'
         anger = 0
+
         for e in range(1,argsd['fepoch']+1): # foreach epoch
             logging.info(('{:<5} {:<5} ' + ('{:>10} '*10)).format('dset','epoch','mcost', 'mtime', 'cerr', 'werr', 'wacc', 'pre', 'recall', 'f1', 'best', 'best'))
             for funcname, ddat, datname in zip(['train',decoder,decoder],[self.trndat,self.devdat, self.tstdat],['trn','dev','tst']):
@@ -196,6 +198,8 @@ class Validator(object):
                 logging.debug(char_conmat_str)
                 logging.debug(word_conmat_str)
                 logging.debug('')
+
+            logging.debug(tabulate(rdnn.info_model(),floatfmt='.2e'))
 
             anger = 0 if e == dbests['dev'][0] else anger + 1
             if argsd['patience'] > 0 and anger > argsd['patience']:
