@@ -211,7 +211,7 @@ class RDNN:
 
         f_hid2hid = l_forward.get_params()[-1]
         b_hid2hid = l_backward.get_params()[-1]
-        recout_hid2hid = l_out.get_params()[-1]
+        self.recout_hid2hid = l_out.get_params()[-1]
 
         all_grads = T.grad(cost_train, all_params)
 
@@ -244,7 +244,7 @@ class RDNN:
                 updates=updates)
         self.compute_cost = theano.function([l_in.input_var, target_output, l_mask.input_var, out_mask], cost_eval)
         self.compute_cost_train = theano.function([l_in.input_var, target_output, l_mask.input_var, out_mask], cost_train)
-        self.info_model = theano.function([],recout_hid2hid)
+        # self.info_model = theano.function([],recout_hid2hid)
         logging.info("Compiling done.")
 
     def train(self, dsetdat):
