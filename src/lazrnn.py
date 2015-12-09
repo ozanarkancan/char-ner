@@ -63,7 +63,7 @@ def extract_rnn_params(kwargs):
     return dict((pname,kwargs[pname]) for pname in RDNN.param_names)
 
 class RDNN:
-    param_names =['activation','n_hidden','fbmerge','drates','opt','lr','norm','gclip','truncate','recout','batch_norm','in2out','emb','fbias','gnoise','eps']
+    param_names=['activation','n_hidden','fbmerge','drates','opt','lr','norm','gclip','truncate','recout','batch_norm','in2out','emb','fbias','gnoise','eps','recoutmatrix']
 
     def __init__(self, nc, nf, kwargs):
         assert nf; assert nc
@@ -154,9 +154,19 @@ class RDNN:
         
         l_fbmerge = lasagne.layers.ConcatLayer([l_fbmerge, l_in], axis=2) if self.in2out else l_fbmerge
 
+        if self.recoutmatrix:
+            recout_W = np.eye(nc, nc)
+            recout_W[self.recoutmatrix, :] = 1.
+            recout_W[:, self.recoutmatrix] = 1.
+
+            recout_W = lasagne.utils.floatX(recout_W)
+            logging.debug('**recout W**\n{}'.format(recout_W))
+        else:
+            recout_W = Identity()
+
         if self.recout == 1:
             logging.info('using recout:%d.'%self.recout)
-            l_out = lasagne.layers.RecurrentLayer(l_fbmerge, num_units=nc, mask_input=l_mask, W_hid_to_hid=Identity(),
+            l_out = lasagne.layers.RecurrentLayer(l_fbmerge, num_units=nc, mask_input=l_mask, W_hid_to_hid=recout_W,
                     W_in_to_hid=lasagne.init.GlorotUniform(), nonlinearity=log_softmax)
                     # W_in_to_hid=lasagne.init.GlorotUniform(), nonlinearity=lasagne.nonlinearities.softmax) CHANGED
             logging.debug('l_out: {}'.format(lasagne.layers.get_output_shape(l_out)))
@@ -195,10 +205,12 @@ class RDNN:
 
 
         all_params = lasagne.layers.get_all_params(l_out, trainable=True)
+        if self.recoutmatrix:
+            del all_params[-1]
         logging.debug(all_params)
 
-        f_hid2hid = l_forward.get_params()[-1]
-        b_hid2hid = l_backward.get_params()[-1]
+        #f_hid2hid = l_forward.get_params()[-1]
+        #b_hid2hid = l_backward.get_params()[-1]
 
         all_grads = T.grad(cost_train, all_params)
 
@@ -227,7 +239,7 @@ class RDNN:
         # aux
         self.train_model_debug = theano.function(
                 inputs=[l_in.input_var, target_output, l_mask.input_var, out_mask],
-                outputs=[cost_train]+lasagne.layers.get_output([l_out, l_fbmerge], deterministic=True)+[f_hid2hid, b_hid2hid, total_norm],
+                outputs=[cost_train]+lasagne.layers.get_output([l_out, l_fbmerge], deterministic=True)+[total_norm],
                 updates=updates)
         self.compute_cost = theano.function([l_in.input_var, target_output, l_mask.input_var, out_mask], cost_eval)
         self.compute_cost_train = theano.function([l_in.input_var, target_output, l_mask.input_var, out_mask], cost_train)

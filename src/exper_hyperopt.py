@@ -217,7 +217,7 @@ def objective(hargs):
 
     args['lr'] = hargs['lr']
     args['decoder'] = hargs['decoder']
-    args['n_hidden'] = hargs['n_hidden']
+    args['n_hidden'] = hargs['n_hidden'] * 3
     args['n_batch'] = hargs['n_batch']
     args['norm'] = hargs['norm']
     args['shuf'] = hargs['shuf']
@@ -228,8 +228,6 @@ def objective(hargs):
 
     args['drates'] = [hargs['d1'], hargs['d2'], hargs['d3'], hargs['d4']]
     args['n_hidden'] = [hargs['n_hidden'], hargs['n_hidden'], hargs['n_hidden']]
-    
-    logger.info(args)
     
     # print args
     for k,v in sorted(args.iteritems()):
@@ -343,12 +341,12 @@ if __name__ == '__main__':
     logger.addHandler(shandler);logger.addHandler(ihandler);logger.addHandler(dhandler);
 
     common = {}
-    common['lr'] = hp.uniform('lr', 0.0001, 0.002)
+    common['lr'] = hp.uniform('lr', 0.0008, 0.0012)
     common['decoder'] = hp.choice('decoder', [0, 1])
     common['recout'] = hp.choice('recout', [1, 2])
     common['n_hidden'] = hp.choice('n_hidden', [64, 128, 256])
     common['n_batch'] = hp.choice('n_batch', [32, 64, 128])
-    common['norm'] = hp.uniform('norm', 0.5, 1.5)
+    common['norm'] = hp.uniform('norm', 0.5, 2)
     common['shuf'] = hp.choice('shuf', [True, False])
     common['reverse'] = hp.choice('reverse', [True, False])
     common['fbias'] = hp.uniform('fbias', 0, 2)
