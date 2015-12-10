@@ -200,7 +200,7 @@ class Validator(object):
                 logging.debug(word_conmat_str)
                 logging.debug('')
 
-            logging.debug(tabulate(rdnn.recout_hid2hid.get_value(),floatfmt='.2e'))
+            logging.debug(tabulate(rdnn.recout_hid2hid(),floatfmt='.2e'))
 
             anger = 0 if e == dbests['dev'][0] else anger + 1
             if argsd['patience'] > 0 and anger > argsd['patience']:
