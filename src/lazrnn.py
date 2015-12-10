@@ -211,7 +211,7 @@ class RDNN:
 
         f_hid2hid = l_forward.get_params()[-1]
         b_hid2hid = l_backward.get_params()[-1]
-        self.recout_hid2hid = l_out.get_params()[-1]
+        self.recout_hid2hid = lambda : l_out.get_params() if self.recout == 0 else lambda : l_out.get_params()[-1].get_value()
 
         all_grads = T.grad(cost_train, all_params)
 
