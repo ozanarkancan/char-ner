@@ -62,7 +62,6 @@ def get_arg_parser():
     parser.add_argument("--fbias", default=0., type=float, help="forget gate bias")
     parser.add_argument("--eps", default=1e-8, type=float, help="epsilon for adam")
     parser.add_argument("--gnoise", default=False, action='store_true', help="adding time dependent noise to the gradients")
-    parser.add_argument("--recoutmatrix", default=False, action='store_true', help="untrainable recout matrix")
 
     return parser
 
@@ -342,9 +341,6 @@ def main():
     else:
         raise Exception
     # end select rnn
-    if args['recoutmatrix']:
-        outindx = feat.tseqenc.transform(['o'])[0]
-        args['recoutmatrix'] = outindx
     rnn_params = extract_rnn_params(args)
     rdnn = RNN(feat.NC, feat.NF, args)
     """ tprobs """ # TODO

@@ -41,7 +41,7 @@ def get_arg_parser():
     parser.add_argument("--norm", default=5, type=float, help="Threshold for clipping norm of gradient")
     parser.add_argument("--n_batch", default=32, type=int, help="batch size")
     parser.add_argument("--fepoch", default=50, type=int, help="number of epochs")
-    parser.add_argument("--patience", default=5, type=int, help="how patient the validator is")
+    parser.add_argument("--patience", default=10, type=int, help="how patient the validator is")
     parser.add_argument("--sample", default=0, type=int, help="num of sents to sample from trn in the order of K")
     parser.add_argument("--feat", default='basic', help="feat func to use")
     parser.add_argument("--emb", default=0, type=int, help="embedding layer size")
@@ -225,6 +225,9 @@ def objective(hargs):
     args['fbias'] = hargs['fbias']
     args['emb'] = hargs['emb']
     args['recout'] = hargs['recout']
+    args['in2out'] = hargs['in2out']
+    args['gnoise'] = hargs['gnoise']
+    args['fbmerge'] = hargs['fbmerge']
 
     args['drates'] = [hargs['d1'], hargs['d2'], hargs['d3'], hargs['d4']]
     args['n_hidden'] = [hargs['n_hidden'], hargs['n_hidden'], hargs['n_hidden']]
@@ -341,27 +344,30 @@ if __name__ == '__main__':
     logger.addHandler(shandler);logger.addHandler(ihandler);logger.addHandler(dhandler);
 
     common = {}
-    common['lr'] = hp.uniform('lr', 0.0008, 0.0012)
+    common['lr'] = hp.uniform('lr', 0.0005, 0.002)
     common['decoder'] = hp.choice('decoder', [0, 1])
-    common['recout'] = hp.choice('recout', [1, 2])
-    common['n_hidden'] = hp.choice('n_hidden', [64, 128, 256])
-    common['n_batch'] = hp.choice('n_batch', [32, 64, 128])
+    common['recout'] = hp.choice('recout', [0, 1, 2])
+    common['n_hidden'] = hp.choice('n_hidden', [64, 128])
+    common['n_batch'] = hp.choice('n_batch', [32, 64])
     common['norm'] = hp.uniform('norm', 0.5, 2)
     common['shuf'] = hp.choice('shuf', [True, False])
+    common['gnoise'] = hp.choice('gnoise', [True, False])
+    common['fbmerge'] = hp.choice('fbmerge', ['concat', 'sum'])
+    common['in2out'] = hp.choice('in2out', [0, 1])
     common['reverse'] = hp.choice('reverse', [True, False])
     common['fbias'] = hp.uniform('fbias', 0, 2)
     common['emb'] = hp.choice('emb', [0, 64, 128, 256])
-    common['d1'] = hp.uniform('d1', 0, 1)
-    common['d2'] = hp.uniform('d2', 0, 1)
-    common['d3'] = hp.uniform('d3', 0, 1)
-    common['d4'] = hp.uniform('d4', 0, 1)
+    common['d1'] = hp.uniform('d1', 0, 0.95)
+    common['d2'] = hp.uniform('d2', 0, 0.95)
+    common['d3'] = hp.uniform('d3', 0, 0.95)
+    common['d4'] = hp.uniform('d4', 0, 0.95)
 
     space = common
     trials = Trials()
     best = fmin(objective,
         space=space,
         algo=tpe.suggest,
-        max_evals=50,
+        max_evals=100,
         trials=trials,
         )
 

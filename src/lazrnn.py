@@ -63,7 +63,7 @@ def extract_rnn_params(kwargs):
     return dict((pname,kwargs[pname]) for pname in RDNN.param_names)
 
 class RDNN:
-    param_names=['activation','n_hidden','fbmerge','drates','opt','lr','norm','gclip','truncate','recout','batch_norm','in2out','emb','fbias','gnoise','eps','recoutmatrix']
+    param_names=['activation','n_hidden','fbmerge','drates','opt','lr','norm','gclip','truncate','recout','batch_norm','in2out','emb','fbias','gnoise','eps']
 
     def __init__(self, nc, nf, kwargs):
         assert nf; assert nc
@@ -152,21 +152,11 @@ class RDNN:
 
             self.layers.append(l_fbmerge)
         
-        l_fbmerge = lasagne.layers.ConcatLayer([l_fbmerge, l_in], axis=2) if self.in2out else l_fbmerge
-
-        if self.recoutmatrix:
-            recout_W = np.eye(nc, nc)
-            recout_W[self.recoutmatrix, :] = 1.
-            recout_W[:, self.recoutmatrix] = 1.
-
-            recout_W = lasagne.utils.floatX(recout_W)
-            logging.debug('**recout W**\n{}'.format(recout_W))
-        else:
-            recout_W = Identity()
+        l_fbmerge = lasagne.layers.ConcatLayer([l_fbmerge, curlayer], axis=2) if self.in2out else l_fbmerge
 
         if self.recout == 1:
             logging.info('using recout:%d.'%self.recout)
-            l_out = lasagne.layers.RecurrentLayer(l_fbmerge, num_units=nc, mask_input=l_mask, W_hid_to_hid=recout_W,
+            l_out = lasagne.layers.RecurrentLayer(l_fbmerge, num_units=nc, mask_input=l_mask, W_hid_to_hid=Identity(),
                     W_in_to_hid=lasagne.init.GlorotUniform(), nonlinearity=log_softmax)
                     # W_in_to_hid=lasagne.init.GlorotUniform(), nonlinearity=lasagne.nonlinearities.softmax) CHANGED
             logging.debug('l_out: {}'.format(lasagne.layers.get_output_shape(l_out)))
@@ -205,8 +195,6 @@ class RDNN:
 
 
         all_params = lasagne.layers.get_all_params(l_out, trainable=True)
-        if self.recoutmatrix:
-            del all_params[-1]
         logging.debug(all_params)
 
         f_hid2hid = l_forward.get_params()[-1]
