@@ -41,7 +41,7 @@ def get_arg_parser():
     parser.add_argument("--norm", default=5, type=float, help="Threshold for clipping norm of gradient")
     parser.add_argument("--n_batch", default=32, type=int, help="batch size")
     parser.add_argument("--fepoch", default=50, type=int, help="number of epochs")
-    parser.add_argument("--patience", default=5, type=int, help="how patient the validator is")
+    parser.add_argument("--patience", default=10, type=int, help="how patient the validator is")
     parser.add_argument("--sample", default=0, type=int, help="num of sents to sample from trn in the order of K")
     parser.add_argument("--feat", default='basic', help="feat func to use")
     parser.add_argument("--emb", default=0, type=int, help="embedding layer size")
@@ -60,6 +60,7 @@ def get_arg_parser():
     parser.add_argument("--breaktrn", default=0, type=int, help="break trn sents to subsents")
     parser.add_argument("--captrn", default=0, type=int, help="consider sents lt this as trn")
     parser.add_argument("--fbias", default=0., type=float, help="forget gate bias")
+    parser.add_argument("--eps", default=1e-8, type=float, help="epsilon for adam")
     parser.add_argument("--gnoise", default=False, action='store_true', help="adding time dependent noise to the gradients")
 
     return parser
@@ -200,17 +201,13 @@ class Validator(object):
             anger = 0 if e == dbests['dev'][0] else anger + 1
             if argsd['patience'] > 0 and anger > argsd['patience']:
                 #logging.info('sabir tasti.')
-                val = rdnn.lr.get_value()
-                logging.info('old lr: {}, new lr: {}'.format(val, val * 0.95))
-                rdnn.lr.set_value(val * 0.95)
-                anger = 0
                 break
             logging.info('')
         return dbests['dev'][1]
 
 LPARAMS = ['activation', 'n_hidden', 'fbmerge', 'drates',
     'recout','decoder', 'opt','lr','norm','gclip','truncate','n_batch', 'shuf',
-    'breaktrn', 'captrn', 'emb','lang', 'reverse','tagging', 'fbias']
+    'breaktrn', 'captrn', 'emb','lang', 'reverse','tagging', 'fbias', 'eps']
 
 def objective(hargs):
     logger = logging.getLogger()
@@ -220,16 +217,21 @@ def objective(hargs):
 
     args['lr'] = hargs['lr']
     args['decoder'] = hargs['decoder']
-    args['n_hidden'] = hargs['n_hidden']
+    args['n_hidden'] = hargs['n_hidden'] * 3
     args['n_batch'] = hargs['n_batch']
     args['norm'] = hargs['norm']
     args['shuf'] = hargs['shuf']
+    args['reverse'] = hargs['reverse']
     args['fbias'] = hargs['fbias']
     args['emb'] = hargs['emb']
+    args['recout'] = hargs['recout']
+    args['in2out'] = hargs['in2out']
+    args['gnoise'] = hargs['gnoise']
+    args['fbmerge'] = hargs['fbmerge']
 
     args['drates'] = [hargs['d1'], hargs['d2'], hargs['d3'], hargs['d4']]
     args['n_hidden'] = [hargs['n_hidden'], hargs['n_hidden'], hargs['n_hidden']]
-
+    
     # print args
     for k,v in sorted(args.iteritems()):
         logger.info('{}:\t{}'.format(k,v))
@@ -342,25 +344,30 @@ if __name__ == '__main__':
     logger.addHandler(shandler);logger.addHandler(ihandler);logger.addHandler(dhandler);
 
     common = {}
-    common['lr'] = hp.uniform('lr', 0.0001, 0.005)
+    common['lr'] = hp.uniform('lr', 0.0005, 0.002)
     common['decoder'] = hp.choice('decoder', [0, 1])
-    common['n_hidden'] = hp.choice('n_hidden', [64, 128, 256])
-    common['n_batch'] = hp.choice('n_batch', [64, 128])
-    common['norm'] = hp.uniform('norm', 0.5, 1.5)
+    common['recout'] = hp.choice('recout', [0, 1, 2])
+    common['n_hidden'] = hp.choice('n_hidden', [64, 128])
+    common['n_batch'] = hp.choice('n_batch', [32, 64])
+    common['norm'] = hp.uniform('norm', 0.5, 2)
     common['shuf'] = hp.choice('shuf', [True, False])
+    common['gnoise'] = hp.choice('gnoise', [True, False])
+    common['fbmerge'] = hp.choice('fbmerge', ['concat', 'sum'])
+    common['in2out'] = hp.choice('in2out', [0, 1])
+    common['reverse'] = hp.choice('reverse', [True, False])
     common['fbias'] = hp.uniform('fbias', 0, 2)
     common['emb'] = hp.choice('emb', [0, 64, 128, 256])
-    common['d1'] = hp.uniform('d1', 0, 1)
-    common['d2'] = hp.uniform('d2', 0, 1)
-    common['d3'] = hp.uniform('d3', 0, 1)
-    common['d4'] = hp.uniform('d4', 0, 1)
+    common['d1'] = hp.uniform('d1', 0, 0.95)
+    common['d2'] = hp.uniform('d2', 0, 0.95)
+    common['d3'] = hp.uniform('d3', 0, 0.95)
+    common['d4'] = hp.uniform('d4', 0, 0.95)
 
     space = common
     trials = Trials()
     best = fmin(objective,
         space=space,
         algo=tpe.suggest,
-        max_evals=50,
+        max_evals=100,
         trials=trials,
         )
 

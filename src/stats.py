@@ -150,7 +150,7 @@ def main():
     pass
 
 def paper():
-    langs = ['eng', 'deu', 'spa', 'ned', 'tr', 'cze', 'ger', 'arb']
+    langs = ['eng', 'deu', 'spa', 'ned', 'tr', 'cze', 'ger', 'arb', 'ita']
     # langs = ['eng', 'deu']
     dsetnames = ['trn','dev','tst']
 
@@ -167,6 +167,17 @@ def paper():
         table.append([l]+[sum(len(sent['ws']) for sent in data[l][dname]) for dname in dsetnames])
     print tabulate(table,headers=['#token']+dsetnames, tablefmt='latex')
     print
+
+    table = []
+    for l in langs:
+        # nchar_sents = [sum(1 for c in ' '.join(sent['ws'])) for sent in chain(*data[l].values())]
+        for dname in dsetnames:
+            nchar_sents = [sum(1 for c in ' '.join(sent['ws'])) for sent in data[l][dname]]
+            table.append(['{}-{}'.format(l,dname)]+[int(f(nchar_sents)) for f in (np.min,np.max,np.mean,np.std)])
+        table.append(['...']*5)
+    print tabulate(table,headers=['#char per sent']+['min','max','mean','std'])
+    print
+
 
     table = []
     for l, dname in product(langs,('dev','tst')):

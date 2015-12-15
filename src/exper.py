@@ -3,6 +3,7 @@ import argparse
 import sys, time, datetime
 from itertools import *
 import random, numpy as np
+from tabulate import tabulate
 
 from sklearn.metrics import confusion_matrix, classification_report
 
@@ -59,6 +60,7 @@ def get_arg_parser():
     parser.add_argument("--breaktrn", default=0, type=int, help="break trn sents to subsents")
     parser.add_argument("--captrn", default=0, type=int, help="consider sents lt this as trn")
     parser.add_argument("--fbias", default=0., type=float, help="forget gate bias")
+    parser.add_argument("--eps", default=1e-8, type=float, help="epsilon for adam")
     parser.add_argument("--gnoise", default=False, action='store_true', help="adding time dependent noise to the gradients")
 
     return parser
@@ -154,6 +156,7 @@ class Validator(object):
         dbests = {'trn':(1,0.), 'dev':(1,0.), 'tst':(1,0.)}
         decoder = 'viterbi' if argsd['decoder'] else 'predict'
         anger = 0
+
         for e in range(1,argsd['fepoch']+1): # foreach epoch
             logging.info(('{:<5} {:<5} ' + ('{:>10} '*10)).format('dset','epoch','mcost', 'mtime', 'cerr', 'werr', 'wacc', 'pre', 'recall', 'f1', 'best', 'best'))
             for funcname, ddat, datname in zip(['train',decoder,decoder],[self.trndat,self.devdat, self.tstdat],['trn','dev','tst']):
@@ -196,6 +199,8 @@ class Validator(object):
                 logging.debug(word_conmat_str)
                 logging.debug('')
 
+            logging.debug(tabulate(rdnn.recout_hid2hid(),floatfmt='.2e'))
+
             anger = 0 if e == dbests['dev'][0] else anger + 1
             if argsd['patience'] > 0 and anger > argsd['patience']:
                 #logging.info('sabir tasti.')
@@ -228,13 +233,11 @@ class Curriculum(object):
         for i in xrange(self.numofparts + 1):
             logging.info('Learning part:{}'.format(i + 1))
             validator = Validator(self.trn_parts[i], self.dev, self.batcher, self.reporter)
-            validator.validate(rdnn, fepoch, patience)
-        
-            
+            validator.validate(rdnn, fepoch, patience)        
 
 LPARAMS = ['activation', 'n_hidden', 'fbmerge', 'drates',
     'recout','decoder', 'opt','lr','norm','gclip','truncate','n_batch', 'shuf',
-    'breaktrn', 'captrn', 'emb','lang', 'reverse','tagging', 'fbias']
+    'breaktrn', 'captrn', 'emb','lang', 'reverse','fbias']
 
 def main():
     parser = get_arg_parser()
@@ -338,7 +341,6 @@ def main():
     else:
         raise Exception
     # end select rnn
-
     rnn_params = extract_rnn_params(args)
     rdnn = RNN(feat.NC, feat.NF, args)
     """ tprobs """ # TODO
