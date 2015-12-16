@@ -8,6 +8,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import numpy as np
 import traceback
+from tabulate import tabulate
 
 LOG_DIR = '{}/logs'.format(ROOT_DIR)
 
@@ -211,10 +212,13 @@ def collect():
 
 def show_best_results(df):
     g = df.groupby('lang')
-    print g['dev-f1'].max()
 
+    print tabulate(df[g['dev-f1'].transform(max) == df['dev-f1']][['lang',
+        'dev-f1', 'tst-f1']].values, headers=["lang", "dev", "tst"])
+    
     print "\n**** Files ****"
-    print df[g['dev-f1'].transform(max) == df['dev-f1']]['log_fname'].values
+    print tabulate(df[g['dev-f1'].transform(max) == df['dev-f1']][['lang',
+        'log_fname']].values, headers=["lang", "fname"])
 
 def plot_lang_best(df, lang):
     idx = df.groupby('lang')['dev-f1'].transform(max) == df['dev-f1']

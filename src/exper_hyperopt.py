@@ -225,7 +225,6 @@ def objective(hargs):
     args['fbias'] = hargs['fbias']
     args['emb'] = hargs['emb']
     args['recout'] = hargs['recout']
-    args['in2out'] = hargs['in2out']
     args['gnoise'] = hargs['gnoise']
     args['fbmerge'] = hargs['fbmerge']
 
@@ -353,7 +352,6 @@ if __name__ == '__main__':
     common['shuf'] = hp.choice('shuf', [True, False])
     common['gnoise'] = hp.choice('gnoise', [True, False])
     common['fbmerge'] = hp.choice('fbmerge', ['concat', 'sum'])
-    common['in2out'] = hp.choice('in2out', [0, 1])
     common['reverse'] = hp.choice('reverse', [True, False])
     common['fbias'] = hp.uniform('fbias', 0, 2)
     common['emb'] = hp.choice('emb', [0, 64, 128, 256])
