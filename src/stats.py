@@ -134,7 +134,6 @@ def main():
         table.append([l+'-'+dname]+[uperc, pperc, cperc])
     print tabulate(table, headers=['unk', 'unique', 'phrase', 'corpus'], floatfmt='.2f')
 
-    """
     table = []
     for l, dname in product(langs,('dev','tst')):
         dset = data[l][dname]
@@ -144,10 +143,7 @@ def main():
         table.append([l+'-'+dname]+map(str,r1))
     print tabulate(table, headers=['io-ideal', 'wacc','pre','rec','f1'])
     print
-    """
 
-
-    pass
 
 def paper():
     langs = ['eng', 'deu', 'spa', 'ned', 'tr', 'cze', 'ger', 'arb', 'ita']
@@ -207,5 +203,5 @@ if __name__ == '__main__':
     parser.add_argument('lang')
     args = parser.parse_args()
     """
-    paper()
+    main()
 

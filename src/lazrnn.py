@@ -36,17 +36,22 @@ class RDNN_Dummy:
         self.nc = nc
 
     def train(self, dsetdat):
-        return self.predict(dsetdat)
+        return 19
 
     def predict(self, dsetdat):
         ecost, rnn_last_predictions = 0, []
         for Xdset, Xdsetmsk, ydset, ydsetmsk in dsetdat:
             ecost += 0
             sentLens = Xdsetmsk.sum(axis=-1)
-            
+
             rnn_last_predictions.append(\
-                    [np.random.random_integers(0,self.nc-1,slen) for i, slen in enumerate(sentLens)])
+                    [self.randlogprob(slen, self.nc) for i, slen in enumerate(sentLens)])
         return ecost, rnn_last_predictions
+
+    def randlogprob(self, sent_len, nc):
+        randvals = np.random.rand(sent_len, nc)
+        randlogprobs = np.log(randvals / np.sum(randvals,axis=0))
+        return randlogprobs
 
     def viterbi(self, dsetdat):
         from viterbi import viterbi_log
@@ -236,30 +241,20 @@ class RDNN:
         logging.info("Compiling done.")
 
     def train(self, dsetdat):
-        tcost = sum(self.train_model(Xdset, ydset, Xdsetmsk, ydsetmsk) for Xdset, Xdsetmsk, ydset, ydsetmsk in dsetdat)
-        pcost, pred = self.predict(dsetdat)
-        return tcost, pred
+        tcost = np.mean([self.train_model(Xdset, ydset, Xdsetmsk, ydsetmsk) for Xdset, Xdsetmsk, ydset, ydsetmsk in dsetdat])
+        # pcost, pred = self.predict(dsetdat)
+        return tcost
+
 
     def predict(self, dsetdat):
-        ecost, rnn_last_predictions = 0, []
+        bcosts, rnn_last_predictions = [], []
         for Xdset, Xdsetmsk, ydset, ydsetmsk in dsetdat:
             bcost, pred = self.predict_model(Xdset, ydset, Xdsetmsk, ydsetmsk)
-            ecost += bcost
-            predictions = np.argmax(pred*ydsetmsk, axis=-1).flatten()
+            bcosts.append(bcost)
+            # predictions = np.argmax(pred*ydsetmsk, axis=-1).flatten()
             sentLens, mlen = Xdsetmsk.sum(axis=-1), Xdset.shape[1]
-            rnn_last_predictions.append([predictions[i*mlen:i*mlen+slen] for i, slen in enumerate(sentLens)])
-        return ecost, rnn_last_predictions
-
-    def viterbi(self, dsetdat):
-        from viterbi import viterbi_log
-        ecost, rnn_last_predictions = 0, []
-        for Xdset, Xdsetmsk, ydset, ydsetmsk in dsetdat:
-            bcost, pred = self.predict_model(Xdset, ydset, Xdsetmsk, ydsetmsk)
-            ecost += bcost
-
-            sentLens, mlen = Xdsetmsk.sum(axis=-1), Xdset.shape[1]
-            rnn_last_predictions.append([viterbi_log(pred[i,:slen,:].T, self.tprobs, range(slen)) for i, slen in enumerate(sentLens)])
-        return ecost, rnn_last_predictions
+            rnn_last_predictions.append([pred[i,0:slen,:] for i, slen in enumerate(sentLens)])
+        return np.mean(bcosts), rnn_last_predictions
 
     def get_param_values(self):
         return lasagne.layers.get_all_param_values(self.output_layer)
