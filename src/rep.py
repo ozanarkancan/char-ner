@@ -103,6 +103,9 @@ def print_sample():
 def quick():
     from utils import get_sents, sample_sents
     from encoding import any2io
+    import featchar
+    import random
+    from collections import defaultdict as dd
     trn, dev, tst = get_sents('eng')
 
     r = Repstd()
@@ -113,11 +116,31 @@ def quick():
             'cseq': r.get_cseq(sent), 
             'wiseq': r.get_wiseq(sent), 
             'tseq': r.get_tseq(sent)})
+
+    feat = featchar.Feat('basic')
+    feat.fit(trn,dev,tst)
+
+    sent = random.choice(trn)
+    wstates =  map(lambda x:int(x<0), sent['wiseq'])
+    tseq = sent['tseq']
+
+    states = dd(set)
+    for sent in trn:
+        wstates =  map(lambda x:int(x<0), sent['wiseq'])
+        tseq = feat.tseqenc.transform([t for t in sent['tseq']])
+        # tseq = sent['tseq']
+        for (tprev,t), (wstate_prev, wstate) in zip(zip(tseq[1:],tseq), zip(wstates[1:], wstates)):
+            indx = int(''.join(map(str,(wstate_prev,wstate))), 2)
+            # states[(wstate_prev,wstate)].add((tprev,t))
+            states[indx].add((tprev,t))
+    print states
+    """
     s = set()
     for sent in trn:
         tseq = [t for t in sent['tseq']]
         s.update(set(zip(tseq,tseq[1:])))
     print s
+    """
 
 if __name__ == '__main__':
     quick()

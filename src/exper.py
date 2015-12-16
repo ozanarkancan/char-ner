@@ -11,7 +11,7 @@ import theano
 import lasagne
 import theano.tensor as T
 
-import featchar
+import featchar, decoder
 import rep
 import encoding
 from utils import get_sents, sample_sents, valid_file_name, break2subsents
@@ -33,7 +33,7 @@ def get_arg_parser():
     parser.add_argument("--activation", default='bi-lstm', help="activation function for hidden layer: bi-relu bi-lstm bi-tanh")
     parser.add_argument("--fbmerge", default='concat', choices=['concat','sum'], help="how to merge forward backward layer outputs")
     parser.add_argument("--n_hidden", default=[128], nargs='+', type=int, help="number of neurons in each hidden layer")
-    parser.add_argument("--recout", default=1, type=int, help="use recurrent output layer")
+    parser.add_argument("--recout", default=0, type=int, help="use recurrent output layer")
     parser.add_argument("--batch_norm", default=0, type=int, help="whether to use batch norm between deep layers")
     parser.add_argument("--drates", default=[0, 0], nargs='+', type=float, help="dropout rates")
     parser.add_argument("--opt", default="adam", help="optimization method: sgd, rmsprop, adagrad, adam")
@@ -151,35 +151,53 @@ class Validator(object):
         self.tstdat = batcher.get_batches(tst) 
         self.reporter = reporter
 
-    def validate(self, rdnn, argsd):
+
+    def validate(self, rdnn, argsd, tdecoder):
         logging.info('training the model...')
         dbests = {'trn':(1,0.), 'dev':(1,0.), 'tst':(1,0.)}
-        decoder = 'viterbi' if argsd['decoder'] else 'predict'
         anger = 0
 
         for e in range(1,argsd['fepoch']+1): # foreach epoch
-            logging.info(('{:<5} {:<5} ' + ('{:>10} '*10)).format('dset','epoch','mcost', 'mtime', 'cerr', 'werr', 'wacc', 'pre', 'recall', 'f1', 'best', 'best'))
-            for funcname, ddat, datname in zip(['train',decoder,decoder],[self.trndat,self.devdat, self.tstdat],['trn','dev','tst']):
-                if datname == 'tst' and dbests['dev'][0] != e:
-                    continue
-                if datname == 'trn' and argsd['shuf']:
-                    logging.debug('shuffling trn batches...')
-                    batch_ids = range(len(self.trndat))
-                    random.shuffle(batch_ids)
-                    ddat = map(ddat.__getitem__, batch_ids)
+            """ training """
+            if argsd['shuf']:
+                logging.debug('shuffling trn batches...')
+                batch_ids = range(len(self.trndat))
+                random.shuffle(batch_ids)
+                trndat = map(self.trndat.__getitem__, batch_ids)
+            else:
+                trndat = self.trndat
+
+            start_time = time.time()
+            mcost = rdnn.train(trndat)
+            # dset  epoch      mcost      mtime       cerr
+            end_time = time.time()
+            mtime = end_time - start_time
+            # logging.info(('{:<5} {:<5d} {:>10.2e} {:>10.4f} {:>10.2e}').format(datname,e,mcost, mtime, cerr))
+            """ end training """
+
+            """ predictions """
+            logging.info(('{:<5} {:<5} {:>12} ' + ('{:>10} '*9)).format('dset','epoch','mcost', 'mtime', 'cerr', 'werr', 'wacc', 'pre', 'recall', 'f1', 'best', 'best'))
+            logging.info(('{:<5} {:<5d} {:>12.4e} {:>10.4f}').format('trn0',e,mcost, mtime))
+            for ddat, datname, dset in zip([self.trndat,self.devdat, self.tstdat],['trn','dev','tst'], [self.trn, self.dev, self.tst]):
                 start_time = time.time()
-                mcost, pred = getattr(rdnn, funcname)(ddat)
+
+                mcost, pred = rdnn.predict(ddat)
+                pred = [p for b in pred for p in b]
+
+                pred2 = []
+                for sent, logprobs in zip(dset, pred):
+                    if datname == 'trn': # use max decoder at trn, dont care decoder flag
+                        tseq = np.argmax(logprobs, axis=-1).flatten()
+                    else:
+                        tseq = tdecoder.decode(sent, logprobs, debug=False)
+                        assert tdecoder.sanity_check(sent, tseq)
+                    pred2.append(tseq)
+                pred = pred2
+
                 end_time = time.time()
                 mtime = end_time - start_time
-
-                if datname == 'trn' and argsd['shuf']:
-                    logging.debug('restoring the order of trn batches...')
-                    pred = [p for i, p in sorted(zip(batch_ids,pred))]
-                pred = [p for b in pred for p in b]
                 
-                # cerr, werr, wacc, pre, recall, f1 = self.reporter.report(getattr(self.trn, pred) # find better solution for getattr
-                cerr, werr, wacc, pre, recall, f1, conll_print, char_conmat_str, word_conmat_str =\
-                        self.reporter.report(getattr(self, datname), pred) # find better solution for getattr
+                cerr, werr, wacc, pre, recall, f1, conll_print, char_conmat_str, word_conmat_str = self.reporter.report(dset, pred) 
                 
                 if f1 > dbests[datname][1]:
                     dbests[datname] = (e,f1)
@@ -190,7 +208,7 @@ class Validator(object):
                         np.savez('{}/models/{}'.format(ROOT_DIR, param_log_name),rnn_param_values=rnn_param_values,args=argsd)
 
                 
-                logging.info(('{:<5} {:<5d} ' + ('{:>10.4f} '*9)+'{:>10d}')\
+                logging.info(('{:<5} {:<5d} {:>12.4e} ' + ('{:>10.4f} '*8)+'{:>10d}')\
                     .format(datname,e,mcost, mtime, cerr, werr, wacc, pre, recall, f1, dbests[datname][1],dbests[datname][0]))
                 
                 logging.debug('')
@@ -199,7 +217,7 @@ class Validator(object):
                 logging.debug(word_conmat_str)
                 logging.debug('')
 
-            logging.debug(tabulate(rdnn.recout_hid2hid(),floatfmt='.2e'))
+            """ end predictions """
 
             anger = 0 if e == dbests['dev'][0] else anger + 1
             if argsd['patience'] > 0 and anger > argsd['patience']:
@@ -328,6 +346,7 @@ def main():
 
     batcher = Batcher(args['n_batch'], feat)
     reporter = Reporter(feat, rep.get_ts)
+    tdecoder = decoder.ViterbiDecoder(trn, feat) if args['decoder'] else decoder.MaxDecoder(trn, feat)
 
     validator = Validator(trn, dev, tst, batcher, reporter) if args['curriculum'] < 2 else Curriculum(trn, dev, batcher, reporter, args['curriculum'])
 
@@ -343,19 +362,7 @@ def main():
     # end select rnn
     rnn_params = extract_rnn_params(args)
     rdnn = RNN(feat.NC, feat.NF, args)
-    """ tprobs """ # TODO
-    tfollow = set()
-    for sent in trn:
-        tseq = feat.tseqenc.transform([t for t in sent['tseq']])
-        tfollow.update(set(zip(tseq,tseq[1:])))
-    tprobs = np.zeros((feat.NC,feat.NC),dtype=np.float32)
-    for i,j in tfollow:
-        tprobs[i,j] = 1
-    rdnn.tprobs = tprobs
-    """ end tprobs """
-    validator.validate(rdnn, args)
-    # lr: scipy.stats.expon.rvs(loc=0.0001,scale=0.1,size=100)
-    # norm: scipy.stats.expon.rvs(loc=0, scale=5,size=10)
+    validator.validate(rdnn, args, tdecoder)
 
 if __name__ == '__main__':
     main()
