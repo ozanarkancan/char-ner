@@ -304,8 +304,10 @@ def main():
 
     for d in (trn,dev,tst):
         for sent in d:
+            """
             if args['tagging'] == 'io':
                 sent['ts'] = encoding.any2io(sent['ts'])
+            """
             sent.update({
                 'cseq': repobj.get_cseq(sent), 
                 'wiseq': repobj.get_wiseq(sent), 
