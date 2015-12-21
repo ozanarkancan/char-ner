@@ -70,12 +70,12 @@ class Repspec(object):
             for a in args:
                 print ' '.join(map(('{:^%d}'%mlen).format, [a[ci] for ci in cil]))
 
-def eski_get_ts(wiseq, tseq):
+def get_ts_io(wiseq, tseq):
     tgroup = [[e[0] for e in g] for k, g in groupby(enumerate(wiseq),lambda x: x[1]) if k >= 0]
     tseqgrp = [[tseq[ti] for ti in ts] for ts in tgroup]
     return [Counter(tseq).most_common(1)[0][0].upper() for tseq in tseqgrp]
 
-def get_ts(wiseq, tseq):
+def get_ts_bio(wiseq, tseq):
 # def get_ts():
     """
     cseq = ['a','b','c',' ','d','e']
