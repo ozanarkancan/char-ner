@@ -1,7 +1,8 @@
 from itertools import *
 from collections import Counter
+from tabulate import tabulate
 
-import utils
+import utils, encoding
 
 class Repstd(object):
 
@@ -17,7 +18,8 @@ class Repstd(object):
 
     def get_tseq(self, sent):
         tseq = []
-        for w, t, tnext in zip(sent['ws'],sent['ts'], chain(sent['ts'][1:],[None])):
+        ts = encoding.any2io(sent['ts'])
+        for w, t, tnext in zip(sent['ws'],ts, chain(ts[1:],[None])):
             tp, sep, ttype = (t, '', 'O') if t == 'O' else (t.split('-')[0], '-', t.split('-')[1])
             tseq.extend(t.lower() for c in w)
 
@@ -68,10 +70,34 @@ class Repspec(object):
             for a in args:
                 print ' '.join(map(('{:^%d}'%mlen).format, [a[ci] for ci in cil]))
 
-def get_ts(wiseq, tseq):
+def get_ts_io(wiseq, tseq):
     tgroup = [[e[0] for e in g] for k, g in groupby(enumerate(wiseq),lambda x: x[1]) if k >= 0]
     tseqgrp = [[tseq[ti] for ti in ts] for ts in tgroup]
     return [Counter(tseq).most_common(1)[0][0].upper() for tseq in tseqgrp]
+
+def get_ts_bio(wiseq, tseq):
+# def get_ts():
+    """
+    cseq = ['a','b','c',' ','d','e']
+    wiseq = [0,0,0,-1,1,1]
+    tseq = ['i-per', 'i-per', 'i-per', 'o', 'i-per', 'i-per']
+    """
+    # print tabulate([cseq,wiseq,tseq])
+    windxs = [group.next()[1] for k, group in groupby(((wi,i) for i, wi in enumerate(wiseq) if wi > -1), lambda x:x[0])]
+    ts = []
+    for i in windxs:
+        if tseq[i] == 'o':
+            ts.append('O')
+        else:
+            ttype = tseq[i].split('-')[1]
+            if i == 0:
+                ts.append('B-{}'.format(ttype.upper()))
+            else:
+                if tseq[i-1] == tseq[i]:
+                    ts.append('I-{}'.format(ttype.upper()))
+                else:
+                    ts.append('B-{}'.format(ttype.upper()))
+    return ts
 
 
 def sent_word_indx(sent):
@@ -143,5 +169,4 @@ def quick():
     """
 
 if __name__ == '__main__':
-    quick()
-    pass
+    get_ts2()
