@@ -95,6 +95,12 @@ class RDNN:
             W_hid=lasagne.init.GlorotUniform(),
             b=lasagne.init.Constant(self.fbias))
         
+        """default_gate = lambda : lasagne.layers.Gate(W_in=lasagne.init.Orthogonal(), 
+            W_hid=lasagne.init.Orthogonal())
+        
+        forget_gate = lambda : lasagne.layers.Gate(W_in=lasagne.init.Orthogonal(), W_hid=lasagne.init.Orthogonal(),
+            b=lasagne.init.Constant(self.fbias))"""
+
         l_in = lasagne.layers.InputLayer(shape=(None, None, nf))
         logging.debug('l_in: {}'.format(lasagne.layers.get_output_shape(l_in)))
         N_BATCH_VAR, MAX_SEQ_LEN_VAR, _ = l_in.input_var.shape # symbolic ref to input_var shape
@@ -208,9 +214,11 @@ class RDNN:
         b_hid2hid = l_backward.get_params()[-1]
         self.recout_hid2hid = lambda : l_out.get_params() if self.recout == 0 else lambda : l_out.get_params()[-1].get_value()
 
-        all_grads = T.grad(cost_train, all_params)
+        grads = T.grad(cost_train, all_params)
 
-        all_grads, total_norm = lasagne.updates.total_norm_constraint(all_grads, self.norm, return_norm=True)
+        all_grads, total_norm = lasagne.updates.total_norm_constraint(grads, self.norm, return_norm=True)
+        #all_grads.append(grads[-2])
+        #all_grads.append(grads[-1])
         all_grads = [T.switch(T.or_(T.isnan(total_norm), T.isinf(total_norm)), p*0.01 , g) for g,p in zip(all_grads, all_params)]
         
         if self.gnoise:

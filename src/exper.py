@@ -54,7 +54,7 @@ def get_arg_parser():
     parser.add_argument("--lang", default='eng', help="ner lang")
     parser.add_argument("--save", default=False, action='store_true', help="save param values to file")
     parser.add_argument("--shuf", default=1, type=int, help="shuffle the batches.")
-    parser.add_argument("--tagging", default='io', help="tag scheme to use")
+    parser.add_argument("--tagging", default='io', choices=['io','bio'], help="tag scheme to use")
     parser.add_argument("--reverse", default=False, action='store_true', help="reverse the training data as additional data")
     parser.add_argument("--decoder", default=0, type=int, help="use decoder to prevent invalid tag transitions")
     parser.add_argument("--breaktrn", default=0, type=int, help="break trn sents to subsents")
@@ -304,10 +304,6 @@ def main():
 
     for d in (trn,dev,tst):
         for sent in d:
-            """
-            if args['tagging'] == 'io':
-                sent['ts'] = encoding.any2io(sent['ts'])
-            """
             sent.update({
                 'cseq': repobj.get_cseq(sent), 
                 'wiseq': repobj.get_wiseq(sent), 
@@ -347,7 +343,8 @@ def main():
     feat.fit(trn,dev,tst)
 
     batcher = Batcher(args['n_batch'], feat)
-    reporter = Reporter(feat, rep.get_ts)
+    get_ts_func = getattr(rep,'get_ts_'+args['tagging'])
+    reporter = Reporter(feat, get_ts_func)
     tdecoder = decoder.ViterbiDecoder(trn, feat) if args['decoder'] else decoder.MaxDecoder(trn, feat)
 
     validator = Validator(trn, dev, tst, batcher, reporter) if args['curriculum'] < 2 else Curriculum(trn, dev, batcher, reporter, args['curriculum'])
