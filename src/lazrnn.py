@@ -36,6 +36,8 @@ class RDNN_Dummy:
         self.nc = nc
 
     def train(self, dsetdat):
+        import time
+        time.sleep(5000)
         return 19
 
     def predict(self, dsetdat):
