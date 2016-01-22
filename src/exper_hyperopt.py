@@ -21,8 +21,8 @@ from hyperopt import hp, fmin, tpe, Trials, STATUS_OK
 from copy import deepcopy
 
 LOG_DIR = '{}/logs'.format(ROOT_DIR)
-random.seed(0)
-rng = np.random.RandomState(1234567)
+#random.seed(0)
+rng = np.random.RandomState()
 lasagne.random.set_rng(rng)
 
 def get_arg_parser():
@@ -434,7 +434,7 @@ if __name__ == '__main__':
     common['fbias'] = hp.uniform('fbias', 0, 2)
     common['eps'] = hp.uniform('eps', 1e-6, 1e-9)
     common['emb'] = hp.choice('emb', [0, 64, 128])
-    MAXL=5
+    MAXL=6
     dpart = [
         dict(
             [('h%dm%d'%(l,maxl), hp.choice('h%dm%d'%(l,maxl), [64, 128])) for l in range(1,maxl+1)] + 
