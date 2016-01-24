@@ -10,7 +10,7 @@ import theano
 import lasagne
 import theano.tensor as T
 
-import featchar
+import featchar, decoder
 import rep
 import encoding
 from utils import get_sents, sample_sents, valid_file_name, break2subsents
@@ -21,8 +21,8 @@ from hyperopt import hp, fmin, tpe, Trials, STATUS_OK
 from copy import deepcopy
 
 LOG_DIR = '{}/logs'.format(ROOT_DIR)
-random.seed(0)
-rng = np.random.RandomState(1234567)
+#random.seed(0)
+rng = np.random.RandomState()
 lasagne.random.set_rng(rng)
 
 def get_arg_parser():
@@ -33,14 +33,14 @@ def get_arg_parser():
     parser.add_argument("--activation", default='bi-lstm', help="activation function for hidden layer: bi-relu bi-lstm bi-tanh")
     parser.add_argument("--fbmerge", default='concat', choices=['concat','sum'], help="how to merge forward backward layer outputs")
     parser.add_argument("--n_hidden", default=[128], nargs='+', type=int, help="number of neurons in each hidden layer")
-    parser.add_argument("--recout", default=1, type=int, help="use recurrent output layer")
+    parser.add_argument("--recout", default=0, type=int, help="use recurrent output layer")
     parser.add_argument("--batch_norm", default=0, type=int, help="whether to use batch norm between deep layers")
     parser.add_argument("--drates", default=[0, 0], nargs='+', type=float, help="dropout rates")
     parser.add_argument("--opt", default="adam", help="optimization method: sgd, rmsprop, adagrad, adam")
     parser.add_argument("--lr", default=0.001, type=float, help="learning rate")
     parser.add_argument("--norm", default=5, type=float, help="Threshold for clipping norm of gradient")
     parser.add_argument("--n_batch", default=32, type=int, help="batch size")
-    parser.add_argument("--fepoch", default=50, type=int, help="number of epochs")
+    parser.add_argument("--fepoch", default=200, type=int, help="number of epochs")
     parser.add_argument("--patience", default=10, type=int, help="how patient the validator is")
     parser.add_argument("--sample", default=0, type=int, help="num of sents to sample from trn in the order of K")
     parser.add_argument("--feat", default='basic', help="feat func to use")
@@ -51,7 +51,7 @@ def get_arg_parser():
     parser.add_argument("--sorted", default=1, type=int, help="sort datasets before training and prediction")
     parser.add_argument("--in2out", default=0, type=int, help="connect input & output")
     parser.add_argument("--curriculum", default=1, type=int, help="curriculum learning: number of parts")
-    parser.add_argument("--lang", default='eng', help="ner lang")
+    parser.add_argument("--lang", default='cze', help="ner lang")
     parser.add_argument("--save", default=False, action='store_true', help="save param values to file")
     parser.add_argument("--shuf", default=1, type=int, help="shuffle the batches.")
     parser.add_argument("--tagging", default='io', help="tag scheme to use")
@@ -151,6 +151,93 @@ class Validator(object):
         self.tstdat = batcher.get_batches(tst) 
         self.reporter = reporter
 
+
+    def validate(self, rdnn, argsd, tdecoder):
+        logging.info('training the model...')
+        dbests = {'trn':(1,0.), 'dev':(1,0.), 'tst':(1,0.)}
+        anger = 0
+
+        for e in range(1,argsd['fepoch']+1): # foreach epoch
+            """ training """
+            if argsd['shuf']:
+                logging.debug('shuffling trn batches...')
+                batch_ids = range(len(self.trndat))
+                random.shuffle(batch_ids)
+                trndat = map(self.trndat.__getitem__, batch_ids)
+            else:
+                trndat = self.trndat
+
+            start_time = time.time()
+            mcost = rdnn.train(trndat)
+            # dset  epoch      mcost      mtime       cerr
+            end_time = time.time()
+            mtime = end_time - start_time
+            # logging.info(('{:<5} {:<5d} {:>10.2e} {:>10.4f} {:>10.2e}').format(datname,e,mcost, mtime, cerr))
+            """ end training """
+
+            """ predictions """
+            logging.info(('{:<5} {:<5} {:>12} ' + ('{:>10} '*9)).format('dset','epoch','mcost', 'mtime', 'cerr', 'werr', 'wacc', 'pre', 'recall', 'f1', 'best', 'best'))
+            logging.info(('{:<5} {:<5d} {:>12.4e} {:>10.4f}').format('trn0',e,mcost, mtime))
+            for ddat, datname, dset in zip([self.trndat,self.devdat, self.tstdat],['trn','dev','tst'], [self.trn, self.dev, self.tst]):
+                start_time = time.time()
+
+                mcost, pred = rdnn.predict(ddat)
+                pred = [p for b in pred for p in b]
+
+                pred2 = []
+                for sent, logprobs in zip(dset, pred):
+                    if datname == 'trn': # use max decoder at trn, dont care decoder flag
+                        tseq = np.argmax(logprobs, axis=-1).flatten()
+                    else:
+                        tseq = tdecoder.decode(sent, logprobs, debug=False)
+                        if not tdecoder.sanity_check(sent, tseq):
+                            return 0
+                    pred2.append(tseq)
+                pred = pred2
+
+                end_time = time.time()
+                mtime = end_time - start_time
+                
+                cerr, werr, wacc, pre, recall, f1, conll_print, char_conmat_str, word_conmat_str = self.reporter.report(dset, pred) 
+                
+                if f1 > dbests[datname][1]:
+                    dbests[datname] = (e,f1)
+                    if argsd['save'] and datname == 'dev': # save model to file
+                        param_log_name = ','.join(['{}:{}'.format(p,argsd[p]) for p in LPARAMS])
+                        param_log_name = valid_file_name(param_log_name)
+                        rnn_param_values = rdnn.get_param_values()
+                        np.savez('{}/models/{}'.format(ROOT_DIR, param_log_name),rnn_param_values=rnn_param_values,args=argsd)
+
+                
+                logging.info(('{:<5} {:<5d} {:>12.4e} ' + ('{:>10.4f} '*8)+'{:>10d}')\
+                    .format(datname,e,mcost, mtime, cerr, werr, wacc, pre, recall, f1, dbests[datname][1],dbests[datname][0]))
+                
+                logging.debug('')
+                logging.debug(conll_print)
+                logging.debug(char_conmat_str)
+                logging.debug(word_conmat_str)
+                logging.debug('')
+
+            """ end predictions """
+
+            anger = 0 if e == dbests['dev'][0] else anger + 1
+            if argsd['patience'] > 0 and anger > argsd['patience']:
+                #logging.info('sabir tasti.')
+                break
+            logging.info('')
+        return dbests['dev'][1]
+
+class Validator3(object):
+
+    def __init__(self, trn, dev, tst, batcher, reporter):
+        self.trn = trn
+        self.dev = dev
+        self.tst = tst
+        self.trndat = batcher.get_batches(trn) 
+        self.devdat = batcher.get_batches(dev) 
+        self.tstdat = batcher.get_batches(tst) 
+        self.reporter = reporter
+
     def validate(self, rdnn, argsd):
         logging.info('training the model...')
         dbests = {'trn':(1,0.), 'dev':(1,0.), 'tst':(1,0.)}
@@ -217,20 +304,14 @@ def objective(hargs):
 
     args['lr'] = hargs['lr']
     args['decoder'] = hargs['decoder']
-    args['n_hidden'] = hargs['n_hidden'] * 3
     args['n_batch'] = hargs['n_batch']
     args['norm'] = hargs['norm']
-    args['shuf'] = hargs['shuf']
-    args['reverse'] = hargs['reverse']
     args['fbias'] = hargs['fbias']
     args['emb'] = hargs['emb']
-    args['recout'] = hargs['recout']
+    args['eps'] = hargs['eps']
     args['gnoise'] = hargs['gnoise']
-    args['fbmerge'] = hargs['fbmerge']
-
-    args['drates'] = [hargs['d1'], hargs['d2'], hargs['d3'], hargs['d4']]
-    args['n_hidden'] = [hargs['n_hidden'], hargs['n_hidden'], hargs['n_hidden']]
-    
+    args['n_hidden'] = map(lambda x:x[1], sorted((k,v) for k, v in hargs['dpart'].iteritems() if k.startswith('h')))
+    args['drates'] = map(lambda x:x[1], sorted((k,v) for k, v in hargs['dpart'].iteritems() if k.startswith('d')))
     # print args
     for k,v in sorted(args.iteritems()):
         logger.info('{}:\t{}'.format(k,v))
@@ -294,7 +375,7 @@ def objective(hargs):
     feat.fit(trn,dev,tst)
 
     batcher = Batcher(args['n_batch'], feat)
-    reporter = Reporter(feat, rep.get_ts)
+    reporter = Reporter(feat, rep.get_ts_io)
 
     validator = Validator(trn, dev, tst, batcher, reporter) if args['curriculum'] < 2 else Curriculum(trn, dev, batcher, reporter, args['curriculum'])
 
@@ -313,7 +394,8 @@ def objective(hargs):
         tprobs[i,j] = 1
     rdnn.tprobs = tprobs
     """ end tprobs """
-    devbest = validator.validate(rdnn, args)
+    tdecoder = decoder.ViterbiDecoder(trn, feat) if args['decoder'] else decoder.MaxDecoder(trn, feat)
+    devbest = validator.validate(rdnn, args, tdecoder)
 
     d = {}
     d['loss'] = 100 - devbest
@@ -343,29 +425,29 @@ if __name__ == '__main__':
     logger.addHandler(shandler);logger.addHandler(ihandler);logger.addHandler(dhandler);
 
     common = {}
-    common['lr'] = hp.uniform('lr', 0.0005, 0.002)
+    common['lr'] = hp.uniform('lr', 0.00001, 0.005)
     common['decoder'] = hp.choice('decoder', [0, 1])
-    common['recout'] = hp.choice('recout', [0, 1, 2])
-    common['n_hidden'] = hp.choice('n_hidden', [64, 128])
-    common['n_batch'] = hp.choice('n_batch', [32, 64])
+    common['n_hidden'] = hp.choice('n_hidden', [32, 48, 64, 128])
+    common['n_batch'] = hp.choice('n_batch', [32, 48, 64, 128])
     common['norm'] = hp.uniform('norm', 0.5, 2)
-    common['shuf'] = hp.choice('shuf', [True, False])
     common['gnoise'] = hp.choice('gnoise', [True, False])
-    common['fbmerge'] = hp.choice('fbmerge', ['concat', 'sum'])
-    common['reverse'] = hp.choice('reverse', [True, False])
     common['fbias'] = hp.uniform('fbias', 0, 2)
-    common['emb'] = hp.choice('emb', [0, 64, 128, 256])
-    common['d1'] = hp.uniform('d1', 0, 0.95)
-    common['d2'] = hp.uniform('d2', 0, 0.95)
-    common['d3'] = hp.uniform('d3', 0, 0.95)
-    common['d4'] = hp.uniform('d4', 0, 0.95)
+    common['eps'] = hp.uniform('eps', 1e-6, 1e-9)
+    common['emb'] = hp.choice('emb', [0, 64, 128])
+    MAXL=6
+    dpart = [
+        dict(
+            [('h%dm%d'%(l,maxl), hp.choice('h%dm%d'%(l,maxl), [64, 128])) for l in range(1,maxl+1)] + 
+            [('d%dm%d'%(l,maxl), hp.uniform('d%dm%d'%(l,maxl), .05,.95)) for l in range(0,maxl+1)]
+            ) for maxl in range(1,MAXL+1)]
 
+    common['dpart'] = hp.choice('dpart', dpart)
     space = common
     trials = Trials()
     best = fmin(objective,
         space=space,
         algo=tpe.suggest,
-        max_evals=100,
+        max_evals=1000,
         trials=trials,
         )
 
