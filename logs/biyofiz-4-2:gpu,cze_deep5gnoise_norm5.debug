@@ -64,3 +64,874 @@ l_rec_out: (None, 8)
 l_out: (None, None, 8)
 [W_in_to_ingate, W_hid_to_ingate, b_ingate, W_in_to_forgetgate, W_hid_to_forgetgate, b_forgetgate, W_in_to_cell, W_hid_to_cell, b_cell, W_in_to_outgate, W_hid_to_outgate, b_outgate, W_cell_to_ingate, W_cell_to_forgetgate, W_cell_to_outgate, W_in_to_ingate, W_hid_to_ingate, b_ingate, W_in_to_forgetgate, W_hid_to_forgetgate, b_forgetgate, W_in_to_cell, W_hid_to_cell, b_cell, W_in_to_outgate, W_hid_to_outgate, b_outgate, W_cell_to_ingate, W_cell_to_forgetgate, W_cell_to_outgate, W_in_to_ingate, W_hid_to_ingate, b_ingate, W_in_to_forgetgate, W_hid_to_forgetgate, b_forgetgate, W_in_to_cell, W_hid_to_cell, b_cell, W_in_to_outgate, W_hid_to_outgate, b_outgate, W_cell_to_ingate, W_cell_to_forgetgate, W_cell_to_outgate, W_in_to_ingate, W_hid_to_ingate, b_ingate, W_in_to_forgetgate, W_hid_to_forgetgate, b_forgetgate, W_in_to_cell, W_hid_to_cell, b_cell, W_in_to_outgate, W_hid_to_outgate, b_outgate, W_cell_to_ingate, W_cell_to_forgetgate, W_cell_to_outgate, W_in_to_ingate, W_hid_to_ingate, b_ingate, W_in_to_forgetgate, W_hid_to_forgetgate, b_forgetgate, W_in_to_cell, W_hid_to_cell, b_cell, W_in_to_outgate, W_hid_to_outgate, b_outgate, W_cell_to_ingate, W_cell_to_forgetgate, W_cell_to_outgate, W_in_to_ingate, W_hid_to_ingate, b_ingate, W_in_to_forgetgate, W_hid_to_forgetgate, b_forgetgate, W_in_to_cell, W_hid_to_cell, b_cell, W_in_to_outgate, W_hid_to_outgate, b_outgate, W_cell_to_ingate, W_cell_to_forgetgate, W_cell_to_outgate, W_in_to_ingate, W_hid_to_ingate, b_ingate, W_in_to_forgetgate, W_hid_to_forgetgate, b_forgetgate, W_in_to_cell, W_hid_to_cell, b_cell, W_in_to_outgate, W_hid_to_outgate, b_outgate, W_cell_to_ingate, W_cell_to_forgetgate, W_cell_to_outgate, W_in_to_ingate, W_hid_to_ingate, b_ingate, W_in_to_forgetgate, W_hid_to_forgetgate, b_forgetgate, W_in_to_cell, W_hid_to_cell, b_cell, W_in_to_outgate, W_hid_to_outgate, b_outgate, W_cell_to_ingate, W_cell_to_forgetgate, W_cell_to_outgate, W_in_to_ingate, W_hid_to_ingate, b_ingate, W_in_to_forgetgate, W_hid_to_forgetgate, b_forgetgate, W_in_to_cell, W_hid_to_cell, b_cell, W_in_to_outgate, W_hid_to_outgate, b_outgate, W_cell_to_ingate, W_cell_to_forgetgate, W_cell_to_outgate, W_in_to_ingate, W_hid_to_ingate, b_ingate, W_in_to_forgetgate, W_hid_to_forgetgate, b_forgetgate, W_in_to_cell, W_hid_to_cell, b_cell, W_in_to_outgate, W_hid_to_outgate, b_outgate, W_cell_to_ingate, W_cell_to_forgetgate, W_cell_to_outgate, W, b]
 Compiling functions...
+Compiling done.
+training the model...
+shuffling trn batches...
+dset  epoch        mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn0  1       1.6211e-01    97.1067
+trn   1       1.2318e-01    17.7301     0.2200     0.2124    78.7600     0.0000     0.0000     0.0000     0.0000          1
+
+processed 119681 tokens with 14358 phrases; found: 0 phrases; correct: 0.
+accuracy:  78.76%; precision:   0.00%; recall:   0.00%; FB1:   0.00
+                A: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                G: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                I: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                M: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                O: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                P: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                T: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+
+bos	i-a	i-g	i-i	i-m	i-o	i-p	i-t	o
+i-a	0	0	0	0	0	0	0	553
+i-g	0	0	0	0	0	0	0	24222
+i-i	0	0	0	0	0	0	0	33433
+i-m	0	0	0	0	0	0	0	2249
+i-o	0	0	0	0	0	0	0	29370
+i-p	0	0	0	0	0	0	0	41399
+i-t	0	0	0	0	0	0	0	14016
+o	0	0	0	0	0	0	0	514975
+
+bos	B-A	B-G	B-I	B-M	B-O	B-P	B-T	I-A	I-G	I-I	I-M	I-O	I-P	I-T	O
+B-A	0	0	0	0	0	0	0	0	0	0	0	0	0	0	109
+B-G	0	0	0	0	0	0	0	0	0	0	0	0	0	0	2890
+B-I	0	0	0	0	0	0	0	0	0	0	0	0	0	0	2595
+B-M	0	0	0	0	0	0	0	0	0	0	0	0	0	0	244
+B-O	0	0	0	0	0	0	0	0	0	0	0	0	0	0	2432
+B-P	0	0	0	0	0	0	0	0	0	0	0	0	0	0	3704
+B-T	0	0	0	0	0	0	0	0	0	0	0	0	0	0	2384
+I-A	0	0	0	0	0	0	0	0	0	0	0	0	0	0	52
+I-G	0	0	0	0	0	0	0	0	0	0	0	0	0	0	841
+I-I	0	0	0	0	0	0	0	0	0	0	0	0	0	0	2740
+I-M	0	0	0	0	0	0	0	0	0	0	0	0	0	0	186
+I-O	0	0	0	0	0	0	0	0	0	0	0	0	0	0	3274
+I-P	0	0	0	0	0	0	0	0	0	0	0	0	0	0	2669
+I-T	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1303
+O	0	0	0	0	0	0	0	0	0	0	0	0	0	0	94258
+
+
+dev   1       1.2406e-01     2.5932     0.2268     0.2185    78.1500     0.0000     0.0000     0.0000     0.0000          1
+
+processed 14796 tokens with 1871 phrases; found: 0 phrases; correct: 0.
+accuracy:  78.15%; precision:   0.00%; recall:   0.00%; FB1:   0.00
+                A: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                G: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                I: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                M: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                O: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                P: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                T: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+
+bos	i-a	i-g	i-i	i-m	i-o	i-p	i-t	o
+i-a	0	0	0	0	0	0	0	191
+i-g	0	0	0	0	0	0	0	3400
+i-i	0	0	0	0	0	0	0	3734
+i-m	0	0	0	0	0	0	0	303
+i-o	0	0	0	0	0	0	0	3766
+i-p	0	0	0	0	0	0	0	5433
+i-t	0	0	0	0	0	0	0	1670
+o	0	0	0	0	0	0	0	63056
+
+bos	B-A	B-G	B-I	B-M	B-O	B-P	B-T	I-A	I-G	I-I	I-M	I-O	I-P	I-T	O
+B-A	0	0	0	0	0	0	0	0	0	0	0	0	0	0	23
+B-G	0	0	0	0	0	0	0	0	0	0	0	0	0	0	399
+B-I	0	0	0	0	0	0	0	0	0	0	0	0	0	0	322
+B-M	0	0	0	0	0	0	0	0	0	0	0	0	0	0	34
+B-O	0	0	0	0	0	0	0	0	0	0	0	0	0	0	321
+B-P	0	0	0	0	0	0	0	0	0	0	0	0	0	0	497
+B-T	0	0	0	0	0	0	0	0	0	0	0	0	0	0	275
+I-A	0	0	0	0	0	0	0	0	0	0	0	0	0	0	33
+I-G	0	0	0	0	0	0	0	0	0	0	0	0	0	0	100
+I-I	0	0	0	0	0	0	0	0	0	0	0	0	0	0	284
+I-M	0	0	0	0	0	0	0	0	0	0	0	0	0	0	19
+I-O	0	0	0	0	0	0	0	0	0	0	0	0	0	0	437
+I-P	0	0	0	0	0	0	0	0	0	0	0	0	0	0	341
+I-T	0	0	0	0	0	0	0	0	0	0	0	0	0	0	148
+O	0	0	0	0	0	0	0	0	0	0	0	0	0	0	11563
+
+
+tst   1       1.5378e-01     3.3230     0.2379     0.2298    77.0200     0.0000     0.0000     0.0000     0.0000          1
+
+processed 15061 tokens with 1906 phrases; found: 0 phrases; correct: 0.
+accuracy:  77.02%; precision:   0.00%; recall:   0.00%; FB1:   0.00
+                A: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                G: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                I: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                M: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                O: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                P: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                T: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+
+bos	i-a	i-g	i-i	i-m	i-o	i-p	i-t	o
+i-a	0	0	0	0	0	0	0	79
+i-g	0	0	0	0	0	0	0	2866
+i-i	0	0	0	0	0	0	0	4279
+i-m	0	0	0	0	0	0	0	233
+i-o	0	0	0	0	0	0	0	4704
+i-p	0	0	0	0	0	0	0	5625
+i-t	0	0	0	0	0	0	0	2006
+o	0	0	0	0	0	0	0	63391
+
+bos	B-A	B-G	B-I	B-M	B-O	B-P	B-T	I-A	I-G	I-I	I-M	I-O	I-P	I-T	O
+B-A	0	0	0	0	0	0	0	0	0	0	0	0	0	0	14
+B-G	0	0	0	0	0	0	0	0	0	0	0	0	0	0	340
+B-I	0	0	0	0	0	0	0	0	0	0	0	0	0	0	309
+B-M	0	0	0	0	0	0	0	0	0	0	0	0	0	0	32
+B-O	0	0	0	0	0	0	0	0	0	0	0	0	0	0	378
+B-P	0	0	0	0	0	0	0	0	0	0	0	0	0	0	472
+B-T	0	0	0	0	0	0	0	0	0	0	0	0	0	0	361
+I-A	0	0	0	0	0	0	0	0	0	0	0	0	0	0	14
+I-G	0	0	0	0	0	0	0	0	0	0	0	0	0	0	111
+I-I	0	0	0	0	0	0	0	0	0	0	0	0	0	0	360
+I-M	0	0	0	0	0	0	0	0	0	0	0	0	0	0	16
+I-O	0	0	0	0	0	0	0	0	0	0	0	0	0	0	518
+I-P	0	0	0	0	0	0	0	0	0	0	0	0	0	0	385
+I-T	0	0	0	0	0	0	0	0	0	0	0	0	0	0	151
+O	0	0	0	0	0	0	0	0	0	0	0	0	0	0	11600
+
+
+
+shuffling trn batches...
+dset  epoch        mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn0  2       1.2385e-01    97.0085
+trn   2       1.1995e-01    17.4873     0.2200     0.2124    78.7600     0.0000     0.0000     0.0000     0.0000          1
+
+processed 119681 tokens with 14358 phrases; found: 0 phrases; correct: 0.
+accuracy:  78.76%; precision:   0.00%; recall:   0.00%; FB1:   0.00
+                A: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                G: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                I: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                M: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                O: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                P: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                T: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+
+bos	i-a	i-g	i-i	i-m	i-o	i-p	i-t	o
+i-a	0	0	0	0	0	0	0	553
+i-g	0	0	0	0	0	0	0	24222
+i-i	0	0	0	0	0	0	0	33433
+i-m	0	0	0	0	0	0	0	2249
+i-o	0	0	0	0	0	0	0	29370
+i-p	0	0	0	0	0	0	0	41399
+i-t	0	0	0	0	0	0	0	14016
+o	0	0	0	0	0	0	0	514975
+
+bos	B-A	B-G	B-I	B-M	B-O	B-P	B-T	I-A	I-G	I-I	I-M	I-O	I-P	I-T	O
+B-A	0	0	0	0	0	0	0	0	0	0	0	0	0	0	109
+B-G	0	0	0	0	0	0	0	0	0	0	0	0	0	0	2890
+B-I	0	0	0	0	0	0	0	0	0	0	0	0	0	0	2595
+B-M	0	0	0	0	0	0	0	0	0	0	0	0	0	0	244
+B-O	0	0	0	0	0	0	0	0	0	0	0	0	0	0	2432
+B-P	0	0	0	0	0	0	0	0	0	0	0	0	0	0	3704
+B-T	0	0	0	0	0	0	0	0	0	0	0	0	0	0	2384
+I-A	0	0	0	0	0	0	0	0	0	0	0	0	0	0	52
+I-G	0	0	0	0	0	0	0	0	0	0	0	0	0	0	841
+I-I	0	0	0	0	0	0	0	0	0	0	0	0	0	0	2740
+I-M	0	0	0	0	0	0	0	0	0	0	0	0	0	0	186
+I-O	0	0	0	0	0	0	0	0	0	0	0	0	0	0	3274
+I-P	0	0	0	0	0	0	0	0	0	0	0	0	0	0	2669
+I-T	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1303
+O	0	0	0	0	0	0	0	0	0	0	0	0	0	0	94258
+
+
+dev   2       1.2102e-01     2.6170     0.2268     0.2185    78.1500     0.0000     0.0000     0.0000     0.0000          1
+
+processed 14796 tokens with 1871 phrases; found: 0 phrases; correct: 0.
+accuracy:  78.15%; precision:   0.00%; recall:   0.00%; FB1:   0.00
+                A: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                G: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                I: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                M: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                O: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                P: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                T: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+
+bos	i-a	i-g	i-i	i-m	i-o	i-p	i-t	o
+i-a	0	0	0	0	0	0	0	191
+i-g	0	0	0	0	0	0	0	3400
+i-i	0	0	0	0	0	0	0	3734
+i-m	0	0	0	0	0	0	0	303
+i-o	0	0	0	0	0	0	0	3766
+i-p	0	0	0	0	0	0	0	5433
+i-t	0	0	0	0	0	0	0	1670
+o	0	0	0	0	0	0	0	63056
+
+bos	B-A	B-G	B-I	B-M	B-O	B-P	B-T	I-A	I-G	I-I	I-M	I-O	I-P	I-T	O
+B-A	0	0	0	0	0	0	0	0	0	0	0	0	0	0	23
+B-G	0	0	0	0	0	0	0	0	0	0	0	0	0	0	399
+B-I	0	0	0	0	0	0	0	0	0	0	0	0	0	0	322
+B-M	0	0	0	0	0	0	0	0	0	0	0	0	0	0	34
+B-O	0	0	0	0	0	0	0	0	0	0	0	0	0	0	321
+B-P	0	0	0	0	0	0	0	0	0	0	0	0	0	0	497
+B-T	0	0	0	0	0	0	0	0	0	0	0	0	0	0	275
+I-A	0	0	0	0	0	0	0	0	0	0	0	0	0	0	33
+I-G	0	0	0	0	0	0	0	0	0	0	0	0	0	0	100
+I-I	0	0	0	0	0	0	0	0	0	0	0	0	0	0	284
+I-M	0	0	0	0	0	0	0	0	0	0	0	0	0	0	19
+I-O	0	0	0	0	0	0	0	0	0	0	0	0	0	0	437
+I-P	0	0	0	0	0	0	0	0	0	0	0	0	0	0	341
+I-T	0	0	0	0	0	0	0	0	0	0	0	0	0	0	148
+O	0	0	0	0	0	0	0	0	0	0	0	0	0	0	11563
+
+
+tst   2       1.4749e-01     3.3433     0.2379     0.2298    77.0200     0.0000     0.0000     0.0000     0.0000          1
+
+processed 15061 tokens with 1906 phrases; found: 0 phrases; correct: 0.
+accuracy:  77.02%; precision:   0.00%; recall:   0.00%; FB1:   0.00
+                A: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                G: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                I: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                M: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                O: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                P: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                T: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+
+bos	i-a	i-g	i-i	i-m	i-o	i-p	i-t	o
+i-a	0	0	0	0	0	0	0	79
+i-g	0	0	0	0	0	0	0	2866
+i-i	0	0	0	0	0	0	0	4279
+i-m	0	0	0	0	0	0	0	233
+i-o	0	0	0	0	0	0	0	4704
+i-p	0	0	0	0	0	0	0	5625
+i-t	0	0	0	0	0	0	0	2006
+o	0	0	0	0	0	0	0	63391
+
+bos	B-A	B-G	B-I	B-M	B-O	B-P	B-T	I-A	I-G	I-I	I-M	I-O	I-P	I-T	O
+B-A	0	0	0	0	0	0	0	0	0	0	0	0	0	0	14
+B-G	0	0	0	0	0	0	0	0	0	0	0	0	0	0	340
+B-I	0	0	0	0	0	0	0	0	0	0	0	0	0	0	309
+B-M	0	0	0	0	0	0	0	0	0	0	0	0	0	0	32
+B-O	0	0	0	0	0	0	0	0	0	0	0	0	0	0	378
+B-P	0	0	0	0	0	0	0	0	0	0	0	0	0	0	472
+B-T	0	0	0	0	0	0	0	0	0	0	0	0	0	0	361
+I-A	0	0	0	0	0	0	0	0	0	0	0	0	0	0	14
+I-G	0	0	0	0	0	0	0	0	0	0	0	0	0	0	111
+I-I	0	0	0	0	0	0	0	0	0	0	0	0	0	0	360
+I-M	0	0	0	0	0	0	0	0	0	0	0	0	0	0	16
+I-O	0	0	0	0	0	0	0	0	0	0	0	0	0	0	518
+I-P	0	0	0	0	0	0	0	0	0	0	0	0	0	0	385
+I-T	0	0	0	0	0	0	0	0	0	0	0	0	0	0	151
+O	0	0	0	0	0	0	0	0	0	0	0	0	0	0	11600
+
+
+
+shuffling trn batches...
+dset  epoch        mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn0  3       1.2201e-01    97.1145
+trn   3       1.1823e-01    17.4971     0.2200     0.2124    78.7600     0.0000     0.0000     0.0000     0.0000          1
+
+processed 119681 tokens with 14358 phrases; found: 0 phrases; correct: 0.
+accuracy:  78.76%; precision:   0.00%; recall:   0.00%; FB1:   0.00
+                A: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                G: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                I: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                M: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                O: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                P: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                T: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+
+bos	i-a	i-g	i-i	i-m	i-o	i-p	i-t	o
+i-a	0	0	0	0	0	0	0	553
+i-g	0	0	0	0	0	0	0	24222
+i-i	0	0	0	0	0	0	0	33433
+i-m	0	0	0	0	0	0	0	2249
+i-o	0	0	0	0	0	0	0	29370
+i-p	0	0	0	0	0	0	0	41399
+i-t	0	0	0	0	0	0	0	14016
+o	0	0	0	0	0	0	0	514975
+
+bos	B-A	B-G	B-I	B-M	B-O	B-P	B-T	I-A	I-G	I-I	I-M	I-O	I-P	I-T	O
+B-A	0	0	0	0	0	0	0	0	0	0	0	0	0	0	109
+B-G	0	0	0	0	0	0	0	0	0	0	0	0	0	0	2890
+B-I	0	0	0	0	0	0	0	0	0	0	0	0	0	0	2595
+B-M	0	0	0	0	0	0	0	0	0	0	0	0	0	0	244
+B-O	0	0	0	0	0	0	0	0	0	0	0	0	0	0	2432
+B-P	0	0	0	0	0	0	0	0	0	0	0	0	0	0	3704
+B-T	0	0	0	0	0	0	0	0	0	0	0	0	0	0	2384
+I-A	0	0	0	0	0	0	0	0	0	0	0	0	0	0	52
+I-G	0	0	0	0	0	0	0	0	0	0	0	0	0	0	841
+I-I	0	0	0	0	0	0	0	0	0	0	0	0	0	0	2740
+I-M	0	0	0	0	0	0	0	0	0	0	0	0	0	0	186
+I-O	0	0	0	0	0	0	0	0	0	0	0	0	0	0	3274
+I-P	0	0	0	0	0	0	0	0	0	0	0	0	0	0	2669
+I-T	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1303
+O	0	0	0	0	0	0	0	0	0	0	0	0	0	0	94258
+
+
+dev   3       1.1936e-01     2.6157     0.2268     0.2185    78.1500     0.0000     0.0000     0.0000     0.0000          1
+
+processed 14796 tokens with 1871 phrases; found: 0 phrases; correct: 0.
+accuracy:  78.15%; precision:   0.00%; recall:   0.00%; FB1:   0.00
+                A: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                G: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                I: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                M: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                O: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                P: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                T: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+
+bos	i-a	i-g	i-i	i-m	i-o	i-p	i-t	o
+i-a	0	0	0	0	0	0	0	191
+i-g	0	0	0	0	0	0	0	3400
+i-i	0	0	0	0	0	0	0	3734
+i-m	0	0	0	0	0	0	0	303
+i-o	0	0	0	0	0	0	0	3766
+i-p	0	0	0	0	0	0	0	5433
+i-t	0	0	0	0	0	0	0	1670
+o	0	0	0	0	0	0	0	63056
+
+bos	B-A	B-G	B-I	B-M	B-O	B-P	B-T	I-A	I-G	I-I	I-M	I-O	I-P	I-T	O
+B-A	0	0	0	0	0	0	0	0	0	0	0	0	0	0	23
+B-G	0	0	0	0	0	0	0	0	0	0	0	0	0	0	399
+B-I	0	0	0	0	0	0	0	0	0	0	0	0	0	0	322
+B-M	0	0	0	0	0	0	0	0	0	0	0	0	0	0	34
+B-O	0	0	0	0	0	0	0	0	0	0	0	0	0	0	321
+B-P	0	0	0	0	0	0	0	0	0	0	0	0	0	0	497
+B-T	0	0	0	0	0	0	0	0	0	0	0	0	0	0	275
+I-A	0	0	0	0	0	0	0	0	0	0	0	0	0	0	33
+I-G	0	0	0	0	0	0	0	0	0	0	0	0	0	0	100
+I-I	0	0	0	0	0	0	0	0	0	0	0	0	0	0	284
+I-M	0	0	0	0	0	0	0	0	0	0	0	0	0	0	19
+I-O	0	0	0	0	0	0	0	0	0	0	0	0	0	0	437
+I-P	0	0	0	0	0	0	0	0	0	0	0	0	0	0	341
+I-T	0	0	0	0	0	0	0	0	0	0	0	0	0	0	148
+O	0	0	0	0	0	0	0	0	0	0	0	0	0	0	11563
+
+
+tst   3       1.4485e-01     3.3446     0.2379     0.2298    77.0200     0.0000     0.0000     0.0000     0.0000          1
+
+processed 15061 tokens with 1906 phrases; found: 0 phrases; correct: 0.
+accuracy:  77.02%; precision:   0.00%; recall:   0.00%; FB1:   0.00
+                A: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                G: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                I: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                M: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                O: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                P: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                T: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+
+bos	i-a	i-g	i-i	i-m	i-o	i-p	i-t	o
+i-a	0	0	0	0	0	0	0	79
+i-g	0	0	0	0	0	0	0	2866
+i-i	0	0	0	0	0	0	0	4279
+i-m	0	0	0	0	0	0	0	233
+i-o	0	0	0	0	0	0	0	4704
+i-p	0	0	0	0	0	0	0	5625
+i-t	0	0	0	0	0	0	0	2006
+o	0	0	0	0	0	0	0	63391
+
+bos	B-A	B-G	B-I	B-M	B-O	B-P	B-T	I-A	I-G	I-I	I-M	I-O	I-P	I-T	O
+B-A	0	0	0	0	0	0	0	0	0	0	0	0	0	0	14
+B-G	0	0	0	0	0	0	0	0	0	0	0	0	0	0	340
+B-I	0	0	0	0	0	0	0	0	0	0	0	0	0	0	309
+B-M	0	0	0	0	0	0	0	0	0	0	0	0	0	0	32
+B-O	0	0	0	0	0	0	0	0	0	0	0	0	0	0	378
+B-P	0	0	0	0	0	0	0	0	0	0	0	0	0	0	472
+B-T	0	0	0	0	0	0	0	0	0	0	0	0	0	0	361
+I-A	0	0	0	0	0	0	0	0	0	0	0	0	0	0	14
+I-G	0	0	0	0	0	0	0	0	0	0	0	0	0	0	111
+I-I	0	0	0	0	0	0	0	0	0	0	0	0	0	0	360
+I-M	0	0	0	0	0	0	0	0	0	0	0	0	0	0	16
+I-O	0	0	0	0	0	0	0	0	0	0	0	0	0	0	518
+I-P	0	0	0	0	0	0	0	0	0	0	0	0	0	0	385
+I-T	0	0	0	0	0	0	0	0	0	0	0	0	0	0	151
+O	0	0	0	0	0	0	0	0	0	0	0	0	0	0	11600
+
+
+
+shuffling trn batches...
+dset  epoch        mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn0  4       1.2072e-01    96.8221
+trn   4       1.1700e-01    17.5971     0.2200     0.2124    78.7600     0.0000     0.0000     0.0000     0.0000          1
+
+processed 119681 tokens with 14358 phrases; found: 0 phrases; correct: 0.
+accuracy:  78.76%; precision:   0.00%; recall:   0.00%; FB1:   0.00
+                A: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                G: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                I: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                M: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                O: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                P: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                T: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+
+bos	i-a	i-g	i-i	i-m	i-o	i-p	i-t	o
+i-a	0	0	0	0	0	0	0	553
+i-g	0	0	0	0	0	0	0	24222
+i-i	0	0	0	0	0	0	0	33433
+i-m	0	0	0	0	0	0	0	2249
+i-o	0	0	0	0	0	0	0	29370
+i-p	0	0	0	0	0	0	0	41399
+i-t	0	0	0	0	0	0	0	14016
+o	0	0	0	0	0	0	0	514975
+
+bos	B-A	B-G	B-I	B-M	B-O	B-P	B-T	I-A	I-G	I-I	I-M	I-O	I-P	I-T	O
+B-A	0	0	0	0	0	0	0	0	0	0	0	0	0	0	109
+B-G	0	0	0	0	0	0	0	0	0	0	0	0	0	0	2890
+B-I	0	0	0	0	0	0	0	0	0	0	0	0	0	0	2595
+B-M	0	0	0	0	0	0	0	0	0	0	0	0	0	0	244
+B-O	0	0	0	0	0	0	0	0	0	0	0	0	0	0	2432
+B-P	0	0	0	0	0	0	0	0	0	0	0	0	0	0	3704
+B-T	0	0	0	0	0	0	0	0	0	0	0	0	0	0	2384
+I-A	0	0	0	0	0	0	0	0	0	0	0	0	0	0	52
+I-G	0	0	0	0	0	0	0	0	0	0	0	0	0	0	841
+I-I	0	0	0	0	0	0	0	0	0	0	0	0	0	0	2740
+I-M	0	0	0	0	0	0	0	0	0	0	0	0	0	0	186
+I-O	0	0	0	0	0	0	0	0	0	0	0	0	0	0	3274
+I-P	0	0	0	0	0	0	0	0	0	0	0	0	0	0	2669
+I-T	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1303
+O	0	0	0	0	0	0	0	0	0	0	0	0	0	0	94258
+
+
+dev   4       1.1827e-01     2.6332     0.2268     0.2185    78.1500     0.0000     0.0000     0.0000     0.0000          1
+
+processed 14796 tokens with 1871 phrases; found: 0 phrases; correct: 0.
+accuracy:  78.15%; precision:   0.00%; recall:   0.00%; FB1:   0.00
+                A: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                G: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                I: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                M: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                O: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                P: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                T: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+
+bos	i-a	i-g	i-i	i-m	i-o	i-p	i-t	o
+i-a	0	0	0	0	0	0	0	191
+i-g	0	0	0	0	0	0	0	3400
+i-i	0	0	0	0	0	0	0	3734
+i-m	0	0	0	0	0	0	0	303
+i-o	0	0	0	0	0	0	0	3766
+i-p	0	0	0	0	0	0	0	5433
+i-t	0	0	0	0	0	0	0	1670
+o	0	0	0	0	0	0	0	63056
+
+bos	B-A	B-G	B-I	B-M	B-O	B-P	B-T	I-A	I-G	I-I	I-M	I-O	I-P	I-T	O
+B-A	0	0	0	0	0	0	0	0	0	0	0	0	0	0	23
+B-G	0	0	0	0	0	0	0	0	0	0	0	0	0	0	399
+B-I	0	0	0	0	0	0	0	0	0	0	0	0	0	0	322
+B-M	0	0	0	0	0	0	0	0	0	0	0	0	0	0	34
+B-O	0	0	0	0	0	0	0	0	0	0	0	0	0	0	321
+B-P	0	0	0	0	0	0	0	0	0	0	0	0	0	0	497
+B-T	0	0	0	0	0	0	0	0	0	0	0	0	0	0	275
+I-A	0	0	0	0	0	0	0	0	0	0	0	0	0	0	33
+I-G	0	0	0	0	0	0	0	0	0	0	0	0	0	0	100
+I-I	0	0	0	0	0	0	0	0	0	0	0	0	0	0	284
+I-M	0	0	0	0	0	0	0	0	0	0	0	0	0	0	19
+I-O	0	0	0	0	0	0	0	0	0	0	0	0	0	0	437
+I-P	0	0	0	0	0	0	0	0	0	0	0	0	0	0	341
+I-T	0	0	0	0	0	0	0	0	0	0	0	0	0	0	148
+O	0	0	0	0	0	0	0	0	0	0	0	0	0	0	11563
+
+
+tst   4       1.4297e-01     3.3556     0.2379     0.2298    77.0200     0.0000     0.0000     0.0000     0.0000          1
+
+processed 15061 tokens with 1906 phrases; found: 0 phrases; correct: 0.
+accuracy:  77.02%; precision:   0.00%; recall:   0.00%; FB1:   0.00
+                A: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                G: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                I: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                M: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                O: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                P: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                T: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+
+bos	i-a	i-g	i-i	i-m	i-o	i-p	i-t	o
+i-a	0	0	0	0	0	0	0	79
+i-g	0	0	0	0	0	0	0	2866
+i-i	0	0	0	0	0	0	0	4279
+i-m	0	0	0	0	0	0	0	233
+i-o	0	0	0	0	0	0	0	4704
+i-p	0	0	0	0	0	0	0	5625
+i-t	0	0	0	0	0	0	0	2006
+o	0	0	0	0	0	0	0	63391
+
+bos	B-A	B-G	B-I	B-M	B-O	B-P	B-T	I-A	I-G	I-I	I-M	I-O	I-P	I-T	O
+B-A	0	0	0	0	0	0	0	0	0	0	0	0	0	0	14
+B-G	0	0	0	0	0	0	0	0	0	0	0	0	0	0	340
+B-I	0	0	0	0	0	0	0	0	0	0	0	0	0	0	309
+B-M	0	0	0	0	0	0	0	0	0	0	0	0	0	0	32
+B-O	0	0	0	0	0	0	0	0	0	0	0	0	0	0	378
+B-P	0	0	0	0	0	0	0	0	0	0	0	0	0	0	472
+B-T	0	0	0	0	0	0	0	0	0	0	0	0	0	0	361
+I-A	0	0	0	0	0	0	0	0	0	0	0	0	0	0	14
+I-G	0	0	0	0	0	0	0	0	0	0	0	0	0	0	111
+I-I	0	0	0	0	0	0	0	0	0	0	0	0	0	0	360
+I-M	0	0	0	0	0	0	0	0	0	0	0	0	0	0	16
+I-O	0	0	0	0	0	0	0	0	0	0	0	0	0	0	518
+I-P	0	0	0	0	0	0	0	0	0	0	0	0	0	0	385
+I-T	0	0	0	0	0	0	0	0	0	0	0	0	0	0	151
+O	0	0	0	0	0	0	0	0	0	0	0	0	0	0	11600
+
+
+
+shuffling trn batches...
+dset  epoch        mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn0  5       1.1970e-01    97.9154
+trn   5       1.1742e-01    17.5821     0.2200     0.2124    78.7600     0.0000     0.0000     0.0000     0.0000          1
+
+processed 119681 tokens with 14358 phrases; found: 0 phrases; correct: 0.
+accuracy:  78.76%; precision:   0.00%; recall:   0.00%; FB1:   0.00
+                A: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                G: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                I: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                M: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                O: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                P: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                T: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+
+bos	i-a	i-g	i-i	i-m	i-o	i-p	i-t	o
+i-a	0	0	0	0	0	0	0	553
+i-g	0	0	0	0	0	0	0	24222
+i-i	0	0	0	0	0	0	0	33433
+i-m	0	0	0	0	0	0	0	2249
+i-o	0	0	0	0	0	0	0	29370
+i-p	0	0	0	0	0	0	0	41399
+i-t	0	0	0	0	0	0	0	14016
+o	0	0	0	0	0	0	0	514975
+
+bos	B-A	B-G	B-I	B-M	B-O	B-P	B-T	I-A	I-G	I-I	I-M	I-O	I-P	I-T	O
+B-A	0	0	0	0	0	0	0	0	0	0	0	0	0	0	109
+B-G	0	0	0	0	0	0	0	0	0	0	0	0	0	0	2890
+B-I	0	0	0	0	0	0	0	0	0	0	0	0	0	0	2595
+B-M	0	0	0	0	0	0	0	0	0	0	0	0	0	0	244
+B-O	0	0	0	0	0	0	0	0	0	0	0	0	0	0	2432
+B-P	0	0	0	0	0	0	0	0	0	0	0	0	0	0	3704
+B-T	0	0	0	0	0	0	0	0	0	0	0	0	0	0	2384
+I-A	0	0	0	0	0	0	0	0	0	0	0	0	0	0	52
+I-G	0	0	0	0	0	0	0	0	0	0	0	0	0	0	841
+I-I	0	0	0	0	0	0	0	0	0	0	0	0	0	0	2740
+I-M	0	0	0	0	0	0	0	0	0	0	0	0	0	0	186
+I-O	0	0	0	0	0	0	0	0	0	0	0	0	0	0	3274
+I-P	0	0	0	0	0	0	0	0	0	0	0	0	0	0	2669
+I-T	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1303
+O	0	0	0	0	0	0	0	0	0	0	0	0	0	0	94258
+
+
+dev   5       1.1882e-01     2.6347     0.2268     0.2185    78.1500     0.0000     0.0000     0.0000     0.0000          1
+
+processed 14796 tokens with 1871 phrases; found: 0 phrases; correct: 0.
+accuracy:  78.15%; precision:   0.00%; recall:   0.00%; FB1:   0.00
+                A: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                G: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                I: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                M: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                O: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                P: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                T: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+
+bos	i-a	i-g	i-i	i-m	i-o	i-p	i-t	o
+i-a	0	0	0	0	0	0	0	191
+i-g	0	0	0	0	0	0	0	3400
+i-i	0	0	0	0	0	0	0	3734
+i-m	0	0	0	0	0	0	0	303
+i-o	0	0	0	0	0	0	0	3766
+i-p	0	0	0	0	0	0	0	5433
+i-t	0	0	0	0	0	0	0	1670
+o	0	0	0	0	0	0	0	63056
+
+bos	B-A	B-G	B-I	B-M	B-O	B-P	B-T	I-A	I-G	I-I	I-M	I-O	I-P	I-T	O
+B-A	0	0	0	0	0	0	0	0	0	0	0	0	0	0	23
+B-G	0	0	0	0	0	0	0	0	0	0	0	0	0	0	399
+B-I	0	0	0	0	0	0	0	0	0	0	0	0	0	0	322
+B-M	0	0	0	0	0	0	0	0	0	0	0	0	0	0	34
+B-O	0	0	0	0	0	0	0	0	0	0	0	0	0	0	321
+B-P	0	0	0	0	0	0	0	0	0	0	0	0	0	0	497
+B-T	0	0	0	0	0	0	0	0	0	0	0	0	0	0	275
+I-A	0	0	0	0	0	0	0	0	0	0	0	0	0	0	33
+I-G	0	0	0	0	0	0	0	0	0	0	0	0	0	0	100
+I-I	0	0	0	0	0	0	0	0	0	0	0	0	0	0	284
+I-M	0	0	0	0	0	0	0	0	0	0	0	0	0	0	19
+I-O	0	0	0	0	0	0	0	0	0	0	0	0	0	0	437
+I-P	0	0	0	0	0	0	0	0	0	0	0	0	0	0	341
+I-T	0	0	0	0	0	0	0	0	0	0	0	0	0	0	148
+O	0	0	0	0	0	0	0	0	0	0	0	0	0	0	11563
+
+
+tst   5       1.4432e-01     3.3678     0.2379     0.2298    77.0200     0.0000     0.0000     0.0000     0.0000          1
+
+processed 15061 tokens with 1906 phrases; found: 0 phrases; correct: 0.
+accuracy:  77.02%; precision:   0.00%; recall:   0.00%; FB1:   0.00
+                A: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                G: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                I: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                M: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                O: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                P: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                T: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+
+bos	i-a	i-g	i-i	i-m	i-o	i-p	i-t	o
+i-a	0	0	0	0	0	0	0	79
+i-g	0	0	0	0	0	0	0	2866
+i-i	0	0	0	0	0	0	0	4279
+i-m	0	0	0	0	0	0	0	233
+i-o	0	0	0	0	0	0	0	4704
+i-p	0	0	0	0	0	0	0	5625
+i-t	0	0	0	0	0	0	0	2006
+o	0	0	0	0	0	0	0	63391
+
+bos	B-A	B-G	B-I	B-M	B-O	B-P	B-T	I-A	I-G	I-I	I-M	I-O	I-P	I-T	O
+B-A	0	0	0	0	0	0	0	0	0	0	0	0	0	0	14
+B-G	0	0	0	0	0	0	0	0	0	0	0	0	0	0	340
+B-I	0	0	0	0	0	0	0	0	0	0	0	0	0	0	309
+B-M	0	0	0	0	0	0	0	0	0	0	0	0	0	0	32
+B-O	0	0	0	0	0	0	0	0	0	0	0	0	0	0	378
+B-P	0	0	0	0	0	0	0	0	0	0	0	0	0	0	472
+B-T	0	0	0	0	0	0	0	0	0	0	0	0	0	0	361
+I-A	0	0	0	0	0	0	0	0	0	0	0	0	0	0	14
+I-G	0	0	0	0	0	0	0	0	0	0	0	0	0	0	111
+I-I	0	0	0	0	0	0	0	0	0	0	0	0	0	0	360
+I-M	0	0	0	0	0	0	0	0	0	0	0	0	0	0	16
+I-O	0	0	0	0	0	0	0	0	0	0	0	0	0	0	518
+I-P	0	0	0	0	0	0	0	0	0	0	0	0	0	0	385
+I-T	0	0	0	0	0	0	0	0	0	0	0	0	0	0	151
+O	0	0	0	0	0	0	0	0	0	0	0	0	0	0	11600
+
+
+
+shuffling trn batches...
+dset  epoch        mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn0  6       1.1801e-01    96.5140
+trn   6       1.1552e-01    17.4063     0.2200     0.2124    78.7600     0.0000     0.0000     0.0000     0.0000          1
+
+processed 119681 tokens with 14358 phrases; found: 0 phrases; correct: 0.
+accuracy:  78.76%; precision:   0.00%; recall:   0.00%; FB1:   0.00
+                A: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                G: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                I: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                M: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                O: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                P: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                T: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+
+bos	i-a	i-g	i-i	i-m	i-o	i-p	i-t	o
+i-a	0	0	0	0	0	0	0	553
+i-g	0	0	0	0	0	0	0	24222
+i-i	0	0	0	0	0	0	0	33433
+i-m	0	0	0	0	0	0	0	2249
+i-o	0	0	0	0	0	0	0	29370
+i-p	0	0	0	0	0	0	0	41399
+i-t	0	0	0	0	0	0	0	14016
+o	0	0	0	0	0	0	0	514975
+
+bos	B-A	B-G	B-I	B-M	B-O	B-P	B-T	I-A	I-G	I-I	I-M	I-O	I-P	I-T	O
+B-A	0	0	0	0	0	0	0	0	0	0	0	0	0	0	109
+B-G	0	0	0	0	0	0	0	0	0	0	0	0	0	0	2890
+B-I	0	0	0	0	0	0	0	0	0	0	0	0	0	0	2595
+B-M	0	0	0	0	0	0	0	0	0	0	0	0	0	0	244
+B-O	0	0	0	0	0	0	0	0	0	0	0	0	0	0	2432
+B-P	0	0	0	0	0	0	0	0	0	0	0	0	0	0	3704
+B-T	0	0	0	0	0	0	0	0	0	0	0	0	0	0	2384
+I-A	0	0	0	0	0	0	0	0	0	0	0	0	0	0	52
+I-G	0	0	0	0	0	0	0	0	0	0	0	0	0	0	841
+I-I	0	0	0	0	0	0	0	0	0	0	0	0	0	0	2740
+I-M	0	0	0	0	0	0	0	0	0	0	0	0	0	0	186
+I-O	0	0	0	0	0	0	0	0	0	0	0	0	0	0	3274
+I-P	0	0	0	0	0	0	0	0	0	0	0	0	0	0	2669
+I-T	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1303
+O	0	0	0	0	0	0	0	0	0	0	0	0	0	0	94258
+
+
+dev   6       1.1654e-01     2.6027     0.2268     0.2185    78.1500     0.0000     0.0000     0.0000     0.0000          1
+
+processed 14796 tokens with 1871 phrases; found: 0 phrases; correct: 0.
+accuracy:  78.15%; precision:   0.00%; recall:   0.00%; FB1:   0.00
+                A: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                G: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                I: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                M: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                O: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                P: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                T: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+
+bos	i-a	i-g	i-i	i-m	i-o	i-p	i-t	o
+i-a	0	0	0	0	0	0	0	191
+i-g	0	0	0	0	0	0	0	3400
+i-i	0	0	0	0	0	0	0	3734
+i-m	0	0	0	0	0	0	0	303
+i-o	0	0	0	0	0	0	0	3766
+i-p	0	0	0	0	0	0	0	5433
+i-t	0	0	0	0	0	0	0	1670
+o	0	0	0	0	0	0	0	63056
+
+bos	B-A	B-G	B-I	B-M	B-O	B-P	B-T	I-A	I-G	I-I	I-M	I-O	I-P	I-T	O
+B-A	0	0	0	0	0	0	0	0	0	0	0	0	0	0	23
+B-G	0	0	0	0	0	0	0	0	0	0	0	0	0	0	399
+B-I	0	0	0	0	0	0	0	0	0	0	0	0	0	0	322
+B-M	0	0	0	0	0	0	0	0	0	0	0	0	0	0	34
+B-O	0	0	0	0	0	0	0	0	0	0	0	0	0	0	321
+B-P	0	0	0	0	0	0	0	0	0	0	0	0	0	0	497
+B-T	0	0	0	0	0	0	0	0	0	0	0	0	0	0	275
+I-A	0	0	0	0	0	0	0	0	0	0	0	0	0	0	33
+I-G	0	0	0	0	0	0	0	0	0	0	0	0	0	0	100
+I-I	0	0	0	0	0	0	0	0	0	0	0	0	0	0	284
+I-M	0	0	0	0	0	0	0	0	0	0	0	0	0	0	19
+I-O	0	0	0	0	0	0	0	0	0	0	0	0	0	0	437
+I-P	0	0	0	0	0	0	0	0	0	0	0	0	0	0	341
+I-T	0	0	0	0	0	0	0	0	0	0	0	0	0	0	148
+O	0	0	0	0	0	0	0	0	0	0	0	0	0	0	11563
+
+
+tst   6       1.3472e-01     3.3228     0.2379     0.2298    77.0200     0.0000     0.0000     0.0000     0.0000          1
+
+processed 15061 tokens with 1906 phrases; found: 0 phrases; correct: 0.
+accuracy:  77.02%; precision:   0.00%; recall:   0.00%; FB1:   0.00
+                A: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                G: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                I: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                M: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                O: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                P: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                T: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+
+bos	i-a	i-g	i-i	i-m	i-o	i-p	i-t	o
+i-a	0	0	0	0	0	0	0	79
+i-g	0	0	0	0	0	0	0	2866
+i-i	0	0	0	0	0	0	0	4279
+i-m	0	0	0	0	0	0	0	233
+i-o	0	0	0	0	0	0	0	4704
+i-p	0	0	0	0	0	0	0	5625
+i-t	0	0	0	0	0	0	0	2006
+o	0	0	0	0	0	0	0	63391
+
+bos	B-A	B-G	B-I	B-M	B-O	B-P	B-T	I-A	I-G	I-I	I-M	I-O	I-P	I-T	O
+B-A	0	0	0	0	0	0	0	0	0	0	0	0	0	0	14
+B-G	0	0	0	0	0	0	0	0	0	0	0	0	0	0	340
+B-I	0	0	0	0	0	0	0	0	0	0	0	0	0	0	309
+B-M	0	0	0	0	0	0	0	0	0	0	0	0	0	0	32
+B-O	0	0	0	0	0	0	0	0	0	0	0	0	0	0	378
+B-P	0	0	0	0	0	0	0	0	0	0	0	0	0	0	472
+B-T	0	0	0	0	0	0	0	0	0	0	0	0	0	0	361
+I-A	0	0	0	0	0	0	0	0	0	0	0	0	0	0	14
+I-G	0	0	0	0	0	0	0	0	0	0	0	0	0	0	111
+I-I	0	0	0	0	0	0	0	0	0	0	0	0	0	0	360
+I-M	0	0	0	0	0	0	0	0	0	0	0	0	0	0	16
+I-O	0	0	0	0	0	0	0	0	0	0	0	0	0	0	518
+I-P	0	0	0	0	0	0	0	0	0	0	0	0	0	0	385
+I-T	0	0	0	0	0	0	0	0	0	0	0	0	0	0	151
+O	0	0	0	0	0	0	0	0	0	0	0	0	0	0	11600
+
+
+
+shuffling trn batches...
+dset  epoch        mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn0  7       1.1672e-01    96.6790
+trn   7       1.1251e-01    17.4170     0.2200     0.2124    78.7600     0.0000     0.0000     0.0000     0.0000          1
+
+processed 119681 tokens with 14358 phrases; found: 0 phrases; correct: 0.
+accuracy:  78.76%; precision:   0.00%; recall:   0.00%; FB1:   0.00
+                A: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                G: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                I: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                M: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                O: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                P: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                T: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+
+bos	i-a	i-g	i-i	i-m	i-o	i-p	i-t	o
+i-a	0	0	0	0	0	0	0	553
+i-g	0	0	0	0	0	0	0	24222
+i-i	0	0	0	0	0	0	0	33433
+i-m	0	0	0	0	0	0	0	2249
+i-o	0	0	0	0	0	0	0	29370
+i-p	0	0	0	0	0	0	0	41399
+i-t	0	0	0	0	0	0	0	14016
+o	0	0	0	0	0	0	0	514975
+
+bos	B-A	B-G	B-I	B-M	B-O	B-P	B-T	I-A	I-G	I-I	I-M	I-O	I-P	I-T	O
+B-A	0	0	0	0	0	0	0	0	0	0	0	0	0	0	109
+B-G	0	0	0	0	0	0	0	0	0	0	0	0	0	0	2890
+B-I	0	0	0	0	0	0	0	0	0	0	0	0	0	0	2595
+B-M	0	0	0	0	0	0	0	0	0	0	0	0	0	0	244
+B-O	0	0	0	0	0	0	0	0	0	0	0	0	0	0	2432
+B-P	0	0	0	0	0	0	0	0	0	0	0	0	0	0	3704
+B-T	0	0	0	0	0	0	0	0	0	0	0	0	0	0	2384
+I-A	0	0	0	0	0	0	0	0	0	0	0	0	0	0	52
+I-G	0	0	0	0	0	0	0	0	0	0	0	0	0	0	841
+I-I	0	0	0	0	0	0	0	0	0	0	0	0	0	0	2740
+I-M	0	0	0	0	0	0	0	0	0	0	0	0	0	0	186
+I-O	0	0	0	0	0	0	0	0	0	0	0	0	0	0	3274
+I-P	0	0	0	0	0	0	0	0	0	0	0	0	0	0	2669
+I-T	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1303
+O	0	0	0	0	0	0	0	0	0	0	0	0	0	0	94258
+
+
+dev   7       1.1406e-01     2.6034     0.2268     0.2185    78.1500     0.0000     0.0000     0.0000     0.0000          1
+
+processed 14796 tokens with 1871 phrases; found: 0 phrases; correct: 0.
+accuracy:  78.15%; precision:   0.00%; recall:   0.00%; FB1:   0.00
+                A: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                G: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                I: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                M: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                O: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                P: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                T: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+
+bos	i-a	i-g	i-i	i-m	i-o	i-p	i-t	o
+i-a	0	0	0	0	0	0	0	191
+i-g	0	0	0	0	0	0	0	3400
+i-i	0	0	0	0	0	0	0	3734
+i-m	0	0	0	0	0	0	0	303
+i-o	0	0	0	0	0	0	0	3766
+i-p	0	0	0	0	0	0	0	5433
+i-t	0	0	0	0	0	0	0	1670
+o	0	0	0	0	0	0	0	63056
+
+bos	B-A	B-G	B-I	B-M	B-O	B-P	B-T	I-A	I-G	I-I	I-M	I-O	I-P	I-T	O
+B-A	0	0	0	0	0	0	0	0	0	0	0	0	0	0	23
+B-G	0	0	0	0	0	0	0	0	0	0	0	0	0	0	399
+B-I	0	0	0	0	0	0	0	0	0	0	0	0	0	0	322
+B-M	0	0	0	0	0	0	0	0	0	0	0	0	0	0	34
+B-O	0	0	0	0	0	0	0	0	0	0	0	0	0	0	321
+B-P	0	0	0	0	0	0	0	0	0	0	0	0	0	0	497
+B-T	0	0	0	0	0	0	0	0	0	0	0	0	0	0	275
+I-A	0	0	0	0	0	0	0	0	0	0	0	0	0	0	33
+I-G	0	0	0	0	0	0	0	0	0	0	0	0	0	0	100
+I-I	0	0	0	0	0	0	0	0	0	0	0	0	0	0	284
+I-M	0	0	0	0	0	0	0	0	0	0	0	0	0	0	19
+I-O	0	0	0	0	0	0	0	0	0	0	0	0	0	0	437
+I-P	0	0	0	0	0	0	0	0	0	0	0	0	0	0	341
+I-T	0	0	0	0	0	0	0	0	0	0	0	0	0	0	148
+O	0	0	0	0	0	0	0	0	0	0	0	0	0	0	11563
+
+
+tst   7       1.3577e-01     3.3332     0.2379     0.2298    77.0200     0.0000     0.0000     0.0000     0.0000          1
+
+processed 15061 tokens with 1906 phrases; found: 0 phrases; correct: 0.
+accuracy:  77.02%; precision:   0.00%; recall:   0.00%; FB1:   0.00
+                A: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                G: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                I: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                M: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                O: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                P: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+                T: precision:   0.00%; recall:   0.00%; FB1:   0.00  0
+
+bos	i-a	i-g	i-i	i-m	i-o	i-p	i-t	o
+i-a	0	0	0	0	0	0	0	79
+i-g	0	0	0	0	0	0	0	2866
+i-i	0	0	0	0	0	0	0	4279
+i-m	0	0	0	0	0	0	0	233
+i-o	0	0	0	0	0	0	0	4704
+i-p	0	0	0	0	0	0	0	5625
+i-t	0	0	0	0	0	0	0	2006
+o	0	0	0	0	0	0	0	63391
+
+bos	B-A	B-G	B-I	B-M	B-O	B-P	B-T	I-A	I-G	I-I	I-M	I-O	I-P	I-T	O
+B-A	0	0	0	0	0	0	0	0	0	0	0	0	0	0	14
+B-G	0	0	0	0	0	0	0	0	0	0	0	0	0	0	340
+B-I	0	0	0	0	0	0	0	0	0	0	0	0	0	0	309
+B-M	0	0	0	0	0	0	0	0	0	0	0	0	0	0	32
+B-O	0	0	0	0	0	0	0	0	0	0	0	0	0	0	378
+B-P	0	0	0	0	0	0	0	0	0	0	0	0	0	0	472
+B-T	0	0	0	0	0	0	0	0	0	0	0	0	0	0	361
+I-A	0	0	0	0	0	0	0	0	0	0	0	0	0	0	14
+I-G	0	0	0	0	0	0	0	0	0	0	0	0	0	0	111
+I-I	0	0	0	0	0	0	0	0	0	0	0	0	0	0	360
+I-M	0	0	0	0	0	0	0	0	0	0	0	0	0	0	16
+I-O	0	0	0	0	0	0	0	0	0	0	0	0	0	0	518
+I-P	0	0	0	0	0	0	0	0	0	0	0	0	0	0	385
+I-T	0	0	0	0	0	0	0	0	0	0	0	0	0	0	151
+O	0	0	0	0	0	0	0	0	0	0	0	0	0	0	11600
+
+
+
+shuffling trn batches...

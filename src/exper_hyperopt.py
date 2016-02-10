@@ -21,8 +21,8 @@ from hyperopt import hp, fmin, tpe, Trials, STATUS_OK
 from copy import deepcopy
 
 LOG_DIR = '{}/logs'.format(ROOT_DIR)
-random.seed(0)
-rng = np.random.RandomState(1234567)
+#random.seed(0)
+rng = np.random.RandomState()
 lasagne.random.set_rng(rng)
 
 def get_arg_parser():
@@ -33,14 +33,14 @@ def get_arg_parser():
     parser.add_argument("--activation", default='bi-lstm', help="activation function for hidden layer: bi-relu bi-lstm bi-tanh")
     parser.add_argument("--fbmerge", default='concat', choices=['concat','sum'], help="how to merge forward backward layer outputs")
     parser.add_argument("--n_hidden", default=[128], nargs='+', type=int, help="number of neurons in each hidden layer")
-    parser.add_argument("--recout", default=1, type=int, help="use recurrent output layer")
+    parser.add_argument("--recout", default=0, type=int, help="use recurrent output layer")
     parser.add_argument("--batch_norm", default=0, type=int, help="whether to use batch norm between deep layers")
     parser.add_argument("--drates", default=[0, 0], nargs='+', type=float, help="dropout rates")
     parser.add_argument("--opt", default="adam", help="optimization method: sgd, rmsprop, adagrad, adam")
     parser.add_argument("--lr", default=0.001, type=float, help="learning rate")
     parser.add_argument("--norm", default=5, type=float, help="Threshold for clipping norm of gradient")
     parser.add_argument("--n_batch", default=32, type=int, help="batch size")
-    parser.add_argument("--fepoch", default=50, type=int, help="number of epochs")
+    parser.add_argument("--fepoch", default=200, type=int, help="number of epochs")
     parser.add_argument("--patience", default=10, type=int, help="how patient the validator is")
     parser.add_argument("--sample", default=0, type=int, help="num of sents to sample from trn in the order of K")
     parser.add_argument("--feat", default='basic', help="feat func to use")
@@ -190,7 +190,8 @@ class Validator(object):
                         tseq = np.argmax(logprobs, axis=-1).flatten()
                     else:
                         tseq = tdecoder.decode(sent, logprobs, debug=False)
-                        assert tdecoder.sanity_check(sent, tseq)
+                        if not tdecoder.sanity_check(sent, tseq):
+                            return 0
                     pred2.append(tseq)
                 pred = pred2
 
@@ -224,32 +225,7 @@ class Validator(object):
                 #logging.info('sabir tasti.')
                 break
             logging.info('')
-
-class Curriculum(object):
-    def __init__(self, trn, dev, batcher, reporter, numofparts):
-        self.trn = trn
-        self.dev = dev
-        self.trndat = batcher.get_batches(trn)
-        self.devdat = batcher.get_batches(dev)
-        self.batcher = batcher
-        self.reporter = reporter
-        self.numofparts = numofparts
-        self.trn_parts = []
-        sentineachpart = len(self.trn) / self.numofparts
-        
-        for i in xrange(self.numofparts):
-            l = i * sentineachpart
-            u = (i + 1) * sentineachpart if i != (self.numofparts - 1) else len(self.trn)
-            self.trn_parts.append(self.trn[l:u])
-
-        self.trn_parts.append(self.trn)
-
-    def validate(self, rdnn, fepoch, patience=-1):
-        for i in xrange(self.numofparts + 1):
-            logging.info('Learning part:{}'.format(i + 1))
-            validator = Validator(self.trn_parts[i], self.dev, self.batcher, self.reporter)
-            validator.validate(rdnn, fepoch, patience)        
-
+        return dbests['dev'][1]
 
 class Validator3(object):
 
@@ -328,13 +304,11 @@ def objective(hargs):
 
     args['lr'] = hargs['lr']
     args['decoder'] = hargs['decoder']
-    args['n_hidden'] = hargs['n_hidden'] * 3
     args['n_batch'] = hargs['n_batch']
     args['norm'] = hargs['norm']
-    args['shuf'] = hargs['shuf']
     args['fbias'] = hargs['fbias']
     args['emb'] = hargs['emb']
-    args['recout'] = hargs['recout']
+    args['eps'] = hargs['eps']
     args['gnoise'] = hargs['gnoise']
     args['n_hidden'] = map(lambda x:x[1], sorted((k,v) for k, v in hargs['dpart'].iteritems() if k.startswith('h')))
     args['drates'] = map(lambda x:x[1], sorted((k,v) for k, v in hargs['dpart'].iteritems() if k.startswith('d')))
@@ -451,17 +425,16 @@ if __name__ == '__main__':
     logger.addHandler(shandler);logger.addHandler(ihandler);logger.addHandler(dhandler);
 
     common = {}
-    common['lr'] = hp.uniform('lr', 0.0005, 0.1)
+    common['lr'] = hp.uniform('lr', 0.00001, 0.005)
     common['decoder'] = hp.choice('decoder', [0, 1])
-    common['recout'] = hp.choice('recout', [0, 1, 2])
-    common['n_hidden'] = hp.choice('n_hidden', [64, 128])
-    common['n_batch'] = hp.choice('n_batch', [32, 64, 128])
+    common['n_hidden'] = hp.choice('n_hidden', [32, 48, 64, 128])
+    common['n_batch'] = hp.choice('n_batch', [32, 48, 64, 128])
     common['norm'] = hp.uniform('norm', 0.5, 2)
-    common['shuf'] = hp.choice('shuf', [True, False])
     common['gnoise'] = hp.choice('gnoise', [True, False])
     common['fbias'] = hp.uniform('fbias', 0, 2)
-    common['emb'] = hp.choice('emb', [0, 64, 128, 256])
-    MAXL=7
+    common['eps'] = hp.uniform('eps', 1e-6, 1e-9)
+    common['emb'] = hp.choice('emb', [0, 64, 128])
+    MAXL=6
     dpart = [
         dict(
             [('h%dm%d'%(l,maxl), hp.choice('h%dm%d'%(l,maxl), [64, 128])) for l in range(1,maxl+1)] + 
@@ -474,7 +447,7 @@ if __name__ == '__main__':
     best = fmin(objective,
         space=space,
         algo=tpe.suggest,
-        max_evals=100,
+        max_evals=1000,
         trials=trials,
         )
 
