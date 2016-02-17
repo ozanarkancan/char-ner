@@ -1,9 +1,8 @@
 from collections import Counter
-import sys, random
+import sys
 
 
 if __name__ == '__main__':
-    random.seed(7)
     with open('ANERCorp') as src:
         dset = []
         sent = {'ws':[],'ts':[]}
@@ -16,24 +15,9 @@ if __name__ == '__main__':
                 dset.append(sent)
                 sent = {'ws':[],'ts':[]}
     print 'num of sents in ANERCorp:',len(dset)
-    random.shuffle(dset)
-    trn = dset[:4000]
-    dev = dset[4000:]
 
     with open('train.bio','w') as out:
-        for sent in trn:
-            for w,t in zip(sent['ws'],sent['ts']):
-                out.write('%s\n'%'\t'.join((w,t)))
-            out.write('\n')
-
-    with open('testa.bio','w') as out:
-        for sent in dev:
-            for w,t in zip(sent['ws'],sent['ts']):
-                out.write('%s\n'%'\t'.join((w,t)))
-            out.write('\n')
-
-    with open('testb.bio','w') as out:
-        for sent in dev:
+        for sent in dset:
             for w,t in zip(sent['ws'],sent['ts']):
                 out.write('%s\n'%'\t'.join((w,t)))
             out.write('\n')
