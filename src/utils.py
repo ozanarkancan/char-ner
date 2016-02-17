@@ -75,6 +75,20 @@ def get_subsents(sent):
         subsents.append(cursubsent)
     return subsents
 
+def get_phrases(sent):
+    phrases = []
+    phrase = [] 
+    for w,t in zip(sent['ws'],sent['ts']):
+        if t.startswith('B-'):
+            if len(phrase): phrases.append(phrase)
+            phrase = [w]
+        elif t.startswith('I-'):
+            phrase.append(w)
+        elif t.startswith('O'):
+            if len(phrase): phrases.append(phrase); phrase=[]
+    if len(phrase): phrases.append(phrase)
+    return phrases
+
 def top10(lang):
     langs = ['eng', 'deu', 'spa', 'ned', 'tr', 'cze', 'ger', 'arb']
     for l in langs:
@@ -120,12 +134,13 @@ def break2subsents(sent):
     return subsents
 
 if __name__ == '__main__':
-    trn,dev,tst = get_sents('ita')
-    sent = random.choice(trn)
-    for w,t in zip(sent['ws'],sent['ts']):
-        print w,t
-        for c in w:
-            print c
-        print 
-
-    
+    from tabulate import tabulate
+    trn,dev,tst = get_sents('ned')
+    # sents = random.sample(trn,10)
+    print sum(1 for sent in tst for phrase in get_phrases(sent) if len(' '.join(phrase).encode('utf-8')) > 60)
+    """
+    for sent in sents:
+        print tabulate([sent['ws'],sent['ts']])
+        print get_phrases(sent)
+        print
+    """
