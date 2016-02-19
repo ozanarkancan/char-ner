@@ -17,8 +17,7 @@ import encoding
 from utils import get_sents, sample_sents, valid_file_name, break2subsents
 from utils import ROOT_DIR
 from score import conlleval
-from lazrnn import RDNN, RDNN_Dummy, extract_rnn_params
-from nerrnn import RNNModel
+from lazrnn import RDNN, RDNN_Dummy
 
 LOG_DIR = '{}/logs'.format(ROOT_DIR)
 random.seed(0)
@@ -62,7 +61,7 @@ def get_arg_parser():
     parser.add_argument("--fbias", default=0., type=float, help="forget gate bias")
     parser.add_argument("--eps", default=1e-8, type=float, help="epsilon for adam")
     parser.add_argument("--gnoise", default=False, action='store_true', help="adding time dependent noise to the gradients")
-    parser.add_argument("--xvalid", default=0, type=int, help="xvalidate, work only on trn")
+    parser.add_argument("--xvalid", default=0, type=int, help="turns on xvalidate, also serves as seed, use smth > 0")
 
     return parser
 
@@ -147,23 +146,17 @@ class Validator(object):
     def xvalidate(self, rdnn, argsd, tdecoder):
         import copy
         logging.debug('xvalidating...')
-        rnn_initial_param_values = rdnn.get_param_values()
-        f1_scores, results = [], []
         dset = copy.copy(self.trn)
         trn_size = len(dset) - len(dset)/6
-        for i in range(argsd['xvalid']):
-            random.shuffle(dset)
-            self.trn, self.dev = dset[:trn_size], dset[trn_size:]
-            logging.debug(map(len, (self.trn,self.dev)))
+        random.seed(argsd['xvalid'])
+        random.shuffle(dset)
+        self.trn, self.dev = dset[:trn_size], dset[trn_size:]
+        logging.debug(map(len, (self.trn,self.dev)))
 
-            rdnn.set_param_values(rnn_initial_param_values)
-            res = self.validate(rdnn, argsd, tdecoder)
-            results.append(res)
-        f1_scores = map(lambda x: x['dev'][1],results)
-        logging.info(tabulate(results, headers='keys'))
-        logging.info('f1 scores: {}'.format(f1_scores))
-        logging.info('f1 mean:{} std:{}'.format(np.mean(f1_scores), np.std(f1_scores)))
-        return results
+        """logging.info('trn first sent:')
+        logging.info(self.trn[0]['ws'])"""
+        res = self.validate(rdnn, argsd, tdecoder)
+        return res
 
     def validate(self, rdnn, argsd, tdecoder):
         dbests = {'trn':(1,0.), 'dev':(1,0.), 'tst':(1,0.)}
@@ -176,6 +169,7 @@ class Validator(object):
         self.devdat = self.batcher.get_batches(self.dev) 
         self.tstdat = self.batcher.get_batches(self.tst) 
 
+        logging.info('training the model...')
         for e in range(1,argsd['fepoch']+1): # foreach epoch
             """ training """
             if argsd['shuf']:
@@ -187,7 +181,6 @@ class Validator(object):
                 trndat = self.trndat
 
             start_time = time.time()
-            logging.info('training the model...')
             mcost = rdnn.train(trndat)
             # dset  epoch      mcost      mtime       cerr
             end_time = time.time()
@@ -283,6 +276,7 @@ LPARAMS = ['activation', 'n_hidden', 'fbmerge', 'drates',
 def main():
     parser = get_arg_parser()
     args = vars(parser.parse_args())
+
     args['drates'] = args['drates'] if any(args['drates']) else [0]*(len(args['n_hidden'])+1)
 
     if args['rnn'] == 'nerrnn':
@@ -383,8 +377,7 @@ def main():
         RNN = RNNModel
     else:
         raise Exception
-    # end select rnn
-    # rnn_params = extract_rnn_params(args)
+
     rdnn = RNN(feat.NC, feat.NF, args)
     validator.xvalidate(rdnn, args, tdecoder) if args['xvalid'] else validator.validate(rdnn, args, tdecoder)
 
