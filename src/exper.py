@@ -58,7 +58,7 @@ def get_arg_parser():
     parser.add_argument("--reverse", default=False, action='store_true', help="reverse the training data as additional data")
     parser.add_argument("--decoder", default=0, type=int, help="use decoder to prevent invalid tag transitions")
     parser.add_argument("--breaktrn", default=0, type=int, help="break trn sents to subsents")
-    parser.add_argument("--captrn", default=0, type=int, help="consider sents lt this as trn")
+    parser.add_argument("--captrn", default=0, type=int, help="char sequences longer than this will be ignored in trn")
     parser.add_argument("--fbias", default=0., type=float, help="forget gate bias")
     parser.add_argument("--eps", default=1e-8, type=float, help="epsilon for adam")
     parser.add_argument("--gnoise", default=False, action='store_true', help="adding time dependent noise to the gradients")
@@ -140,25 +140,21 @@ class Validator(object):
         self.trn = trn
         self.dev = dev
         self.tst = tst
-        self.trndat = batcher.get_batches(trn) 
-        self.devdat = batcher.get_batches(dev) 
-        self.tstdat = batcher.get_batches(tst) 
         self.batcher = batcher
         self.reporter = reporter
 
 
     def xvalidate(self, rdnn, argsd, tdecoder):
+        import copy
         logging.debug('xvalidating...')
         rnn_initial_param_values = rdnn.get_param_values()
         f1_scores, results = [], []
-        dset = self.trn
+        dset = copy.copy(self.trn)
         trn_size = len(dset) - len(dset)/6
         for i in range(argsd['xvalid']):
             random.shuffle(dset)
             self.trn, self.dev = dset[:trn_size], dset[trn_size:]
             logging.debug(map(len, (self.trn,self.dev)))
-            self.trndat = self.batcher.get_batches(self.trn)
-            self.devdat = self.batcher.get_batches(self.dev) 
 
             rdnn.set_param_values(rnn_initial_param_values)
             res = self.validate(rdnn, argsd, tdecoder)
@@ -170,9 +166,15 @@ class Validator(object):
         return results
 
     def validate(self, rdnn, argsd, tdecoder):
-        logging.info('training the model...')
         dbests = {'trn':(1,0.), 'dev':(1,0.), 'tst':(1,0.)}
         anger = 0
+
+        if argsd['captrn']:
+            self.trn = filter(lambda sent: len(sent['cseq']) <= argsd['captrn'], self.trn)
+        logging.debug(map(len, (self.trn, self.dev)))
+        self.trndat = self.batcher.get_batches(self.trn) 
+        self.devdat = self.batcher.get_batches(self.dev) 
+        self.tstdat = self.batcher.get_batches(self.tst) 
 
         for e in range(1,argsd['fepoch']+1): # foreach epoch
             """ training """
@@ -185,6 +187,7 @@ class Validator(object):
                 trndat = self.trndat
 
             start_time = time.time()
+            logging.info('training the model...')
             mcost = rdnn.train(trndat)
             # dset  epoch      mcost      mtime       cerr
             end_time = time.time()
@@ -312,8 +315,10 @@ def main():
     if args['breaktrn']:
         trn = [subsent for sent in trn for subsent in break2subsents(sent)]
 
+    """
     if args['captrn']:
         trn = filter(lambda sent: len(sent['ws'])<args['captrn'], trn)
+    """
 
     if args['sample']>0:
         trn_size = args['sample']*1000
