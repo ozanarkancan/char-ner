@@ -4,9 +4,9 @@ import getpass
 
 STR = """#!/bin/bash
 #$ -N exper-{}
-#$ -q {}.q@{}
+#$ -q {}.q{}
 #$ -S /bin/bash
-##$ -l h_rt=00:59:00 #how many mins run
+#$ -l gpu={}
 #$ -pe smp {}
 #$ -cwd
 #$ -o /dev/null
@@ -21,20 +21,27 @@ MKL_NUM_THREADS={} THEANO_FLAGS=mode=FAST_RUN,device={},floatX=float32 python sr
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(prog="creatjob")
-    parser.add_argument("--p", type=bool, default=False, help='just print, dont submit') 
+    parser.add_argument("--p", default=False, action='store_true', help='just print, dont submit') 
     parser.add_argument("--script", default='exper')
     parser.add_argument("--script_args", required=True) 
-    parser.add_argument("--m", required=True, choices=['biyofiz-4-0','biyofiz-4-1','biyofiz-4-2','biyofiz-4-3','parcore-6-0','iui-5-0'])
-    parser.add_argument("--d", required=True, choices=['gpu','cpu','gpu0','gpu1'])
+    parser.add_argument("--m", default='', choices=['', 'biyofiz-4-0','biyofiz-4-1','biyofiz-4-2','biyofiz-4-3','parcore-6-0','iui-5-0'])
+    parser.add_argument("--d", default='gpu', choices=['gpu','cpu','gpu0','gpu1'])
     parser.add_argument("--smp", default=18, type=int)
     args = parser.parse_args()
 
     username = getpass.getuser()
-    args.smp = 1 if args.d.startswith('gpu') else args.smp
-    queue = args.m.split('-')[0]
-    queue = queue if queue == 'biyofiz' else 'all'
+    is_gpu, machine = 0, ''
+    if args.d.startswith('gpu'):
+        args.smp, is_gpu = 1, 1
 
-    job_text = STR.format(args.d, queue, args.m, args.smp, username, username, username, args.smp, args.d, args.script, args.script_args)
+    if len(args.m):
+        queue = args.m.split('-')[0]
+        queue = queue if queue == 'biyofiz' else 'all'
+        machine = '@%s'%args.m
+    else:
+        queue = 'biyofiz'
+
+    job_text = STR.format(args.d, queue, machine, is_gpu, args.smp, username, username, username, args.smp, args.d, args.script, args.script_args)
     print job_text
 
     if not args.p:
