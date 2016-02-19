@@ -26,7 +26,7 @@ rng = np.random.RandomState(1234567)
 lasagne.random.set_rng(rng)
 
 def get_arg_parser():
-    parser = argparse.ArgumentParser(prog="lazrnn")
+    parser = argparse.ArgumentParser(prog="char-ner", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     
     parser.add_argument("--rnn", default='lazrnn', choices=['dummy','lazrnn','nerrnn'], help="which rnn to use")
     parser.add_argument("--rep", default='std', choices=['std','nospace','spec'], help="which representation to use")
@@ -58,10 +58,11 @@ def get_arg_parser():
     parser.add_argument("--reverse", default=False, action='store_true', help="reverse the training data as additional data")
     parser.add_argument("--decoder", default=0, type=int, help="use decoder to prevent invalid tag transitions")
     parser.add_argument("--breaktrn", default=0, type=int, help="break trn sents to subsents")
-    parser.add_argument("--captrn", default=0, type=int, help="consider sents lt this as trn")
+    parser.add_argument("--captrn", default=0, type=int, help="char sequences longer than this will be ignored in trn")
     parser.add_argument("--fbias", default=0., type=float, help="forget gate bias")
     parser.add_argument("--eps", default=1e-8, type=float, help="epsilon for adam")
     parser.add_argument("--gnoise", default=False, action='store_true', help="adding time dependent noise to the gradients")
+    parser.add_argument("--xvalid", default=0, type=int, help="xvalidate, work only on trn")
 
     return parser
 
@@ -93,13 +94,6 @@ class Batcher(object):
                 ymsk_batch[si,:nchar,:] = True
             batches.append((X_batch, Xmsk_batch, y_batch, ymsk_batch))
         return batches
-        """
-            X_batches.append(X_batch)
-            Xmsk_batches.append(Xmsk_batch)
-            y_batches.append(y_batch)
-            ymsk_batches.append(ymsk_batch)
-        return X_batches, Xmsk_batches, y_batches, ymsk_batches
-        """
 
 class Reporter(object):
 
@@ -146,16 +140,41 @@ class Validator(object):
         self.trn = trn
         self.dev = dev
         self.tst = tst
-        self.trndat = batcher.get_batches(trn) 
-        self.devdat = batcher.get_batches(dev) 
-        self.tstdat = batcher.get_batches(tst) 
+        self.batcher = batcher
         self.reporter = reporter
 
 
+    def xvalidate(self, rdnn, argsd, tdecoder):
+        import copy
+        logging.debug('xvalidating...')
+        rnn_initial_param_values = rdnn.get_param_values()
+        f1_scores, results = [], []
+        dset = copy.copy(self.trn)
+        trn_size = len(dset) - len(dset)/6
+        for i in range(argsd['xvalid']):
+            random.shuffle(dset)
+            self.trn, self.dev = dset[:trn_size], dset[trn_size:]
+            logging.debug(map(len, (self.trn,self.dev)))
+
+            rdnn.set_param_values(rnn_initial_param_values)
+            res = self.validate(rdnn, argsd, tdecoder)
+            results.append(res)
+        f1_scores = map(lambda x: x['dev'][1],results)
+        logging.info(tabulate(results, headers='keys'))
+        logging.info('f1 scores: {}'.format(f1_scores))
+        logging.info('f1 mean:{} std:{}'.format(np.mean(f1_scores), np.std(f1_scores)))
+        return results
+
     def validate(self, rdnn, argsd, tdecoder):
-        logging.info('training the model...')
         dbests = {'trn':(1,0.), 'dev':(1,0.), 'tst':(1,0.)}
         anger = 0
+
+        if argsd['captrn']:
+            self.trn = filter(lambda sent: len(sent['cseq']) <= argsd['captrn'], self.trn)
+        logging.debug(map(len, (self.trn, self.dev)))
+        self.trndat = self.batcher.get_batches(self.trn) 
+        self.devdat = self.batcher.get_batches(self.dev) 
+        self.tstdat = self.batcher.get_batches(self.tst) 
 
         for e in range(1,argsd['fepoch']+1): # foreach epoch
             """ training """
@@ -168,6 +187,7 @@ class Validator(object):
                 trndat = self.trndat
 
             start_time = time.time()
+            logging.info('training the model...')
             mcost = rdnn.train(trndat)
             # dset  epoch      mcost      mtime       cerr
             end_time = time.time()
@@ -179,6 +199,7 @@ class Validator(object):
             logging.info(('{:<5} {:<5} {:>12} ' + ('{:>10} '*9)).format('dset','epoch','mcost', 'mtime', 'cerr', 'werr', 'wacc', 'pre', 'recall', 'f1', 'best', 'best'))
             logging.info(('{:<5} {:<5d} {:>12.4e} {:>10.4f}').format('trn0',e,mcost, mtime))
             for ddat, datname, dset in zip([self.trndat,self.devdat, self.tstdat],['trn','dev','tst'], [self.trn, self.dev, self.tst]):
+                if len(dset) == 0: continue
                 start_time = time.time()
 
                 mcost, pred = rdnn.predict(ddat)
@@ -227,6 +248,8 @@ class Validator(object):
                 rdnn.lr.set_value(val * 0.95)
                 anger = 0
             logging.info('')
+        return dbests
+
 
 class Curriculum(object):
     def __init__(self, trn, dev, batcher, reporter, numofparts):
@@ -292,8 +315,10 @@ def main():
     if args['breaktrn']:
         trn = [subsent for sent in trn for subsent in break2subsents(sent)]
 
+    """
     if args['captrn']:
         trn = filter(lambda sent: len(sent['ws'])<args['captrn'], trn)
+    """
 
     if args['sample']>0:
         trn_size = args['sample']*1000
@@ -359,9 +384,9 @@ def main():
     else:
         raise Exception
     # end select rnn
-    rnn_params = extract_rnn_params(args)
+    # rnn_params = extract_rnn_params(args)
     rdnn = RNN(feat.NC, feat.NF, args)
-    validator.validate(rdnn, args, tdecoder)
+    validator.xvalidate(rdnn, args, tdecoder) if args['xvalid'] else validator.validate(rdnn, args, tdecoder)
 
 if __name__ == '__main__':
     main()

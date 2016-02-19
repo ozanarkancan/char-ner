@@ -60,21 +60,27 @@ def get_sents(fname):
         """
     return sents
 
+def write_to_file(dset, fname):
+    with open(fname,'w') as out:
+        for sent in dset:
+            for w,t in zip(sent['ws'],sent['ts']):
+                out.write('{}\t{}\n'.format(w,t))
+            out.write('\n')
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('mode', choices=['train','test'])
+    parser.add_argument('--trn_size', type=int, default=30000)
     args = parser.parse_args()
-    dset = get_sents('reyyan.{}.txt'.format(args.mode))
-    if args.mode == 'train':
-        sents = []
-        for sent in dset:
-            sents.extend(get_subsents(sent))
-        for sent in sents:
-            for w,t in zip(sent['ws'],sent['ts']):
-                print '{}\t{}'.format(w,t)
-            print
-    elif args.mode == 'test':
-        for sent in dset:
-            for w,t in zip(sent['ws'],sent['ts']):
-                print '{}\t{}'.format(w,t)
-            print
+    trn = [ssent for sent in get_sents('reyyan.train.txt') for ssent in get_subsents(sent)]
+    tst = [ssent for sent in get_sents('reyyan.test.txt') for ssent in get_subsents(sent)]
+    print map(len, (trn,tst))
+
+    random.seed(7)
+    random.shuffle(trn)
+    trn, dev = trn[:args.trn_size], trn[args.trn_size:]
+    print map(len, (trn,dev,tst))
+
+
+    write_to_file(trn, 'train.bio')
+    write_to_file(dev, 'testa.bio')
+    write_to_file(tst, 'testb.bio')

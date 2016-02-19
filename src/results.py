@@ -190,7 +190,7 @@ def collect():
                 params_dict = get_params(lines)
                 #print params_dict
 
-                trn_lines = get_lines(lines, "trn")
+                trn_lines = get_lines(lines, "trn ")
                 dev_lines = get_lines(lines, "dev")
                 tst_lines = get_lines(lines, "tst")
             

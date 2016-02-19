@@ -36,7 +36,15 @@ class RDNN_Dummy:
         self.nc = nc
 
     def train(self, dsetdat):
+        import time
+        time.sleep(1)
         return 19
+
+    def get_param_values(self):
+        return []
+
+    def set_param_values(self, values):
+        pass
 
     def predict(self, dsetdat):
         ecost, rnn_last_predictions = 0, []

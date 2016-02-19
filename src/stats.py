@@ -74,6 +74,11 @@ def main():
     data = dict((lang,dict((dname,dset) for dname,dset in zip(dsetnames, get_sents(lang)))) for lang in langs)
 
     table = []
+    for l in langs:
+        table.append([l,sum(1 for sent in data[l]['trn'] if len(' '.join(sent['ws'])) > 500)])
+    print tabulate(table)
+
+    table = []
     for dname in dsetnames:
         table.append([dname]+map(len,[data[l][dname] for l in langs]))
     print tabulate(table,headers=['#sent']+langs, tablefmt='latex')
@@ -96,7 +101,7 @@ def main():
         # nchar_sents = [sum(1 for w in sent['ws']) for sent in chain(*data[l].values())]
         for dname in dsetnames:
             nchar_sents = [sum(1 for w in sent['ws']) for sent in data[l][dname]]
-            table.append(['{}-{}'.format(l,dname)]+[int(f(nchar_sents)) for f in (np.min,np.max,np.mean,np.std)])
+            table.append(['{}-{}'.format(l,dname)]+[int(f(nchar_sents)) if len(nchar_sents) else 0 for f in (np.min,np.max,np.mean,np.std)])
         table.append(['...']*5)
     print tabulate(table,headers=['#word per sent']+['min','max','mean','std'])
     print
@@ -106,7 +111,7 @@ def main():
         # nchar_sents = [sum(1 for c in ' '.join(sent['ws'])) for sent in chain(*data[l].values())]
         for dname in dsetnames:
             nchar_sents = [sum(1 for c in ' '.join(sent['ws'])) for sent in data[l][dname]]
-            table.append(['{}-{}'.format(l,dname)]+[int(f(nchar_sents)) for f in (np.min,np.max,np.mean,np.std)])
+            table.append(['{}-{}'.format(l,dname)]+[int(f(nchar_sents)) if len(nchar_sents) else 0 for f in (np.min,np.max,np.mean,np.std)])
         table.append(['...']*5)
     print tabulate(table,headers=['#char per sent']+['min','max','mean','std'])
     print
