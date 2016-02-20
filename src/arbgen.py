@@ -7,7 +7,7 @@ def write_to_file(dset, fname):
     with open(fname,'w') as out:
         for sent in dset:
             for w,t in zip(sent['ws'],sent['ts']):
-                out.write('{}\t{}\n'.format(w,t))
+                out.write('{}\t{}\n'.format(w.encode('utf-8'),t))
             out.write('\n')
 
 if __name__ == '__main__':
@@ -21,7 +21,7 @@ if __name__ == '__main__':
         for l in src:
             l = l.strip()
             w,t = l.split(' ')
-            sent['ws'].append(w)
+            sent['ws'].append(w.decode('utf-8'))
             sent['ts'].append(t.replace('PERS','PER'))
             if l in  ['. O', '? O', '! O']:
                 dset.append(sent)
@@ -29,6 +29,7 @@ if __name__ == '__main__':
 
     print 'num of sents in ANERCorp:', len(dset)
     random.seed(args.seed)
+    dset = filter(lambda sent: len(' '.join(sent['ws']))<=500, dset)
     random.shuffle(dset)
     trn_size = len(dset) - len(dset)/6
     trn, dev = dset[:trn_size], dset[trn_size:]

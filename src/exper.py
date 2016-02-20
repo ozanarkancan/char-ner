@@ -38,9 +38,9 @@ def get_arg_parser():
     parser.add_argument("--drates", default=[0, 0], nargs='+', type=float, help="dropout rates")
     parser.add_argument("--opt", default="adam", help="optimization method: sgd, rmsprop, adagrad, adam")
     parser.add_argument("--lr", default=0.001, type=float, help="learning rate")
-    parser.add_argument("--norm", default=5, type=float, help="Threshold for clipping norm of gradient")
+    parser.add_argument("--norm", default=1, type=float, help="Threshold for clipping norm of gradient")
     parser.add_argument("--n_batch", default=32, type=int, help="batch size")
-    parser.add_argument("--fepoch", default=5000, type=int, help="number of epochs")
+    parser.add_argument("--fepoch", default=600, type=int, help="number of epochs")
     parser.add_argument("--patience", default=-1, type=int, help="how patient the validator is")
     parser.add_argument("--sample", default=0, type=int, help="num of sents to sample from trn in the order of K")
     parser.add_argument("--feat", default='basic', help="feat func to use")
@@ -50,15 +50,13 @@ def get_arg_parser():
     parser.add_argument("--log", default='das_auto', help="log file name")
     parser.add_argument("--sorted", default=1, type=int, help="sort datasets before training and prediction")
     parser.add_argument("--in2out", default=0, type=int, help="connect input & output")
-    parser.add_argument("--curriculum", default=1, type=int, help="curriculum learning: number of parts")
     parser.add_argument("--lang", default='eng', help="ner lang")
     parser.add_argument("--save", default=False, action='store_true', help="save param values to file")
     parser.add_argument("--shuf", default=1, type=int, help="shuffle the batches.")
     parser.add_argument("--tagging", default='io', choices=['io','bio'], help="tag scheme to use")
-    parser.add_argument("--reverse", default=False, action='store_true', help="reverse the training data as additional data")
-    parser.add_argument("--decoder", default=0, type=int, help="use decoder to prevent invalid tag transitions")
+    parser.add_argument("--decoder", default=1, type=int, help="use decoder to prevent invalid tag transitions")
     parser.add_argument("--breaktrn", default=0, type=int, help="break trn sents to subsents")
-    parser.add_argument("--captrn", default=0, type=int, help="consider sents lt this as trn")
+    parser.add_argument("--captrn", default=500, type=int, help="consider sents lt this as trn")
     parser.add_argument("--fbias", default=0., type=float, help="forget gate bias")
     parser.add_argument("--eps", default=1e-8, type=float, help="epsilon for adam")
     parser.add_argument("--gnoise", default=False, action='store_true', help="adding time dependent noise to the gradients")
@@ -93,13 +91,6 @@ class Batcher(object):
                 ymsk_batch[si,:nchar,:] = True
             batches.append((X_batch, Xmsk_batch, y_batch, ymsk_batch))
         return batches
-        """
-            X_batches.append(X_batch)
-            Xmsk_batches.append(Xmsk_batch)
-            y_batches.append(y_batch)
-            ymsk_batches.append(ymsk_batch)
-        return X_batches, Xmsk_batches, y_batches, ymsk_batches
-        """
 
 class Reporter(object):
 
@@ -228,34 +219,10 @@ class Validator(object):
                 anger = 0
             logging.info('')
 
-class Curriculum(object):
-    def __init__(self, trn, dev, batcher, reporter, numofparts):
-        self.trn = trn
-        self.dev = dev
-        self.trndat = batcher.get_batches(trn)
-        self.devdat = batcher.get_batches(dev)
-        self.batcher = batcher
-        self.reporter = reporter
-        self.numofparts = numofparts
-        self.trn_parts = []
-        sentineachpart = len(self.trn) / self.numofparts
-        
-        for i in xrange(self.numofparts):
-            l = i * sentineachpart
-            u = (i + 1) * sentineachpart if i != (self.numofparts - 1) else len(self.trn)
-            self.trn_parts.append(self.trn[l:u])
-
-        self.trn_parts.append(self.trn)
-
-    def validate(self, rdnn, fepoch, patience=-1):
-        for i in xrange(self.numofparts + 1):
-            logging.info('Learning part:{}'.format(i + 1))
-            validator = Validator(self.trn_parts[i], self.dev, self.batcher, self.reporter)
-            validator.validate(rdnn, fepoch, patience)        
 
 LPARAMS = ['activation', 'n_hidden', 'fbmerge', 'drates',
     'recout','decoder', 'opt','lr','norm','gclip','truncate','n_batch', 'shuf',
-    'breaktrn', 'captrn', 'emb','lang', 'reverse','fbias']
+    'breaktrn', 'captrn', 'emb','lang', 'fbias']
 
 def main():
     parser = get_arg_parser()
@@ -309,21 +276,6 @@ def main():
                 'wiseq': repobj.get_wiseq(sent), 
                 'tseq': repobj.get_tseq(sent)})
     
-    if args['reverse']:
-        def reverse_data(d):
-            copy_d = d.copy()
-            
-            for k in copy_d.keys():
-                if k == "wiseq":
-                    m = max(copy_d[k])
-                    copy_d[k] = map(lambda x: -1 if x == -1 else m - x, copy_d[k][::-1])
-                else:
-                    copy_d[k] = copy_d[k][::-1]
-            return copy_d
-
-        reversed = map(reverse_data, trn)
-        trn += reversed
-
 
     if args['sorted']:
         trn = sorted(trn, key=lambda sent: len(sent['cseq']))
@@ -347,7 +299,7 @@ def main():
     reporter = Reporter(feat, get_ts_func)
     tdecoder = decoder.ViterbiDecoder(trn, feat) if args['decoder'] else decoder.MaxDecoder(trn, feat)
 
-    validator = Validator(trn, dev, tst, batcher, reporter) if args['curriculum'] < 2 else Curriculum(trn, dev, batcher, reporter, args['curriculum'])
+    validator = Validator(trn, dev, tst, batcher, reporter)
 
     # select rnn
     if args['rnn'] == 'dummy':
