@@ -1,0 +1,72 @@
+activation:	bi-lstm
+batch_norm:	0
+breaktrn:	0
+captrn:	500
+decoder:	1
+drates:	[0.2, 0.5, 0.5, 0.5, 0.5, 0.8]
+emb:	0
+eps:	1e-08
+fbias:	0.0
+fbmerge:	concat
+feat:	basic
+fepoch:	600
+gclip:	0
+gnoise:	False
+in2out:	0
+lang:	arb1
+log:	das_auto
+lr:	0.001
+n_batch:	32
+n_hidden:	[128, 128, 128, 128, 128]
+norm:	1
+opt:	adam
+patience:	-1
+recout:	0
+rep:	std
+rnn:	lazrnn
+sample:	0
+save:	False
+shuf:	1
+sorted:	1
+tagging:	io
+truncate:	-1
+base_log_name:	biyofiz-4-0:gpu,activation:bi-lstm,n_hidden:128,128,128,128,128,fbmerge:concat,drates:0.2,0.5,0.5,0.5,0.5,0.8,recout:0,decoder:1,opt:adam,lr:0.001,norm:1,gclip:0,truncate:-1,n_batch:32,shuf:1,breaktrn:0,captrn:500,emb:0,lang:arb1,fbias:0.0
+# of sents trn, dev, tst: 3988 797 797
+maxlen: 498 minlen: 1 avglen: 148.54 stdlen: 93.51
+[u'c= ', u'c=!', u'c="', u'c=#', u'c=%', u'c=&', u"c='", u'c=(', u'c=)', u'c=*', u'c=,', u'c=-', u'c=.', u'c=/', u'c=0', u'c=1', u'c=2', u'c=3', u'c=4', u'c=5', u'c=6', u'c=7', u'c=8', u'c=9', u'c=:', u'c=;', u'c==', u'c=>', u'c=?', u'c=A', u'c=B', u'c=C', u'c=D', u'c=E', u'c=F', u'c=G', u'c=H', u'c=I', u'c=J', u'c=K', u'c=L', u'c=M', u'c=N', u'c=O', u'c=P', u'c=R', u'c=S', u'c=T', u'c=U', u'c=W', u'c=X', u'c=Y', u'c=Z', u'c=[', u'c=]', u'c=a', u'c=b', u'c=c', u'c=d', u'c=e', u'c=f', u'c=g', u'c=h', u'c=i', u'c=k', u'c=l', u'c=m', u'c=n', u'c=o', u'c=p', u'c=q', u'c=r', u'c=s', u'c=t', u'c=u', u'c=v', u'c=w', u'c=x', u'c=y', u'c=\xab', u'c=\xbb', u'c=\xed', u'c=\xfc', u'c=\u060c', u'c=\u061b', u'c=\u061f', u'c=\u0621', u'c=\u0622', u'c=\u0623', u'c=\u0624', u'c=\u0625', u'c=\u0626', u'c=\u0627', u'c=\u0628', u'c=\u0629', u'c=\u062a', u'c=\u062b', u'c=\u062c', u'c=\u062d', u'c=\u062e', u'c=\u062f', u'c=\u0630', u'c=\u0631', u'c=\u0632', u'c=\u0633', u'c=\u0634', u'c=\u0635', u'c=\u0636', u'c=\u0637', u'c=\u0638', u'c=\u0639', u'c=\u063a', u'c=\u0640', u'c=\u0641', u'c=\u0642', u'c=\u0643', u'c=\u0644', u'c=\u0645', u'c=\u0646', u'c=\u0647', u'c=\u0648', u'c=\u0649', u'c=\u064a', u'c=\u064b', u'c=\u064c', u'c=\u064d', u'c=\u064e', u'c=\u064f', u'c=\u0650', u'c=\u0651', u'c=\u0652', u'c=\u200f', u'c=\u2013', u'c=\u2019', u'c=\u201c', u'c=\u201d', u'c=\u2026', u'c=\ufef7', u'c=\ufef9']
+['i-loc' 'i-misc' 'i-org' 'i-per' 'o']
+['B-LOC' 'B-MISC' 'B-ORG' 'B-PER' 'I-LOC' 'I-MISC' 'I-ORG' 'I-PER' 'O']
+NF: 139 NC: 5
+Compiling functions...
+Compiling done.
+training the model...
+dset  epoch        mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn0  1       1.2267e-01   265.8839
+trn   1       9.7607e-02    39.4293     0.1194     0.1104    88.9600     0.0000     0.0000     0.0000     0.0000          1
+dev   1       9.9190e-02    14.2636     0.1206     0.1111    88.8900     0.0000     0.0000     0.0000     0.0000          1
+tst   1       9.9190e-02    14.3136     0.1206     0.1111    88.8900     0.0000     0.0000     0.0000     0.0000          1
+
+dset  epoch        mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn0  2       9.8626e-02   264.9370
+trn   2       8.8013e-02    43.8222     0.1195     0.1104    88.9600     0.0000     0.0000     0.0000     0.0000          1
+dev   2       8.9801e-02    15.2659     0.1206     0.1111    88.8900     0.0000     0.0000     0.0000     0.0000          1
+tst   2       8.9801e-02    16.1310     0.1206     0.1111    88.8900     0.0000     0.0000     0.0000     0.0000          1
+
+dset  epoch        mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn0  3       9.0622e-02   270.7784
+trn   3       8.3697e-02    39.7011     0.1194     0.1104    88.9600   100.0000     0.0200     0.0500     0.0500          3
+dev   3       8.5983e-02    14.3023     0.1206     0.1111    88.8900     0.0000     0.0000     0.0000     0.0000          1
+tst   3       8.5983e-02    14.4024     0.1206     0.1111    88.8900     0.0000     0.0000     0.0000     0.0000          1
+
+dset  epoch        mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn0  4       8.6487e-02   263.0731
+trn   4       7.5503e-02    38.9841     0.1148     0.1102    88.9800    27.0000     3.9100     6.8300     6.8300          4
+dev   4       7.8474e-02    16.0002     0.1175     0.1110    88.9000    19.8800     1.9700     3.5800     3.5800          4
+tst   4       7.8474e-02    14.2208     0.1175     0.1110    88.9000    19.8800     1.9700     3.5800     3.5800          4
+
+dset  epoch        mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn0  5       8.3738e-02   277.1601
+trn   5       7.4208e-02    43.0344     0.1162     0.1092    89.0800    51.8400     1.7000     3.2900     6.8300          4
+dev   5       7.7484e-02    15.9073     0.1183     0.1102    88.9800    42.8600     0.9200     1.8100     3.5800          4
+tst   5       7.7484e-02    16.0696     0.1183     0.1102    88.9800    42.8600     0.9200     1.8100     3.5800          4
+
