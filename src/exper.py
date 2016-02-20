@@ -17,7 +17,8 @@ import encoding
 from utils import get_sents, sample_sents, valid_file_name, break2subsents
 from utils import ROOT_DIR
 from score import conlleval
-from lazrnn import RDNN, RDNN_Dummy
+from lazrnn import RDNN, RDNN_Dummy, extract_rnn_params
+from nerrnn import RNNModel
 
 LOG_DIR = '{}/logs'.format(ROOT_DIR)
 random.seed(0)
@@ -25,9 +26,9 @@ rng = np.random.RandomState(1234567)
 lasagne.random.set_rng(rng)
 
 def get_arg_parser():
-    parser = argparse.ArgumentParser(prog="char-ner", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    parser = argparse.ArgumentParser(prog="lazrnn")
     
-    parser.add_argument("--rnn", default='lazrnn', choices=['dummy','lazrnn'], help="which rnn to use")
+    parser.add_argument("--rnn", default='lazrnn', choices=['dummy','lazrnn','nerrnn'], help="which rnn to use")
     parser.add_argument("--rep", default='std', choices=['std','nospace','spec'], help="which representation to use")
     parser.add_argument("--activation", default='bi-lstm', help="activation function for hidden layer: bi-relu bi-lstm bi-tanh")
     parser.add_argument("--fbmerge", default='concat', choices=['concat','sum'], help="how to merge forward backward layer outputs")
@@ -37,27 +38,30 @@ def get_arg_parser():
     parser.add_argument("--drates", default=[0, 0], nargs='+', type=float, help="dropout rates")
     parser.add_argument("--opt", default="adam", help="optimization method: sgd, rmsprop, adagrad, adam")
     parser.add_argument("--lr", default=0.001, type=float, help="learning rate")
-    parser.add_argument("--norm", default=1, type=float, help="Threshold for clipping norm of gradient")
+    parser.add_argument("--norm", default=5, type=float, help="Threshold for clipping norm of gradient")
     parser.add_argument("--n_batch", default=32, type=int, help="batch size")
-    parser.add_argument("--fepoch", default=600, type=int, help="number of epochs")
+    parser.add_argument("--fepoch", default=5000, type=int, help="number of epochs")
+    parser.add_argument("--patience", default=-1, type=int, help="how patient the validator is")
     parser.add_argument("--sample", default=0, type=int, help="num of sents to sample from trn in the order of K")
     parser.add_argument("--feat", default='basic', help="feat func to use")
     parser.add_argument("--emb", default=0, type=int, help="embedding layer size")
     parser.add_argument("--gclip", default=0, type=float, help="clip gradient messages in recurrent layers if they are above this value")
     parser.add_argument("--truncate", default=-1, type=int, help="backward step size")
     parser.add_argument("--log", default='das_auto', help="log file name")
+    parser.add_argument("--sorted", default=1, type=int, help="sort datasets before training and prediction")
     parser.add_argument("--in2out", default=0, type=int, help="connect input & output")
+    parser.add_argument("--curriculum", default=1, type=int, help="curriculum learning: number of parts")
     parser.add_argument("--lang", default='eng', help="ner lang")
     parser.add_argument("--save", default=False, action='store_true', help="save param values to file")
     parser.add_argument("--shuf", default=1, type=int, help="shuffle the batches.")
     parser.add_argument("--tagging", default='io', choices=['io','bio'], help="tag scheme to use")
-    parser.add_argument("--decoder", default=1, type=int, help="use decoder to prevent invalid tag transitions")
+    parser.add_argument("--reverse", default=False, action='store_true', help="reverse the training data as additional data")
+    parser.add_argument("--decoder", default=0, type=int, help="use decoder to prevent invalid tag transitions")
     parser.add_argument("--breaktrn", default=0, type=int, help="break trn sents to subsents")
-    parser.add_argument("--captrn", default=500, type=int, help="char sequences longer than this will be ignored in trn")
+    parser.add_argument("--captrn", default=0, type=int, help="consider sents lt this as trn")
     parser.add_argument("--fbias", default=0., type=float, help="forget gate bias")
     parser.add_argument("--eps", default=1e-8, type=float, help="epsilon for adam")
     parser.add_argument("--gnoise", default=False, action='store_true', help="adding time dependent noise to the gradients")
-    parser.add_argument("--xvalid", default=0, type=int, help="turns on xvalidate, also serves as seed, use smth > 0")
 
     return parser
 
@@ -89,6 +93,13 @@ class Batcher(object):
                 ymsk_batch[si,:nchar,:] = True
             batches.append((X_batch, Xmsk_batch, y_batch, ymsk_batch))
         return batches
+        """
+            X_batches.append(X_batch)
+            Xmsk_batches.append(Xmsk_batch)
+            y_batches.append(y_batch)
+            ymsk_batches.append(ymsk_batch)
+        return X_batches, Xmsk_batches, y_batches, ymsk_batches
+        """
 
 class Reporter(object):
 
@@ -135,39 +146,17 @@ class Validator(object):
         self.trn = trn
         self.dev = dev
         self.tst = tst
-        self.batcher = batcher
+        self.trndat = batcher.get_batches(trn) 
+        self.devdat = batcher.get_batches(dev) 
+        self.tstdat = batcher.get_batches(tst) 
         self.reporter = reporter
 
 
-    def xvalidate(self, rdnn, argsd, tdecoder):
-        import copy
-        logging.debug('xvalidating...')
-        dset = copy.copy(self.trn)
-        trn_size = len(dset) - len(dset)/6
-        random.seed(argsd['xvalid'])
-        random.shuffle(dset)
-        self.trn, self.dev = dset[:trn_size], dset[trn_size:]
-        logging.debug(map(len, (self.trn,self.dev)))
-
-        """logging.info('trn first sent:')
-        logging.info(self.trn[0]['ws'])"""
-        res = self.validate(rdnn, argsd, tdecoder)
-        return res
-
     def validate(self, rdnn, argsd, tdecoder):
-        dbests = {'trn':(1,0.), 'dev':(1,0.), 'tst':(1,0.)}
-
-        if argsd['captrn']:
-            self.trn = filter(lambda sent: len(sent['cseq']) <= argsd['captrn'], self.trn)
-        logging.debug(map(len, (self.trn, self.dev)))
-        self.trn = sorted(self.trn, key=lambda sent: len(sent['cseq']))
-        self.dev = sorted(self.dev, key=lambda sent: len(sent['cseq']))
-        self.tst = sorted(self.tst, key=lambda sent: len(sent['cseq']))
-        self.trndat = self.batcher.get_batches(self.trn) 
-        self.devdat = self.batcher.get_batches(self.dev) 
-        self.tstdat = self.batcher.get_batches(self.tst) 
-
         logging.info('training the model...')
+        dbests = {'trn':(1,0.), 'dev':(1,0.), 'tst':(1,0.)}
+        anger = 0
+
         for e in range(1,argsd['fepoch']+1): # foreach epoch
             """ training """
             if argsd['shuf']:
@@ -190,7 +179,6 @@ class Validator(object):
             logging.info(('{:<5} {:<5} {:>12} ' + ('{:>10} '*9)).format('dset','epoch','mcost', 'mtime', 'cerr', 'werr', 'wacc', 'pre', 'recall', 'f1', 'best', 'best'))
             logging.info(('{:<5} {:<5d} {:>12.4e} {:>10.4f}').format('trn0',e,mcost, mtime))
             for ddat, datname, dset in zip([self.trndat,self.devdat, self.tstdat],['trn','dev','tst'], [self.trn, self.dev, self.tst]):
-                if len(dset) == 0: continue
                 start_time = time.time()
 
                 mcost, pred = rdnn.predict(ddat)
@@ -231,19 +219,51 @@ class Validator(object):
 
             """ end predictions """
 
+            anger = 0 if e == dbests['dev'][0] else anger + 1
+            if argsd['patience'] > 0 and anger > argsd['patience']:
+                #logging.info('sabir tasti.')
+                val = rdnn.lr.get_value()
+                logging.info('old lr: {}, new lr: {}'.format(val, val * 0.95))
+                rdnn.lr.set_value(val * 0.95)
+                anger = 0
             logging.info('')
-        return dbests
 
+class Curriculum(object):
+    def __init__(self, trn, dev, batcher, reporter, numofparts):
+        self.trn = trn
+        self.dev = dev
+        self.trndat = batcher.get_batches(trn)
+        self.devdat = batcher.get_batches(dev)
+        self.batcher = batcher
+        self.reporter = reporter
+        self.numofparts = numofparts
+        self.trn_parts = []
+        sentineachpart = len(self.trn) / self.numofparts
+        
+        for i in xrange(self.numofparts):
+            l = i * sentineachpart
+            u = (i + 1) * sentineachpart if i != (self.numofparts - 1) else len(self.trn)
+            self.trn_parts.append(self.trn[l:u])
+
+        self.trn_parts.append(self.trn)
+
+    def validate(self, rdnn, fepoch, patience=-1):
+        for i in xrange(self.numofparts + 1):
+            logging.info('Learning part:{}'.format(i + 1))
+            validator = Validator(self.trn_parts[i], self.dev, self.batcher, self.reporter)
+            validator.validate(rdnn, fepoch, patience)        
 
 LPARAMS = ['activation', 'n_hidden', 'fbmerge', 'drates',
     'recout','decoder', 'opt','lr','norm','gclip','truncate','n_batch', 'shuf',
-    'breaktrn', 'captrn', 'emb','lang', 'xvalid','fbias']
+    'breaktrn', 'captrn', 'emb','lang', 'reverse','fbias']
 
 def main():
     parser = get_arg_parser()
     args = vars(parser.parse_args())
-
     args['drates'] = args['drates'] if any(args['drates']) else [0]*(len(args['n_hidden'])+1)
+
+    if args['rnn'] == 'nerrnn':
+        args['n_batch'] = 1
 
     # logger setup
     import socket
@@ -272,6 +292,9 @@ def main():
     if args['breaktrn']:
         trn = [subsent for sent in trn for subsent in break2subsents(sent)]
 
+    if args['captrn']:
+        trn = filter(lambda sent: len(sent['ws'])<args['captrn'], trn)
+
     if args['sample']>0:
         trn_size = args['sample']*1000
         trn = sample_sents(trn,trn_size)
@@ -286,6 +309,26 @@ def main():
                 'wiseq': repobj.get_wiseq(sent), 
                 'tseq': repobj.get_tseq(sent)})
     
+    if args['reverse']:
+        def reverse_data(d):
+            copy_d = d.copy()
+            
+            for k in copy_d.keys():
+                if k == "wiseq":
+                    m = max(copy_d[k])
+                    copy_d[k] = map(lambda x: -1 if x == -1 else m - x, copy_d[k][::-1])
+                else:
+                    copy_d[k] = copy_d[k][::-1]
+            return copy_d
+
+        reversed = map(reverse_data, trn)
+        trn += reversed
+
+
+    if args['sorted']:
+        trn = sorted(trn, key=lambda sent: len(sent['cseq']))
+        dev = sorted(dev, key=lambda sent: len(sent['cseq']))
+        tst = sorted(tst, key=lambda sent: len(sent['cseq']))
 
     ntrnsent, ndevsent, ntstsent = list(map(len, (trn,dev,tst)))
     logger.info('# of sents trn, dev, tst: {} {} {}'.format(ntrnsent, ndevsent, ntstsent))
@@ -304,18 +347,21 @@ def main():
     reporter = Reporter(feat, get_ts_func)
     tdecoder = decoder.ViterbiDecoder(trn, feat) if args['decoder'] else decoder.MaxDecoder(trn, feat)
 
-    validator = Validator(trn, dev, tst, batcher, reporter)
+    validator = Validator(trn, dev, tst, batcher, reporter) if args['curriculum'] < 2 else Curriculum(trn, dev, batcher, reporter, args['curriculum'])
 
     # select rnn
     if args['rnn'] == 'dummy':
         RNN = RDNN_Dummy
     elif args['rnn'] == 'lazrnn':
         RNN = RDNN
+    elif args['rnn'] == 'nerrnn':
+        RNN = RNNModel
     else:
         raise Exception
-
+    # end select rnn
+    rnn_params = extract_rnn_params(args)
     rdnn = RNN(feat.NC, feat.NF, args)
-    validator.xvalidate(rdnn, args, tdecoder) if args['xvalid'] else validator.validate(rdnn, args, tdecoder)
+    validator.validate(rdnn, args, tdecoder)
 
 if __name__ == '__main__':
     main()
