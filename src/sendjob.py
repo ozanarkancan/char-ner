@@ -20,13 +20,13 @@ MKL_NUM_THREADS={} THEANO_FLAGS=mode=FAST_RUN,device={},floatX=float32 python sr
 """
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(prog="creatjob")
+    parser = argparse.ArgumentParser(prog="sendjob", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument("--p", default=False, action='store_true', help='just print, dont submit') 
-    parser.add_argument("--script", default='exper')
-    parser.add_argument("--script_args", required=True) 
-    parser.add_argument("--m", default='', choices=['', 'biyofiz-4-0','biyofiz-4-1','biyofiz-4-2','biyofiz-4-3','parcore-6-0','iui-5-0'])
-    parser.add_argument("--d", default='gpu', choices=['gpu','cpu','gpu0','gpu1'])
-    parser.add_argument("--smp", default=18, type=int)
+    parser.add_argument("--script", default='exper', help='python script to run')
+    parser.add_argument("--script_args", required=True, help='arguments to python script') 
+    parser.add_argument("--m", default='', choices=['', 'biyofiz-4-0','biyofiz-4-1','biyofiz-4-2','biyofiz-4-3','parcore-6-0','iui-5-0'], help='machine name')
+    parser.add_argument("--d", default='gpu', choices=['gpu','cpu','gpu0','gpu1'], help='device name')
+    parser.add_argument("--smp", default=18, type=int, help='num of cpu threads')
     args = parser.parse_args()
 
     username = getpass.getuser()
