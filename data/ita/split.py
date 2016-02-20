@@ -29,8 +29,8 @@ if __name__ == '__main__':
     TRN_FILE = 'I-CAB-evalita09-NER-training.iob2'
     TST_FILE = 'I-CAB-evalita09-NER-test.iob2'
 
-    trn = read_sents(TRN_FILE, 'latin1')
-    tst = read_sents(TST_FILE, 'latin1')
+    trn = read_sents(TRN_FILE, 'latin1', delim=' ')
+    tst = read_sents(TST_FILE, 'latin1', delim=' ')
     print len(trn), len(tst)
 
     random.shuffle(trn)
@@ -39,4 +39,5 @@ if __name__ == '__main__':
 
     write_to_file(trn, 'train.bio')
     write_to_file(dev, 'testa.bio')
+    write_to_file(tst, 'testb.bio')
 
