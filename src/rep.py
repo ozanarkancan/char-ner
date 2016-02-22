@@ -4,6 +4,22 @@ from tabulate import tabulate
 
 import utils, encoding
 
+def get_phrases(ts):
+    phrases, curphrase = [], []
+    for t in ts:
+        if t.startswith('B'):
+            len(curphrase) and phrases.append(curphrase)
+            curphrase = [t]
+        elif t.startswith('I'):
+            curphrase.append(t)
+        elif t.startswith('O'):
+            len(curphrase) and phrases.append(curphrase)
+            curphrase = [t]
+        else:
+            raise Exception()
+    len(curphrase) and phrases.append(curphrase)
+    return phrases
+
 class Repstd(object):
 
     def get_cseq(self, sent):
@@ -17,15 +33,16 @@ class Repstd(object):
         return wiseq[:-1]
 
     def get_tseq(self, sent):
-        tseq = []
-        ts = encoding.any2io(sent['ts'])
+        tseq, ts = [], sent['ts']
+        # ts = encoding.any2io(sent['ts'])
         for w, t, tnext in zip(sent['ws'],ts, chain(ts[1:],[None])):
             tp, sep, ttype = (t, '', 'O') if t == 'O' else (t.split('-')[0], '-', t.split('-')[1])
-            tseq.extend(t.lower() for c in w)
+            tseq.extend('i-'+ttype.lower() if ttype!='O' else 'o' for c in w)
 
             # handle space
-            if tnext and tnext != 'O' and t != 'O' and t.split('-')[1] == tnext.split('-')[1]:
-                tseq.append(t.lower())
+            # if tnext and tnext != 'O' and t != 'O' and t.split('-')[1] == tnext.split('-')[1]:
+            if tnext and tnext != 'O' and ttype == tnext.split('-')[1] and tnext.startswith('I-') and (t.startswith('B-') or t.startswith('I-')):
+                tseq.append('i-'+ttype.lower())
             else:
                 tseq.append('o')
         return tseq[:-1]
@@ -175,10 +192,22 @@ def is_consec(sent):
 if __name__ == '__main__':
     trn,dev,tst = utils.get_sents('eng')
     sents = filter(is_consec, trn)
-    sent = sorted(sents, key=lambda sent:len(sent['ws']))[0]
     mrep = Repstd()
+
+    for sent in sents:
+        # print get_phrases(sent['ts'])
+        cseq, tseq, wiseq = mrep.get_cseq(sent), mrep.get_tseq(sent), mrep.get_wiseq(sent)
+        print tabulate([cseq, tseq])
+        print
+        ts_bio = get_ts_bio(wiseq, tseq)
+        assert ts_bio == sent['ts'], '{} {}'.format(ts_bio, sent['ts'])
+
+    """
+    sent = sorted(sents, key=lambda sent:len(sent['ws']))[0]
     print tabulate([sent['ws'],sent['ts']])
     print tabulate([mrep.get_cseq(sent), mrep.get_tseq(sent)])
+    print get_phrases(sent['ts'])
+    """
 
 
 
