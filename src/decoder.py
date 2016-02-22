@@ -43,7 +43,7 @@ class ViterbiDecoder(object):
 
     def sanity_check(self, sent, tseq_ints):
         tseq = self.feat.tseqenc.inverse_transform(tseq_ints)
-        if any(len(set(group)) != 1 for k, group in groupby(filter(lambda x: x>-1, zip(sent['wiseq'], tseq)))):
+        if any(len(set(group)) != 1 for k, group in groupby(filter(lambda x: x[0]>-1, zip(sent['wiseq'], tseq)))):
             return False
         sp_indxs = [i for i,wi in enumerate(sent['wiseq']) if wi == -1]
         if any(not (tseq[i-1] == tseq[i] == tseq[i+1]) for i in sp_indxs if tseq[i] != 'o'):
