@@ -196,7 +196,7 @@ class Validator(object):
                         param_log_name = valid_file_name(param_log_name)
                         rnn_param_values = rdnn.get_param_values()
                         # np.savez('{}/models/{}'.format(ROOT_DIR, param_log_name),rnn_param_values=rnn_param_values,args=argsd)
-                        np.savez('{}/probs/{}'.format(ROOT_DIR, param_log_name), probs=pred, dev=dset)
+                        np.savez('{}/probs/{}'.format(ROOT_DIR, param_log_name), preds=pred2, probs=pred, dev=dset)
 
                 
                 logging.info(('{:<5} {:<5d} {:>12.4e} ' + ('{:>10.4f} '*8)+'{:>10d}')\
