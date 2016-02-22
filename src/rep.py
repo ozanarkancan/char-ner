@@ -168,5 +168,17 @@ def quick():
     print s
     """
 
+def is_consec(sent):
+    return any(t1.startswith('I-') and t2.startswith('B-') and t1.split('-')[1] == t2.split('-')[1]
+            for t1,t2 in zip(sent['ts'],sent['ts'][1:]))
+
 if __name__ == '__main__':
-    get_ts2()
+    trn,dev,tst = utils.get_sents('eng')
+    sents = filter(is_consec, trn)
+    sent = sorted(sents, key=lambda sent:len(sent['ws']))[0]
+    mrep = Repstd()
+    print tabulate([sent['ws'],sent['ts']])
+    print tabulate([mrep.get_cseq(sent), mrep.get_tseq(sent)])
+
+
+
