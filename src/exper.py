@@ -259,8 +259,8 @@ def main():
     if args['breaktrn']:
         trn = [subsent for sent in trn for subsent in break2subsents(sent)]
 
-    if args['captrn']: # TODO
-        trn = filter(lambda sent: len(sent['ws'])<args['captrn'], trn)
+    if args['captrn']:
+        trn = filter(lambda sent: len(' '.join(sent['ws']))<args['captrn'], trn)
 
     if args['sample']>0:
         trn_size = args['sample']*1000
