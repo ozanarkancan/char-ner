@@ -36,15 +36,18 @@ class Repstd(object):
         tseq, ts = [], sent['ts']
         # ts = encoding.any2io(sent['ts'])
         for w, t, tnext in zip(sent['ws'],ts, chain(ts[1:],[None])):
-            tp, sep, ttype = (t, '', 'O') if t == 'O' else (t.split('-')[0], '-', t.split('-')[1])
-            tseq.extend('i-'+ttype.lower() if ttype!='O' else 'o' for c in w)
-
-            # handle space
-            # if tnext and tnext != 'O' and t != 'O' and t.split('-')[1] == tnext.split('-')[1]:
-            if tnext and tnext != 'O' and ttype == tnext.split('-')[1] and tnext.startswith('I-') and (t.startswith('B-') or t.startswith('I-')):
-                tseq.append('i-'+ttype.lower())
-            else:
+            if t == 'O':
+                tseq.extend('o' for c in w)
                 tseq.append('o')
+            else: # starts with B or I
+                tp, ttype = t.split('-')
+                tseq.extend('i-'+ttype.lower() for c in w)
+
+                # handle space
+                if tnext and tnext.startswith('I-') and ttype == tnext.split('-')[1]:
+                    tseq.append('i-'+ttype.lower())
+                else:
+                    tseq.append('o')
         return tseq[:-1]
 
     def pprint(self, sent, *margs):

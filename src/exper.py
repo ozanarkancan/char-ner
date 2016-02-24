@@ -188,6 +188,7 @@ class Validator(object):
                         if not tdecoder.sanity_check(sent, tseq):
                             logging.critical(' '.join(sent['ws']))
                             logging.critical(' '.join(sent['ts']))
+                            logging.critical('gold tseq: {}'.format(sent['tseq']))
                             logging.critical('decoded tseq: {}'.format(tseq))
                             logging.critical(logprobs)
                             raise Exception('decoder sanity check failed')
