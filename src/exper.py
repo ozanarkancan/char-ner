@@ -185,7 +185,12 @@ class Validator(object):
                         tseq = np.argmax(logprobs, axis=-1).flatten()
                     else:
                         tseq = tdecoder.decode(sent, logprobs, debug=False)
-                        assert tdecoder.sanity_check(sent, tseq)
+                        if not tdecoder.sanity_check(sent, tseq):
+                            logging.critical(' '.join(sent['ws']))
+                            logging.critical(' '.join(sent['ts']))
+                            logging.critical('decoded tseq: {}'.format(tseq))
+                            logging.critical(logprobs)
+                            raise Exception('decoder sanity check failed')
                     pred2.append(tseq)
 
                 end_time = time.time()
