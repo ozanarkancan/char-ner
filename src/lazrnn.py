@@ -189,7 +189,7 @@ class RDNN:
             # l_out = LogSoftMerge([l_fout, l_bout])
             logging.debug('l_out: {}'.format(lasagne.layers.get_output_shape(l_out)))
         else:
-            l_reshape = lasagne.layers.ReshapeLayer(l_fbmerge, (-1, self.n_hidden[-1]*2))
+            l_reshape = lasagne.layers.ReshapeLayer(l_fbmerge, (-1, self.n_hidden[-1]*(2 if self.fbmerge=='concat' else 1)))
             logging.debug('l_reshape: {}'.format(lasagne.layers.get_output_shape(l_reshape)))
             l_rec_out = lasagne.layers.DenseLayer(l_reshape, num_units=nc, nonlinearity=log_softmax)
 

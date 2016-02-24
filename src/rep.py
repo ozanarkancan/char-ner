@@ -116,16 +116,6 @@ def get_ts_bio(wiseq, tseq):
                     ts.append('B-{}'.format(ttype.upper()))
     return ts
 
-
-def sent_word_indx(sent):
-    import numpy as np
-    space_indx = [a for a,b in enumerate(sent['wiseq']) if b==-1]
-    indx = [0] + space_indx + [len(sent['wiseq'])]
-    arr = np.array([[a,b] for a,b in zip(indx,indx[1:])])
-    arr[1:,0] += 1
-    return arr
-
-
 def print_sample():
     from utils import get_sents, sample_sents
     from encoding import any2io
