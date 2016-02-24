@@ -147,6 +147,10 @@ class Validator(object):
         logging.info('training the model...')
         dbests = {'trn':(1,0.), 'dev':(1,0.), 'tst':(1,0.)}
         anger = 0
+        logging.info('trn lens: {}'.format(map(len,self.trn)[:10]))
+
+        for b in self.trndat[:10]:
+            logging.info('Xbatch shape:{}'.format(b[0].shape))
 
         for e in range(1,argsd['fepoch']+1): # foreach epoch
             """ training """
@@ -285,11 +289,10 @@ def main():
     ntrnsent, ndevsent, ntstsent = list(map(len, (trn,dev,tst)))
     logger.info('# of sents trn, dev, tst: {} {} {}'.format(ntrnsent, ndevsent, ntstsent))
 
-    MAX_LENGTH = max(len(sent['cseq']) for sent in chain(trn,dev,tst))
-    MIN_LENGTH = min(len(sent['cseq']) for sent in chain(trn,dev,tst))
-    AVG_LENGTH = np.mean([len(sent['cseq']) for sent in chain(trn,dev,tst)])
-    STD_LENGTH = np.std([len(sent['cseq']) for sent in chain(trn,dev,tst)])
-    logger.info('maxlen: {} minlen: {} avglen: {:.2f} stdlen: {:.2f}'.format(MAX_LENGTH, MIN_LENGTH, AVG_LENGTH, STD_LENGTH))
+    for dset, dname in zip((trn,dev,tst),('trn','dev','tst')):
+        slens = [len(sent['cseq']) for sent in dset]
+        MAX_LENGTH, MIN_LENGTH, AVG_LENGTH, STD_LENGTH = max(slens), min(slens), np.mean(slens), np.std(slens)
+        logger.info('{}\tmaxlen: {} minlen: {} avglen: {:.2f} stdlen: {:.2f}'.format(dname,MAX_LENGTH, MIN_LENGTH, AVG_LENGTH, STD_LENGTH))
 
     feat = featchar.Feat(args['feat'])
     feat.fit(trn,dev,tst)
