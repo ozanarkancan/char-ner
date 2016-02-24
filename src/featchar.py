@@ -25,7 +25,6 @@ class Feat(object):
         self.dvec.fit(self.getcfeat(ci, sent)  for sent in trn for ci,c in enumerate(sent['cseq']))
         self.tseqenc.fit([t for sent in trn for t in sent['tseq']])
         self.tsenc.fit([t for sent in chain(trn,dev,tst) for t in sent['ts']])
-        # self.tsenc.fit(['B-LOC', 'B-MISC', 'B-ORG', 'B-PER', 'I-LOC', 'I-MISC', 'I-ORG', 'I-PER', 'O'])
         self.feature_names = self.dvec.get_feature_names()
         self.ctag_classes = self.tseqenc.classes_
         self.wtag_classes = self.tsenc.classes_

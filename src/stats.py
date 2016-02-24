@@ -67,7 +67,7 @@ def get_vocab(dset):
     return set(w for sent in dset for w in sent['ws'])
 
 def main():
-    langs = ['eng', 'deu', 'spa', 'ned', 'tr', 'cze', 'ger', 'arb7']
+    langs = ['eng', 'deu', 'spa', 'ned', 'tr', 'cze', 'ger', 'arb0', 'ita']
     # langs = ['eng', 'deu']
     dsetnames = ['trn','dev','tst']
 

@@ -183,12 +183,11 @@ class Validator(object):
                         tseq = tdecoder.decode(sent, logprobs, debug=False)
                         assert tdecoder.sanity_check(sent, tseq)
                     pred2.append(tseq)
-                pred = pred2
 
                 end_time = time.time()
                 mtime = end_time - start_time
                 
-                cerr, werr, wacc, pre, recall, f1, conll_print, char_conmat_str, word_conmat_str = self.reporter.report(dset, pred) 
+                cerr, werr, wacc, pre, recall, f1, conll_print, char_conmat_str, word_conmat_str = self.reporter.report(dset, pred2) 
                 
                 if f1 > dbests[datname][1]:
                     dbests[datname] = (e,f1)
@@ -196,7 +195,8 @@ class Validator(object):
                         param_log_name = ','.join(['{}:{}'.format(p,argsd[p]) for p in LPARAMS])
                         param_log_name = valid_file_name(param_log_name)
                         rnn_param_values = rdnn.get_param_values()
-                        np.savez('{}/models/{}'.format(ROOT_DIR, param_log_name),rnn_param_values=rnn_param_values,args=argsd)
+                        # np.savez('{}/models/{}'.format(ROOT_DIR, param_log_name),rnn_param_values=rnn_param_values,args=argsd)
+                        np.savez('{}/probs/{}'.format(ROOT_DIR, param_log_name), preds=pred2, probs=pred, dev=dset)
 
                 
                 logging.info(('{:<5} {:<5d} {:>12.4e} ' + ('{:>10.4f} '*8)+'{:>10d}')\
