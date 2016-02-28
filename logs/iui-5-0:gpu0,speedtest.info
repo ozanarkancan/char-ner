@@ -1,0 +1,74 @@
+activation:	bi-lstm
+batch_norm:	0
+breaktrn:	0
+captrn:	500
+decoder:	1
+drates:	[0.2, 0.5, 0.5, 0.5, 0.5, 0.8]
+emb:	0
+eps:	1e-08
+fbias:	0.0
+fbmerge:	concat
+feat:	basic
+fepoch:	3
+gclip:	0
+gnoise:	False
+in2out:	0
+lang:	cze
+log:	speedtest
+lr:	0.001
+n_batch:	32
+n_hidden:	[128, 128, 128, 128, 128]
+norm:	1.0
+opt:	adam
+patience:	-1
+recout:	0
+rep:	std
+rnn:	lazrnn
+sample:	0
+save:	False
+shuf:	1
+sorted:	1
+tagging:	bio
+truncate:	-1
+base_log_name:	iui-5-0:gpu0,speedtest
+# of sents trn, dev, tst: 4619 572 577
+trn	maxlen: 494 minlen: 3 avglen: 140.04 stdlen: 86.01
+dev	maxlen: 593 minlen: 3 avglen: 142.58 stdlen: 91.08
+tst	maxlen: 627 minlen: 3 avglen: 144.16 stdlen: 92.89
+[u'c= ', u'c=!', u'c="', u'c=$', u'c=%', u'c=&', u"c='", u'c=(', u'c=)', u'c=*', u'c=+', u'c=,', u'c=-', u'c=.', u'c=/', u'c=0', u'c=1', u'c=2', u'c=3', u'c=4', u'c=5', u'c=6', u'c=7', u'c=8', u'c=9', u'c=:', u'c=;', u'c=<', u'c==', u'c=>', u'c=?', u'c=@', u'c=A', u'c=B', u'c=C', u'c=D', u'c=E', u'c=F', u'c=G', u'c=H', u'c=I', u'c=J', u'c=K', u'c=L', u'c=M', u'c=N', u'c=O', u'c=P', u'c=Q', u'c=R', u'c=S', u'c=T', u'c=U', u'c=V', u'c=W', u'c=X', u'c=Y', u'c=Z', u'c=[', u'c=\\', u'c=]', u'c=_', u'c=`', u'c=a', u'c=b', u'c=c', u'c=d', u'c=e', u'c=f', u'c=g', u'c=h', u'c=i', u'c=j', u'c=k', u'c=l', u'c=m', u'c=n', u'c=o', u'c=p', u'c=q', u'c=r', u'c=s', u'c=t', u'c=u', u'c=v', u'c=w', u'c=x', u'c=y', u'c=z', u'c=\xa7', u'c=\xae', u'c=\xb0', u'c=\xb5', u'c=\xc1', u'c=\xc9', u'c=\xcd', u'c=\xda', u'c=\xdc', u'c=\xdd', u'c=\xe1', u'c=\xe2', u'c=\xe4', u'c=\xe9', u'c=\xed', u'c=\xee', u'c=\xf1', u'c=\xf3', u'c=\xf6', u'c=\xfa', u'c=\xfc', u'c=\xfd', u'c=\u0107', u'c=\u010c', u'c=\u010d', u'c=\u010e', u'c=\u010f', u'c=\u0110', u'c=\u011a', u'c=\u011b', u'c=\u0139', u'c=\u013a', u'c=\u013d', u'c=\u0144', u'c=\u0147', u'c=\u0148', u'c=\u0158', u'c=\u0159', u'c=\u015b', u'c=\u0160', u'c=\u0161', u'c=\u0164', u'c=\u0165', u'c=\u016e', u'c=\u016f', u'c=\u017d', u'c=\u017e']
+['i-a' 'i-g' 'i-i' 'i-m' 'i-o' 'i-p' 'i-t' 'o']
+['B-A' 'B-G' 'B-I' 'B-M' 'B-O' 'B-P' 'B-T' 'I-A' 'I-G' 'I-I' 'I-M' 'I-O'
+ 'I-P' 'I-T' 'O']
+NF: 136 NC: 8
+Compiling functions...
+Compiling done.
+training the model...
+trn lens: [5, 5, 5, 5, 5, 5, 5, 5, 5, 5]
+Xbatch shape:(32, 8, 136)
+Xbatch shape:(32, 13, 136)
+Xbatch shape:(32, 16, 136)
+Xbatch shape:(32, 19, 136)
+Xbatch shape:(32, 22, 136)
+Xbatch shape:(32, 24, 136)
+Xbatch shape:(32, 26, 136)
+Xbatch shape:(32, 28, 136)
+Xbatch shape:(32, 30, 136)
+Xbatch shape:(32, 32, 136)
+dset  epoch        mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn0  1       9.9248e-02   499.2542
+trn   1       6.6149e-02   117.8129     0.1744     0.2099    79.0100     4.2900     0.8600     1.4300     1.4300          1
+dev   1       6.8784e-02    21.7021     0.1834     0.2223    77.7700     5.9600     0.7500     1.3300     1.3300          1
+tst   1       7.7036e-02    24.9962     0.1864     0.2342    76.5800     7.5900     0.9400     1.6800     1.6800          1
+
+dset  epoch        mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn0  2       7.2762e-02   505.8536
+trn   2       5.7030e-02   117.3382     0.1473     0.1881    81.1900    27.4300    16.8600    20.8800    20.8800          2
+dev   2       5.9433e-02    21.8613     0.1439     0.1883    81.1700    32.3500    22.2900    26.3900    26.3900          2
+tst   2       6.7453e-02    25.0262     0.1426     0.1953    80.4700    34.7500    24.0300    28.4100    28.4100          2
+
+dset  epoch        mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn0  3       6.8696e-02   504.7243
+trn   3       5.4024e-02   131.0694     0.1426     0.1917    80.8300    20.3200     5.3300     8.4400    20.8800          2
+dev   3       5.7150e-02    23.8677     0.1446     0.1869    81.3100    41.9400    15.4500    22.5800    26.3900          2
+tst   3       6.4435e-02    26.0541     0.1490     0.1991    80.0900    39.2800    14.2200    20.8800    28.4100          2
+
