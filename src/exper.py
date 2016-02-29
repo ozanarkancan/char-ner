@@ -21,7 +21,8 @@ from lazrnn import RDNN, RDNN_Dummy
 from nerrnn import RNNModel
 
 LOG_DIR = '{}/logs'.format(ROOT_DIR)
-random.seed(0)
+random.seed(7)
+np.random.seed(7)
 rng = np.random.RandomState(1234567)
 lasagne.random.set_rng(rng)
 
@@ -147,6 +148,10 @@ class Validator(object):
         logging.info('training the model...')
         dbests = {'trn':(1,0.), 'dev':(1,0.), 'tst':(1,0.)}
         anger = 0
+        logging.info('trn lens: {}'.format(map(len,self.trn)[:10]))
+
+        for b in self.trndat[:10]:
+            logging.info('Xbatch shape:{}'.format(b[0].shape))
 
         for e in range(1,argsd['fepoch']+1): # foreach epoch
             """ training """
@@ -181,7 +186,13 @@ class Validator(object):
                         tseq = np.argmax(logprobs, axis=-1).flatten()
                     else:
                         tseq = tdecoder.decode(sent, logprobs, debug=False)
-                        assert tdecoder.sanity_check(sent, tseq)
+                        if not tdecoder.sanity_check(sent, tseq):
+                            logging.critical(' '.join(sent['ws']))
+                            logging.critical(' '.join(sent['ts']))
+                            logging.critical('gold tseq: {}'.format(sent['tseq']))
+                            logging.critical('decoded tseq: {}'.format(tseq))
+                            logging.critical(logprobs)
+                            raise Exception('decoder sanity check failed')
                     pred2.append(tseq)
 
                 end_time = time.time()
@@ -259,8 +270,8 @@ def main():
     if args['breaktrn']:
         trn = [subsent for sent in trn for subsent in break2subsents(sent)]
 
-    if args['captrn']: # TODO
-        trn = filter(lambda sent: len(sent['ws'])<args['captrn'], trn)
+    if args['captrn']:
+        trn = filter(lambda sent: len(' '.join(sent['ws']))<args['captrn'], trn)
 
     if args['sample']>0:
         trn_size = args['sample']*1000
@@ -285,11 +296,10 @@ def main():
     ntrnsent, ndevsent, ntstsent = list(map(len, (trn,dev,tst)))
     logger.info('# of sents trn, dev, tst: {} {} {}'.format(ntrnsent, ndevsent, ntstsent))
 
-    MAX_LENGTH = max(len(sent['cseq']) for sent in chain(trn,dev,tst))
-    MIN_LENGTH = min(len(sent['cseq']) for sent in chain(trn,dev,tst))
-    AVG_LENGTH = np.mean([len(sent['cseq']) for sent in chain(trn,dev,tst)])
-    STD_LENGTH = np.std([len(sent['cseq']) for sent in chain(trn,dev,tst)])
-    logger.info('maxlen: {} minlen: {} avglen: {:.2f} stdlen: {:.2f}'.format(MAX_LENGTH, MIN_LENGTH, AVG_LENGTH, STD_LENGTH))
+    for dset, dname in zip((trn,dev,tst),('trn','dev','tst')):
+        slens = [len(sent['cseq']) for sent in dset]
+        MAX_LENGTH, MIN_LENGTH, AVG_LENGTH, STD_LENGTH = max(slens), min(slens), np.mean(slens), np.std(slens)
+        logger.info('{}\tmaxlen: {} minlen: {} avglen: {:.2f} stdlen: {:.2f}'.format(dname,MAX_LENGTH, MIN_LENGTH, AVG_LENGTH, STD_LENGTH))
 
     feat = featchar.Feat(args['feat'])
     feat.fit(trn,dev,tst)

@@ -1,0 +1,67 @@
+activation:	bi-lstm
+batch_norm:	0
+breaktrn:	0
+captrn:	500
+decoder:	1
+drates:	[0.2, 0.5, 0.5, 0.5, 0.5, 0.8]
+emb:	0
+eps:	1e-08
+fbias:	0.0
+fbmerge:	concat
+feat:	basic
+fepoch:	600
+gclip:	0
+gnoise:	False
+in2out:	0
+lang:	cze
+log:	cze_newtag
+lr:	0.001
+n_batch:	32
+n_hidden:	[128, 128, 128, 128, 128]
+norm:	1
+opt:	adam
+patience:	-1
+recout:	0
+rep:	std
+rnn:	lazrnn
+sample:	0
+save:	False
+shuf:	1
+sorted:	1
+tagging:	bio
+truncate:	-1
+base_log_name:	biyofiz-4-0:gpu,cze_newtag
+# of sents trn, dev, tst: 4619 572 577
+maxlen: 627 minlen: 3 avglen: 140.70 stdlen: 87.25
+[u'c= ', u'c=!', u'c="', u'c=$', u'c=%', u'c=&', u"c='", u'c=(', u'c=)', u'c=*', u'c=+', u'c=,', u'c=-', u'c=.', u'c=/', u'c=0', u'c=1', u'c=2', u'c=3', u'c=4', u'c=5', u'c=6', u'c=7', u'c=8', u'c=9', u'c=:', u'c=;', u'c=<', u'c==', u'c=>', u'c=?', u'c=@', u'c=A', u'c=B', u'c=C', u'c=D', u'c=E', u'c=F', u'c=G', u'c=H', u'c=I', u'c=J', u'c=K', u'c=L', u'c=M', u'c=N', u'c=O', u'c=P', u'c=Q', u'c=R', u'c=S', u'c=T', u'c=U', u'c=V', u'c=W', u'c=X', u'c=Y', u'c=Z', u'c=[', u'c=\\', u'c=]', u'c=_', u'c=`', u'c=a', u'c=b', u'c=c', u'c=d', u'c=e', u'c=f', u'c=g', u'c=h', u'c=i', u'c=j', u'c=k', u'c=l', u'c=m', u'c=n', u'c=o', u'c=p', u'c=q', u'c=r', u'c=s', u'c=t', u'c=u', u'c=v', u'c=w', u'c=x', u'c=y', u'c=z', u'c=\xa7', u'c=\xae', u'c=\xb0', u'c=\xb5', u'c=\xc1', u'c=\xc9', u'c=\xcd', u'c=\xda', u'c=\xdc', u'c=\xdd', u'c=\xe1', u'c=\xe2', u'c=\xe4', u'c=\xe9', u'c=\xed', u'c=\xee', u'c=\xf1', u'c=\xf3', u'c=\xf6', u'c=\xfa', u'c=\xfc', u'c=\xfd', u'c=\u0107', u'c=\u010c', u'c=\u010d', u'c=\u010e', u'c=\u010f', u'c=\u0110', u'c=\u011a', u'c=\u011b', u'c=\u0139', u'c=\u013a', u'c=\u013d', u'c=\u0144', u'c=\u0147', u'c=\u0148', u'c=\u0158', u'c=\u0159', u'c=\u015b', u'c=\u0160', u'c=\u0161', u'c=\u0164', u'c=\u0165', u'c=\u016e', u'c=\u016f', u'c=\u017d', u'c=\u017e']
+['i-a' 'i-g' 'i-i' 'i-m' 'i-o' 'i-p' 'i-t' 'o']
+['B-A' 'B-G' 'B-I' 'B-M' 'B-O' 'B-P' 'B-T' 'I-A' 'I-G' 'I-I' 'I-M' 'I-O'
+ 'I-P' 'I-T' 'O']
+NF: 136 NC: 8
+Compiling functions...
+Compiling done.
+training the model...
+dset  epoch        mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn0  1       1.0121e-01   277.5781
+trn   1       7.0977e-02    43.4124     0.1752     0.2083    79.1700    17.1100     2.0200     3.6100     3.6100          1
+dev   1       7.3672e-02    10.8412     0.1809     0.2167    78.3300    23.0500     2.9900     5.3000     5.3000          1
+tst   1       8.0785e-02    11.8461     0.1821     0.2272    77.2800    25.3500     2.8900     5.1800     5.1800          1
+
+dset  epoch        mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn0  2       7.5986e-02   274.0953
+trn   2       5.8962e-02    42.5440     0.1493     0.1894    81.0600    26.2300    12.2000    16.6600    16.6600          2
+dev   2       6.1399e-02    11.3593     0.1519     0.1917    80.8300    32.9800    18.3300    23.5700    23.5700          2
+tst   2       7.0576e-02    12.4765     0.1486     0.1971    80.2900    36.9900    20.5100    26.3900    26.3900          2
+
+dset  epoch        mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn0  3       6.8209e-02   278.6181
+trn   3       5.4974e-02    43.3969     0.1461     0.1913    80.8700    32.7700     9.7900    15.0800    16.6600          2
+dev   3       5.8117e-02    11.4860     0.1484     0.1879    81.2100    44.7700    18.0700    25.7400    25.7400          3
+tst   3       6.5516e-02    12.6134     0.1494     0.1982    80.1800    46.8900    18.9900    27.0400    27.0400          3
+
+dset  epoch        mcost      mtime       cerr       werr       wacc        pre     recall         f1       best       best 
+trn0  4       6.2997e-02   278.7862
+trn   4       4.9265e-02    42.4158     0.1279     0.1677    83.2300    43.1100    21.9600    29.1000    29.1000          4
+dev   4       5.2325e-02    11.3455     0.1263     0.1662    83.3800    47.7700    28.1100    35.4000    35.4000          4
+tst   4       6.1953e-02    12.5192     0.1350     0.1787    82.1300    47.4800    28.1200    35.3200    35.3200          4
+

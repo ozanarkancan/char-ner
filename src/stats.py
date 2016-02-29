@@ -199,6 +199,17 @@ def paper():
 
 ### end DSET ###
 
+def quick():
+    langs = ['eng', 'deu', 'spa', 'ned', 'tr', 'cze', 'ger', 'arb0', 'ita']
+    # langs = ['eng', 'deu']
+    dsetnames = ['trn','dev','tst']
+
+    data = dict((lang,dict((dname,dset) for dname,dset in zip(dsetnames, get_sents(lang)))) for lang in langs)
+
+    table = []
+    for l in langs:
+        print l, sorted(set(t for sent in data[l]['trn'] for t in sent['ts']))
+
 if __name__ == '__main__':
     from tabulate import tabulate
     from score import conlleval
@@ -208,5 +219,5 @@ if __name__ == '__main__':
     parser.add_argument('lang')
     args = parser.parse_args()
     """
-    main()
+    quick()
 

@@ -4,6 +4,22 @@ from tabulate import tabulate
 
 import utils, encoding
 
+def get_phrases(ts):
+    phrases, curphrase = [], []
+    for t in ts:
+        if t.startswith('B'):
+            len(curphrase) and phrases.append(curphrase)
+            curphrase = [t]
+        elif t.startswith('I'):
+            curphrase.append(t)
+        elif t.startswith('O'):
+            len(curphrase) and phrases.append(curphrase)
+            curphrase = [t]
+        else:
+            raise Exception()
+    len(curphrase) and phrases.append(curphrase)
+    return phrases
+
 class Repstd(object):
 
     def get_cseq(self, sent):
@@ -17,17 +33,21 @@ class Repstd(object):
         return wiseq[:-1]
 
     def get_tseq(self, sent):
-        tseq = []
-        ts = encoding.any2io(sent['ts'])
+        tseq, ts = [], sent['ts']
+        # ts = encoding.any2io(sent['ts'])
         for w, t, tnext in zip(sent['ws'],ts, chain(ts[1:],[None])):
-            tp, sep, ttype = (t, '', 'O') if t == 'O' else (t.split('-')[0], '-', t.split('-')[1])
-            tseq.extend(t.lower() for c in w)
-
-            # handle space
-            if tnext and tnext != 'O' and t != 'O' and t.split('-')[1] == tnext.split('-')[1]:
-                tseq.append(t.lower())
-            else:
+            if t == 'O':
+                tseq.extend('o' for c in w)
                 tseq.append('o')
+            else: # starts with B or I
+                tp, ttype = t.split('-')
+                tseq.extend('i-'+ttype.lower() for c in w)
+
+                # handle space
+                if tnext and tnext.startswith('I-') and ttype == tnext.split('-')[1]:
+                    tseq.append('i-'+ttype.lower())
+                else:
+                    tseq.append('o')
         return tseq[:-1]
 
     def pprint(self, sent, *margs):
@@ -99,16 +119,6 @@ def get_ts_bio(wiseq, tseq):
                     ts.append('B-{}'.format(ttype.upper()))
     return ts
 
-
-def sent_word_indx(sent):
-    import numpy as np
-    space_indx = [a for a,b in enumerate(sent['wiseq']) if b==-1]
-    indx = [0] + space_indx + [len(sent['wiseq'])]
-    arr = np.array([[a,b] for a,b in zip(indx,indx[1:])])
-    arr[1:,0] += 1
-    return arr
-
-
 def print_sample():
     from utils import get_sents, sample_sents
     from encoding import any2io
@@ -175,10 +185,22 @@ def is_consec(sent):
 if __name__ == '__main__':
     trn,dev,tst = utils.get_sents('eng')
     sents = filter(is_consec, trn)
-    sent = sorted(sents, key=lambda sent:len(sent['ws']))[0]
     mrep = Repstd()
+
+    for sent in sents:
+        # print get_phrases(sent['ts'])
+        cseq, tseq, wiseq = mrep.get_cseq(sent), mrep.get_tseq(sent), mrep.get_wiseq(sent)
+        print tabulate([cseq, tseq])
+        print
+        ts_bio = get_ts_bio(wiseq, tseq)
+        assert ts_bio == sent['ts'], '{} {}'.format(ts_bio, sent['ts'])
+
+    """
+    sent = sorted(sents, key=lambda sent:len(sent['ws']))[0]
     print tabulate([sent['ws'],sent['ts']])
     print tabulate([mrep.get_cseq(sent), mrep.get_tseq(sent)])
+    print get_phrases(sent['ts'])
+    """
 
 
 
