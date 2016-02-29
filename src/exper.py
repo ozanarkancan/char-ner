@@ -21,7 +21,8 @@ from lazrnn import RDNN, RDNN_Dummy
 from nerrnn import RNNModel
 
 LOG_DIR = '{}/logs'.format(ROOT_DIR)
-random.seed(0)
+random.seed(7)
+np.random.seed(7)
 rng = np.random.RandomState(1234567)
 lasagne.random.set_rng(rng)
 
