@@ -17,7 +17,7 @@ import encoding
 from utils import get_sents, sample_sents, valid_file_name, break2subsents
 from utils import ROOT_DIR
 from score import conlleval
-from lazrnn import RDNN, RDNN_Dummy, extract_rnn_params
+from lazrnn import RDNN, RDNN_Dummy
 from nerrnn import RNNModel
 
 LOG_DIR = '{}/logs'.format(ROOT_DIR)
@@ -259,7 +259,7 @@ def main():
     if args['breaktrn']:
         trn = [subsent for sent in trn for subsent in break2subsents(sent)]
 
-    if args['captrn']:
+    if args['captrn']: # TODO
         trn = filter(lambda sent: len(sent['ws'])<args['captrn'], trn)
 
     if args['sample']>0:
@@ -311,7 +311,6 @@ def main():
     else:
         raise Exception
     # end select rnn
-    rnn_params = extract_rnn_params(args)
     rdnn = RNN(feat.NC, feat.NF, args)
     validator.validate(rdnn, args, tdecoder)
 

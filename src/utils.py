@@ -21,7 +21,6 @@ def valid_file_name(s):
 def get_sents(lang='eng'):
     enc = 'latin1' if lang in ['eng','deu','spa','ned', 'ita'] else 'utf-8'
     trn,dev,tst = map(read_sents, ['{}/{}/{}.bio'.format(DATA_DIR,lang,dset) for dset in ('train','testa','testb')], [enc for i in range(3)])
-    trn = filter(lambda sent: len(sent['ws'])<1000,trn)
     return trn,dev,tst 
 
 def read_sents(file, enc, delim='\t'):
