@@ -73,6 +73,10 @@ def main():
 
     data = dict((lang,dict((dname,dset) for dname,dset in zip(dsetnames, get_sents(lang)))) for lang in langs)
 
+    for l in langs:
+        print l, sorted(set(t for sent in data[l]['trn'] for t in sent['ts']))
+    print 
+
     table = []
     for l in langs:
         table.append([l,sum(1 for sent in data[l]['trn'] if len(' '.join(sent['ws'])) > 500)])
@@ -219,5 +223,5 @@ if __name__ == '__main__':
     parser.add_argument('lang')
     args = parser.parse_args()
     """
-    quick()
+    main()
 
