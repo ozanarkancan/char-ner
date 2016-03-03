@@ -54,7 +54,7 @@ def get_arg_parser():
     parser.add_argument("--lang", default='eng', help="ner lang")
     parser.add_argument("--save", default=False, action='store_true', help="save param values to file")
     parser.add_argument("--shuf", default=1, type=int, help="shuffle the batches.")
-    parser.add_argument("--tagging", default='io', choices=['io','bio'], help="tag scheme to use")
+    parser.add_argument("--tagging", default='bio', choices=['io','bio'], help="tag scheme to use")
     parser.add_argument("--decoder", default=1, type=int, help="use decoder to prevent invalid tag transitions")
     parser.add_argument("--breaktrn", default=0, type=int, help="break trn sents to subsents")
     parser.add_argument("--captrn", default=500, type=int, help="consider sents lt this as trn")
