@@ -110,7 +110,8 @@ class RDNN:
         l_in = lasagne.layers.InputLayer(shape=(None, None, nf))
         logging.debug('l_in: {}'.format(lasagne.layers.get_output_shape(l_in)))
         N_BATCH_VAR, MAX_SEQ_LEN_VAR, _ = l_in.input_var.shape # symbolic ref to input_var shape
-        l_mask = lasagne.layers.InputLayer(shape=(N_BATCH_VAR, MAX_SEQ_LEN_VAR))
+        # l_mask = lasagne.layers.InputLayer(shape=(N_BATCH_VAR, MAX_SEQ_LEN_VAR))
+        l_mask = lasagne.layers.InputLayer(shape=(None, None))
         logging.debug('l_mask: {}'.format(lasagne.layers.get_output_shape(l_mask)))
 
         curlayer = l_in
