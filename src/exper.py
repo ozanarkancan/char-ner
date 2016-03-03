@@ -18,7 +18,6 @@ from utils import get_sents, sample_sents, valid_file_name, break2subsents
 from utils import ROOT_DIR
 from score import conlleval
 from lazrnn import RDNN, RDNN_Dummy
-from nerrnn import RNNModel
 
 LOG_DIR = '{}/logs'.format(ROOT_DIR)
 random.seed(7)
@@ -29,7 +28,7 @@ lasagne.random.set_rng(rng)
 def get_arg_parser():
     parser = argparse.ArgumentParser(prog="lazrnn")
     
-    parser.add_argument("--rnn", default='lazrnn', choices=['dummy','lazrnn','nerrnn'], help="which rnn to use")
+    parser.add_argument("--rnn", default='lazrnn', choices=['dummy','lazrnn'], help="which rnn to use")
     parser.add_argument("--rep", default='std', choices=['std','nospace','spec'], help="which representation to use")
     parser.add_argument("--activation", default='bi-lstm', help="activation function for hidden layer: bi-relu bi-lstm bi-tanh")
     parser.add_argument("--fbmerge", default='concat', choices=['concat','sum'], help="how to merge forward backward layer outputs")
@@ -240,8 +239,6 @@ def main():
     args = vars(parser.parse_args())
     args['drates'] = args['drates'] if any(args['drates']) else [0]*(len(args['n_hidden'])+1)
 
-    if args['rnn'] == 'nerrnn':
-        args['n_batch'] = 1
 
     # logger setup
     import socket
@@ -316,8 +313,6 @@ def main():
         RNN = RDNN_Dummy
     elif args['rnn'] == 'lazrnn':
         RNN = RDNN
-    elif args['rnn'] == 'nerrnn':
-        RNN = RNNModel
     else:
         raise Exception
     # end select rnn
