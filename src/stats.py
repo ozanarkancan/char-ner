@@ -73,6 +73,10 @@ def main():
 
     data = dict((lang,dict((dname,dset) for dname,dset in zip(dsetnames, get_sents(lang)))) for lang in langs)
 
+    for l in langs:
+        print l, sorted(set(t for sent in data[l]['trn'] for t in sent['ts']))
+    print 
+
     table = []
     for l in langs:
         table.append([l,sum(1 for sent in data[l]['trn'] if len(' '.join(sent['ws'])) > 500)])
@@ -151,8 +155,8 @@ def main():
 
 
 def paper():
-    langs = ['eng', 'deu', 'spa', 'ned', 'tr', 'cze', 'ger', 'arb', 'ita']
-    # langs = ['eng', 'deu']
+    # langs = ['eng', 'deu', 'spa', 'ned', 'tr', 'cze', 'ger', 'arb', 'ita']
+    langs = ['arb0', 'cze', 'ned', 'eng', 'deu', 'spa', 'tr']
     dsetnames = ['trn','dev','tst']
 
     data = dict((lang,dict((dname,dset) for dname,dset in zip(dsetnames, get_sents(lang)))) for lang in langs)
@@ -163,25 +167,44 @@ def paper():
     print tabulate(table,headers=['#sent']+dsetnames, tablefmt='latex')
     print
 
-    table = []
-    for l in langs:
-        table.append([l]+[sum(len(sent['ws']) for sent in data[l][dname]) for dname in dsetnames])
-    print tabulate(table,headers=['#token']+dsetnames, tablefmt='latex')
-    print
 
     table = []
     for l in langs:
         # nchar_sents = [sum(1 for c in ' '.join(sent['ws'])) for sent in chain(*data[l].values())]
-        for dname in dsetnames:
-            nchar_sents = [sum(1 for c in ' '.join(sent['ws'])) for sent in data[l][dname]]
-            table.append(['{}-{}'.format(l,dname)]+[int(f(nchar_sents)) for f in (np.min,np.max,np.mean,np.std)])
-        table.append(['...']*5)
-    print tabulate(table,headers=['#char per sent']+['min','max','mean','std'])
+        # for dname in dsetnames:
+        nchar_sents = [sum(1 for c in ' '.join(sent['ws'])) for dname in dsetnames for sent in data[l][dname]]
+        # table.append(['%s'%l]+[int(f(nchar_sents)) for f in (np.min,np.max,np.mean,np.std)])
+        table.append(['%s'%l]+[int(f(nchar_sents)) for f in (np.mean,np.std)])
+    print tabulate(table,headers=['#char per sent']+['mean','std'], tablefmt='latex')
+    print
+
+    table = []
+    for l in langs:
+        # char_set = set(c for dname in dsetnames for sent in data[l][dname] for c in ''.join(sent['ws']))
+        char_set = set(c for dname in ('trn','dev') for sent in data[l][dname] for w in sent['ws'] for c in w)
+        # char_set = set(c for sent in data[l]['trn'] for w in sent['ws'] for c in w)
+        tag_set = set(t for dname in dsetnames for sent in data[l][dname] for t in encoding.any2io(sent['ts']))
+        # table.append(['%s'%l]+[int(f(nchar_sents)) for f in (np.min,np.max,np.mean,np.std)])
+        table.append(['%s'%l, len(char_set)+1, len(tag_set)])
+    print tabulate(table,headers=['i/o']+['input','output'], tablefmt='latex')
+    print
+
+    table = []
+    for l in langs:
+        # char_set = set(c for dname in dsetnames for sent in data[l][dname] for c in ''.join(sent['ws']))
+        # char_set = set(c for dname in dsetnames for sent in data[l][dname] for w in sent['ws'] for c in w)
+        char_set = set(c for sent in data[l]['trn'] for w in sent['ws'] for c in w)
+        tag_set = set(t for dname in dsetnames for sent in data[l][dname] for t in encoding.any2io(sent['ts']))
+        # table.append(['%s'%l]+[int(f(nchar_sents)) for f in (np.min,np.max,np.mean,np.std)])
+        table.append(['%s'%l, len(char_set), len(tag_set)])
+    print tabulate(table,headers=['i/o']+['input','output'], tablefmt='latex')
     print
 
 
     table = []
-    for l, dname in product(langs,('dev','tst')):
+    # for l, dname in product(langs,('dev','tst')):
+    for l in langs:
+        dname = 'tst'
         vdst = get_vocab(data[l][dname])
         vsrc = get_vocab(data[l]['trn'])
         vdiff = vdst.difference(vsrc)
@@ -219,5 +242,5 @@ if __name__ == '__main__':
     parser.add_argument('lang')
     args = parser.parse_args()
     """
-    quick()
+    paper()
 
