@@ -1,3 +1,4 @@
+import copy
 import logging
 import argparse
 import sys, time, datetime
@@ -61,6 +62,7 @@ def get_arg_parser():
     parser.add_argument("--fbias", default=0., type=float, help="forget gate bias")
     parser.add_argument("--eps", default=1e-8, type=float, help="epsilon for adam")
     parser.add_argument("--gnoise", default=False, action='store_true', help="adding time dependent noise to the gradients")
+    parser.add_argument("--cdrop", default=0., type=float, help="char dropout")
 
     return parser
 
@@ -302,7 +304,14 @@ def main():
         logger.info('{}\tmaxlen: {} minlen: {} avglen: {:.2f} stdlen: {:.2f}'.format(dname,MAX_LENGTH, MIN_LENGTH, AVG_LENGTH, STD_LENGTH))
 
     feat = featchar.Feat(args['feat'])
-    feat.fit(trn,dev,tst)
+    if args['cdrop'] > 0:
+        yy = u'/u262f'
+        sent = copy.deepcopy(trn[0])
+        cdropl = (np.random.rand(len(sent['cseq'])) < args['cdrop']).tolist()
+        sent['cseq'] = [yy if isd else c for c, isd in zip(sent['cseq'], cdropl)]
+        feat.fit(trn+[sent],dev,tst)
+    else:
+        feat.fit(trn,dev,tst)
 
     batcher = Batcher(args['n_batch'], feat)
     get_ts_func = getattr(rep,'get_ts_'+args['tagging'])

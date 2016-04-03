@@ -184,23 +184,6 @@ def is_consec(sent):
 
 if __name__ == '__main__':
     trn,dev,tst = utils.get_sents('eng')
-    sents = filter(is_consec, trn)
-    mrep = Repstd()
-
-    for sent in sents:
-        # print get_phrases(sent['ts'])
-        cseq, tseq, wiseq = mrep.get_cseq(sent), mrep.get_tseq(sent), mrep.get_wiseq(sent)
-        print tabulate([cseq, tseq])
-        print
-        ts_bio = get_ts_bio(wiseq, tseq)
-        assert ts_bio == sent['ts'], '{} {}'.format(ts_bio, sent['ts'])
-
-    """
-    sent = sorted(sents, key=lambda sent:len(sent['ws']))[0]
-    print tabulate([sent['ws'],sent['ts']])
-    print tabulate([mrep.get_cseq(sent), mrep.get_tseq(sent)])
-    print get_phrases(sent['ts'])
-    """
-
-
+    rep = Repstd()
+    print Counter(c for sent in trn for c in rep.get_cseq(sent))
 
