@@ -143,6 +143,7 @@ class Validator(object):
         self.devdat = batcher.get_batches(dev) 
         self.tstdat = batcher.get_batches(tst) 
         self.reporter = reporter
+        self.batcher = batcher
 
 
     def validate(self, rdnn, argsd, tdecoder):
@@ -150,6 +151,16 @@ class Validator(object):
         dbests = {'trn':(1,0.), 'dev':(1,0.), 'tst':(1,0.)}
         anger = 0
         logging.info('trn lens: {}'.format(map(len,self.trn)[:10]))
+
+        if argsd['cdrop'] > 0:
+            yy = u'/u262f'
+            trn2 = []
+            for sentb in self.trn:
+                sent = copy.deepcopy(sentb)
+                cdropl = (np.random.rand(len(sent['cseq'])) < argsd['cdrop']).tolist()
+                sent['cseq'] = [yy if isd and c != ' ' else c for c, isd in zip(sent['cseq'], cdropl)]
+                trn2.append(sent)
+            self.trndat = self.batcher.get_batches(trn2) 
 
         for b in self.trndat[:10]:
             logging.info('Xbatch shape:{}'.format(b[0].shape))
