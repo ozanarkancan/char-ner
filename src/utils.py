@@ -19,7 +19,7 @@ def valid_file_name(s):
     return "".join(i for i in s if i not in "\"\/ &*?<>|[]()'")
 
 def get_sents(lang='eng'):
-    enc = 'latin1' if lang in ['eng','deu','spa','ned', 'ita'] else 'utf-8'
+    enc = 'latin1' if lang in ['eng','deu','spa','ned', 'ita', 'eu-deu', 'eu-ned', 'eu-eng', 'eu-spa'] else 'utf-8'
     trn,dev,tst = map(read_sents, ['{}/{}/{}.bio'.format(DATA_DIR,lang,dset) for dset in ('train','testa','testb')], [enc for i in range(3)])
     return trn,dev,tst 
 
