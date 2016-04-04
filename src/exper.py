@@ -277,6 +277,10 @@ def main():
 
     trn, dev, tst = get_sents(args['lang'])
 
+    if args['tagging'] == 'io':
+        for sent in chain(trn, dev, tst):
+            sent['ts'] = encoding.any2io(sent['ts'])
+
     if args['breaktrn']:
         trn = [subsent for sent in trn for subsent in break2subsents(sent)]
 

@@ -19,7 +19,7 @@ def valid_file_name(s):
     return "".join(i for i in s if i not in "\"\/ &*?<>|[]()'")
 
 def get_sents(lang='eng'):
-    enc = 'latin1' if lang in ['eng','deu','spa','ned', 'ita', 'eu-deu', 'eu-ned', 'eu-eng', 'eu-spa'] else 'utf-8'
+    enc = 'latin1' if lang in ['eng','deu','spa','ned', 'ita', 'eu-deu', 'eu-ned', 'eu-eng', 'eu-spa', 'pos'] else 'utf-8'
     trn,dev,tst = map(read_sents, ['{}/{}/{}.bio'.format(DATA_DIR,lang,dset) for dset in ('train','testa','testb')], [enc for i in range(3)])
     return trn,dev,tst 
 
@@ -134,12 +134,7 @@ def break2subsents(sent):
 
 if __name__ == '__main__':
     from tabulate import tabulate
-    trn,dev,tst = get_sents('ned')
-    # sents = random.sample(trn,10)
-    print sum(1 for sent in tst for phrase in get_phrases(sent) if len(' '.join(phrase).encode('utf-8')) > 60)
-    """
-    for sent in sents:
-        print tabulate([sent['ws'],sent['ts']])
-        print get_phrases(sent)
-        print
-    """
+    sents = read_sents('data/pos/train.bio', 'latin1', delim='\t')
+    print len(sents)
+    trn,dev,tst = get_sents('pos')
+    print map(len, (trn,dev,tst))
