@@ -100,6 +100,14 @@ class Reporter(object):
         self.feat = feat
         self.tfunc = tfunc
 
+    def report_cerr(self, dset, pred):
+        y_true = self.feat.tseqenc.transform([t for sent in dset for t in sent['tseq']])
+        y_pred = list(chain.from_iterable(pred))
+        cerr = np.sum(y_true!=y_pred)/float(len(y_true))
+
+        char_conmat_str = self.get_conmat_str(y_true, y_pred, self.feat.tseqenc)
+        return cerr, 0, 0, 0, 0, 0, '', '', ''
+
     def report(self, dset, pred):
         y_true = self.feat.tseqenc.transform([t for sent in dset for t in sent['tseq']])
         y_pred = list(chain.from_iterable(pred))
@@ -187,6 +195,7 @@ class Validator(object):
             logging.info(('{:<5} {:<5} {:>12} ' + ('{:>10} '*9)).format('dset','epoch','mcost', 'mtime', 'cerr', 'werr', 'wacc', 'pre', 'recall', 'f1', 'best', 'best'))
             logging.info(('{:<5} {:<5d} {:>12.4e} {:>10.4f}').format('trn0',e,mcost, mtime))
             for ddat, datname, dset in zip([self.trndat,self.devdat, self.tstdat],['trn','dev','tst'], [self.trn, self.dev, self.tst]):
+            # for ddat, datname, dset in zip([self.devdat, self.tstdat],['dev','tst'], [self.dev, self.tst]):
                 start_time = time.time()
 
                 mcost, pred = rdnn.predict(ddat)
@@ -210,7 +219,10 @@ class Validator(object):
                 end_time = time.time()
                 mtime = end_time - start_time
                 
-                cerr, werr, wacc, pre, recall, f1, conll_print, char_conmat_str, word_conmat_str = self.reporter.report(dset, pred2) 
+                if datname=='trn':
+                    cerr, werr, wacc, pre, recall, f1, conll_print, char_conmat_str, word_conmat_str = self.reporter.report_cerr(dset, pred2) 
+                else:
+                    cerr, werr, wacc, pre, recall, f1, conll_print, char_conmat_str, word_conmat_str = self.reporter.report(dset, pred2) 
                 
                 if f1 > dbests[datname][1]:
                     dbests[datname] = (e,f1)

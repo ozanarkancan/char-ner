@@ -14,7 +14,8 @@ class ViterbiDecoder(object):
         for sent in trn:
             wistates =  map(lambda x:int(x<0), sent['wiseq'])
             tseq = feat.tseqenc.transform([t for t in sent['tseq']])
-            for (tprev,t), (wstate_prev, wstate) in zip(zip(tseq[1:],tseq), zip(wistates[1:], wistates)):
+            # for (tprev,t), (wstate_prev, wstate) in zip(zip(tseq[1:],tseq), zip(wistates[1:], wistates)):
+            for (t,tprev), (wstate, wstate_prev) in zip(zip(tseq[1:],tseq), zip(wistates[1:], wistates)):
                 indx = int(''.join(map(str,(wstate_prev,wstate))), 2)
                 # states[(wstate_prev,wstate)].add((tprev,t))
                 self.states[indx].add((tprev,t))
@@ -35,9 +36,13 @@ class ViterbiDecoder(object):
         tseq_ints = viterbi_log_multi(logprobs.T, self.transition_tensor, emissions, tstates)
 
         if debug:
+            ddata = [r for r in zip(sent['cseq'],wistates,tstates,emissions, tseq_ints)]
+            ddata = [list(r) + lprobs.tolist() for r,lprobs in zip(ddata,logprobs)]
+            """
             ddata = [sent['cseq']]
             ddata.extend(logprobs.T)
             ddata.extend([wistates,tstates,emissions])
+            """
             print tabulate(ddata, floatfmt='.2f')
         return tseq_ints
 
@@ -49,6 +54,27 @@ class ViterbiDecoder(object):
         if any(not (tseq[i-1] == tseq[i] == tseq[i+1]) for i in sp_indxs if tseq[i] != 'o'):
             return False
         return True
+
+    def pprint(self):
+        for i in xrange(self.transition_tensor.shape[0]):
+            for r in (self.transition_tensor[i] > 0).astype(np.int):
+                print ' '.join(map(str, r.tolist()))
+            print 
+        clist = self.feat.tseqenc.classes_.tolist()
+        print clist 
+        """
+        for i in xrange(self.transition_tensor.shape[0]):
+            table = [[''] + clist]
+            for r, tag in zip((self.transition_tensor[i] > 0).astype(np.int), clist):
+                table.append([tag] + r.tolist())
+            print tabulate(table)
+        """
+
+def randlogprob(sent, nc):
+    sent_len = len(sent['cseq'])
+    randvals = np.random.rand(sent_len, nc)
+    randlogprobs = np.log(randvals / np.sum(randvals,axis=0))
+    return randlogprobs
 
 class MaxDecoder(object):
 
@@ -63,32 +89,40 @@ class MaxDecoder(object):
 
 def main():
     from utils import get_sents, sample_sents
-    from encoding import any2io
     import featchar, rep
 
     import random
     from collections import defaultdict as dd
-    trn, dev, tst = get_sents('eng')
+    trn, dev, tst = get_sents('toy')
 
     r = rep.Repstd()
 
     for sent in trn:
-        sent['ts'] = any2io(sent['ts'])
         sent.update({
             'cseq': r.get_cseq(sent), 
             'wiseq': r.get_wiseq(sent), 
             'tseq': r.get_tseq(sent)})
+    r.pprint(trn[0])
+    print
+    r.pprint(trn[1])
+
+    print rep.get_ts_bio(trn[0]['wiseq'], trn[0]['tseq'])
 
     feat = featchar.Feat('basic')
     feat.fit(trn,dev,tst)
 
     vdecoder = ViterbiDecoder(trn, feat)
+    vdecoder.pprint()
+    sent = trn[0]
+    vdecoder.decode(sent, randlogprob(sent, feat.NC), debug=True)
 
+    """
     sent = random.choice(filter(lambda x: len(x['cseq']) < 10 and len(x['cseq']) > 6, trn))
     randvals = np.random.rand(len(sent['cseq']),feat.NC)
     randlogprobs = np.log(randvals / np.sum(randvals,axis=0))
     tseq = vdecoder.decode(sent, randlogprobs, debug=True)
     print tseq
+    """
 
 if __name__ == '__main__':
     main()
