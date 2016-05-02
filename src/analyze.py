@@ -1,17 +1,20 @@
 import numpy as np
 import argparse
 import random
+import lasagne
+import logging
 
 from lazrnn import RDNN as RNN
-import rep, featchar
-from exper import Batcher, Reporter
+import rep, featchar, exper
+from exper import Batcher, Reporter, Validator
 from utils import get_sents
+import decoder
 
 class Sampler(object):
 
     def __init__(self, model_file):
         dat = np.load(model_file)
-        args = dat['args'].tolist()
+        args = dat['argsd'].tolist()
         rnn_param_values = dat['rnn_param_values'].tolist()
 
 
@@ -33,12 +36,13 @@ class Sampler(object):
         self.feat = featchar.Feat(args['feat'])
         self.feat.fit(trn,dev,tst)
 
-        batcher = Batcher(1, self.feat) # batch size 1
+        self.vdecoder = decoder.ViterbiDecoder(trn, self.feat)
+
+        batcher = Batcher(args['n_batch'], self.feat) # batch size 1
         devdat = batcher.get_batches(dev) 
         tstdat = batcher.get_batches(tst) 
 
         rdnn = RNN(self.feat.NC, self.feat.NF, args)
-        rdnn.set_param_values(rnn_param_values)
         cost, dev_predictions = rdnn.predict(devdat)
         cost, tst_predictions = rdnn.predict(tstdat)
 
@@ -51,25 +55,33 @@ class Sampler(object):
         self.dset['tst'] = tst
         self.repobj = repobj
 
-        # reporter = Reporter(feat, rep.get_ts)
-        # print reporter.report(dev, predictions)
-    def sample(self, dsetname, sample_size=10, correct_perc=0.9):
-        sents = []
-        for sent, ipred in zip(self.dset[dsetname],self.predictions[dsetname]):
-            tseq_pred = self.feat.tseqenc.inverse_transform(ipred)
-            num_correct = sum(1 for t1,t2 in zip(sent['tseq'], tseq_pred) if t1==t2)
-            num_t = len(sent['tseq'])
-            correct_perc = num_correct/float(num_t)
-            if correct_perc < 0.9:
-                sents.append((sent, tseq_pred))
+        self.reporter = exper.Reporter(self.feat, rep.get_ts_bio)
 
-        for sent, tseq_pred in random.sample(sents,sample_size):
-            self.repobj.pprint(sent, tseq_pred)
-            print 
+        print rdnn.l_soft_out.get_params()
+        print rdnn.blayers[0][0].get_params()
+        params = lasagne.layers.get_all_param_values(rdnn.layers[-1])
+        print map(np.shape, params)
+        lasagne.layers.set_all_param_values(rdnn.layers[-1], rnn_param_values[:len(params)])
+
+        logger = logging.getLogger()
+        logger.setLevel(logging.INFO)
+        shandler = logging.StreamHandler()
+        shandler.setLevel(logging.INFO)
+        logger.addHandler(shandler)
+
+        validator = Validator(trn, dev, tst, batcher, self.reporter)
+        validator.validate(rdnn, args, self.vdecoder)
+
+    def report(self, dsetname):
+        dset = self.dset[dsetname]
+        pred = [p for b in self.predictions[dsetname] for p in b]
+        pred2 = [self.vdecoder.decode(s,p) for s,p in zip(dset,pred)]
+        cerr, werr, wacc, pre, recall, f1, conll_print, char_conmat_str, word_conmat_str = self.reporter.report(dset, pred2) 
+        print pre, recall, f1
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('model_file')
     pargs = parser.parse_args()
     sampler = Sampler(pargs.model_file)
-    sampler.sample('dev')
+    sampler.report('dev')

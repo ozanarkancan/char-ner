@@ -52,7 +52,7 @@ def get_arg_parser():
     parser.add_argument("--sorted", default=1, type=int, help="sort datasets before training and prediction")
     parser.add_argument("--in2out", default=0, type=int, help="connect input & output")
     parser.add_argument("--lang", default='eng', help="ner lang")
-    parser.add_argument("--save", default=False, action='store_true', help="save param values to file")
+    parser.add_argument("--save", default='', help="save param values to file")
     parser.add_argument("--shuf", default=1, type=int, help="shuffle the batches.")
     parser.add_argument("--tagging", default='bio', choices=['io','bio'], help="tag scheme to use")
     parser.add_argument("--decoder", default=1, type=int, help="use decoder to prevent invalid tag transitions")
@@ -227,11 +227,11 @@ class Validator(object):
                 if f1 > dbests[datname][1]:
                     dbests[datname] = (e,f1)
                     if argsd['save'] and datname == 'dev': # save model to file
-                        param_log_name = ','.join(['{}:{}'.format(p,argsd[p]) for p in LPARAMS])
-                        param_log_name = valid_file_name(param_log_name)
+                        # param_log_name = ','.join(['{}:{}'.format(p,argsd[p]) for p in LPARAMS])
+                        # param_log_name = valid_file_name(param_log_name)
                         rnn_param_values = rdnn.get_param_values()
                         # np.savez('{}/models/{}'.format(ROOT_DIR, param_log_name),rnn_param_values=rnn_param_values,args=argsd)
-                        np.savez('{}/probs/{}'.format(ROOT_DIR, param_log_name), preds=pred2, probs=pred, dev=dset)
+                        np.savez('{}/models/{}'.format(ROOT_DIR, argsd['save']), argsd=argsd, rnn_param_values=rnn_param_values)
 
                 
                 logging.info(('{:<5} {:<5d} {:>12.4e} ' + ('{:>10.4f} '*8)+'{:>10d}')\

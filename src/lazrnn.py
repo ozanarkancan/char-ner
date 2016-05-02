@@ -130,6 +130,7 @@ class RDNN:
             self.layers = [l_in_drop]
         else:
             self.layers = [l_in]
+        self.blayers = []
         for level, ltype, n_hidden in zip(range(1,ldepth+1), self.deep_ltypes, self.n_hidden):
             prev_layer = self.layers[level-1]
             if ltype in ['relu','lrelu', 'relu6', 'elu']:
@@ -170,6 +171,7 @@ class RDNN:
             if self.drates[level] > 0:
                 l_fbmerge = lasagne.layers.DropoutLayer(l_fbmerge, p=self.drates[level])
 
+            self.blayers.append((l_forward, l_backward))
             self.layers.append(l_fbmerge)
         
         l_fbmerge = lasagne.layers.ConcatLayer([l_fbmerge, curlayer], axis=2) if self.in2out else l_fbmerge
@@ -198,6 +200,7 @@ class RDNN:
             l_out = lasagne.layers.ReshapeLayer(l_rec_out, (N_BATCH_VAR, MAX_SEQ_LEN_VAR, nc))
             logging.debug('l_out: {}'.format(lasagne.layers.get_output_shape(l_out)))
 
+        self.l_soft_out = l_rec_out
         self.output_layer = l_out
 
         target_output = T.tensor3('target_output')
@@ -276,8 +279,17 @@ class RDNN:
     def get_param_values(self):
         return lasagne.layers.get_all_param_values(self.output_layer)
 
+    def get_all_layers(self):
+        return lasagne.layers.get_all_layers(self.output_layer)
+
     def set_param_values(self, values):
         lasagne.layers.set_all_param_values(self.output_layer, values)
 
 if __name__ == '__main__':
-    print RDNN.params
+    import exper
+    parser = exper.get_arg_parser()
+    args = vars(parser.parse_args())
+    rdnn = RDNN(5, 90, args)
+    print rdnn.blayers
+    print rdnn.get_all_layers()
+

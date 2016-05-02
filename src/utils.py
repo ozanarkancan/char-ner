@@ -134,7 +134,5 @@ def break2subsents(sent):
 
 if __name__ == '__main__':
     from tabulate import tabulate
-    sents = read_sents('data/pos/train.bio', 'latin1', delim='\t')
-    print len(sents)
-    trn,dev,tst = get_sents('pos')
+    trn,dev,tst  = get_sents('dse')
     print map(len, (trn,dev,tst))
