@@ -8,6 +8,8 @@ import encoding
 __author__ = 'Onur Kuru'
 file_abspath = os.path.abspath(__file__)
 ROOT_DIR = os.path.abspath(os.path.join(file_abspath, os.pardir, os.pardir))
+LOG_DIR = '{}/logs'.format(ROOT_DIR)
+MODEL_DIR = '{}/models'.format(ROOT_DIR)
 DATA_DIR = '{}/data'.format(ROOT_DIR)
 SRC_DIR = '{}/src'.format(ROOT_DIR)
 SCRIPTS_DIR = '{}/scripts'.format(ROOT_DIR)

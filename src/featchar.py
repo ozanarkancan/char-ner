@@ -21,7 +21,8 @@ class Feat(object):
             d.update(getattr(self, 'feat_'+f)(ci,sent))
         return d
 
-    def fit(self, trn, dev, tst):
+    def fit(self, dset):
+        trn, dev, tst = dset.trn, dset.dev, dset.tst
         self.dvec.fit(self.getcfeat(ci, sent)  for sent in trn for ci,c in enumerate(sent['cseq']))
         self.tseqenc.fit([t for sent in trn for t in sent['tseq']])
         self.tsenc.fit([t for sent in chain(trn,dev,tst) for t in sent['ts']])
