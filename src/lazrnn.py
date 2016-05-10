@@ -127,9 +127,8 @@ class RDNN:
         if self.drates[0] > 0:
             l_in_drop = lasagne.layers.DropoutLayer(curlayer, p=self.drates[0])
             logging.debug('l_drop: {}'.format(lasagne.layers.get_output_shape(l_in_drop)))
-            self.layers = [l_in_drop]
-        else:
-            self.layers = [l_in]
+            curlayer = l_in_drop
+        self.layers = [curlayer]
         self.blayers = []
         for level, ltype, n_hidden in zip(range(1,ldepth+1), self.deep_ltypes, self.n_hidden):
             prev_layer = self.layers[level-1]

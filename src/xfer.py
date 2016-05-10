@@ -4,81 +4,114 @@ import random
 import lasagne
 import logging
 
-from lazrnn import RDNN as RNN
+from lazrnn import RDNN
 import rep, featchar, exper
-from exper import Batcher, Reporter, Validator
+from exper import Batcher, Reporter, Validator, Dset
 from utils import get_sents
 import decoder
 
-def main():
-    parser = argparse.ArgumentParser()
+"""
+[W, # for emb layer
+W_in_to_ingate, # forward lstm start
+W_hid_to_ingate,
+b_ingate,
+W_in_to_forgetgate,
+W_hid_to_forgetgate,
+b_forgetgate,
+W_in_to_cell,
+W_hid_to_cell,
+b_cell,
+W_in_to_outgate,
+W_hid_to_outgate,
+b_outgate,
+W_cell_to_ingate,
+W_cell_to_forgetgate,
+W_cell_to_outgate,
+cell_init,
+hid_init, # forward lstm end
+W_in_to_ingate, # backward lstm start
+W_hid_to_ingate,
+b_ingate,
+W_in_to_forgetgate,
+W_hid_to_forgetgate,
+b_forgetgate,
+W_in_to_cell,
+W_hid_to_cell,
+b_cell,
+W_in_to_outgate,
+W_hid_to_outgate,
+b_outgate,
+W_cell_to_ingate,
+W_cell_to_forgetgate,
+W_cell_to_outgate,
+cell_init,
+hid_init, # backward lstm end
+W, # softmax
+b] # softmax
+"""
+
+def get_args():
+    parser = argparse.ArgumentParser(prog="xfer")
     parser.add_argument('model_file')
-    pargs = parser.parse_args()
+    parser.add_argument('lang')
+    parser.add_argument("--breaktrn", default=0, type=int, help="break trn sents to subsents")
+    parser.add_argument("--captrn", default=500, type=int, help="consider sents lt this as trn")
+    parser.add_argument("--sorted", default=1, type=int, help="sort datasets before training and prediction")
+    parser.add_argument("--shuf", default=1, type=int, help="shuffle the batches.")
+    parser.add_argument("--tagging", default='bio', choices=['io','bio'], help="tag scheme to use")
+    parser.add_argument("--sample", default=0, type=int, help="num of sents to sample from trn in the order of K")
+    parser.add_argument("--rep", default='std', choices=['std','nospace','spec'], help="which representation to use")
+    args = vars(parser.parse_args())
+    return args
 
-    dat = np.load(pargs.model_file)
-    args = dat['argsd'].tolist()
-    rnn_param_values = dat['rnn_param_values'].tolist()
-
-
-    trn, dev, tst = get_sents(args['lang'])
-
-    repclass = getattr(rep, 'Rep'+args['rep'])
-    repobj = repclass()
-    for d in (trn,dev,tst):
-        for sent in d:
-            sent.update({
-                'cseq': repobj.get_cseq(sent), 
-                'wiseq': repobj.get_wiseq(sent), 
-                'tseq': repobj.get_tseq(sent)})
-
-    trn = sorted(trn, key=lambda sent: len(sent['cseq']))
-    dev = sorted(dev, key=lambda sent: len(sent['cseq']))
-    tst = sorted(tst, key=lambda sent: len(sent['cseq']))
-
-    feat = featchar.Feat(args['feat'])
-    feat.fit(trn,dev,tst)
-
-    vdecoder = decoder.ViterbiDecoder(trn, feat)
-
-    batcher = Batcher(args['n_batch'], feat) # batch size 1
-    devdat = batcher.get_batches(dev) 
-    tstdat = batcher.get_batches(tst) 
-
-    rdnn = RNN(feat.NC, feat.NF, args)
-    cost, dev_predictions = rdnn.predict(devdat)
-    cost, tst_predictions = rdnn.predict(tstdat)
-
-    predictions = {}
-    predictions['dev'] = dev_predictions
-    predictions['tst'] = tst_predictions
-
-    dset = {}
-    dset['dev'] = dev
-    dset['tst'] = tst
-    repobj = repobj
-
-    reporter = exper.Reporter(feat, rep.get_ts_bio)
-
-    print rdnn.l_soft_out.get_params()
-    print rdnn.blayers[0][0].get_params()
-    params = lasagne.layers.get_all_param_values(rdnn.layers[-1])
-    print map(np.shape, params)
-    lasagne.layers.set_all_param_values(rdnn.layers[-1], rnn_param_values[:len(params)])
-
+def setup_logger(args):
+    import socket
+    host = socket.gethostname().split('.')[0]
     logger = logging.getLogger()
-    logger.setLevel(logging.INFO)
+    logger.setLevel(logging.DEBUG)
     shandler = logging.StreamHandler()
     shandler.setLevel(logging.INFO)
-    logger.addHandler(shandler)
+    # param_log_name = ','.join(['{}:{}'.format(p,args[p]) for p in LPARAMS])
+    # param_log_name = valid_file_name(param_log_name)
+    base_log_name = '{}:{},{}'.format(host, theano.config.device, args['log'])
+    ihandler = logging.FileHandler('{}/{}.info'.format(LOG_DIR,base_log_name), mode='w')
+    ihandler.setLevel(logging.INFO)
+    dhandler = logging.FileHandler('{}/{}.debug'.format(LOG_DIR,base_log_name), mode='w')
+    dhandler.setLevel(logging.DEBUG)
+    logger.addHandler(shandler);logger.addHandler(ihandler);logger.addHandler(dhandler);
 
-    validator = Validator(trn, dev, tst, batcher, reporter)
-    validator.validate(rdnn, args, vdecoder)
+def main():
+    args = get_args()
+    setup_logger(args)
 
-    dset = dset['dev']
-    pred = [p for b in predictions[dsetname] for p in b]
-    pred2 = [vdecoder.decode(s,p) for s,p in zip(dset,pred)]
-    cerr, werr, wacc, pre, recall, f1, conll_print, char_conmat_str, word_conmat_str = reporter.report(dset, pred2) 
-    print pre, recall, f1
+    logging.info('loading params')
+    dat = np.load(args['model_file'])
+    dat_args = dat['argsd'].tolist()
+    rnn_param_values = dat['rnn_param_values'].tolist()
+    logging.info('params loaded')
+
+
+    dset = Dset(args)
+    feat = featchar.Feat(dat_args['feat'])
+    feat.fit(dset)
+
+    batcher = Batcher(dat_args['n_batch'], feat)
+    get_ts_func = getattr(rep,'get_ts_'+ dat_args['tagging'])
+    reporter = Reporter(feat, get_ts_func)
+    tdecoder = decoder.ViterbiDecoder(dset.trn, feat) if dat_args['decoder'] else decoder.MaxDecoder(dset.trn, feat)
+
+    validator = Validator(dset, batcher, reporter)
+
+    rdnn = RDNN(feat.NC, feat.NF, dat_args)
+
+    param_values = lasagne.layers.get_all_param_values(rdnn.layers[-1])
+    sindx = len(rdnn.blayers[0][0].get_params())*2
+    param_values[sindx:] = rnn_param_values[sindx:len(param_values)]
+    # params = lasagne.layers.get_all_params(rdnn.layers[-1])
+    lasagne.layers.set_all_param_values(rdnn.layers[-1], param_values)
+    # rdnn.blayers[1][0].get_params() # [hid_init, input_to_hidden.W, input_to_hidden.b, hidden_to_hidden.W]
+
+    validator.validate(rdnn, dat_args, tdecoder)
 
 if __name__ == '__main__':
     main()
