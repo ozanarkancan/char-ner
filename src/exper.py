@@ -223,7 +223,7 @@ class Validator(object):
                     dbests[datname] = (e,f1)
                     if argsd['save'] and datname == 'dev': # save model to file
                         rnn_param_values = rdnn.get_param_values()
-                        np.savez('{}/models/{}'.format(MODEL_DIR, argsd['save']), argsd=argsd, rnn_param_values=rnn_param_values)
+                        np.savez('{}/{}'.format(MODEL_DIR, argsd['save']), argsd=argsd, rnn_param_values=rnn_param_values)
 
                 
                 logging.info(('{:<5} {:<5d} {:>12.4e} ' + ('{:>10.4f} '*8)+'{:>10d}')\
