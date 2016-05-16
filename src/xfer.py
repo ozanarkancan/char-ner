@@ -1,14 +1,13 @@
 import numpy as np
 import argparse
-import theano
 import lasagne
+import theano
 import logging
 
 from lazrnn import RDNN
 import rep, featchar
 from exper import Batcher, Reporter, Validator, Dset
-import decoder
-import utils
+import decoder, utils
 
 """
 [W, # for emb layer
@@ -54,6 +53,7 @@ def get_args():
     parser = argparse.ArgumentParser(prog="xfer")
     parser.add_argument('model_file')
     parser.add_argument('lang')
+    parser.add_argument('log')
     parser.add_argument("--breaktrn", default=0, type=int, help="break trn sents to subsents")
     parser.add_argument("--captrn", default=500, type=int, help="consider sents lt this as trn")
     parser.add_argument("--sorted", default=1, type=int, help="sort datasets before training and prediction")
