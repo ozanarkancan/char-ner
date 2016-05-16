@@ -1,14 +1,14 @@
 import numpy as np
 import argparse
-import random
+import theano
 import lasagne
 import logging
 
 from lazrnn import RDNN
-import rep, featchar, exper
+import rep, featchar
 from exper import Batcher, Reporter, Validator, Dset
-from utils import get_sents
 import decoder
+import utils
 
 """
 [W, # for emb layer
@@ -74,9 +74,9 @@ def setup_logger(args):
     # param_log_name = ','.join(['{}:{}'.format(p,args[p]) for p in LPARAMS])
     # param_log_name = valid_file_name(param_log_name)
     base_log_name = '{}:{},{}'.format(host, theano.config.device, args['log'])
-    ihandler = logging.FileHandler('{}/{}.info'.format(LOG_DIR,base_log_name), mode='w')
+    ihandler = logging.FileHandler('{}/{}.info'.format(utils.LOG_DIR,base_log_name), mode='w')
     ihandler.setLevel(logging.INFO)
-    dhandler = logging.FileHandler('{}/{}.debug'.format(LOG_DIR,base_log_name), mode='w')
+    dhandler = logging.FileHandler('{}/{}.debug'.format(utils.LOG_DIR,base_log_name), mode='w')
     dhandler.setLevel(logging.DEBUG)
     logger.addHandler(shandler);logger.addHandler(ihandler);logger.addHandler(dhandler);
 

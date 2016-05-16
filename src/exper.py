@@ -1,15 +1,13 @@
 import copy
 import logging
 import argparse
-import sys, time, datetime
-from itertools import *
+import time
+from itertools import chain
 import random, numpy as np
-from tabulate import tabulate
-
-from sklearn.metrics import confusion_matrix, classification_report
 
 import theano
 import lasagne
+from sklearn.metrics import confusion_matrix
 
 import featchar, decoder
 import rep
@@ -78,7 +76,6 @@ class Batcher(object):
     def get_batches(self, dset):
         nf = self.feat.NF 
         sent_batches = [dset[i:i+self.batch_size] for i in range(0, len(dset), self.batch_size)]
-        X_batches, Xmsk_batches, y_batches, ymsk_batches = [], [], [], []
         batches = []
         for batch in sent_batches:
             mlen = max(len(sent['cseq']) for sent in batch)
@@ -107,7 +104,6 @@ class Reporter(object):
         y_pred = list(chain.from_iterable(pred))
         cerr = np.sum(y_true!=y_pred)/float(len(y_true))
 
-        char_conmat_str = self.get_conmat_str(y_true, y_pred, self.feat.tseqenc)
         return cerr, 0, 0, 0, 0, 0, '', '', ''
 
     def report(self, dset, pred):
@@ -240,24 +236,25 @@ class Validator(object):
 
 class Dset(object):
 
-    def __init__(self, args):
-        trn, dev, tst = get_sents(args['lang'])
+    def __init__(self, lang='eng', tagging='bio', breaktrn=False, captrn=500, sample=0, charrep='std', sort=True, **kwargs):
 
-        if args['tagging'] == 'io':
+        trn, dev, tst = get_sents(lang)
+
+        if tagging == 'io':
             for sent in chain(trn, dev, tst):
                 sent['ts'] = encoding.any2io(sent['ts'])
 
-        if args['breaktrn']:
+        if breaktrn:
             trn = [subsent for sent in trn for subsent in break2subsents(sent)]
 
-        if args['captrn']:
-            trn = filter(lambda sent: len(' '.join(sent['ws']))<args['captrn'], trn)
+        if captrn:
+            trn = filter(lambda sent: len(' '.join(sent['ws']))<captrn, trn)
 
-        if args['sample']>0:
-            trn_size = args['sample']*1000
+        if sample>0:
+            trn_size = sample*1000
             trn = sample_sents(trn,trn_size)
 
-        repclass = getattr(rep, 'Rep'+args['rep'])
+        repclass = getattr(rep, 'Rep'+charrep)
         repobj = repclass()
 
         for d in (trn,dev,tst):
@@ -268,7 +265,7 @@ class Dset(object):
                     'tseq': repobj.get_tseq(sent)})
         
 
-        if args['sorted']:
+        if sort:
             trn = sorted(trn, key=lambda sent: len(sent['cseq']))
             dev = sorted(dev, key=lambda sent: len(sent['cseq']))
             tst = sorted(tst, key=lambda sent: len(sent['cseq']))
@@ -311,7 +308,7 @@ def main():
     args = get_args()
     setup_logger(args)
 
-    dset = Dset(args)
+    dset = Dset(**args)
     feat = featchar.Feat(args['feat'])
     feat.fit(dset)
 
