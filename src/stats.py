@@ -1,7 +1,6 @@
-import random
 import numpy as np
 from collections import Counter
-from itertools import *
+from itertools import product
 
 import encoding
 from utils import get_sents
@@ -223,24 +222,24 @@ def paper():
 ### end DSET ###
 
 def quick():
+    """
     langs = ['eng', 'deu', 'spa', 'ned', 'tr', 'cze', 'ger', 'arb0', 'ita']
     # langs = ['eng', 'deu']
     dsetnames = ['trn','dev','tst']
-
     data = dict((lang,dict((dname,dset) for dname,dset in zip(dsetnames, get_sents(lang)))) for lang in langs)
+    """
+    from exper import Dset
 
-    table = []
-    for l in langs:
-        print l, sorted(set(t for sent in data[l]['trn'] for t in sent['ts']))
+    # dsets = map(Dset, ('eng','deu','spa','ned','tr','cze','arb0'))
+    dsets = map(Dset, ('eng','chu'))
+    cvocabs = map(lambda dset: set(c for sent in dset.trn for c in sent['cseq']), dsets)
+    print len(reduce(lambda a,b: a.union(b), cvocabs))
+
+
 
 if __name__ == '__main__':
     from tabulate import tabulate
     from score import conlleval
-    """
-    import argparse
-    parser = argparse.ArgumentParser()
-    parser.add_argument('lang')
-    args = parser.parse_args()
-    """
-    paper()
+
+    quick()
 

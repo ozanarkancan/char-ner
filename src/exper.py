@@ -47,6 +47,7 @@ def get_args():
     parser.add_argument("--sorted", default=1, type=int, help="sort datasets before training and prediction")
     parser.add_argument("--in2out", default=0, type=int, help="connect input & output")
     parser.add_argument("--lang", default='eng', help="ner lang")
+    parser.add_argument("--charset", default=[], nargs='+', type=str, help="additional dset names for training charset")
     parser.add_argument("--shuf", default=1, type=int, help="shuffle the batches.")
     parser.add_argument("--tagging", default='bio', choices=['io','bio'], help="tag scheme to use")
     parser.add_argument("--decoder", default=1, type=int, help="use decoder to prevent invalid tag transitions")
@@ -310,7 +311,7 @@ def main():
 
     dset = Dset(**args)
     feat = featchar.Feat(args['feat'])
-    feat.fit(dset)
+    feat.fit(dset, xdsets=[Dset(dname) for dname in args['charset']])
 
     batcher = Batcher(args['n_batch'], feat)
     get_ts_func = getattr(rep,'get_ts_'+args['tagging'])

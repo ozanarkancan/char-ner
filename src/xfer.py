@@ -91,9 +91,9 @@ def main():
     logging.info('params loaded')
 
 
-    dset = Dset(args)
+    dset = Dset(**args)
     feat = featchar.Feat(dat_args['feat'])
-    feat.fit(dset)
+    feat.fit(dset, xdsets=[Dset(dname) for dname in dat_args['charset']])
 
     batcher = Batcher(dat_args['n_batch'], feat)
     get_ts_func = getattr(rep,'get_ts_'+ dat_args['tagging'])
@@ -104,11 +104,12 @@ def main():
 
     rdnn = RDNN(feat.NC, feat.NF, dat_args)
 
-    param_values = lasagne.layers.get_all_param_values(rdnn.layers[-1])
-    sindx = len(rdnn.blayers[0][0].get_params())*2
-    param_values[sindx:] = rnn_param_values[sindx:len(param_values)]
-    # params = lasagne.layers.get_all_params(rdnn.layers[-1])
-    lasagne.layers.set_all_param_values(rdnn.layers[-1], param_values)
+    params = lasagne.layers.get_all_params(rdnn.layers[-1])
+    # param_values = lasagne.layers.get_all_param_values(rdnn.layers[-1])
+    # sindx = len(rdnn.blayers[0][0].get_params())*2
+    # param_values[sindx:] = rnn_param_values[sindx:len(param_values)]
+    # lasagne.layers.set_all_param_values(rdnn.layers[-1], param_values)
+    lasagne.layers.set_all_param_values(rdnn.layers[-1], rnn_param_values[:len(params)])
     # rdnn.blayers[1][0].get_params() # [hid_init, input_to_hidden.W, input_to_hidden.b, hidden_to_hidden.W]
 
     validator.validate(rdnn, dat_args, tdecoder)
