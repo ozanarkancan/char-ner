@@ -1,6 +1,6 @@
 import numpy as np
 import logging
-from itertools import *
+from itertools import imap, groupby
 from tabulate import tabulate
 
 class ViterbiDecoder(object):
@@ -88,11 +88,9 @@ class MaxDecoder(object):
         return True
 
 def main():
-    from utils import get_sents, sample_sents
+    from utils import get_sents
     import featchar, rep
 
-    import random
-    from collections import defaultdict as dd
     trn, dev, tst = get_sents('toy')
 
     r = rep.Repstd()
