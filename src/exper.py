@@ -9,10 +9,10 @@ import theano
 import lasagne
 from sklearn.metrics import confusion_matrix
 
+from dataset import Dset
 import featchar, decoder
 import rep
-import encoding
-from utils import get_sents, sample_sents, valid_file_name, break2subsents
+from utils import valid_file_name
 from utils import LOG_DIR, MODEL_DIR
 from score import conlleval
 from lazrnn import RDNN, RDNN_Dummy
@@ -79,7 +79,7 @@ class Batcher(object):
         sent_batches = [dset[i:i+self.batch_size] for i in range(0, len(dset), self.batch_size)]
         batches = []
         for batch in sent_batches:
-            mlen = max(len(sent['cseq']) for sent in batch)
+            mlen = max(len(sent['x']) for sent in batch)
             X_batch = np.zeros((len(batch), mlen, nf),dtype=theano.config.floatX)
             Xmsk_batch = np.zeros((len(batch), mlen),dtype=np.bool)
             y_batch = np.zeros((len(batch), mlen, self.feat.NC),dtype=theano.config.floatX)
@@ -100,37 +100,44 @@ class Reporter(object):
         self.feat = feat
         self.tfunc = tfunc
 
-    def report_cerr(self, dset, pred):
-        y_true = self.feat.tseqenc.transform([t for sent in dset for t in sent['tseq']])
+    def report_yerr(self, dset, pred):
+        y_true = self.feat.yenc.transform([t for sent in dset for t in sent['y']])
         y_pred = list(chain.from_iterable(pred))
-        cerr = np.sum(y_true!=y_pred)/float(len(y_true))
+        yerr = np.sum(y_true!=y_pred)/float(len(y_true))
 
-        return cerr, 0, 0, 0, 0, 0, '', '', ''
+        return yerr, 0, 0, 0
 
     def report(self, dset, pred):
-        y_true = self.feat.tseqenc.transform([t for sent in dset for t in sent['tseq']])
+        y_true = self.feat.yenc.transform([t for sent in dset for t in sent['y']])
         y_pred = list(chain.from_iterable(pred))
-        cerr = np.sum(y_true!=y_pred)/float(len(y_true))
+        yerr = np.sum(y_true!=y_pred)/float(len(y_true))
 
-        char_conmat_str = self.get_conmat_str(y_true, y_pred, self.feat.tseqenc)
+        # char_conmat_str = self.get_conmat_str(y_true, y_pred, self.feat.tseqenc)
 
         lts = [sent['ts'] for sent in dset]
         lts_pred = []
         for sent, ipred in zip(dset, pred):
-            tseq_pred = self.feat.tseqenc.inverse_transform(ipred)
+            tseq_pred = self.feat.yenc.inverse_transform(ipred)
             # tseqgrp_pred = get_tseqgrp(sent['wiseq'],tseq_pred)
             ts_pred = self.tfunc(sent['wiseq'],tseq_pred)
             lts_pred.append(ts_pred) # changed
 
+        """
         y_true = self.feat.tsenc.transform([t for ts in lts for t in ts])
         y_pred = self.feat.tsenc.transform([t for ts in lts_pred for t in ts])
         werr = np.sum(y_true!=y_pred)/float(len(y_true))
 
         word_conmat_str = self.get_conmat_str(y_true, y_pred, self.feat.tsenc)
+        """
 
         # wacc, pre, recall, f1 = bilouEval2(lts, lts_pred)
         (wacc, pre, recall, f1), conll_print = conlleval(lts, lts_pred)
-        return cerr, werr, wacc, pre, recall, f1, conll_print, char_conmat_str, word_conmat_str
+        logging.debug('')
+        logging.debug(conll_print)
+        # logging.debug(char_conmat_str)
+        # logging.debug(word_conmat_str)
+        logging.debug('')
+        return yerr, pre, recall, f1
 
     def get_conmat_str(self, y_true, y_pred, lblenc):
         str_list = []
@@ -150,71 +157,54 @@ class Validator(object):
         self.reporter = reporter
         self.batcher = batcher
 
-
-    def validate(self, rdnn, argsd, tdecoder):
-        logging.info('training the model...')
-        dbests = {'trn':(1,0.), 'dev':(1,0.), 'tst':(1,0.)}
-
+    def get_trndat():
+        """
         if argsd['cdrop'] > 0:
             yy = u'/u262f'
             trn2 = []
             for sentb in self.dset.trn:
                 sent = copy.deepcopy(sentb)
-                cdropl = (np.random.rand(len(sent['cseq'])) < argsd['cdrop']).tolist()
-                sent['cseq'] = [yy if isd and c != ' ' else c for c, isd in zip(sent['cseq'], cdropl)]
+                cdropl = (np.random.rand(len(sent['x'])) < argsd['cdrop']).tolist()
+                sent['x'] = [yy if isd and c != ' ' else c for c, isd in zip(sent['x'], cdropl)]
                 trn2.append(sent)
             self.trndat = self.batcher.get_batches(trn2) 
+        """
+        pass
+
+    def validate(self, rdnn, argsd, tdecoder):
+        logging.info('training the model...')
+        dbests = {'trn':(1,0.), 'dev':(1,0.), 'tst':(1,0.)}
 
         for e in range(1,argsd['fepoch']+1): # foreach epoch
+            logging.info(('{:<5} {:<5} {:>12} ' + ('{:>10} '*7)).format('dset','epoch','mcost', 'mtime', 'yerr', 'pre', 'recall', 'f1', 'best', 'best'))
             """ training """
+            if argsd['cdrop'] > 0: # TODO
+                trndat = self.batcher.get_batches(self.dset.trn) 
+            trndat = copy.copy(self.trndat)
             if argsd['shuf']:
-                logging.debug('shuffling trn batches...')
-                batch_ids = range(len(self.trndat))
-                random.shuffle(batch_ids)
-                trndat = map(self.trndat.__getitem__, batch_ids)
-            else:
-                trndat = self.trndat
+                random.shuffle(trndat) 
 
             start_time = time.time()
             mcost = rdnn.train(trndat)
-            # dset  epoch      mcost      mtime       cerr
-            end_time = time.time()
-            mtime = end_time - start_time
-            # logging.info(('{:<5} {:<5d} {:>10.2e} {:>10.4f} {:>10.2e}').format(datname,e,mcost, mtime, cerr))
+            end_time = time.time(); mtime = end_time - start_time
+            logging.info(('{:<5} {:<5d} {:>12.4e} {:>10.4f}').format('trn0',e,mcost, mtime))
             """ end training """
 
             """ predictions """
-            logging.info(('{:<5} {:<5} {:>12} ' + ('{:>10} '*9)).format('dset','epoch','mcost', 'mtime', 'cerr', 'werr', 'wacc', 'pre', 'recall', 'f1', 'best', 'best'))
-            logging.info(('{:<5} {:<5d} {:>12.4e} {:>10.4f}').format('trn0',e,mcost, mtime))
             for ddat, datname, dset in zip([self.trndat,self.devdat, self.tstdat],['trn','dev','tst'], [self.dset.trn, self.dset.dev, self.dset.tst]):
             # for ddat, datname, dset in zip([self.devdat, self.tstdat],['dev','tst'], [self.dev, self.tst]):
                 start_time = time.time()
-
                 mcost, pred = rdnn.predict(ddat)
                 pred = [p for b in pred for p in b]
-
-                pred2 = []
-                for sent, logprobs in zip(dset, pred):
-                    if datname == 'trn': # use max decoder at trn, dont care decoder flag
-                        tseq = np.argmax(logprobs, axis=-1).flatten()
-                    else:
-                        tseq = tdecoder.decode(sent, logprobs, debug=False)
-                        if not tdecoder.sanity_check(sent, tseq):
-                            logging.critical(' '.join(sent['ws']))
-                            logging.critical(' '.join(sent['ts']))
-                            logging.critical('gold tseq: {}'.format(sent['tseq']))
-                            logging.critical('decoded tseq: {}'.format(tseq))
-                            logging.critical(logprobs)
-                            raise Exception('decoder sanity check failed')
-                    pred2.append(tseq)
-
                 end_time = time.time()
                 mtime = end_time - start_time
                 
                 if datname=='trn':
-                    cerr, werr, wacc, pre, recall, f1, conll_print, char_conmat_str, word_conmat_str = self.reporter.report_cerr(dset, pred2) 
+                    pred2 = [np.argmax(p, axis=-1).flatten() for p in pred]
+                    yerr, pre, recall, f1 = self.reporter.report_yerr(dset, pred2) 
                 else:
-                    cerr, werr, wacc, pre, recall, f1, conll_print, char_conmat_str, word_conmat_str = self.reporter.report(dset, pred2) 
+                    pred2 = [tdecoder.decode(s, p) for s, p in zip(dset, pred)]
+                    yerr, pre, recall, f1 = self.reporter.report(dset, pred2) 
                 
                 if f1 > dbests[datname][1]:
                     dbests[datname] = (e,f1)
@@ -222,63 +212,11 @@ class Validator(object):
                         rnn_param_values = rdnn.get_param_values()
                         np.savez('{}/{}'.format(MODEL_DIR, argsd['save']), argsd=argsd, rnn_param_values=rnn_param_values)
 
-                
-                logging.info(('{:<5} {:<5d} {:>12.4e} ' + ('{:>10.4f} '*8)+'{:>10d}')\
-                    .format(datname,e,mcost, mtime, cerr, werr, wacc, pre, recall, f1, dbests[datname][1],dbests[datname][0]))
-                
-                logging.debug('')
-                logging.debug(conll_print)
-                logging.debug(char_conmat_str)
-                logging.debug(word_conmat_str)
-                logging.debug('')
-
+                logging.info(('{:<5} {:<5d} {:>12.4e} ' + ('{:>10.4f} '*6)+'{:>10d}')\
+                    .format(datname, e, mcost, mtime, yerr, pre, recall, f1, dbests[datname][1], dbests[datname][0]))
             """ end predictions """
             logging.info('')
 
-class Dset(object):
-
-    def __init__(self, lang='eng', tagging='bio', breaktrn=False, captrn=500, sample=0, charrep='std', sort=True, **kwargs):
-
-        trn, dev, tst = get_sents(lang)
-
-        if tagging == 'io':
-            for sent in chain(trn, dev, tst):
-                sent['ts'] = encoding.any2io(sent['ts'])
-
-        if breaktrn:
-            trn = [subsent for sent in trn for subsent in break2subsents(sent)]
-
-        if captrn:
-            trn = filter(lambda sent: len(' '.join(sent['ws']))<captrn, trn)
-
-        if sample>0:
-            trn_size = sample*1000
-            trn = sample_sents(trn,trn_size)
-
-        repclass = getattr(rep, 'Rep'+charrep)
-        repobj = repclass()
-
-        for d in (trn,dev,tst):
-            for sent in d:
-                sent.update({
-                    'cseq': repobj.get_cseq(sent), 
-                    'wiseq': repobj.get_wiseq(sent), 
-                    'tseq': repobj.get_tseq(sent)})
-        
-
-        if sort:
-            trn = sorted(trn, key=lambda sent: len(sent['cseq']))
-            dev = sorted(dev, key=lambda sent: len(sent['cseq']))
-            tst = sorted(tst, key=lambda sent: len(sent['cseq']))
-
-        ntrnsent, ndevsent, ntstsent = list(map(len, (trn,dev,tst)))
-        logging.info('# of sents trn, dev, tst: {} {} {}'.format(ntrnsent, ndevsent, ntstsent))
-
-        for dset, dname in zip((trn,dev,tst),('trn','dev','tst')):
-            slens = [len(sent['cseq']) for sent in dset]
-            MAX_LENGTH, MIN_LENGTH, AVG_LENGTH, STD_LENGTH = max(slens), min(slens), np.mean(slens), np.std(slens)
-            logging.info('{}\tmaxlen: {} minlen: {} avglen: {:.2f} stdlen: {:.2f}'.format(dname,MAX_LENGTH, MIN_LENGTH, AVG_LENGTH, STD_LENGTH))
-        self.trn, self.dev, self.tst = trn, dev, tst
 
 
 def setup_logger(args):

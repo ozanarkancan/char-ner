@@ -1,9 +1,8 @@
 import os
-import copy
-from itertools import *
+from itertools import ifilter, islice, groupby, chain, count
 import random
+import logging
 
-import encoding
 
 __author__ = 'Onur Kuru'
 file_abspath = os.path.abspath(__file__)
@@ -16,6 +15,15 @@ SCRIPTS_DIR = '{}/scripts'.format(ROOT_DIR)
 
 WSTART = '/w'
 WEND = 'w/'
+DROPSYM = u'/u262f'
+
+
+def logger():
+    logger = logging.getLogger()
+    logger.setLevel(logging.DEBUG)
+    shandler = logging.StreamHandler()
+    shandler.setLevel(logging.INFO)
+    logger.addHandler(shandler)
 
 def valid_file_name(s):
     return "".join(i for i in s if i not in "\"\/ &*?<>|[]()'")
@@ -135,6 +143,5 @@ def break2subsents(sent):
     return subsents
 
 if __name__ == '__main__':
-    from tabulate import tabulate
     trn,dev,tst  = get_sents('dse')
     print map(len, (trn,dev,tst))

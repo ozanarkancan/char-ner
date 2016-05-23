@@ -1,7 +1,6 @@
 import numpy as np
 import logging
 from itertools import imap, groupby
-from tabulate import tabulate
 
 class ViterbiDecoder(object):
 
@@ -13,7 +12,7 @@ class ViterbiDecoder(object):
         self.states = dd(set)
         for sent in trn:
             wistates =  map(lambda x:int(x<0), sent['wiseq'])
-            tseq = feat.tseqenc.transform([t for t in sent['tseq']])
+            tseq = feat.yenc.transform([t for t in sent['tseq']])
             # for (tprev,t), (wstate_prev, wstate) in zip(zip(tseq[1:],tseq), zip(wistates[1:], wistates)):
             for (t,tprev), (wstate, wstate_prev) in zip(zip(tseq[1:],tseq), zip(wistates[1:], wistates)):
                 indx = int(''.join(map(str,(wstate_prev,wstate))), 2)
@@ -35,19 +34,18 @@ class ViterbiDecoder(object):
         emissions = map(lambda x:x[0], enumerate(sent['cseq']))
         tseq_ints = viterbi_log_multi(logprobs.T, self.transition_tensor, emissions, tstates)
 
-        if debug:
-            ddata = [r for r in zip(sent['cseq'],wistates,tstates,emissions, tseq_ints)]
-            ddata = [list(r) + lprobs.tolist() for r,lprobs in zip(ddata,logprobs)]
-            """
-            ddata = [sent['cseq']]
-            ddata.extend(logprobs.T)
-            ddata.extend([wistates,tstates,emissions])
-            """
-            print tabulate(ddata, floatfmt='.2f')
+        if not self.sanity_check(sent, tseq_ints):
+            logging.critical(' '.join(sent['ws']))
+            logging.critical(' '.join(sent['ts']))
+            logging.critical('gold tseq: {}'.format(sent['tseq']))
+            logging.critical('decoded tseq: {}'.format(tseq_ints))
+            logging.critical(logprobs)
+            raise Exception('decoder sanity check failed')
+
         return tseq_ints
 
     def sanity_check(self, sent, tseq_ints):
-        tseq = self.feat.tseqenc.inverse_transform(tseq_ints)
+        tseq = self.feat.yenc.inverse_transform(tseq_ints)
         if any(len(set(group)) != 1 for k, group in groupby(filter(lambda x: x[0]>-1, zip(sent['wiseq'], tseq)))):
             return False
         sp_indxs = [i for i,wi in enumerate(sent['wiseq']) if wi == -1]
@@ -60,7 +58,7 @@ class ViterbiDecoder(object):
             for r in (self.transition_tensor[i] > 0).astype(np.int):
                 print ' '.join(map(str, r.tolist()))
             print 
-        clist = self.feat.tseqenc.classes_.tolist()
+        clist = self.feat.yenc.classes_.tolist()
         print clist 
         """
         for i in xrange(self.transition_tensor.shape[0]):
