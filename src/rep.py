@@ -1,8 +1,7 @@
-from itertools import *
+from itertools import chain, groupby, izip
 from collections import Counter
-from tabulate import tabulate
 
-import utils, encoding
+import utils
 
 def get_phrases(ts):
     phrases, curphrase = [], []
@@ -69,7 +68,7 @@ class Repnospace(object):
         return [wi for wi,w in enumerate(sent['ws']) for c in w]
 
     def get_tseq(self, sent): 
-        return [ts[wi].lower() for wi,w in enumerate(sent['ws']) for c in w]
+        return [sent['ts'][wi].lower() for wi,w in enumerate(sent['ws']) for c in w]
 
 class Repspec(object):
 
@@ -93,7 +92,7 @@ class Repspec(object):
 def get_ts_io(wiseq, tseq):
     tgroup = [[e[0] for e in g] for k, g in groupby(enumerate(wiseq),lambda x: x[1]) if k >= 0]
     tseqgrp = [[tseq[ti] for ti in ts] for ts in tgroup]
-    return [Counter(tseq).most_common(1)[0][0].upper() for tseq in tseqgrp]
+    return [Counter(tseq1).most_common(1)[0][0].upper() for tseq1 in tseqgrp]
 
 def get_ts_bio(wiseq, tseq):
 # def get_ts():
@@ -118,65 +117,6 @@ def get_ts_bio(wiseq, tseq):
                 else:
                     ts.append('B-{}'.format(ttype.upper()))
     return ts
-
-def print_sample():
-    from utils import get_sents, sample_sents
-    from encoding import any2io
-    trn, dev, tst = get_sents('eng')
-
-    trn = sample_sents(trn, 3, 5,6)
-    r = Repstd()
-
-    for sent in trn:
-        sent['ts'] = any2io(sent['ts'])
-        sent.update({
-            'cseq': r.get_cseq(sent), 
-            'wiseq': r.get_wiseq(sent), 
-            'tseq': r.get_tseq(sent)})
-        r.pprint(sent)
-        print
-
-def quick():
-    from utils import get_sents, sample_sents
-    from encoding import any2io
-    import featchar
-    import random
-    from collections import defaultdict as dd
-    trn, dev, tst = get_sents('eng')
-
-    r = Repstd()
-
-    for sent in trn:
-        sent['ts'] = any2io(sent['ts'])
-        sent.update({
-            'cseq': r.get_cseq(sent), 
-            'wiseq': r.get_wiseq(sent), 
-            'tseq': r.get_tseq(sent)})
-
-    feat = featchar.Feat('basic')
-    feat.fit(trn,dev,tst)
-
-    sent = random.choice(trn)
-    wstates =  map(lambda x:int(x<0), sent['wiseq'])
-    tseq = sent['tseq']
-
-    states = dd(set)
-    for sent in trn:
-        wstates =  map(lambda x:int(x<0), sent['wiseq'])
-        tseq = feat.tseqenc.transform([t for t in sent['tseq']])
-        # tseq = sent['tseq']
-        for (tprev,t), (wstate_prev, wstate) in zip(zip(tseq[1:],tseq), zip(wstates[1:], wstates)):
-            indx = int(''.join(map(str,(wstate_prev,wstate))), 2)
-            # states[(wstate_prev,wstate)].add((tprev,t))
-            states[indx].add((tprev,t))
-    print states
-    """
-    s = set()
-    for sent in trn:
-        tseq = [t for t in sent['tseq']]
-        s.update(set(zip(tseq,tseq[1:])))
-    print s
-    """
 
 def is_consec(sent):
     return any(t1.startswith('I-') and t2.startswith('B-') and t1.split('-')[1] == t2.split('-')[1]

@@ -57,6 +57,7 @@ def get_args():
     parser.add_argument("--eps", default=1e-8, type=float, help="epsilon for adam")
     parser.add_argument("--gnoise", default=False, action='store_true', help="adding time dependent noise to the gradients")
     parser.add_argument("--cdrop", default=0., type=float, help="char dropout rate")
+    parser.add_argument("--level", default='char', choices=['char','word'], help="char/word level")
 
     parser.add_argument("--save", default='', help="save param values to file")
     parser.add_argument("--load", default='', help="load a pretrained model")
@@ -96,11 +97,13 @@ class Batcher(object):
 
 class Reporter(object):
 
-    def __init__(self, feat, tfunc):
+    def __init__(self, dset, feat):
         self.feat = feat
-        self.tfunc = tfunc
+        self.tfunc = rep.get_ts_bio if dset.level == 'char' else lambda x,y: y
+        self.tdecoder = decoder.ViterbiDecoder(dset.trn, feat) if dset.level == 'char' else decoder.MaxDecoder(dset.trn, feat)
 
     def report_yerr(self, dset, pred):
+        pred = [np.argmax(p, axis=-1).flatten() for p in pred]
         y_true = self.feat.yenc.transform([t for sent in dset for t in sent['y']])
         y_pred = list(chain.from_iterable(pred))
         yerr = np.sum(y_true!=y_pred)/float(len(y_true))
@@ -108,6 +111,7 @@ class Reporter(object):
         return yerr, 0, 0, 0
 
     def report(self, dset, pred):
+        pred = [self.tdecoder.decode(s, p) for s, p in zip(dset, pred)]
         y_true = self.feat.yenc.transform([t for sent in dset for t in sent['y']])
         y_pred = list(chain.from_iterable(pred))
         yerr = np.sum(y_true!=y_pred)/float(len(y_true))
@@ -171,7 +175,7 @@ class Validator(object):
         """
         pass
 
-    def validate(self, rdnn, argsd, tdecoder):
+    def validate(self, rdnn, argsd):
         logging.info('training the model...')
         dbests = {'trn':(1,0.), 'dev':(1,0.), 'tst':(1,0.)}
 
@@ -200,11 +204,9 @@ class Validator(object):
                 mtime = end_time - start_time
                 
                 if datname=='trn':
-                    pred2 = [np.argmax(p, axis=-1).flatten() for p in pred]
-                    yerr, pre, recall, f1 = self.reporter.report_yerr(dset, pred2) 
+                    yerr, pre, recall, f1 = self.reporter.report_yerr(dset, pred) 
                 else:
-                    pred2 = [tdecoder.decode(s, p) for s, p in zip(dset, pred)]
-                    yerr, pre, recall, f1 = self.reporter.report(dset, pred2) 
+                    yerr, pre, recall, f1 = self.reporter.report(dset, pred) 
                 
                 if f1 > dbests[datname][1]:
                     dbests[datname] = (e,f1)
@@ -252,15 +254,13 @@ def main():
     feat.fit(dset, xdsets=[Dset(dname) for dname in args['charset']])
 
     batcher = Batcher(args['n_batch'], feat)
-    get_ts_func = getattr(rep,'get_ts_'+args['tagging'])
-    reporter = Reporter(feat, get_ts_func)
-    tdecoder = decoder.ViterbiDecoder(dset.trn, feat) if args['decoder'] else decoder.MaxDecoder(dset.trn, feat)
+    reporter = Reporter(dset, feat)
 
     validator = Validator(dset, batcher, reporter)
 
     RNN = RDNN_Dummy if args['rnn'] == 'dummy' else RDNN
     rdnn = RNN(feat.NC, feat.NF, args)
-    validator.validate(rdnn, args, tdecoder)
+    validator.validate(rdnn, args)
 
 if __name__ == '__main__':
     main()

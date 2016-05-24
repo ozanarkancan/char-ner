@@ -7,7 +7,7 @@ import utils
 class Dset(object):
 
     def __init__(self, lang='eng', level='char', tagging='bio', breaktrn=False, captrn=500, sample=0, charrep='std', sort=True, **kwargs):
-
+        self.level = level
         trn, dev, tst = utils.get_sents(lang)
 
         repclass = getattr(rep, 'Rep'+charrep)
