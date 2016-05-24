@@ -24,8 +24,8 @@ if __name__ == '__main__':
     parser.add_argument("--p", default=False, action='store_true', help='just print, dont submit') 
     parser.add_argument("--script", default='exper', help='python script to run')
     parser.add_argument("--script_args", required=True, help='arguments to python script') 
-    parser.add_argument("--m", default='', choices=['', 'biyofiz-4-0','biyofiz-4-1','biyofiz-4-2','biyofiz-4-3','parcore-6-0','iui-5-0'], help='machine name')
-    parser.add_argument("--d", default='gpu', choices=['gpu','cpu','gpu0','gpu1'], help='device name')
+    parser.add_argument("--m", default='', choices=['', 'ahtapot-5-1', 'biyofiz-4-0','biyofiz-4-1','biyofiz-4-2','biyofiz-4-3','parcore-6-0','iui-5-0'], help='machine name')
+    parser.add_argument("--d", default='gpu', choices=['gpu','cpu','gpu0','gpu1','gpu2','gpu3','gpu4','gpu5','gpu6','gpu7'], help='device name')
     parser.add_argument("--smp", default=18, type=int, help='num of cpu threads')
     args = parser.parse_args()
 
@@ -36,7 +36,12 @@ if __name__ == '__main__':
 
     if len(args.m):
         queue = args.m.split('-')[0]
-        queue = queue if queue == 'biyofiz' else 'all'
+        if queue == 'ahtapot':
+            queue = 'ai'
+        elif queue == 'parcore' or queue == 'iui':
+            queue = 'all'
+        else:
+            queue = 'biyofiz'
         machine = '@%s'%args.m
     else:
         queue = 'biyofiz'

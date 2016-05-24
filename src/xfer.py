@@ -61,6 +61,7 @@ def get_args():
     parser.add_argument("--tagging", default='bio', choices=['io','bio'], help="tag scheme to use")
     parser.add_argument("--sample", default=0, type=int, help="num of sents to sample from trn in the order of K")
     parser.add_argument("--rep", default='std', choices=['std','nospace','spec'], help="which representation to use")
+    parser.add_argument("--fepoch", default=600, type=int, help="number of epochs")
     args = vars(parser.parse_args())
     return args
 
@@ -89,6 +90,7 @@ def main():
     dat_args = dat['argsd'].tolist()
     rnn_param_values = dat['rnn_param_values'].tolist()
     logging.info('params loaded')
+    dat_args['fepoch'] = args['fepoch'] # TODO
 
 
     dset = Dset(**args)
