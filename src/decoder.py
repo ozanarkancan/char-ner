@@ -2,6 +2,36 @@ import numpy as np
 import logging
 from itertools import imap, groupby
 
+class WDecoder(object):
+
+    def __init__(self, trn, feat):
+        self.feat = feat
+        # self.states = dd(set)
+        self.transition_tensor = np.zeros((1, feat.NC, feat.NC)) + np.log(np.finfo(float).eps)
+        for sent in trn:
+            tseq = feat.yenc.transform([t for t in sent['y']])
+            for t,tprev in zip(tseq[1:],tseq):
+                self.transition_tensor[0,tprev,t] = 1
+
+    def decode(self, sent, logprobs, debug=False):
+        from viterbi import viterbi_log_multi
+
+        tstates = [0] * len(sent['x'])
+        emissions = map(lambda x:x[0], enumerate(sent['x']))
+        tseq_ints = viterbi_log_multi(logprobs.T, self.transition_tensor, emissions, tstates)
+
+        """
+        if not self.sanity_check(sent, tseq_ints):
+            logging.critical(' '.join(sent['ws']))
+            logging.critical(' '.join(sent['ts']))
+            logging.critical('gold tseq: {}'.format(sent['tseq']))
+            logging.critical('decoded tseq: {}'.format(tseq_ints))
+            logging.critical(logprobs)
+            raise Exception('decoder sanity check failed')
+        """
+
+        return tseq_ints
+
 class ViterbiDecoder(object):
 
     def __init__(self, trn, feat):

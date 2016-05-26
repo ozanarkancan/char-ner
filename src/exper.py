@@ -100,7 +100,8 @@ class Reporter(object):
     def __init__(self, dset, feat):
         self.feat = feat
         self.tfunc = rep.get_ts_bio if dset.level == 'char' else lambda x,y: y
-        self.tdecoder = decoder.ViterbiDecoder(dset.trn, feat) if dset.level == 'char' else decoder.MaxDecoder(dset.trn, feat)
+        # self.tdecoder = decoder.ViterbiDecoder(dset.trn, feat) if dset.level == 'char' else decoder.MaxDecoder(dset.trn, feat)
+        self.tdecoder = decoder.ViterbiDecoder(dset.trn, feat) if dset.level == 'char' else decoder.WDecoder(dset.trn, feat)
 
     def report_yerr(self, dset, pred):
         pred = [np.argmax(p, axis=-1).flatten() for p in pred]
