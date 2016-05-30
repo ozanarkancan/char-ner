@@ -1,6 +1,7 @@
 import numpy as np
 import logging
 from itertools import imap, groupby
+from tabulate import tabulate
 
 class WDecoder(object):
 
@@ -12,6 +13,8 @@ class WDecoder(object):
             tseq = feat.yenc.transform([t for t in sent['y']])
             for t,tprev in zip(tseq[1:],tseq):
                 self.transition_tensor[0,tprev,t] = 1
+        logging.info('transition tensor:')
+        logging.info(tabulate(self.transition_tensor[0]))
 
     def decode(self, sent, logprobs, debug=False):
         from viterbi import viterbi_log_multi
