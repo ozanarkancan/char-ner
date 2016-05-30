@@ -5,9 +5,9 @@ import theano
 import logging
 
 from lazrnn import RDNN
-import rep, featchar
+import featchar
 from exper import Batcher, Reporter, Validator, Dset
-import decoder, utils
+import utils
 
 """
 [W, # for emb layer
@@ -62,6 +62,7 @@ def get_args():
     parser.add_argument("--sample", default=0, type=int, help="num of sents to sample from trn in the order of K")
     parser.add_argument("--rep", default='std', choices=['std','nospace','spec'], help="which representation to use")
     parser.add_argument("--fepoch", default=600, type=int, help="number of epochs")
+    parser.add_argument("--save", default='', help="save param values to file")
     args = vars(parser.parse_args())
     return args
 
@@ -91,6 +92,10 @@ def main():
     rnn_param_values = dat['rnn_param_values'].tolist()
     logging.info('params loaded')
     dat_args['fepoch'] = args['fepoch'] # TODO
+    dat_args['save'] = args['save'] # TODO
+
+    for k,v in sorted(dat_args.iteritems()):
+        logging.info('{}:\t{}'.format(k,v))
 
 
     dset = Dset(**args)
@@ -98,23 +103,16 @@ def main():
     feat.fit(dset, xdsets=[Dset(dname) for dname in dat_args['charset']])
 
     batcher = Batcher(dat_args['n_batch'], feat)
-    get_ts_func = getattr(rep,'get_ts_'+ dat_args['tagging'])
-    reporter = Reporter(feat, get_ts_func)
-    tdecoder = decoder.ViterbiDecoder(dset.trn, feat) if dat_args['decoder'] else decoder.MaxDecoder(dset.trn, feat)
+    reporter = Reporter(dset, feat)
 
     validator = Validator(dset, batcher, reporter)
 
     rdnn = RDNN(feat.NC, feat.NF, dat_args)
 
     params = lasagne.layers.get_all_params(rdnn.layers[-1])
-    # param_values = lasagne.layers.get_all_param_values(rdnn.layers[-1])
-    # sindx = len(rdnn.blayers[0][0].get_params())*2
-    # param_values[sindx:] = rnn_param_values[sindx:len(param_values)]
-    # lasagne.layers.set_all_param_values(rdnn.layers[-1], param_values)
     lasagne.layers.set_all_param_values(rdnn.layers[-1], rnn_param_values[:len(params)])
-    # rdnn.blayers[1][0].get_params() # [hid_init, input_to_hidden.W, input_to_hidden.b, hidden_to_hidden.W]
 
-    validator.validate(rdnn, dat_args, tdecoder)
+    validator.validate(rdnn, dat_args)
 
 if __name__ == '__main__':
     main()

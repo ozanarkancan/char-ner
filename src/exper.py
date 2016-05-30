@@ -247,6 +247,7 @@ def main():
 
     RNN = RDNN_Dummy if args['rnn'] == 'dummy' else RDNN
     rdnn = RNN(feat.NC, feat.NF, args)
+
     validator.validate(rdnn, args)
 
 if __name__ == '__main__':
