@@ -162,20 +162,6 @@ class Validator(object):
         self.reporter = reporter
         self.batcher = batcher
 
-    def get_trndat():
-        """
-        if argsd['cdrop'] > 0:
-            yy = u'/u262f'
-            trn2 = []
-            for sentb in self.dset.trn:
-                sent = copy.deepcopy(sentb)
-                cdropl = (np.random.rand(len(sent['x'])) < argsd['cdrop']).tolist()
-                sent['x'] = [yy if isd and c != ' ' else c for c, isd in zip(sent['x'], cdropl)]
-                trn2.append(sent)
-            self.trndat = self.batcher.get_batches(trn2) 
-        """
-        pass
-
     def validate(self, rdnn, argsd):
         logging.info('training the model...')
         dbests = {'trn':(1,0.), 'dev':(1,0.), 'tst':(1,0.)}
