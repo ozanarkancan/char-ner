@@ -229,11 +229,23 @@ def quick():
     data = dict((lang,dict((dname,dset) for dname,dset in zip(dsetnames, get_sents(lang)))) for lang in langs)
     """
     from exper import Dset
+    from functools import partial
 
+    Dset2 = partial(Dset, captrn=0)
     # dsets = map(Dset, ('eng','deu','spa','ned','tr','cze','arb0'))
-    dsets = map(Dset, ('eng','chu'))
-    cvocabs = map(lambda dset: set(c for sent in dset.trn for c in sent['cseq']), dsets)
-    print len(reduce(lambda a,b: a.union(b), cvocabs))
+    # langs = ('arb0', 'cze', 'ned', 'eng', 'deu', 'spa', 'tr')
+    langs = ('arb0', 'cze', 'arb-pos', 'cze-pos')
+    dsets = map(Dset2, langs)
+    # cvocabs = map(lambda dset: set(c for sent in dset.trn for c in sent['cseq']), dsets)
+    table = []
+    table.append(map(lambda dset: sum(len(sent['ws']) for sent in dset.trn ), dsets))
+    """
+    table.append(map(lambda dset: len(set(c for sent in dset.trn for c in sent['cseq'])), dsets))
+    table.append(map(lambda dset: len(set(c for sent in dset.trn for c in sent['ws'])), dsets))
+    table.append(map(lambda dset: int(np.mean([len(sent['cseq']) for sent in dset.trn])), dsets))
+    table.append(map(lambda dset: int(np.mean([len(sent['ws']) for sent in dset.trn])), dsets))
+    """
+    print tabulate(table, tablefmt='latex', floatfmt='.2f')
 
 
 

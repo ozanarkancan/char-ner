@@ -1,9 +1,8 @@
 import argparse, subprocess
-from utils import ROOT_DIR
 import getpass
 
 STR = """#!/bin/bash
-#$ -N exper-{}
+#$ -N {}-{}
 #$ -q {}.q{}
 #$ -S /bin/bash
 #$ -l gpu={}
@@ -46,7 +45,7 @@ if __name__ == '__main__':
     else:
         queue = 'biyofiz'
 
-    job_text = STR.format(args.d, queue, machine, is_gpu, args.smp, username, username, username, args.smp, args.d, args.script, args.script_args)
+    job_text = STR.format(args.script, args.d, queue, machine, is_gpu, args.smp, username, username, username, args.smp, args.d, args.script, args.script_args)
     print job_text
 
     if not args.p:
