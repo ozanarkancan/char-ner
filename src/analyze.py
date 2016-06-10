@@ -1,12 +1,11 @@
 import numpy as np
 import argparse
-import random
 import lasagne
 import logging
 
 from lazrnn import RDNN as RNN
 import rep, featchar, exper
-from exper import Batcher, Reporter, Validator
+from exper import Batcher, Validator
 from utils import get_sents
 import decoder
 
