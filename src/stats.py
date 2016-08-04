@@ -155,7 +155,8 @@ def main():
 
 def paper():
     # langs = ['eng', 'deu', 'spa', 'ned', 'tr', 'cze', 'ger', 'arb', 'ita']
-    langs = ['arb0', 'cze', 'ned', 'eng', 'deu', 'spa', 'tr']
+    # langs = ['arb0', 'cze', 'ned', 'eng', 'deu', 'spa', 'tr']
+    langs = ['cze-pos', 'eng-pos', 'deu-pos', 'spa-pos', 'pos', 'chu']
     dsetnames = ['trn','dev','tst']
 
     data = dict((lang,dict((dname,dset) for dname,dset in zip(dsetnames, get_sents(lang)))) for lang in langs)
@@ -163,7 +164,7 @@ def paper():
     table = []
     for l in langs:
         table.append([l]+map(len,[data[l][dname] for dname in dsetnames]))
-    print tabulate(table,headers=['#sent']+dsetnames, tablefmt='latex')
+    print tabulate(np.array(table).T,headers=['#sent']+dsetnames, tablefmt='latex')
     print
 
 
@@ -217,7 +218,7 @@ def paper():
 
 
         table.append([l+'-'+dname]+[uperc, pperc, cperc])
-    print tabulate(table, headers=['unk', 'unique', 'phrase', 'corpus'], tablefmt='latex', floatfmt='.2f')
+    print tabulate(np.array(table).T, headers=['unk', 'unique', 'phrase', 'corpus'], tablefmt='latex', floatfmt='.2f')
 
 ### end DSET ###
 
@@ -253,5 +254,5 @@ if __name__ == '__main__':
     from tabulate import tabulate
     from score import conlleval
 
-    quick()
+    paper()
 
