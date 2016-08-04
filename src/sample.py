@@ -32,6 +32,12 @@ if __name__ == '__main__':
     strn, sdev, stst = map(get_sample, dset_parts, map(lambda x: x*1000, args['nums']))
     print map(len, (strn,sdev,stst))
 
+    # filter out sents in sdev & stst if they contain a tag that is not in strn
+    trn_tags = set(t for sent in strn for t in sent['ts'])
+    sdev= filter(lambda sent: all(t in trn_tags for t in sent['ts']), sdev)
+    stst= filter(lambda sent: all(t in trn_tags for t in sent['ts']), stst)
+    print map(len, (strn,sdev,stst))
+
     dir_name = 'data/%s-sample'%args['dset']
     os.mkdir(dir_name)
 
