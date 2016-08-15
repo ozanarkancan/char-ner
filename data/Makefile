@@ -53,3 +53,12 @@ spa.pos.testa:
 
 spa.pos.testb:
 	cat ${UNI_DIR}/UD_Spanish/es-ud-test.conllu | grep -v "^#" | grep -vP "^[0-9]+\-" | cut -f2,4 | awk '{if($$0!="") print $$1"\tB-"$$2; else print $$0}' > spa-pos/testb.bio
+
+fin.pos.train:
+	cat ${UNI_DIR}/UD_Finnish/fi-ud-train.conllu | grep -v "^#" | grep -vP "^[0-9]+\-" | cut -f2,4 | awk '{if($$0!="") print $$1"\tB-"$$2; else print $$0}' > fin-pos/train.bio
+
+fin.pos.testa:
+	cat ${UNI_DIR}/UD_Finnish/fi-ud-dev.conllu | grep -v "^#" | grep -vP "^[0-9]+\-" | cut -f2,4 | awk '{if($$0!="") print $$1"\tB-"$$2; else print $$0}' > fin-pos/testa.bio
+
+fin.pos.testb:
+	cat ${UNI_DIR}/UD_Finnish/fi-ud-test.conllu | grep -v "^#" | grep -vP "^[0-9]+\-" | cut -f2,4 | awk '{if($$0!="") print $$1"\tB-"$$2; else print $$0}' > fin-pos/testb.bio

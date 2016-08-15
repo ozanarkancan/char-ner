@@ -222,31 +222,52 @@ def paper():
 
 ### end DSET ###
 
-def quick():
-    """
-    langs = ['eng', 'deu', 'spa', 'ned', 'tr', 'cze', 'ger', 'arb0', 'ita']
-    # langs = ['eng', 'deu']
-    dsetnames = ['trn','dev','tst']
-    data = dict((lang,dict((dname,dset) for dname,dset in zip(dsetnames, get_sents(lang)))) for lang in langs)
-    """
-    from exper import Dset
-    from functools import partial
+def tez_datasets_pos():
+    langs = ['cze-pos', 'eng-pos', 'deu-pos', 'spa-pos', 'pos', 'chu']
 
-    Dset2 = partial(Dset, captrn=0)
-    # dsets = map(Dset, ('eng','deu','spa','ned','tr','cze','arb0'))
-    # langs = ('arb0', 'cze', 'ned', 'eng', 'deu', 'spa', 'tr')
-    langs = ('arb0', 'cze', 'arb-pos', 'cze-pos')
-    dsets = map(Dset2, langs)
-    # cvocabs = map(lambda dset: set(c for sent in dset.trn for c in sent['cseq']), dsets)
+    dsetnames = ['trn','dev','tst']
+
+    data = dict((lang,dict((dname,dset) for dname,dset in zip(dsetnames, get_sents(lang)))) for lang in langs)
+
     table = []
-    table.append(map(lambda dset: sum(len(sent['ws']) for sent in dset.trn ), dsets))
-    """
-    table.append(map(lambda dset: len(set(c for sent in dset.trn for c in sent['cseq'])), dsets))
-    table.append(map(lambda dset: len(set(c for sent in dset.trn for c in sent['ws'])), dsets))
-    table.append(map(lambda dset: int(np.mean([len(sent['cseq']) for sent in dset.trn])), dsets))
-    table.append(map(lambda dset: int(np.mean([len(sent['ws']) for sent in dset.trn])), dsets))
-    """
-    print tabulate(table, tablefmt='latex', floatfmt='.2f')
+    for l in langs:
+        table.append([l]+map(len,[data[l][dname] for dname in dsetnames]))
+    print tabulate(np.array(table).T,headers=['#sent']+dsetnames, tablefmt='latex')
+    print
+
+    table = []
+    for dname in dsetnames:
+        table.append([dname]+[sum(len(sent['ws']) for sent in data[l][dname]) for l in langs])
+    print tabulate(table,headers=['#token']+langs)
+    print
+
+    table = []
+    for l in langs:
+        char_set = set(c for sent in data[l]['trn'] for w in sent['ws'] for c in w)
+        tag_set = set(t for dname in dsetnames for sent in data[l][dname] for t in encoding.any2io(sent['ts']))
+        table.append(['%s'%l, len(char_set), len(tag_set)])
+    print tabulate(table,headers=['i/o']+['input','output'], tablefmt='latex')
+    print
+
+    table = []
+    # for l, dname in product(langs,('dev','tst')):
+    for l in langs:
+        dname = 'tst'
+        vdst = get_vocab(data[l][dname])
+        vsrc = get_vocab(data[l]['trn'])
+        vdiff = vdst.difference(vsrc)
+        uperc = len(vdiff) / float(len(vdst)) * 100
+
+        cnt = Counter(w for sent in data[l][dname] for w,t in zip(sent['ws'],sent['ts']) if t!='O')
+        pperc = sum(cnt[w] for w in vdiff) / float(sum(cnt.values())) * 100
+
+        cnt = Counter(w for sent in data[l][dname] for w in sent['ws'])
+        cperc = sum(cnt[w] for w in vdiff) / float(sum(cnt.values())) * 100
+
+
+        table.append([l+'-'+dname]+[uperc, pperc, cperc])
+    print tabulate(np.array(table).T, headers=['unk', 'unique', 'phrase', 'corpus'], tablefmt='latex', floatfmt='.2f')
+
 
 
 
@@ -254,5 +275,6 @@ if __name__ == '__main__':
     from tabulate import tabulate
     from score import conlleval
 
-    paper()
+    tez_datasets_pos()
+
 
