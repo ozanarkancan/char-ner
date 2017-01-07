@@ -120,9 +120,11 @@ class MaxDecoder(object):
 
 def main():
     from utils import get_sents
+    from dataset import Dset
     import featchar, rep
 
     trn, dev, tst = get_sents('toy')
+    dset = Dset('toy')
 
     r = rep.Repstd()
 
@@ -138,7 +140,7 @@ def main():
     print rep.get_ts_bio(trn[0]['wiseq'], trn[0]['tseq'])
 
     feat = featchar.Feat('basic')
-    feat.fit(trn,dev,tst)
+    feat.fit(dset)
 
     vdecoder = ViterbiDecoder(trn, feat)
     vdecoder.pprint()

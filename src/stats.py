@@ -223,7 +223,7 @@ def paper():
 ### end DSET ###
 
 def tez_datasets_pos():
-    langs = ['cze-pos', 'eng-pos', 'deu-pos', 'spa-pos', 'pos', 'chu']
+    langs = ['eng-pos', 'fin-pos', 'deu-pos', 'spa-pos', 'pos', 'chu']
 
     dsetnames = ['trn','dev','tst']
 
