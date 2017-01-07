@@ -1,5 +1,4 @@
 import numpy as np, logging, string
-from itertools import chain
 from utils import DROPSYM
 
 from sklearn.feature_extraction import DictVectorizer
@@ -20,12 +19,10 @@ class Feat(object):
             d.update(getattr(self, 'feat_'+f)(ci,sent))
         return d
 
-    def fit(self, dset, xdsets=[]):
+    def fit(self, dset):
         trn = dset.trn
-        xtrn = (s for d in xdsets for s in d.trn)
-        self.dvec.fit(self.getcfeat(ci, sent)  for sent in chain(trn,xtrn) for ci,c in enumerate(sent['x']))
+        self.dvec.fit(self.getcfeat(ci, sent)  for sent in trn for ci,c in enumerate(sent['x']))
         self.yenc.fit([t for sent in trn for t in sent['y']])
-        # self.tsenc.fit([t for sent in chain(trn,dev,tst) for t in sent['ts']])
         self.feature_names = self.dvec.get_feature_names()
         self.tag_classes = self.yenc.classes_
         logging.info(self.feature_names)

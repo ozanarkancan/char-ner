@@ -31,7 +31,6 @@ def get_args():
     parser.add_argument("--fbmerge", default='concat', choices=['concat','sum'], help="how to merge forward backward layer outputs")
     parser.add_argument("--n_hidden", default=[128], nargs='+', type=int, help="number of neurons in each hidden layer")
     parser.add_argument("--recout", default=0, type=int, help="use recurrent output layer")
-    parser.add_argument("--batch_norm", default=0, type=int, help="whether to use batch norm between deep layers")
     parser.add_argument("--drates", default=[0, 0], nargs='+', type=float, help="dropout rates")
     parser.add_argument("--opt", default="adam", help="optimization method: sgd, rmsprop, adagrad, adam")
     parser.add_argument("--lr", default=0.001, type=float, help="learning rate")
@@ -47,20 +46,15 @@ def get_args():
     parser.add_argument("--sorted", default=1, type=int, help="sort datasets before training and prediction")
     parser.add_argument("--in2out", default=0, type=int, help="connect input & output")
     parser.add_argument("--lang", default='eng', help="ner lang")
-    parser.add_argument("--charset", default=[], nargs='+', type=str, help="additional dset names for training charset")
     parser.add_argument("--shuf", default=1, type=int, help="shuffle the batches.")
     parser.add_argument("--tagging", default='bio', choices=['io','bio'], help="tag scheme to use")
-    parser.add_argument("--decoder", default=1, type=int, help="use decoder to prevent invalid tag transitions")
-    parser.add_argument("--breaktrn", default=0, type=int, help="break trn sents to subsents")
-    parser.add_argument("--captrn", default=500, type=int, help="consider sents lt this as trn")
+    parser.add_argument("--captrn", default=500, type=int, help="ignore sents with more than this number of words in trn data")
     parser.add_argument("--fbias", default=0., type=float, help="forget gate bias")
     parser.add_argument("--eps", default=1e-8, type=float, help="epsilon for adam")
     parser.add_argument("--gnoise", default=False, action='store_true', help="adding time dependent noise to the gradients")
-    parser.add_argument("--cdrop", default=0., type=float, help="char dropout rate")
     parser.add_argument("--level", default='char', choices=['char','word'], help="char/word level")
 
     parser.add_argument("--save", default='', help="save param values to file")
-    parser.add_argument("--load", default='', help="load a pretrained model")
 
     args = vars(parser.parse_args())
     args['drates'] = args['drates'] if any(args['drates']) else [0]*(len(args['n_hidden'])+1)
@@ -127,14 +121,6 @@ class Reporter(object):
             ts_pred = self.tfunc(sent['wiseq'],tseq_pred)
             lts_pred.append(ts_pred) # changed
 
-        """
-        y_true = self.feat.tsenc.transform([t for ts in lts for t in ts])
-        y_pred = self.feat.tsenc.transform([t for ts in lts_pred for t in ts])
-        werr = np.sum(y_true!=y_pred)/float(len(y_true))
-
-        word_conmat_str = self.get_conmat_str(y_true, y_pred, self.feat.tsenc)
-        """
-
         # wacc, pre, recall, f1 = bilouEval2(lts, lts_pred)
         (wacc, pre, recall, f1), conll_print = conlleval(lts, lts_pred)
         logging.debug('')
@@ -169,8 +155,6 @@ class Validator(object):
         for e in range(1,argsd['fepoch']+1): # foreach epoch
             logging.info(('{:<5} {:<5} {:>12} ' + ('{:>10} '*7)).format('dset','epoch','mcost', 'mtime', 'yerr', 'pre', 'recall', 'f1', 'best', 'best'))
             """ training """
-            if argsd['cdrop'] > 0: # TODO
-                trndat = self.batcher.get_batches(self.dset.trn) 
             trndat = copy.copy(self.trndat)
             if argsd['shuf']:
                 random.shuffle(trndat) 
@@ -210,8 +194,8 @@ class Validator(object):
 
 def setup_logger(args):
     LPARAMS = ['activation', 'n_hidden', 'fbmerge', 'drates',
-        'recout','decoder', 'opt','lr','norm','gclip','truncate','n_batch', 'shuf',
-        'breaktrn', 'captrn', 'emb','lang', 'fbias']
+        'recout','opt','lr','norm','gclip','truncate','n_batch', 'shuf',
+        'captrn', 'emb','lang', 'fbias']
     import socket
     host = socket.gethostname().split('.')[0]
     logger = logging.getLogger()
@@ -238,7 +222,7 @@ def main():
 
     dset = Dset(**args)
     feat = featchar.Feat(args['feat'])
-    feat.fit(dset, xdsets=[Dset(dname) for dname in args['charset']])
+    feat.fit(dset)
 
     batcher = Batcher(args['n_batch'], feat)
     reporter = Reporter(dset, feat)

@@ -1,6 +1,5 @@
 import lasagne, theano, numpy as np, logging
 from theano import tensor as T
-from batch_norm import BatchNormLayer
 
 class Identity(lasagne.init.Initializer):
 
@@ -61,6 +60,7 @@ class RDNN_Dummy:
         randlogprobs = np.log(randvals / np.sum(randvals,axis=0))
         return randlogprobs
 
+    """
     def viterbi(self, dsetdat):
         from viterbi import viterbi_log
         ecost, rnn_last_predictions = 0, []
@@ -71,12 +71,13 @@ class RDNN_Dummy:
             sentLens, mlen = Xdsetmsk.sum(axis=-1), Xdset.shape[1]
             rnn_last_predictions.append([viterbi_log(pred[i,:slen,:].T, self.tprobs, range(slen)) for i, slen in enumerate(sentLens)])
         return ecost, rnn_last_predictions
+    """
 
 def extract_rnn_params(kwargs):
     return dict((pname,kwargs[pname]) for pname in RDNN.param_names)
 
 class RDNN:
-    param_names=['activation','n_hidden','fbmerge','drates','opt','lr','norm','gclip','truncate','recout','batch_norm','in2out','emb','fbias','gnoise','eps']
+    param_names=['activation','n_hidden','fbmerge','drates','opt','lr','norm','gclip','truncate','recout','in2out','emb','fbias','gnoise','eps']
 
     def __init__(self, nc, nf, kwargs):
         assert nf; assert nc
@@ -163,10 +164,6 @@ class RDNN:
                 l_fbmerge = lasagne.layers.ElemwiseSumLayer([l_forward, l_backward])
             logging.debug('l_fbmerge: {}'.format(lasagne.layers.get_output_shape(l_fbmerge)))
 
-            if self.batch_norm:
-                logging.info('using batch norm')
-                l_fbmerge = BatchNormLayer(l_fbmerge, axes=(0,1))
-
             if self.drates[level] > 0:
                 l_fbmerge = lasagne.layers.DropoutLayer(l_fbmerge, p=self.drates[level])
 
@@ -219,8 +216,6 @@ class RDNN:
         all_params = lasagne.layers.get_all_params(l_out, trainable=True)
         logging.debug(all_params)
 
-        f_hid2hid = l_forward.get_params()[-1]
-        b_hid2hid = l_backward.get_params()[-1]
         self.recout_hid2hid = lambda : l_out.get_params() if self.recout == 0 else lambda : l_out.get_params()[-1].get_value()
 
         grads = T.grad(cost_train, all_params)

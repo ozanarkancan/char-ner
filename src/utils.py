@@ -11,7 +11,6 @@ LOG_DIR = '{}/logs'.format(ROOT_DIR)
 MODEL_DIR = '{}/models'.format(ROOT_DIR)
 DATA_DIR = '{}/data'.format(ROOT_DIR)
 SRC_DIR = '{}/src'.format(ROOT_DIR)
-SCRIPTS_DIR = '{}/scripts'.format(ROOT_DIR)
 
 WSTART = '/w'
 WEND = 'w/'
@@ -28,8 +27,8 @@ def logger():
 def valid_file_name(s):
     return "".join(i for i in s if i not in "\"\/ &*?<>|[]()'")
 
-def get_sents(lang='eng'):
-    enc = 'latin1' if lang in ['eng','deu','spa','ned', 'ita', 'eu-deu', 'eu-ned', 'eu-eng', 'eu-spa', 'pos'] else 'utf-8'
+def get_sents(lang='eng', enc='utf-8'):
+    # enc = 'latin1' if lang in ['eng','deu','spa','ned', 'ita', 'eu-deu', 'eu-ned', 'eu-eng', 'eu-spa', 'pos'] else 'utf-8'
     trn,dev,tst = map(read_sents, ['{}/{}/{}.bio'.format(DATA_DIR,lang,dset) for dset in ('train','testa','testb')], [enc for i in range(3)])
     return trn,dev,tst 
 
@@ -42,7 +41,7 @@ def read_sents(file, enc, delim='\t'):
                 a.append(l.strip().split(delim))
             else: # emtpy line
                 if len(a):
-                    ws = [el[0].decode(enc) for el in a] # TODO
+                    ws = [el[0].decode(enc) for el in a]
                     ts = [el[-1].upper() for el in a]
                     sentences.append({'ws':ws,'ts':ts})
                 a = []

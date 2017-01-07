@@ -1,10 +1,8 @@
 import argparse
 from utils import ROOT_DIR
 from os import walk
-import re
 import pandas as pd
 import sys
-import seaborn as sns
 import matplotlib.pyplot as plt
 import numpy as np
 import traceback

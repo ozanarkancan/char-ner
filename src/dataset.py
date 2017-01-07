@@ -6,9 +6,9 @@ import utils
 
 class Dset(object):
 
-    def __init__(self, lang='eng', level='char', tagging='bio', breaktrn=False, captrn=500, sample=0, charrep='std', sort=True, **kwargs):
+    def __init__(self, lang='eng', level='char', fenc='utf-8', tagging='bio', captrn=500, sample=0, charrep='std', sort=True, **kwargs):
         self.level = level
-        trn, dev, tst = utils.get_sents(lang)
+        trn, dev, tst = utils.get_sents(lang, fenc)
 
         repclass = getattr(rep, 'Rep'+charrep)
         repobj = repclass()
@@ -24,7 +24,7 @@ class Dset(object):
 
 
         if captrn:
-            trn = filter(lambda sent: len(' '.join(sent['x']))<captrn, trn)
+            trn = filter(lambda sent: len(' '.join(sent['ws']))<captrn, trn)
 
         if sample>0:
             trn_size = sample*1000
