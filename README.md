@@ -29,3 +29,7 @@ For examples, check out directories under data/.
 pip install --upgrade https://github.com/Lasagne/Lasagne/archive/master.zip
 pip install -r requirements.txt
 ```
+
+## Authors
+* Onur Kuru
+* Ozan Arkan Can
