@@ -24,3 +24,8 @@ train.bio, testa.bio, testb.bio are for training, development and test sets resp
 Each file contains word, tag pairs seperated with a tab.
 For examples, check out directories under data/. 
 
+## Install Dependencies
+```
+pip install --upgrade https://github.com/Lasagne/Lasagne/archive/master.zip
+pip install -r requirements.txt
+```
