@@ -55,6 +55,7 @@ def get_args():
     parser.add_argument("--level", default='char', choices=['char','word'], help="char/word level")
 
     parser.add_argument("--save", default='', help="save param values to file")
+    parser.add_argument("--load", default='', help="load param values from file")
 
     args = vars(parser.parse_args())
     args['drates'] = args['drates'] if any(args['drates']) else [0]*(len(args['n_hidden'])+1)
@@ -231,6 +232,16 @@ def main():
 
     RNN = RDNN_Dummy if args['rnn'] == 'dummy' else RDNN
     rdnn = RNN(feat.NC, feat.NF, args)
+    if not args['load'] == '':
+        dat = np.load(args['load'])
+        dat_args = dat['argsd'].tolist()
+        rnn_param_values = dat['rnn_param_values']
+        params = lasagne.layers.get_all_params(rdnn.layers[-1])
+        lasagne.layers.set_all_param_values(rdnn.layers[-1],
+                rnn_param_values[:len(params)])
+        logger = logging.getLogger()
+        logger.info('Parameters loaded')
+
 
     validator.validate(rdnn, args)
 
