@@ -33,3 +33,6 @@ pip install -r requirements.txt
 ## Authors
 * Onur Kuru
 * Ozan Arkan Can
+
+## Miscellaneous
+You can checkout the Keras version [here](https://github.com/0xnurl/keras_character_based_ner).
